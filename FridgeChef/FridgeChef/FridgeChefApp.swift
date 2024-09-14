@@ -26,7 +26,7 @@ struct FridgeChefApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                FridgePageView()
+                FridgeView()
             }
         }
     }

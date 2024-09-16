@@ -32,7 +32,7 @@
 		1CB5BCA82C944441006C66E5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA72C944441006C66E5 /* FirebaseStorage */; };
 		1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA92C944441006C66E5 /* FirebaseStorageCombine-Community */; };
 		1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7A62C97F1BC00F4417D /* GoogleServiceInfo.swift */; };
-		1CD4F7B12C97FE2800F4417D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CD4F7B02C97FE2800F4417D /* GoogleService-Info.plist */; };
+		1CD4F7B32C98032300F4417D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CD4F7B22C98032300F4417D /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,7 +51,7 @@
 		1CB5BC9B2C94400B006C66E5 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		1CD4F7A62C97F1BC00F4417D /* GoogleServiceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleServiceInfo.swift; sourceTree = "<group>"; };
-		1CD4F7B02C97FE2800F4417D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1CD4F7B22C98032300F4417D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,7 +172,7 @@
 		1CD4F7A22C97EDA100F4417D /* APIKey */ = {
 			isa = PBXGroup;
 			children = (
-				1CD4F7B02C97FE2800F4417D /* GoogleService-Info.plist */,
+				1CD4F7B22C98032300F4417D /* GoogleService-Info.plist */,
 				1CD4F7A62C97F1BC00F4417D /* GoogleServiceInfo.swift */,
 			);
 			path = APIKey;
@@ -253,9 +253,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CD4F7B12C97FE2800F4417D /* GoogleService-Info.plist in Resources */,
 				1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */,
 				1C19F1A52C94372B0094FBEA /* Assets.xcassets in Resources */,
+				1CD4F7B32C98032300F4417D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,22 +8,21 @@
 import SwiftUI
 
 struct FridgeView: View {
-    @ObservedObject var viewModel = FridgeViewModel()
-    
     var body: some View {
-        List(viewModel.ingredients) { ingredient in
-            HStack {
-                Text(ingredient.name)
-                Spacer()
-                Text("\(ingredient.quantity)個")
-                Text(ingredient.expirationDate, style: .date)
-                    .foregroundColor(ingredient.expirationDate <= Date() ? .red : .black)
+        NavigationView {
+            VStack {
+                Text("Welcome to FridgeChef")
+                
+                // 這裡可以加入一些導航按鈕
+                NavigationLink(destination: SignUpView()) {
+                    Text("註冊")
+                }
+                
+                NavigationLink(destination: IngredientView()) {
+                    Text("新增食材")
+                }
             }
+            .navigationTitle("FridgeChef")
         }
-        .onAppear {
-            viewModel.loadIngredients()
-        }
-        .navigationTitle("我的冰箱")
     }
 }
-

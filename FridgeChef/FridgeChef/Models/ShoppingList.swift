@@ -9,10 +9,10 @@ import Foundation
 import FirebaseFirestore
 
 struct ShoppingList: Identifiable, Codable {
-    @DocumentID var id: String?
-    var ingredientId: String // 參照 Ingredient ID
+    @DocumentID var id: String? // Firestore 的文件 ID
+    var ingredientId: String // 關聯的食材 ID
     var isPurchased: Bool // 是否已購買
-    var priority: Int // 優先級
+    var priority: Int // 購物優先級
 
     init(id: String? = nil, ingredientId: String, isPurchased: Bool, priority: Int) {
         self.id = id
@@ -21,4 +21,3 @@ struct ShoppingList: Identifiable, Codable {
         self.priority = priority
     }
 }
-

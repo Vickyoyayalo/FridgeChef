@@ -31,6 +31,8 @@
 		1CB5BCA62C94441D006C66E5 /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA52C94441D006C66E5 /* FirebaseAuthCombine-Community */; };
 		1CB5BCA82C944441006C66E5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA72C944441006C66E5 /* FirebaseStorage */; };
 		1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA92C944441006C66E5 /* FirebaseStorageCombine-Community */; };
+		1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7A62C97F1BC00F4417D /* GoogleServiceInfo.swift */; };
+		1CD4F7B12C97FE2800F4417D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CD4F7B02C97FE2800F4417D /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +50,8 @@
 		1CB5BC992C943F7E006C66E5 /* FridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeView.swift; sourceTree = "<group>"; };
 		1CB5BC9B2C94400B006C66E5 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		1CD4F7A62C97F1BC00F4417D /* GoogleServiceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleServiceInfo.swift; sourceTree = "<group>"; };
+		1CD4F7B02C97FE2800F4417D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +79,7 @@
 		1C19F1942C94372A0094FBEA = {
 			isa = PBXGroup;
 			children = (
+				1CD4F7A22C97EDA100F4417D /* APIKey */,
 				1C19F19F2C94372A0094FBEA /* FridgeChef */,
 				1C19F19E2C94372A0094FBEA /* Products */,
 				1CB5BC8A2C943D74006C66E5 /* Frameworks */,
@@ -164,6 +169,15 @@
 			path = Manager;
 			sourceTree = "<group>";
 		};
+		1CD4F7A22C97EDA100F4417D /* APIKey */ = {
+			isa = PBXGroup;
+			children = (
+				1CD4F7B02C97FE2800F4417D /* GoogleService-Info.plist */,
+				1CD4F7A62C97F1BC00F4417D /* GoogleServiceInfo.swift */,
+			);
+			path = APIKey;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -171,6 +185,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1C19F1AB2C94372B0094FBEA /* Build configuration list for PBXNativeTarget "FridgeChef" */;
 			buildPhases = (
+				1CD4F7A52C97EFFF00F4417D /* Run Script */,
 				1C19F1992C94372A0094FBEA /* Sources */,
 				1C19F19A2C94372A0094FBEA /* Frameworks */,
 				1C19F19B2C94372A0094FBEA /* Resources */,
@@ -238,12 +253,35 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CD4F7B12C97FE2800F4417D /* GoogleService-Info.plist in Resources */,
 				1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */,
 				1C19F1A52C94372B0094FBEA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1CD4F7A52C97EFFF00F4417D /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/GoogleService-Info/GoogleService-Info.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "CONFIG_FILE_BASE_NAME=\"GoogleService-Info\"\n\nCONFIG_FILE_NAME=${CONFIG_FILE_BASE_NAME}.plist\nSAMPLE_CONFIG_FILE_NAME=${CONFIG_FILE_BASE_NAME}-Sample.plist\n\nCONFIG_FILE_PATH=$SRCROOT/APIKey/$CONFIG_FILE_NAME\nSAMPLE_CONFIG_FILE_PATH=$SRCROOT/APIKey/$SAMPLE_CONFIG_FILE_NAME\n\nif [ -f \"$CONFIG_FILE_PATH\" ]; then\n  echo \"$CONFIG_FILE_PATH exists.\"\nelse\n  echo \"$CONFIG_FILE_PATH does not exist, copying sample\"\n  cp -v \"${SAMPLE_CONFIG_FILE_PATH}\" \"${CONFIG_FILE_PATH}\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1C19F1992C94372A0094FBEA /* Sources */ = {
@@ -260,6 +298,7 @@
 				1CB5BC982C943F4F006C66E5 /* FridgeViewModel.swift in Sources */,
 				1CB5BC892C943D36006C66E5 /* User.swift in Sources */,
 				1CB5BC902C943DC1006C66E5 /* Category.swift in Sources */,
+				1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */,
 				1CB5BC9A2C943F7E006C66E5 /* FridgeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,6 +435,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"FridgeChef/Preview Content\"";
 				DEVELOPMENT_TEAM = 8GZQ47DW9W;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -425,6 +465,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"FridgeChef/Preview Content\"";
 				DEVELOPMENT_TEAM = 8GZQ47DW9W;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -15,7 +15,6 @@ struct ForgotPasswordView: View {
     @ObservedObject private var viewModel = UserViewModel()  // Ensuring ViewModel is initialized correctly
     
     var body: some View {
-        NavigationView {
             VStack {
                 TextField("Email", text: $email)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -34,7 +33,6 @@ struct ForgotPasswordView: View {
                         message: Text(alertMessage),
                         dismissButton: .default(Text("確定"))
                     )
-                }
             }
             .navigationBarTitle("Forgot Password", displayMode: .inline)
             .padding()

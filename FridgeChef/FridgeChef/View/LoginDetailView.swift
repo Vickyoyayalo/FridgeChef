@@ -13,9 +13,10 @@ struct LoginDetailView: View {
     @StateObject private var userViewModel = UserViewModel() // Manages user data across views
     @State private var navigateToHome = false
     @State private var navigateToForgotPassword = false
+    @State private var isLoggedIn = false
     
     var body: some View {
-        NavigationView {
+        CustomNavigationBarView(title:"") {
             VStack {
                 Image("LogoFridgeChef")
                     .resizable()
@@ -34,16 +35,16 @@ struct LoginDetailView: View {
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 2))
                 
                 Button("登入") {
-                    loginViewModel.login {
-                        navigateToHome = true  // Trigger navigation on successful login
-                    }
+                    self.isLoggedIn = true
+                    //                    loginViewModel.login {
+                    //                        navigateToHome = true  // Trigger navigation on successful login
+                    //                    }
                 }
                 .foregroundColor(.white)
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(Color.orange)
                 .cornerRadius(8)
-                
                 
                 Button("忘記密碼?") {
                     navigateToForgotPassword = true
@@ -87,13 +88,13 @@ struct LoginDetailView: View {
                         
                         
                         // Navigation Links
-                        NavigationLink(destination: HomeView(uid: String()), isActive: $navigateToHome) { EmptyView() }
+                        NavigationLink(destination: InputIngredientView(), isActive: $isLoggedIn) {
+                            EmptyView()} // 隱藏的 NavigationLink
                         NavigationLink(destination: ForgotPasswordView(), isActive: $navigateToForgotPassword) { EmptyView() }
                     }
                 }
                 Spacer()
             }
-            
         }
         .padding()
         .alert(isPresented: $loginViewModel.showAlert) {

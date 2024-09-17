@@ -24,6 +24,7 @@
 		1C6CC39D2C996827001C4643 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */; };
 		1C6CC39F2C996888001C4643 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39E2C996888001C4643 /* HomeView.swift */; };
 		1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3A02C996F94001C4643 /* AlertService.swift */; };
+		1C7F45B52C9A4BC000846B44 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */; };
 		1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1C8DC5392C99C5210041A2A2 /* Kingfisher */; };
 		1C8DC55A2C99E0470041A2A2 /* MLIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */; };
 		1C8DC55E2C99E0A20041A2A2 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DC55D2C99E0A20041A2A2 /* ScannerView.swift */; };
@@ -70,6 +71,7 @@
 		1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		1C6CC39E2C996888001C4643 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		1C6CC3A02C996F94001C4643 /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
+		1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MLIngredientView.swift; sourceTree = "<group>"; };
 		1C8DC55D2C99E0A20041A2A2 /* ScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 		1C19F19F2C94372A0094FBEA /* FridgeChef */ = {
 			isa = PBXGroup;
 			children = (
+				1C7F45B32C9A4BA900846B44 /* Extension */,
 				1C8DC5672C99E4760041A2A2 /* Info.plist */,
 				1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */,
 				1C19F1A22C94372A0094FBEA /* FridgePageView.swift */,
@@ -170,6 +173,14 @@
 				1C8DC5632C99E1DA0041A2A2 /* Food.mlmodel */,
 			);
 			path = "Media Source";
+			sourceTree = "<group>";
+		};
+		1C7F45B32C9A4BA900846B44 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		1CB5BC872C943CFE006C66E5 /* Models */ = {
@@ -388,6 +399,7 @@
 				1C8DC56D2C99F0A10041A2A2 /* MLIngredientViewModel.swift in Sources */,
 				1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */,
 				1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */,
+				1C7F45B52C9A4BC000846B44 /* UIColor+Ext.swift in Sources */,
 				1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */,
 				1C6CC39F2C996888001C4643 /* HomeView.swift in Sources */,
 				1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */,

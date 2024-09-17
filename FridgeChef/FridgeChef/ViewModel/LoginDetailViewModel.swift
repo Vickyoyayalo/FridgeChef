@@ -12,6 +12,7 @@ class LoginDetailViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var showAlert: Bool = false
     @Published var alertMessage: String = ""
+    @Published var uid: String?
 
     func login(completion: @escaping () -> Void) {
         guard !email.isEmpty, !password.isEmpty else {

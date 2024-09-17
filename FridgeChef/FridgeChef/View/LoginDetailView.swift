@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct LoginDetailView: View {
-    @StateObject private var viewModel = LoginDetailViewModel()
+    
+    @StateObject private var loginViewModel = LoginDetailViewModel() // Manages login specific operations
+    @StateObject private var userViewModel = UserViewModel() // Manages user data across views
     @State private var navigateToHome = false
     @State private var navigateToForgotPassword = false
     
@@ -18,21 +20,21 @@ struct LoginDetailView: View {
                 Image("LogoFridgeChef")
                     .resizable()
                     .scaledToFit()
-    //                .frame(width: 350, height: 200)
+                //                .frame(width: 350, height: 200)
                     .padding(.top, 20)
-                    
-                TextField("Email", text: $viewModel.email)
+                
+                TextField("Email", text: $loginViewModel.email)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 2))
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                 
-                SecureField("Password", text: $viewModel.password)
+                SecureField("Password", text: $loginViewModel.password)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 2))
                 
                 Button("登入") {
-                    viewModel.login {
+                    loginViewModel.login {
                         navigateToHome = true  // Trigger navigation on successful login
                     }
                 }
@@ -84,7 +86,8 @@ struct LoginDetailView: View {
                         .cornerRadius(8)
                         
                         
-                        NavigationLink(destination: HomeView(viewModel: UserViewModel()), isActive: $navigateToHome) { EmptyView() }
+                        // Navigation Links
+                        NavigationLink(destination: HomeView(uid: String()), isActive: $navigateToHome) { EmptyView() }
                         NavigationLink(destination: ForgotPasswordView(), isActive: $navigateToForgotPassword) { EmptyView() }
                     }
                 }
@@ -93,8 +96,8 @@ struct LoginDetailView: View {
             
         }
         .padding()
-        .alert(isPresented: $viewModel.showAlert) {
-            Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
+        .alert(isPresented: $loginViewModel.showAlert) {
+            Alert(title: Text("Error"), message: Text(loginViewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
     }
 }

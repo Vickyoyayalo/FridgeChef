@@ -84,21 +84,39 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    func fetchUserDetails(uid: String) {
-        firestoreService.fetchUser(byUid: uid) { user, error in
+    func login(email: String, password: String) {
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
+            guard let self = self else { return }
             DispatchQueue.main.async {
-                if let user = user {
-                    self.user = user
-                    self.name = user.name
-                    self.email = user.email
-                    // Assume avatar is a URL
-                    self.downloadImage(from: user.avatar)
-                } else {
-                    print("No user found or \(error?.localizedDescription ?? "Unknown error")")
+                if let error = error {
+                    print("Login failed: \(error.localizedDescription)")
+                    return
+                }
+
+                if let uid = result?.user.uid {
+                    self.fetchUserDetails(uid: uid)
                 }
             }
         }
     }
+    
+    func checkForAuthenticatedUser() {
+        if let uid = Auth.auth().currentUser?.uid {
+            fetchUserDetails(uid: uid)
+        }
+    }
+    
+    func fetchUserDetails(uid: String) {
+            firestoreService.fetchUser(byUid: uid) { [weak self] user, error in
+                DispatchQueue.main.async {
+                    if let user = user {
+                        self?.user = user
+                    } else if let error = error {
+                        print("Error fetching user: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
     
     func sendPasswordReset(email: String) {
             firestoreService.sendPasswordReset(email: email) { result in
@@ -131,9 +149,9 @@ class UserViewModel: ObservableObject {
         do {
             try Auth.auth().signOut()
             self.user = nil
-            self.name = ""
-            self.email = ""
-            self.avatar = nil
+//            self.name = ""
+//            self.email = ""
+//            self.avatar = nil
         } catch {
             self.alert = Alert(title: Text("登出失敗"), message: Text(error.localizedDescription))
             self.showAlert = true

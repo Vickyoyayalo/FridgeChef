@@ -6,27 +6,29 @@
 //
 
 import SwiftUI
-import FirebaseCore
+import Firebase
 
+// 使用 AppDelegate 來初始化 Firebase
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        FirebaseApp.configure()
+        
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
         
         return true
     }
 }
 
-@main 
+@main
 struct FridgeChefApp: App {
-    // register app delegate for Firebase setup
+    // 註冊 AppDelegate 以初始化 Firebase
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                FridgeView()
-            }
+            LoginView() // 起始頁面可以是你的註冊頁面
         }
     }
 }

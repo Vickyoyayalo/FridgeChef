@@ -4,36 +4,30 @@
 //
 //  Created by Vickyhereiam on 2024/9/17.
 //
-
-import Foundation
+import SwiftUI
 import FirebaseAuth
 
 class LoginDetailViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
-    @Published var errorMessage: String?
-    
-    func login() {
+    @Published var showAlert: Bool = false
+    @Published var alertMessage: String = ""
+
+    func login(completion: @escaping () -> Void) {
         guard !email.isEmpty, !password.isEmpty else {
-            errorMessage = "請輸入電子郵件和密碼。"
+            self.alertMessage = "請輸入電子郵件和密碼。"
+            self.showAlert = true
             return
         }
-
-        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-            if let error = error {
-                // 如果登入失敗，顯示錯誤訊息
-                DispatchQueue.main.async {
-                    self.errorMessage = error.localizedDescription
-                }
-            } else {
-                // 登入成功，處理成功邏輯
-                DispatchQueue.main.async {
-                    self.errorMessage = nil
-                    print("登入成功！")
-                    // 例如跳轉至主頁面邏輯
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self?.alertMessage = error.localizedDescription
+                    self?.showAlert = true
+                } else {
+                    completion()  // Execute completion handler on successful login
                 }
             }
         }
     }
 }
-

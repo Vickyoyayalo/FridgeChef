@@ -6,6 +6,7 @@
 //
 
 import FirebaseFirestore
+import FirebaseAuth
 
 // FirestoreService: 用來處理與 Firestore 資料庫相關的操作
 class FirestoreService {
@@ -13,8 +14,11 @@ class FirestoreService {
     
     // Save user information to Firestore
     func saveUser(_ userData: [String: Any], uid: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        var dataWithID = userData
+        dataWithID["uid"] = uid  // 明確地加入 uid
+
         do {
-            try db.collection("users").document(uid).setData(userData) { error in
+            try db.collection("users").document(uid).setData(dataWithID) { error in
                 if let error = error {
                     completion(.failure(error))
                 } else {
@@ -25,7 +29,16 @@ class FirestoreService {
             completion(.failure(error))
         }
     }
-
+    
+    func sendPasswordReset(email: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            Auth.auth().sendPasswordReset(withEmail: email) { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
     // Fetch user by UID
     func fetchUser(byUid uid: String, completion: @escaping (User?, Error?) -> Void) {
         db.collection("users").document(uid).getDocument { documentSnapshot, error in

@@ -23,6 +23,7 @@
 		1C6CC39B2C993698001C4643 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39A2C993698001C4643 /* ImagePicker.swift */; };
 		1C6CC39D2C996827001C4643 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */; };
 		1C6CC39F2C996888001C4643 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39E2C996888001C4643 /* HomeView.swift */; };
+		1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3A02C996F94001C4643 /* AlertService.swift */; };
 		1CB5BC892C943D36006C66E5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC882C943D36006C66E5 /* User.swift */; };
 		1CB5BC8C2C943D74006C66E5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8B2C943D74006C66E5 /* FirebaseFirestore */; };
 		1CB5BC8E2C943DA3006C66E5 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8D2C943DA3006C66E5 /* FirebaseFirestoreCombine-Community */; };
@@ -59,6 +60,7 @@
 		1C6CC39A2C993698001C4643 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		1C6CC39E2C996888001C4643 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		1C6CC3A02C996F94001C4643 /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
 		1CB5BC882C943D36006C66E5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CB5BC912C943DE4006C66E5 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
 		1CB5BC932C943DFB006C66E5 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				1CB5BC9B2C94400B006C66E5 /* FirestoreService.swift */,
+				1C6CC3A02C996F94001C4643 /* AlertService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -356,6 +359,7 @@
 				1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */,
 				1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */,
 				1C6CC39F2C996888001C4643 /* HomeView.swift in Sources */,
+				1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */,
 				1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */,
 				1CD4F7C12C981DCB00F4417D /* IngredientView.swift in Sources */,
 				1CB5BC962C943E19006C66E5 /* ShoppingList.swift in Sources */,

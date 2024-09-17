@@ -9,6 +9,10 @@ import SwiftUI
 
 struct HomeView: View {
     @ObservedObject private var viewModel: UserViewModel
+    // Inside HomeView
+    init(viewModel: UserViewModel) {
+        self._viewModel = ObservedObject(initialValue: viewModel)
+    }
 
     var body: some View {
         VStack {

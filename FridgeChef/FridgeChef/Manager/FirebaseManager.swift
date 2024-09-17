@@ -18,8 +18,6 @@ class FirebaseManager {
     let storage: Storage
     
     private init() {
-        FirebaseApp.configure() // 初始化 Firebase
-        
         self.auth = Auth.auth()
         self.firestore = Firestore.firestore()
         self.storage = Storage.storage()

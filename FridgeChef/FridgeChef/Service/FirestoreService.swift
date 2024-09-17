@@ -11,6 +11,36 @@ import FirebaseFirestore
 class FirestoreService {
     private let db = FirebaseManager.shared.firestore
     
+    // Save user information to Firestore
+    func saveUser(_ userData: [String: Any], uid: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        do {
+            try db.collection("users").document(uid).setData(userData) { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        } catch let error {
+            completion(.failure(error))
+        }
+    }
+
+    // Fetch user by UID
+    func fetchUser(byUid uid: String, completion: @escaping (User?, Error?) -> Void) {
+        db.collection("users").document(uid).getDocument { documentSnapshot, error in
+            if let error = error {
+                completion(nil, error)
+            } else if let documentSnapshot = documentSnapshot, documentSnapshot.exists {
+                do {
+                    let user = try documentSnapshot.data(as: User.self)
+                    completion(user, nil)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
     // 儲存食材 (Ingredient) 到 Firestore
     func saveIngredient(_ ingredient: Ingredient, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
@@ -112,3 +142,4 @@ class FirestoreService {
         }
     }
 }
+

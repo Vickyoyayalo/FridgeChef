@@ -12,7 +12,11 @@ import Firebase
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        FirebaseApp.configure() // 初始化 Firebase
+        
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
+        
         return true
     }
 }
@@ -24,7 +28,7 @@ struct FridgeChefApp: App {
     
     var body: some Scene {
         WindowGroup {
-            SignUpView() // 起始頁面可以是你的註冊頁面
+            LoginView() // 起始頁面可以是你的註冊頁面
         }
     }
 }

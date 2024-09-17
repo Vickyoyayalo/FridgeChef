@@ -8,44 +8,78 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @StateObject private var viewModel = UserViewModel() // 透過 ViewModel 處理用戶註冊
-    @State private var name = ""
-    @State private var email = ""
-    @State private var password = ""
-    @State private var avatar: UIImage? = nil // 用戶大頭照
-
+    @ObservedObject private var viewModel = UserViewModel()
+    @State private var isShowingImagePicker = false
+    
     var body: some View {
         VStack {
-            // 顯示錯誤信息（如果有）
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage).foregroundColor(.red)
+            Image("LogoFridgeChef")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 350, height: 200)
+                .padding(.top, 20)
+            
+            Button(action: {
+                self.isShowingImagePicker = true
+            }) {
+                if let image = viewModel.avatar {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 150, height: 150)
+                        .clipShape(Circle())
+                } else {
+                    Image(systemName: "person.crop.circle.badge.plus")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.orange)
+                }
             }
             
-            // 使用者輸入框
-            TextField("姓名", text: $name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .padding()
+            }
             
-            TextField("Email", text: $email)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            TextField("姓名", text: $viewModel.name)
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 2))
             
-            SecureField("密碼", text: $password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            TextField("Email", text: $viewModel.email)
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 2))
             
-            // 註冊按鈕
-            Button(action: {
-                // 使用 ViewModel 進行註冊操作
-                viewModel.signUpUser(name: name, email: email, password: password, avatar: avatar) { success in
+            SecureField("密碼", text: $viewModel.password)
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 2))
+            
+            Button("註冊") {
+                viewModel.signUpUser() { success in
                     if success {
                         print("註冊成功！")
                     } else {
-                        print("註冊失敗")
+                        print("註冊失败")
                     }
                 }
-            }) {
-                Text("註冊")
             }
+            .foregroundColor(.white)
             .padding()
+            .frame(maxWidth: .infinity)
+            .background(Color.orange)
+            .cornerRadius(8)
+            .padding()
+            
+            Spacer()
         }
         .padding()
+        .sheet(isPresented: $isShowingImagePicker) {
+            ImagePicker(image: self.$viewModel.avatar)
+        }
     }
+}
+
+#Preview {
+    SignUpView()
 }

@@ -9,21 +9,26 @@
 /* Begin PBXBuildFile section */
 		1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */; };
 		1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19F1A22C94372A0094FBEA /* FridgePageView.swift */; };
-		1C19F1A52C94372B0094FBEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C19F1A42C94372B0094FBEA /* Assets.xcassets */; };
 		1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C19F1A72C94372B0094FBEA /* Preview Assets.xcassets */; };
 		1C19F1B02C943B290094FBEA /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1AF2C943B290094FBEA /* FirebaseAnalytics */; };
 		1C19F1B22C943B290094FBEA /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1B12C943B290094FBEA /* FirebaseAnalyticsOnDeviceConversion */; };
 		1C19F1B42C943B290094FBEA /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1B32C943B290094FBEA /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		1C19F1B62C943B290094FBEA /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1B52C943B290094FBEA /* FirebaseAppCheck */; };
 		1C19F1B82C943B290094FBEA /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1B72C943B290094FBEA /* FirebaseAppDistribution-Beta */; };
+		1C6CC3882C984C89001C4643 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3872C984C89001C4643 /* LoginView.swift */; };
+		1C6CC38D2C985109001C4643 /* LoginVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */; };
+		1C6CC38F2C985227001C4643 /* LoginDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC38E2C985227001C4643 /* LoginDetailView.swift */; };
+		1C6CC3932C991BAD001C4643 /* LoginDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3922C991BAD001C4643 /* LoginDetailViewModel.swift */; };
+		1C6CC3992C9927CD001C4643 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C6CC3982C9927CD001C4643 /* Assets.xcassets */; };
+		1C6CC39B2C993698001C4643 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39A2C993698001C4643 /* ImagePicker.swift */; };
+		1C6CC39D2C996827001C4643 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */; };
+		1C6CC39F2C996888001C4643 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39E2C996888001C4643 /* HomeView.swift */; };
 		1CB5BC892C943D36006C66E5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC882C943D36006C66E5 /* User.swift */; };
 		1CB5BC8C2C943D74006C66E5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8B2C943D74006C66E5 /* FirebaseFirestore */; };
 		1CB5BC8E2C943DA3006C66E5 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8D2C943DA3006C66E5 /* FirebaseFirestoreCombine-Community */; };
 		1CB5BC922C943DE4006C66E5 /* Ingredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC912C943DE4006C66E5 /* Ingredient.swift */; };
 		1CB5BC942C943DFB006C66E5 /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC932C943DFB006C66E5 /* Recipe.swift */; };
 		1CB5BC962C943E19006C66E5 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC952C943E19006C66E5 /* ShoppingList.swift */; };
-		1CB5BC982C943F4F006C66E5 /* FridgeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC972C943F4F006C66E5 /* FridgeViewModel.swift */; };
-		1CB5BC9A2C943F7E006C66E5 /* FridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC992C943F7E006C66E5 /* FridgeView.swift */; };
 		1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC9B2C94400B006C66E5 /* FirestoreService.swift */; };
 		1CB5BCA22C944408006C66E5 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */; };
 		1CB5BCA42C94441D006C66E5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA32C94441D006C66E5 /* FirebaseAuth */; };
@@ -45,14 +50,19 @@
 		1C19F19D2C94372A0094FBEA /* FridgeChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FridgeChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeChefApp.swift; sourceTree = "<group>"; };
 		1C19F1A22C94372A0094FBEA /* FridgePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgePageView.swift; sourceTree = "<group>"; };
-		1C19F1A42C94372B0094FBEA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1C19F1A72C94372B0094FBEA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1C6CC3872C984C89001C4643 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = LoginVideo.mp4; sourceTree = "<group>"; };
+		1C6CC38E2C985227001C4643 /* LoginDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDetailView.swift; sourceTree = "<group>"; };
+		1C6CC3922C991BAD001C4643 /* LoginDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDetailViewModel.swift; sourceTree = "<group>"; };
+		1C6CC3982C9927CD001C4643 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1C6CC39A2C993698001C4643 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		1C6CC39E2C996888001C4643 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		1CB5BC882C943D36006C66E5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CB5BC912C943DE4006C66E5 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
 		1CB5BC932C943DFB006C66E5 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
 		1CB5BC952C943E19006C66E5 /* ShoppingList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
-		1CB5BC972C943F4F006C66E5 /* FridgeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeViewModel.swift; sourceTree = "<group>"; };
-		1CB5BC992C943F7E006C66E5 /* FridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeView.swift; sourceTree = "<group>"; };
 		1CB5BC9B2C94400B006C66E5 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		1CD4F7A62C97F1BC00F4417D /* GoogleServiceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleServiceInfo.swift; sourceTree = "<group>"; };
@@ -116,7 +126,7 @@
 				1CB5BC9F2C9441BF006C66E5 /* View */,
 				1CB5BC9E2C94418B006C66E5 /* ViewModel */,
 				1CB5BC9D2C944178006C66E5 /* Service */,
-				1C19F1A42C94372B0094FBEA /* Assets.xcassets */,
+				1C6CC3892C984D8C001C4643 /* Media Source */,
 				1C19F1A62C94372B0094FBEA /* Preview Content */,
 			);
 			path = FridgeChef;
@@ -128,6 +138,15 @@
 				1C19F1A72C94372B0094FBEA /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		1C6CC3892C984D8C001C4643 /* Media Source */ = {
+			isa = PBXGroup;
+			children = (
+				1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */,
+				1C6CC3982C9927CD001C4643 /* Assets.xcassets */,
+			);
+			path = "Media Source";
 			sourceTree = "<group>";
 		};
 		1CB5BC872C943CFE006C66E5 /* Models */ = {
@@ -160,7 +179,7 @@
 		1CB5BC9E2C94418B006C66E5 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				1CB5BC972C943F4F006C66E5 /* FridgeViewModel.swift */,
+				1C6CC3922C991BAD001C4643 /* LoginDetailViewModel.swift */,
 				1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */,
 				1CD4F7BA2C981D5B00F4417D /* UserViewModel.swift */,
 				1CD4F7BE2C981DB500F4417D /* IngredientViewModel.swift */,
@@ -171,10 +190,13 @@
 		1CB5BC9F2C9441BF006C66E5 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				1CB5BC992C943F7E006C66E5 /* FridgeView.swift */,
+				1C6CC3872C984C89001C4643 /* LoginView.swift */,
+				1C6CC38E2C985227001C4643 /* LoginDetailView.swift */,
+				1CD4F7BC2C981D9A00F4417D /* SignUpView.swift */,
+				1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */,
+				1C6CC39E2C996888001C4643 /* HomeView.swift */,
 				1CD4F7C42C981DF600F4417D /* RecipeView.swift */,
 				1CD4F7C02C981DCB00F4417D /* IngredientView.swift */,
-				1CD4F7BC2C981D9A00F4417D /* SignUpView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -183,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */,
+				1C6CC39A2C993698001C4643 /* ImagePicker.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -273,7 +296,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */,
-				1C19F1A52C94372B0094FBEA /* Assets.xcassets in Resources */,
+				1C6CC38D2C985109001C4643 /* LoginVideo.mp4 in Resources */,
+				1C6CC3992C9927CD001C4643 /* Assets.xcassets in Resources */,
 				1CD4F7B32C98032300F4417D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -327,23 +351,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CD4F7C52C981DF600F4417D /* RecipeView.swift in Sources */,
+				1C6CC39D2C996827001C4643 /* ForgotPasswordView.swift in Sources */,
 				1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */,
 				1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */,
 				1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */,
+				1C6CC39F2C996888001C4643 /* HomeView.swift in Sources */,
 				1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */,
 				1CD4F7C12C981DCB00F4417D /* IngredientView.swift in Sources */,
 				1CB5BC962C943E19006C66E5 /* ShoppingList.swift in Sources */,
+				1C6CC38F2C985227001C4643 /* LoginDetailView.swift in Sources */,
 				1CB5BCA22C944408006C66E5 /* FirebaseManager.swift in Sources */,
 				1CB5BC922C943DE4006C66E5 /* Ingredient.swift in Sources */,
 				1CD4F7BF2C981DB500F4417D /* IngredientViewModel.swift in Sources */,
 				1CB5BC942C943DFB006C66E5 /* Recipe.swift in Sources */,
-				1CB5BC982C943F4F006C66E5 /* FridgeViewModel.swift in Sources */,
 				1CD4F7C72C98258800F4417D /* Quantity.swift in Sources */,
 				1CB5BC892C943D36006C66E5 /* User.swift in Sources */,
 				1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */,
+				1C6CC3932C991BAD001C4643 /* LoginDetailViewModel.swift in Sources */,
 				1CD4F7BD2C981D9A00F4417D /* SignUpView.swift in Sources */,
+				1C6CC39B2C993698001C4643 /* ImagePicker.swift in Sources */,
+				1C6CC3882C984C89001C4643 /* LoginView.swift in Sources */,
 				1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */,
-				1CB5BC9A2C943F7E006C66E5 /* FridgeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

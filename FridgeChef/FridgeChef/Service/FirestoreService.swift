@@ -18,7 +18,7 @@ class FirestoreService {
         dataWithID["uid"] = uid  // 明確地加入 uid
 
         do {
-            try db.collection("users").document(uid).setData(dataWithID) { error in
+             db.collection("users").document(uid).setData(dataWithID) { error in
                 if let error = error {
                     completion(.failure(error))
                 } else {

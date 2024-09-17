@@ -14,45 +14,43 @@ struct HomeView: View {
     @State private var user: User? // State to hold the user's data
     
     var body: some View {
-        NavigationView {
-            VStack {
-                if let user = user {
-                    VStack(alignment: .center, spacing: 10) {
-                        if let avatarURL = user.avatar, let url = URL(string: avatarURL) {
-                            AsyncImage(url: url) { phase in
-                                if let image = phase.image {
-                                    image.resizable()
-                                } else if phase.error != nil {
-                                    Image(systemName: "person.crop.circle.fill").resizable()
-                                } else {
-                                    ProgressView()
-                                }
+        VStack {
+            if let user = user {
+                VStack(alignment: .center, spacing: 10) {
+                    if let avatarURL = user.avatar, let url = URL(string: avatarURL) {
+                        AsyncImage(url: url) { phase in
+                            if let image = phase.image {
+                                image.resizable()
+                            } else if phase.error != nil {
+                                Image(systemName: "person.crop.circle.fill").resizable()
+                            } else {
+                                ProgressView()
                             }
-                            .frame(width: 150, height: 150)
-                            .clipShape(Circle())
                         }
-                        
-                        Text(user.name)
-                            .font(.title)
-                        Text(user.email)
-                            .font(.subheadline)
+                        .frame(width: 150, height: 150)
+                        .clipShape(Circle())
                     }
-                } else {
-                    Text("Loading user information...")
+                    
+                    Text(user.name)
+                        .font(.title)
+                    Text(user.email)
+                        .font(.subheadline)
                 }
-                
-                Spacer()
-                Button("Logout") {
-                    // Handle logout functionality
-                }
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .clipShape(Capsule())
+            } else {
+                Text("Loading user information...")
+            }
+            
+            Spacer()
+            Button("Logout") {
+                // Handle logout functionality
             }
             .padding()
-            .navigationBarTitle("Profile", displayMode: .inline)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .clipShape(Capsule())
         }
+        .padding()
+        .navigationBarTitle("Profile", displayMode: .inline)
         .onAppear {
             fetchUserData()
         }

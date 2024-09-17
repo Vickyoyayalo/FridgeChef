@@ -51,7 +51,6 @@ struct LoginView: View {
                                     .background(Color.orange)
                                     .cornerRadius(25)
                             }
-//                            .padding(.horizontal)
                             
                         }
                         .padding()

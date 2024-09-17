@@ -27,7 +27,6 @@ struct TextRecognition {
     @ObservedObject var recognizedContent: RecognizedContent
     var didFinishRecognition: () -> Void
     
-    
     func recognizeText() {
         let queue = DispatchQueue(label: "textRecognitionQueue", qos: .userInitiated)
         queue.async {

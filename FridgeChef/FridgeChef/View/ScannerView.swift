@@ -20,11 +20,9 @@ struct ScannerView: UIViewControllerRepresentable {
     
     func updateUIViewController(_ uiViewController: VNDocumentCameraViewController, context: Context) { }
     
-    
     func makeCoordinator() -> Coordinator {
         Coordinator(with: self)
     }
-    
     
     class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
         let scannerView: ScannerView
@@ -32,7 +30,6 @@ struct ScannerView: UIViewControllerRepresentable {
         init(with scannerView: ScannerView) {
             self.scannerView = scannerView
         }
-        
         
         // MARK: - VNDocumentCameraViewControllerDelegate
         

@@ -16,7 +16,7 @@ struct LoginDetailView: View {
     @State private var isLoggedIn = false
     
     var body: some View {
-        CustomNavigationBarView(title:"") {
+        CustomNavigationBarView(title: "") {
             VStack {
                 Image("LogoFridgeChef")
                     .resizable()
@@ -88,7 +88,7 @@ struct LoginDetailView: View {
                         
                         
                         // Navigation Links
-                        NavigationLink(destination: InputIngredientView(), isActive: $isLoggedIn) {
+                        NavigationLink(destination: MLIngredientView(), isActive: $isLoggedIn) {
                             EmptyView()} // 隱藏的 NavigationLink
                         NavigationLink(destination: ForgotPasswordView(), isActive: $navigateToForgotPassword) { EmptyView() }
                     }

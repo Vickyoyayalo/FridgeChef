@@ -24,7 +24,7 @@ struct CameraView: UIViewControllerRepresentable {
         }
         
         // 當用戶拍照完成後，這個方法會被觸發
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             if let image = info[.originalImage] as? UIImage {
                 parent.onImagePicked(image) // 將圖片返回給 SwiftUI 視圖
             }
@@ -58,7 +58,7 @@ struct CameraView: UIViewControllerRepresentable {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         if #available(iOS 16.0, *) {
-            InputIngredientView()
+            MLIngredientView()
         } else {
             // Fallback on earlier versions
         }

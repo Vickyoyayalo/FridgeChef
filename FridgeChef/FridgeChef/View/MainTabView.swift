@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MainView: View {
+struct MainTabView: View {
     
     @State private var selectedTabIndex = 0
     
@@ -28,7 +28,7 @@ struct MainView: View {
                 }
                 .tag(1)
             
-            RecommendRecipeListView()  // 這裡你可以替換為針對「食譜」專用的視圖組件
+            RecipeView(recipeManager: RecipeManager()) 
                 .tabItem {
                     Label("食譜", systemImage: "books.vertical.circle")
                 }
@@ -46,7 +46,7 @@ struct MainView: View {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView()
+        MainTabView()
     }
 }
 

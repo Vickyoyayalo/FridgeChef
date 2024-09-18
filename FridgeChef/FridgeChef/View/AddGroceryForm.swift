@@ -30,7 +30,7 @@ struct AddGroceryForm: View {
                             .resizable()
                             .scaledToFill()
                             .frame(minWidth: 0, maxWidth: .infinity)
-                            .frame(height: 200)
+//                            .frame(height: 200)
                             .background(Color(.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 20.0))
                             .padding(.bottom)
@@ -39,7 +39,7 @@ struct AddGroceryForm: View {
                             .resizable()
                             .scaledToFill()
                             .frame(minWidth: 0, maxWidth: .infinity)
-                            .frame(height: 200)
+//                            .frame(height: 200)
                             .background(Color(.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 20.0))
                             .padding(.bottom)
@@ -60,7 +60,8 @@ struct AddGroceryForm: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { dismiss() }) {
-                        Image(systemName: "xmark")
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.orange)
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {

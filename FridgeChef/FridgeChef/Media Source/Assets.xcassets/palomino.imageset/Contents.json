@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "LoginDetailPic.jpg",
+      "filename" : "palomino.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "palomino@2x.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "palomino@3x.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }

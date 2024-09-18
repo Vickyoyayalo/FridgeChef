@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Project_FridgeChef (1).jpg",
+      "filename" : "haigh.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "haigh@2x.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "haigh@3x.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }

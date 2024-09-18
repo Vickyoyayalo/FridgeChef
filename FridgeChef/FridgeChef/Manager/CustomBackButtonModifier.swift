@@ -21,8 +21,9 @@ struct CustomNavigationBarView<Content: View>: View {
             content
         }
         .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: Button(action: {
-            self.presentationMode.wrappedValue.dismiss()
+        .navigationBarItems(leading: Button(
+            action: {
+        self.presentationMode.wrappedValue.dismiss()
         }) {
             Image(systemName: "arrowshape.turn.up.backward.circle.fill")
                 .foregroundColor(.gray)

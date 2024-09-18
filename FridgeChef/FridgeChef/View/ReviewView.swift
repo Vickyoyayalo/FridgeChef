@@ -17,7 +17,7 @@ struct ReviewView: View {
     var body: some View {
         ZStack {
             
-            Image(recommendRecipes.image)
+            Image(recommendRecipes.image ?? "defaultImage")
                 .resizable()
                 .scaledToFill()
                 .frame(minWidth: 0, maxWidth: .infinity)

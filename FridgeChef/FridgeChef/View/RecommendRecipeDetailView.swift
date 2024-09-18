@@ -17,7 +17,7 @@ struct RecommendRecipeDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                Image(recommendRecipes.image)
+                Image(recommendRecipes.image ?? "defaultImage")
                     .resizable()
                     .scaledToFill()
                     .frame(minWidth: 0, maxWidth: .infinity)

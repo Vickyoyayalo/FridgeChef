@@ -14,7 +14,7 @@ import Speech
 
 @available(iOS 16.0, *)
 struct MLIngredientView: View {
-    @State private var image: UIImage? = nil
+    @State private var image: UIImage?
     @State private var recognizedText: String = ""
     @State private var quantity: String = "1"
     @State private var expirationDate: Date = Date()
@@ -36,7 +36,7 @@ struct MLIngredientView: View {
 
     // 顯示相機選擇器
     @State private var isPickerPresented = false
-    @State private var selectedItem: PhotosPickerItem? = nil
+    @State private var selectedItem: PhotosPickerItem?
 
     // 用於控制 Alert 顯示的狀態
     @State private var isShowingCameraAlert = false
@@ -187,7 +187,7 @@ struct MLIngredientView: View {
             .onAppear {
                 requestSpeechRecognitionAuthorization()
             }
-            .sheet(isPresented: $isShowingCamera) {
+            .fullScreenCover(isPresented: $isShowingCamera) {
                 CameraView(onImagePicked: { image in
                     self.image = image
                     recognizeFood(in: image)

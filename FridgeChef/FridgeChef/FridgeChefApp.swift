@@ -28,7 +28,8 @@ struct FridgeChefApp: App {
     
     var body: some Scene {
         WindowGroup {
-            LoginView() // 起始頁面可以是你的註冊頁面
+//            LoginView() // 起始頁面可以是你的註冊頁面
+            RecommendRecipeListView()
         }
     }
 }

@@ -45,7 +45,7 @@ struct HomeView: View {
                 // Handle logout functionality
             }
             .padding()
-            .background(Color.blue)
+            .background(Color.orange)
             .foregroundColor(.white)
             .clipShape(Capsule())
         }
@@ -69,6 +69,9 @@ struct HomeView: View {
     }
 }
 
+#Preview {
+    HomeView(uid: "12345")
+}
 
 //import SwiftUI
 //import FirebaseAuth

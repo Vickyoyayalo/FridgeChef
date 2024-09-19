@@ -12,12 +12,12 @@ struct ReviewView: View {
     @Binding var isDisplayed: Bool
     @State private var showRatings = false
     
-    var shoppingMarts: ShoppingMart
+    var recommendRecipes: RecommendRecipe
     
     var body: some View {
         ZStack {
             
-            Image(shoppingMarts.image)
+            Image(recommendRecipes.image ?? "defaultImage")
                 .resizable()
                 .scaledToFill()
                 .frame(minWidth: 0, maxWidth: .infinity)
@@ -49,7 +49,7 @@ struct ReviewView: View {
             
             VStack(alignment: .leading) {
                 
-                ForEach(ShoppingMart.Rating.allCases, id: \.self) { rating in
+                ForEach(RecommendRecipe.Rating.allCases, id: \.self) { rating in
                     
                     HStack {
                         Image(rating.image)
@@ -60,7 +60,11 @@ struct ReviewView: View {
                     }
                     .opacity(showRatings ? 1.0 : 0)
                     .offset(x: showRatings ? 0 : 1000)
-                    .animation(.easeOut.delay(Double(ShoppingMart.Rating.allCases.firstIndex(of: rating)!) * 0.05), value: showRatings)
+                    .animation(.easeOut.delay(Double(RecommendRecipe.Rating.allCases.firstIndex(of: rating)!) * 0.05), value: showRatings)
+                    .onTapGesture {
+                        self.recommendRecipes.rating = rating
+                        self.isDisplayed = false
+                    }
                 }
                 
             }
@@ -72,6 +76,6 @@ struct ReviewView: View {
 }
 
 #Preview {
-ReviewView(isDisplayed: .constant(true), shoppingMarts: ShoppingMart(name: "Cafe Deadend", type: "Coffee & Tea Shop", location: "G/F, 72 Po Hing Fong, Sheung Wan, Hong Kong", phone: "232-923423", description: "Searching for great breakfast eateries and coffee?  Come over and enjoy a great meal.", image: "cafedeadend", isFavorite: true))
+ReviewView(isDisplayed: .constant(true), recommendRecipes: RecommendRecipe(name: "Cafe Deadend", type: "Coffee & Tea Shop", location: "G/F, 72 Po Hing Fong, Sheung Wan, Hong Kong", phone: "232-923423", description: "Searching for great breakfast eateries and coffee?  Come over and enjoy a great meal.", image: "cafedeadend", isFavorite: true))
 }
 

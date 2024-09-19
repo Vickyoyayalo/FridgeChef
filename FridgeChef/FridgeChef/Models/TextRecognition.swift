@@ -53,7 +53,6 @@ struct TextRecognition {
         }
     }
     
-    
     private func getTextRecognitionRequest(with textItem: TextItem) -> VNRecognizeTextRequest {
         let request = VNRecognizeTextRequest { request, error in
             if let error = error {

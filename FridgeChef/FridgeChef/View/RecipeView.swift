@@ -8,30 +8,40 @@
 import SwiftUI
 
 struct RecipeView: View {
-    @StateObject private var viewModel = RecipeViewModel()
-    let ingredientId: String? // 可選的食材 ID 用於篩選食譜
-    
+    @ObservedObject var recipeManager: RecipeManager
+    @State var selectedRecipe: Recipe? = nil
     var body: some View {
-        VStack {
-            // 顯示錯誤信息（如果有）
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage).foregroundColor(.red)
-            }
-            
-            // 顯示食譜列表
-            List(viewModel.recipes) { recipe in
-                VStack(alignment: .leading) {
-                    Text(recipe.name)
-                        .font(.headline)
-                    Text("烹飪時間: \(recipe.cookingTime) 分鐘")
-                    Text("份量: \(recipe.servings)")
+        NavigationView {
+            ScrollView {
+                HorizontalScrolling(recipeManager: recipeManager)
+                    .padding(.vertical)
+                
+                VStack {
+                    ForEach(recipeManager.recipes) { recipe in
+                        RecipeCard(recipe: recipe)
+                            .onTapGesture {
+                                selectedRecipe = recipe
+                            }
+                    }
+                    .padding(.horizontal)
+                }
+                .padding(.vertical)
+                .background(.ultraThickMaterial)
+                .fullScreenCover(item: $selectedRecipe) { recipe in
+                    RecipeDetailView(recipe: recipe)
+                        .preferredColorScheme(.light)
+
                 }
             }
+            .background(.ultraThinMaterial)
+            .navigationTitle("Recipes")
         }
-        .onAppear {
-            // 當視圖顯示時，根據 ingredientId 獲取食譜
-            viewModel.fetchRecipes(for: ingredientId)
-        }
-        .navigationTitle("推薦食譜")
+    }
+}
+
+struct RecipeView_Previews: PreviewProvider {
+    static var previews: some View {
+        RecipeView(recipeManager: RecipeManager())
+            .preferredColorScheme(.light)
     }
 }

@@ -12,41 +12,51 @@ struct RecommendRecipeDetailView: View {
     
     @State private var showReview = false
     
-    var shoppingMarts: ShoppingMart
+    var recommendRecipes: RecommendRecipe
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                Image(shoppingMarts.image)
+                Image(recommendRecipes.image ?? "defaultImage")
                     .resizable()
                     .scaledToFill()
                     .frame(minWidth: 0, maxWidth: .infinity)
-                    .frame(height: 445)
+                    .frame(height: 350)
                     .overlay {
                         VStack {
-                            Image(systemName: shoppingMarts.isFavorite ? "heart.fill" : "heart")
+                            Image(systemName: recommendRecipes.isFavorite ? "heart.fill" : "heart")
                                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topTrailing)
                                 .padding()
                                 .font(.system(size: 30))
-                                .foregroundStyle(shoppingMarts.isFavorite ? .yellow : .white)
+                                .foregroundStyle(recommendRecipes.isFavorite ? .yellow : .white)
                                 .padding(.top, 40)
-                            
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(shoppingMarts.name)
-                                    .font(.custom("Nunito-Regular", size: 35, relativeTo: .largeTitle))
-                                    .bold()
-                                Text(shoppingMarts.type)
-                                    .font(.system(.headline, design: .rounded))
-                                    .padding(.all, 5)
-                                    .background(.black)
+                            HStack(alignment: .bottom) {
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(recommendRecipes.name)
+                                        .font(.custom("Nunito-Regular", size: 35, relativeTo: .largeTitle))
+                                        .bold()
+                                    Text(recommendRecipes.type)
+                                        .font(.system(.headline, design: .rounded))
+                                        .padding(.all, 5)
+                                        .background(.black)
+                                }
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottomLeading)
+                                .foregroundStyle(.white)
+                                .padding()
+                                
+                                if let rating = recommendRecipes.rating, !showReview {
+                                    Image(rating.image)
+                                        .resizable()
+                                        .frame(width: 60, height: 60)
+                                        .padding([.bottom, .trailing])
+                                        .transition(.scale)
+                                }
                             }
-                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottomLeading)
-                            .foregroundStyle(.white)
-                            .padding()
+                            .animation(.spring(response: 0.2, dampingFraction: 0.3, blendDuration: 0.3), value: recommendRecipes.rating)
                         }
                     }
                 
-                Text(shoppingMarts.description)
+                Text(recommendRecipes.description)
                     .padding()
                 
                 HStack(alignment: .top) {
@@ -54,7 +64,7 @@ struct RecommendRecipeDetailView: View {
                         Text("ADDRESS")
                             .font(.system(.headline, design: .rounded))
                         
-                        Text(shoppingMarts.location)
+                        Text(recommendRecipes.location)
                     }
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     
@@ -62,7 +72,7 @@ struct RecommendRecipeDetailView: View {
                         Text("PHONE")
                             .font(.system(.headline, design: .rounded))
                         
-                        Text(shoppingMarts.phone)
+                        Text(recommendRecipes.phone)
                     }
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                 }
@@ -70,13 +80,13 @@ struct RecommendRecipeDetailView: View {
                 
                 NavigationLink(
                     destination:
-                        MapView(location: shoppingMarts.location)
-                            .toolbarBackground(.hidden, for: .navigationBar)
-                            .edgesIgnoringSafeArea(.all)
-                            
+                        MapView(location: recommendRecipes.location)
+                        .toolbarBackground(.hidden, for: .navigationBar)
+                        .edgesIgnoringSafeArea(.all)
+                    
                 ) {
-                    MapView(location: shoppingMarts.location, interactionMode: [])
-                        .frame(height: 200)
+                    MapView(location: recommendRecipes.location, interactionMode: [])
+                        .frame(height: 100)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                         .padding()
                 }
@@ -94,35 +104,35 @@ struct RecommendRecipeDetailView: View {
                 .controlSize(.large)
                 .padding(.horizontal)
                 .padding(.bottom, 20)
-                 
+                
             }
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Text("\(Image(systemName: "chevron.left"))")
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Text("\(Image(systemName: "chevron.left"))")
+                    }
                 }
             }
         }
-        .ignoresSafeArea()
-        .overlay(
-            self.showReview ?
+            .ignoresSafeArea()
+            .overlay(
+                self.showReview ?
                 ZStack {
-                    ReviewView(isDisplayed: $showReview, shoppingMarts: shoppingMarts)
+                    ReviewView(isDisplayed: $showReview, recommendRecipes: recommendRecipes)
                 }
-            : nil
-        )
-        .toolbar(self.showReview ? .hidden : .visible)
-        .toolbarBackground(.hidden, for: .navigationBar)
-    }
+                : nil
+            )
+            .toolbar(self.showReview ? .hidden : .visible)
+            .toolbarBackground(.hidden, for: .navigationBar)
+        }
 }
 
 #Preview {
     NavigationStack {
-        RecommendRecipeDetailView(shoppingMarts:ShoppingMart(name: "CASK Pub and Kitchen", type: "Thai", location: "22 Charlwood Street London SW1V 2DY Pimlico", phone: "432-344050", description: "With kitchen serving gourmet burgers. We offer food every day of the week, Monday through to Sunday. Join us every Sunday from 4:30 – 7:30pm for live acoustic music!", image: "cask", isFavorite: false))
+        RecommendRecipeDetailView(recommendRecipes:RecommendRecipe(name: "CASK Pub and Kitchen", type: "Thai", location: "22 Charlwood Street London SW1V 2DY Pimlico", phone: "432-344050", description: "With kitchen serving gourmet burgers. We offer food every day of the week, Monday through to Sunday. Join us every Sunday from 4:30 – 7:30pm for live acoustic music!", image: "cask", isFavorite: false))
     }
     .tint(.white)
 }

@@ -43,7 +43,8 @@ struct CameraView: UIViewControllerRepresentable {
         let picker = UIImagePickerController()
         picker.delegate = context.coordinator
         picker.sourceType = .camera // 使用相機作為圖片源
-        picker.allowsEditing = false // 禁用編輯
+        picker.allowsEditing = false
+        // 禁用編輯
         return picker
     }
     

@@ -30,41 +30,41 @@ struct AddGroceryForm: View {
                             .resizable()
                             .scaledToFill()
                             .frame(minWidth: 0, maxWidth: .infinity)
-//                            .frame(height: 200)
+                            .frame(height: 200)
                             .background(Color(.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 20.0))
                             .padding(.bottom)
                     } else {
                         Image("newphoto")  // Provide a placeholder
                             .resizable()
-                            .scaledToFill()
+                            .scaledToFit()  // 保持比例並完整顯示圖片
                             .frame(minWidth: 0, maxWidth: .infinity)
-//                            .frame(height: 200)
-                            .background(Color(.systemGray6))
+                            .frame(height: 200)
+                            .background(Color(.systemGray5))
                             .clipShape(RoundedRectangle(cornerRadius: 20.0))
                             .padding(.bottom)
                             .onTapGesture {
-                                    showPhotoOptions = true
-                                }
+                                showPhotoOptions = true
+                            }
                     }
 
-                    FormTextField(label: "NAME", placeholder: "Fill in the grocery name", value: $viewModel.name)
-                    FormTextField(label: "TYPE", placeholder: "Fill in the grocery type", value: $viewModel.type)
+                    FormTextField(label: "名稱", placeholder: "食材名稱", value: $viewModel.name)
+                    FormTextField(label: "類型", placeholder: "食材類型", value: $viewModel.type)
 //                    FormTextField(label: "ADDRESS", placeholder: "Fill in the grocery address", value: $viewModel.location)
 //                    FormTextField(label: "PHONE", placeholder: "Fill in the grocery phone", value: $viewModel.phone)
-                    FormTextView(label: "DESCRIPTION", value: $viewModel.description, height: 100)
+                    FormTextView(label: "Notes", value: $viewModel.description, height: 100)
                 }
                 .padding()
             }
             .navigationTitle("Add Grocery Item")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.orange)
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { save() }) {
                         Text("Save")
                             .font(.headline)
@@ -80,9 +80,9 @@ struct AddGroceryForm: View {
                 viewModel.image = imageName
             }
         }
-        .confirmationDialog("Choose your photo source", isPresented: $showPhotoOptions, titleVisibility: .visible) {
-            Button("Camera") { photoSource = .camera }
-            Button("Photo Library") { photoSource = .photoLibrary }
+        .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
+            Button("相機") { photoSource = .camera }
+            Button("您的相冊") { photoSource = .photoLibrary }
         }
         .fullScreenCover(item: $photoSource) { source in
             switch source {
@@ -123,6 +123,11 @@ struct AddGroceryForm: View {
     }
 }
 
+#Preview{
+    AddGroceryForm(
+        viewModel: AddGroceryFormViewModel()
+    )
+}
 
 struct FormTextField: View {
     let label: String

@@ -21,7 +21,7 @@ struct RecommendRecipeDetailView: View {
                     .resizable()
                     .scaledToFill()
                     .frame(minWidth: 0, maxWidth: .infinity)
-                    .frame(height: 445)
+                    .frame(height: 350)
                     .overlay {
                         VStack {
                             Image(systemName: recommendRecipes.isFavorite ? "heart.fill" : "heart")
@@ -31,28 +31,28 @@ struct RecommendRecipeDetailView: View {
                                 .foregroundStyle(recommendRecipes.isFavorite ? .yellow : .white)
                                 .padding(.top, 40)
                             HStack(alignment: .bottom) {
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(recommendRecipes.name)
-                                    .font(.custom("Nunito-Regular", size: 35, relativeTo: .largeTitle))
-                                    .bold()
-                                Text(recommendRecipes.type)
-                                    .font(.system(.headline, design: .rounded))
-                                    .padding(.all, 5)
-                                    .background(.black)
-                            }
-                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottomLeading)
-                            .foregroundStyle(.white)
-                            .padding()
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(recommendRecipes.name)
+                                        .font(.custom("Nunito-Regular", size: 35, relativeTo: .largeTitle))
+                                        .bold()
+                                    Text(recommendRecipes.type)
+                                        .font(.system(.headline, design: .rounded))
+                                        .padding(.all, 5)
+                                        .background(.black)
+                                }
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottomLeading)
+                                .foregroundStyle(.white)
+                                .padding()
                                 
                                 if let rating = recommendRecipes.rating, !showReview {
-                                        Image(rating.image)
-                                            .resizable()
-                                            .frame(width: 60, height: 60)
-                                            .padding([.bottom, .trailing])
-                                            .transition(.scale)
-                                    }
+                                    Image(rating.image)
+                                        .resizable()
+                                        .frame(width: 60, height: 60)
+                                        .padding([.bottom, .trailing])
+                                        .transition(.scale)
                                 }
-                                .animation(.spring(response: 0.2, dampingFraction: 0.3, blendDuration: 0.3), value: recommendRecipes.rating)
+                            }
+                            .animation(.spring(response: 0.2, dampingFraction: 0.3, blendDuration: 0.3), value: recommendRecipes.rating)
                         }
                     }
                 
@@ -81,12 +81,12 @@ struct RecommendRecipeDetailView: View {
                 NavigationLink(
                     destination:
                         MapView(location: recommendRecipes.location)
-                            .toolbarBackground(.hidden, for: .navigationBar)
-                            .edgesIgnoringSafeArea(.all)
-                            
+                        .toolbarBackground(.hidden, for: .navigationBar)
+                        .edgesIgnoringSafeArea(.all)
+                    
                 ) {
                     MapView(location: recommendRecipes.location, interactionMode: [])
-                        .frame(height: 200)
+                        .frame(height: 100)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                         .padding()
                 }
@@ -104,30 +104,30 @@ struct RecommendRecipeDetailView: View {
                 .controlSize(.large)
                 .padding(.horizontal)
                 .padding(.bottom, 20)
-                 
+                
             }
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Text("\(Image(systemName: "chevron.left"))")
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Text("\(Image(systemName: "chevron.left"))")
+                    }
                 }
             }
         }
-        .ignoresSafeArea()
-        .overlay(
-            self.showReview ?
+            .ignoresSafeArea()
+            .overlay(
+                self.showReview ?
                 ZStack {
                     ReviewView(isDisplayed: $showReview, recommendRecipes: recommendRecipes)
                 }
-            : nil
-        )
-        .toolbar(self.showReview ? .hidden : .visible)
-        .toolbarBackground(.hidden, for: .navigationBar)
-    }
+                : nil
+            )
+            .toolbar(self.showReview ? .hidden : .visible)
+            .toolbarBackground(.hidden, for: .navigationBar)
+        }
 }
 
 #Preview {

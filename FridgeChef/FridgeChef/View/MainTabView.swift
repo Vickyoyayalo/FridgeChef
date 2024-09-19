@@ -28,7 +28,7 @@ struct MainTabView: View {
                 }
                 .tag(1)
             
-            RecipeView(recipeManager: RecipeManager()) 
+            RecipeView(recipeManager: RecipeManager())
                 .tabItem {
                     Label("食譜", systemImage: "books.vertical.circle")
                 }

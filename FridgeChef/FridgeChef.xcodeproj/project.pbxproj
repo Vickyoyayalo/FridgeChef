@@ -156,8 +156,6 @@
 		1C19F1942C94372A0094FBEA = {
 			isa = PBXGroup;
 			children = (
-				1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */,
-				1C19F1A22C94372A0094FBEA /* FridgePageView.swift */,
 				1CD4F7A22C97EDA100F4417D /* APIKey */,
 				1C19F19F2C94372A0094FBEA /* FridgeChef */,
 				1C19F19E2C94372A0094FBEA /* Products */,
@@ -176,6 +174,8 @@
 		1C19F19F2C94372A0094FBEA /* FridgeChef */ = {
 			isa = PBXGroup;
 			children = (
+				1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */,
+				1C19F1A22C94372A0094FBEA /* FridgePageView.swift */,
 				1C7F45C52C9A750700846B44 /* Resource */,
 				1C7F45B32C9A4BA900846B44 /* Extension */,
 				1C8DC5672C99E4760041A2A2 /* Info.plist */,

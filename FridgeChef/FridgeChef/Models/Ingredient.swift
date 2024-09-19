@@ -8,23 +8,32 @@
 import Foundation
 import FirebaseFirestore
 
-struct Ingredient: Identifiable, Codable {
-    @DocumentID var id: String? // Firestore 的文件 ID
-    var name: String // 食材名稱
-    var ingredientPhoto: [String] // 食材照片的 URL 列表
-    var expirationDate: Date // 食材有效期
+struct Ingredient {
+    var id = UUID()
+    var name: String
+    var quantity: String
+    var expirationDate: Date
+    var storageMethod: String
+    var image: UIImage?
+}
+
+//struct Ingredient: Identifiable, Codable {
+//    @DocumentID var id: String? // Firestore 的文件 ID
+//    var name: String // 食材名稱
+//    var ingredientPhoto: [String] // 食材照片的 URL 列表
+//    var expirationDate: Date // 食材有效期
 //    var category: [String] // 食材類別的 Array
 //    var storage: [String] // 儲存分類，例如冰箱、冷凍等
-
-    init(id: String? = nil, name: String, ingredientPhoto: [String], expirationDate: Date, category: [String], storage: [String]) {
-        self.id = id
-        self.name = name
-        self.ingredientPhoto = ingredientPhoto
-        self.expirationDate = expirationDate
+//
+//    init(id: String? = nil, name: String, ingredientPhoto: [String], expirationDate: Date, category: [String], storage: [String]) {
+//        self.id = id
+//        self.name = name
+//        self.ingredientPhoto = ingredientPhoto
+//        self.expirationDate = expirationDate
 //        self.category = category
 //        self.storage = storage
-    }
-}
+//    }
+//}
 
 //import Foundation
 //import FirebaseFirestore

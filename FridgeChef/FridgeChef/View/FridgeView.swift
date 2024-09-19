@@ -27,16 +27,6 @@ struct FridgeView: View {
     var body: some View {
         NavigationView {
             VStack {
-                // 搜索框設計
-                HStack {
-                    if isEditing {
-                        Button("Done") {
-                            isEditing = false
-                        }
-                        .padding(.trailing, 10)
-                        .transition(.slide)
-                    }
-                }
                 List {
                     ForEach(foodItems.filter { $0.name.lowercased().contains(searchText.lowercased()) || searchText.isEmpty }) { item in
                         HStack {
@@ -74,14 +64,6 @@ struct FridgeView: View {
                     }
                     .onDelete(perform: deleteItems) // 添加删除功能
                 }
-                
-                // 刪除按鈕
-                Button("Delete") {
-                    isEditing.toggle()
-                }
-                .padding()
-                .accentColor(.red)
-                .font(.headline)
             }
             .sheet(isPresented: $showingMLIngredientView) {
                 if let editingItem = editingItem {
@@ -142,13 +124,14 @@ struct FridgeView: View {
 extension FoodItem {
     var daysRemainingText: String {
         if daysRemaining > 2 {
-            return "还可以放\(daysRemaining) 天"
+            return "還可以放\(daysRemaining) 天"
         } else if daysRemaining >= 0 {
-            return "再\(abs(daysRemaining))天过期👀"
+            return "再\(abs(daysRemaining))天過期👀"
         } else {
-            return "过期\(abs(daysRemaining)) 天‼️"
+            return "過期\(abs(daysRemaining)) 天‼️"
         }
     }
+    //TODO可以寫個今天到期的邏輯
     
     var daysRemainingColor: Color {
         if daysRemaining > 2 {

@@ -47,13 +47,14 @@ struct GroceryListView: View {
             }
             .navigationTitle("Grocery List")
             .navigationBarItems(trailing: Button(action: {
-                showingAddGroceryFormView = true // 設置為 true 以顯示 NewRestaurantView
+                showingAddGroceryFormView = true
             }) {
                 Image(systemName: "plus")
+                    .foregroundColor(.orange)
             })
             .listStyle(GroupedListStyle())
             .navigationBarTitleDisplayMode(.inline)
-            .fullScreenCover(isPresented: $showingAddGroceryFormView) {
+            .sheet(isPresented: $showingAddGroceryFormView) {
                 AddGroceryForm(viewModel: AddGroceryFormViewModel())
 
             }

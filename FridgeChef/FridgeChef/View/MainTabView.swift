@@ -19,7 +19,7 @@ struct MainTabView: View {
                 }
                 .tag(0)
             
-            MLIngredientView()  // 這裡你可以替換為針對「冰箱」專用的視圖組件
+            FridgeView()  // 這裡你可以替換為針對「冰箱」專用的視圖組件
                 .tabItem {
                     VStack {
                         Image("fridgeIcon")//TODO 這個之後可以換成點擊他會打開的圖

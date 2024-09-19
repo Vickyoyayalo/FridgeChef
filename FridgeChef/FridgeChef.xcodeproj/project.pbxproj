@@ -42,6 +42,7 @@
 		1C7F45F02C9B141D00846B44 /* HorizontalScrolling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45EF2C9B141D00846B44 /* HorizontalScrolling.swift */; };
 		1C7F45F22C9B146100846B44 /* CornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F12C9B146100846B44 /* CornerRadius.swift */; };
 		1C7F45F42C9BD96300846B44 /* FridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F32C9BD96300846B44 /* FridgeView.swift */; };
+		1C7F45F62C9C17AE00846B44 /* DatePickerTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */; };
 		1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1C8DC5392C99C5210041A2A2 /* Kingfisher */; };
 		1C8DC55A2C99E0470041A2A2 /* MLIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */; };
 		1C8DC55E2C99E0A20041A2A2 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DC55D2C99E0A20041A2A2 /* ScannerView.swift */; };
@@ -104,6 +105,7 @@
 		1C7F45EF2C9B141D00846B44 /* HorizontalScrolling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalScrolling.swift; sourceTree = "<group>"; };
 		1C7F45F12C9B146100846B44 /* CornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadius.swift; sourceTree = "<group>"; };
 		1C7F45F32C9BD96300846B44 /* FridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeView.swift; sourceTree = "<group>"; };
+		1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTextField.swift; sourceTree = "<group>"; };
 		1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MLIngredientView.swift; sourceTree = "<group>"; };
 		1C8DC55D2C99E0A20041A2A2 /* ScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				1C7F45ED2C9B140700846B44 /* RecipeCard.swift */,
+				1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */,
 				1C7F45EF2C9B141D00846B44 /* HorizontalScrolling.swift */,
 			);
 			path = Components;
@@ -484,6 +487,7 @@
 				1C8DC5602C99E0C50041A2A2 /* TextRecognition.swift in Sources */,
 				1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */,
 				1C7F45CC2C9A787A00846B44 /* RecommendRecipe.swift in Sources */,
+				1C7F45F62C9C17AE00846B44 /* DatePickerTextField.swift in Sources */,
 				1CB5BC962C943E19006C66E5 /* GroceryItem.swift in Sources */,
 				1C6CC38F2C985227001C4643 /* LoginDetailView.swift in Sources */,
 				1CB5BCA22C944408006C66E5 /* FirebaseManager.swift in Sources */,

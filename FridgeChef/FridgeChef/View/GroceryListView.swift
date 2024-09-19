@@ -53,7 +53,7 @@ struct GroceryListView: View {
                     .foregroundColor(.orange)
             })
             .listStyle(GroupedListStyle())
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.automatic)
             .sheet(isPresented: $showingAddGroceryFormView) {
                 AddGroceryForm(viewModel: AddGroceryFormViewModel())
 

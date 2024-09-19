@@ -12,65 +12,69 @@ import PhotosUI
 import Speech
 
 struct MLIngredientView: View {
+    var onSave: ((Ingredient) -> Void)? = nil
+    var editingFoodItem: Ingredient?
     @Environment(\.dismiss) var dismiss
     @State private var image: UIImage?
     @State private var recognizedText: String = ""
     @State private var quantity: String = "1"
     @State private var expirationDate: Date = Date()
-
+    
     @State private var isAuthorized = false
     @State private var isRecording = false
-
+    
     @State private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     @State private var recognitionTask: SFSpeechRecognitionTask?
-
+    
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
-
+    
     @State private var storageMethod = "冷藏"
     let storageOptions = ["冷凍", "冷藏", "室溫"]
-
+    
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
-
+    
     @State private var isSavedAlertPresented = false
-
-    // 定義結構來保存食材資料
-    struct Ingredient: Identifiable {
-        let id = UUID()
-        var name: String
-        var quantity: String
-        var expirationDate: Date
-        var storageMethod: String
-        var image: UIImage?
-    }
-
+    
     // 儲存已保存的食材資料
     @State private var savedIngredients: [Ingredient] = []
-
-    init() {
+    
+    init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white // 改變選中的顏色
         UISegmentedControl.appearance().backgroundColor = UIColor.orange
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.orange], for: .selected) // 選中項目文字為白色
-        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal) // 非選中項目文字為橘色
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+        
+        self.onSave = onSave
+        self.editingFoodItem = editingFoodItem
+        
+        if let item = editingFoodItem {
+            // 如果有傳入要編輯的食材，初始化相關值
+            _recognizedText = State(initialValue: item.name)
+            _quantity = State(initialValue: item.quantity)
+            _expirationDate = State(initialValue: item.expirationDate)
+            _storageMethod = State(initialValue: item.storageMethod)
+            _image = State(initialValue: item.image)
+        }
     }
-
+    
     enum PhotoSource: Identifiable {
         case photoLibrary
         case camera
-
+        
         var id: Int { self.hashValue }
     }
-
+    
     var body: some View {
         NavigationStack {
             ScrollView {
-VStack(spacing: 10) {
+                VStack(spacing: 10) {
                     // 圖片顯示區域（點擊後選擇相機或照片庫）
                     if let image = image {
                         Image(uiImage: image)
                             .resizable()
-                            .scaledToFill()
+                            .scaledToFit()
                             .frame(minWidth: 0, maxWidth: .infinity)
                             .frame(height: 200)
                             .background(Color(.systemGray6))
@@ -92,7 +96,7 @@ VStack(spacing: 10) {
                                 showPhotoOptions = true
                             }
                     }
-
+                    
                     // Picker 使用全局樣式
                     Picker("選擇存儲方式", selection: $storageMethod) {
                         ForEach(storageOptions, id: \.self) { option in
@@ -102,13 +106,13 @@ VStack(spacing: 10) {
                     .pickerStyle(SegmentedPickerStyle())
                     .padding()
                     .cornerRadius(8)
-
+                    
                     // 名稱、數量、到期日與各自的 TextField 排列為 HStack
                     VStack(alignment: .leading, spacing: 20) {
                         HStack {
                             Text("名稱")
                                 .font(.headline)
-
+                            
                             HStack {
                                 TextField("辨識結果", text: $recognizedText)
                                     .padding()
@@ -132,35 +136,38 @@ VStack(spacing: 10) {
                                                 .foregroundColor(isRecording ? .red : .orange)
                                                 .padding(.trailing, 10)  // 確保按鈕位於TextField的內部邊緣
                                         }
-                                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing), // 將按鈕對齊到TextField的右側
-                                        alignment: .trailing
+                                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing) // 將按鈕對齊到TextField的右側
                                     )
                                     .padding(.horizontal)
+
                             }
                         }
-
+                        
                         HStack {
-                            Text("數量")
+                            Text("數量    ")
                                 .font(.headline)
-
+                                
                             TextField("請輸入數量", text: $quantity)
                                 .padding()
+                                .frame(width: 255, alignment: .center)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                 )
                                 .keyboardType(.numberPad)
+                                
                         }
-
+                        
                         HStack {
                             Text("到期日")
                                 .font(.headline)
                             
-                            DatePickerTextField(date: $expirationDate, label: "選擇到期日")
+                            DatePickerTextField(date: $expirationDate, label: "")
+                                .environment(\.locale, Locale(identifier: "zh-Hant"))
                         }
                     }
                     .padding(.horizontal)
-
+                    
                     // 儲存按鈕
                     Button(action: saveIngredient) {
                         Text("儲存")
@@ -170,34 +177,11 @@ VStack(spacing: 10) {
                             .background(Color.orange)
                             .foregroundColor(.white)
                             .cornerRadius(8)
+                        
                     }
                     .padding()
                     .alert(isPresented: $isSavedAlertPresented) {
                         Alert(title: Text("成功"), message: Text("食材已儲存"), dismissButton: .default(Text("確定")))
-                    }
-
-                    // 顯示已儲存的食材列表
-                    if !savedIngredients.isEmpty {
-                        VStack(alignment: .leading) {
-                            Text("已儲存的食材")
-                                .font(.headline)
-                                .padding(.bottom, 5)
-
-                            ForEach(savedIngredients) { ingredient in
-                                VStack(alignment: .leading) {
-                                    Text("名稱: \(ingredient.name)")
-                                    Text("數量: \(ingredient.quantity)")
-                                    Text("保存方式: \(ingredient.storageMethod)")
-                                    Text("到期日: \(ingredient.expirationDate, formatter: DateFormatter.shortDate)")
-                                }
-                                .padding(.vertical, 10)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(10)
-                                .padding(.bottom, 5)
-                            }
-                        }
-                        .padding(.horizontal)
                     }
                 }
                 .padding()
@@ -240,20 +224,20 @@ VStack(spacing: 10) {
             }
         }
     }
-
+    
     func recognizeFood(in image: UIImage) {
         guard let model = try? VNCoreMLModel(for: Food().model) else {
             print("Failed to load model")
             return
         }
-
+        
         let request = VNCoreMLRequest(model: model) { request, error in
             guard let results = request.results as? [VNClassificationObservation],
                   let topResult = results.first else {
                 print("No results: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
-
+            
             DispatchQueue.main.async {
                 let label = topResult.identifier
                 // Translate the label from the dictionary
@@ -262,12 +246,12 @@ VStack(spacing: 10) {
                 updateUIWithFoodRecognitionResult(result: translatedLabel)
             }
         }
-
+        
         guard let ciImage = CIImage(image: image) else {
             print("Unable to create \(CIImage.self) from \(image).")
             return
         }
-
+        
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
         DispatchQueue.global(qos: .userInitiated).async {
             do {
@@ -277,42 +261,42 @@ VStack(spacing: 10) {
             }
         }
     }
-
+    
     // Helper function to update UI
     func updateUIWithFoodRecognitionResult(result: String) {
         // Update your UI elements, maybe using published properties or calling another method that handles UI updates
         recognizedText = result  // This assumes recognizedText is accessible and updated correctly
     }
-
+    
     //     使用 Vision 進行文字識別 (OCR)
     func performTextRecognition(on image: UIImage) {
         guard let ciImage = CIImage(image: image) else {
             recognizedText = "無法處理圖片"
             return
         }
-
+        
         let request = VNRecognizeTextRequest { (request, error) in
             if let error = error {
                 recognizedText = "文字識別錯誤: \(error.localizedDescription)"
                 return
             }
-
+            
             guard let observations = request.results as? [VNRecognizedTextObservation] else {
                 recognizedText = "無法識別文字"
                 return
             }
-
+            
             let recognizedStrings = observations.compactMap { $0.topCandidates(1).first?.string }
             DispatchQueue.main.async {
                 self.recognizedText = recognizedStrings.joined(separator: "\n")
             }
         }
-
+        
         request.recognitionLanguages = ["zh-Hant", "en-US"]
         request.recognitionLevel = .accurate
-
+        
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
-
+        
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 try handler.perform([request])
@@ -335,8 +319,10 @@ VStack(spacing: 10) {
         )
         savedIngredients.append(newIngredient)
         isSavedAlertPresented = true
+        onSave?(newIngredient)
+        dismiss()
     }
-
+    
     // 請求語音識別授權
     func requestSpeechRecognitionAuthorization() {
         SFSpeechRecognizer.requestAuthorization { status in
@@ -352,19 +338,19 @@ VStack(spacing: 10) {
             }
         }
     }
-
+    
     // 開始錄音
     func startRecording() {
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         let inputNode = audioEngine.inputNode
-
+        
         let recordingFormat = inputNode.outputFormat(forBus: 0)
-
+        
         guard recordingFormat.sampleRate > 0 && recordingFormat.channelCount > 0 else {
             print("無效的音頻格式: \(recordingFormat)")
             return
         }
-
+        
         recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest!, resultHandler: { result, error in
             if let result = result {
                 self.recognizedText = result.bestTranscription.formattedString
@@ -377,13 +363,13 @@ VStack(spacing: 10) {
                 self.isRecording = false
             }
         })
-
+        
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, when in
             self.recognitionRequest?.append(buffer)
         }
-
+        
         audioEngine.prepare()
-
+        
         do {
             try audioEngine.start()
             isRecording = true
@@ -391,20 +377,12 @@ VStack(spacing: 10) {
             print("Couldn't start recording")
         }
     }
-
+    
     // 停止錄音
     func stopRecording() {
         audioEngine.stop()
         recognitionRequest?.endAudio()
         isRecording = false
-    }
-}
-
-extension DateFormatter {
-    static var shortDate: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        return formatter
     }
 }
 

@@ -13,7 +13,7 @@ struct HorizontalScrolling: View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 0) {
                 ForEach(recipeManager.recipes.shuffled()) { recipe in
-                    RecipeCard(recipe: recipe)
+                    SimpleRecipeCard(recipe: recipe)
                 }
                 .padding(.horizontal)
             }

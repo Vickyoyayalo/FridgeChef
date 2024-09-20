@@ -17,6 +17,27 @@ struct Ingredient {
     var image: UIImage?
 }
 
+extension Ingredient {
+    init(from foodItem: FoodItem) {
+        self.name = foodItem.name
+        self.quantity = "\(foodItem.quantity)"
+        
+        // Calculate the expiration date based on daysRemaining
+        let today = Date()  // Today's date
+        let calendar = Calendar.current  // User's current calendar
+        
+        // Assuming daysRemaining means the number of days from today
+        if let expirationDate = calendar.date(byAdding: .day, value: foodItem.daysRemaining, to: today) {
+            self.expirationDate = expirationDate
+        } else {
+            self.expirationDate = today  // Fallback to today if the calculation fails
+        }
+
+        self.storageMethod = foodItem.status
+        self.image = foodItem.image
+    }
+}
+
 //struct Ingredient: Identifiable, Codable {
 //    @DocumentID var id: String? // Firestore 的文件 ID
 //    var name: String // 食材名稱

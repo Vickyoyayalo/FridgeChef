@@ -60,6 +60,7 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         if #available(iOS 16.0, *) {
             MLIngredientView()
+//            MLIngredientView(viewModel: MLIngredientViewModel())
         } else {
             // Fallback on earlier versions
         }

@@ -88,7 +88,10 @@ struct LoginDetailView: View {
                         
                         
                         // Navigation Links
-                        NavigationLink(destination: MLIngredientView(), isActive: $isLoggedIn) {
+                        NavigationLink(destination: 
+                                        MLIngredientView(),
+                                        /*MLIngredientView(viewModel: MLIngredientViewModel()),*/
+                                       isActive: $isLoggedIn) {
                             EmptyView()} // 隱藏的 NavigationLink
                         NavigationLink(destination: ForgotPasswordView(), isActive: $navigateToForgotPassword) { EmptyView() }
                     }

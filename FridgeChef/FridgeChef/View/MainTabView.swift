@@ -13,30 +13,32 @@ struct MainTabView: View {
     
     var body: some View {
         TabView(selection: $selectedTabIndex) {
-            RecommendRecipeListView()
+            HomeView()
                 .tabItem {
-                    Label("個人", systemImage: "house.circle.fill")
+                    Label("個人", systemImage: "house.fill")
                 }
                 .tag(0)
             
-            FridgeView()  // 這裡你可以替換為針對「冰箱」專用的視圖組件
+            FridgeView()
                 .tabItem {
-                    VStack {
-                        Image("fridgeIcon")//TODO 這個之後可以換成點擊他會打開的圖
-                        Text("冰箱")
-                    }
+                    Label("冰箱", systemImage: "refrigerator.fill")
+//                .tabItem {
+//                    VStack {
+//                        Image("fridgeIcon")//TODO 這個之後可以換成點擊他會打開的圖
+//                        Text("冰箱")
+//                    }
                 }
                 .tag(1)
             
             RecipeView(recipeManager: RecipeManager())
                 .tabItem {
-                    Label("食譜", systemImage: "books.vertical.circle")
+                    Label("食譜", systemImage: "books.vertical.fill")
                 }
                 .tag(2)
             
             GroceryListView()  // 這裡你可以替換為針對「採買」專用的視圖組件
                 .tabItem {
-                    Label("採買", systemImage: "storefront.circle.fill")
+                    Label("採買", systemImage: "storefront.fill")
                 }
                 .tag(3)
         }

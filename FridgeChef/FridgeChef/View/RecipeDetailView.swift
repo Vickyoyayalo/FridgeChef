@@ -18,9 +18,10 @@ struct RecipeDetailView: View {
                     VStack {
                         Image(recipe.imageName)
                             .resizable()
-                            .scaledToFit()
-                            .frame(maxHeight: 150)
-                            .padding(10)
+                            .scaledToFill()
+                            .frame(height: 200)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding()
                             .shadow(color: Color.black.opacity(0.3), radius: 4, x:0, y: 4)
                     }
                     .background(.ultraThinMaterial)
@@ -85,7 +86,7 @@ struct RecipeDetailView_Previews: PreviewProvider {
         RecipeDetailView(recipe: Recipe(title: "烤雞沙拉", headline: "中餐",
                                         ingredients: ["雞胸肉", "混合蔬菜", "櫻桃番茄", "黃瓜", "巴薩米克醋醬"],
                                         instructions: "1.先將雞胸肉烤至熟透並帶有漂亮的烤痕。\n2.當雞肉在烤時，準備沙拉，將混合蔬菜洗淨並晾乾，櫻桃番茄切半，黃瓜切片。\n3.雞肉烤好後，讓它靜置幾分鐘再切片。\n4.在大碗中將蔬菜、番茄和黃瓜混合。\n5.將切片的烤雞放在沙拉上。\n6.淋上巴薩米克醋醬，輕輕攪拌均勻。\n7.你的美味又健康的烤雞沙拉已準備好享用！",
-                                        imageName: "chicken"))
+                                        imageName: "cask"))
         .preferredColorScheme(.light)
     }
 }

@@ -15,6 +15,7 @@
 		1C19F1B42C943B290094FBEA /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1B32C943B290094FBEA /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		1C19F1B62C943B290094FBEA /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1B52C943B290094FBEA /* FirebaseAppCheck */; };
 		1C19F1B82C943B290094FBEA /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1B72C943B290094FBEA /* FirebaseAppDistribution-Beta */; };
+		1C25A3742C9ECE9B00A997C7 /* CustomMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */; };
 		1C2DD5702C9D3E34000173F6 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2DD56F2C9D3E34000173F6 /* LocationManager.swift */; };
 		1C2DD5772C9D68C8000173F6 /* Hellix-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DD5722C9D68C7000173F6 /* Hellix-Thin.ttf */; };
 		1C2DD5782C9D68C8000173F6 /* Hellix-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DD5732C9D68C7000173F6 /* Hellix-Medium.ttf */; };
@@ -68,6 +69,8 @@
 		1C92AA652C9C7CBA00194542 /* MicButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C92AA642C9C7CBA00194542 /* MicButtonView.swift */; };
 		1CA8CE8B2C9D7A2B00C9CADD /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8A2C9D7A2B00C9CADD /* MobileNetV2.mlmodel */; };
 		1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */; };
+		1CA8CE8F2C9E720900C9CADD /* NearbySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8E2C9E720900C9CADD /* NearbySearch.swift */; };
+		1CA8CE912C9E854400C9CADD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA8CE902C9E854300C9CADD /* CoreLocation.framework */; };
 		1CB5BC892C943D36006C66E5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC882C943D36006C66E5 /* User.swift */; };
 		1CB5BC8C2C943D74006C66E5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8B2C943D74006C66E5 /* FirebaseFirestore */; };
 		1CB5BC8E2C943DA3006C66E5 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8D2C943DA3006C66E5 /* FirebaseFirestoreCombine-Community */; };
@@ -94,6 +97,7 @@
 		1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeChefApp.swift; sourceTree = "<group>"; };
 		1C19F1A22C94372A0094FBEA /* FridgePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgePageView.swift; sourceTree = "<group>"; };
 		1C19F1A72C94372B0094FBEA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapView.swift; sourceTree = "<group>"; };
 		1C2DD56F2C9D3E34000173F6 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		1C2DD5722C9D68C7000173F6 /* Hellix-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hellix-Thin.ttf"; sourceTree = "<group>"; };
 		1C2DD5732C9D68C7000173F6 /* Hellix-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hellix-Medium.ttf"; sourceTree = "<group>"; };
@@ -147,6 +151,8 @@
 		1C92AA642C9C7CBA00194542 /* MicButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicButtonView.swift; sourceTree = "<group>"; };
 		1CA8CE8A2C9D7A2B00C9CADD /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
 		1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewWithUserLocation.swift; sourceTree = "<group>"; };
+		1CA8CE8E2C9E720900C9CADD /* NearbySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbySearch.swift; sourceTree = "<group>"; };
+		1CA8CE902C9E854300C9CADD /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		1CB5BC882C943D36006C66E5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CB5BC912C943DE4006C66E5 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
 		1CB5BC932C943DFB006C66E5 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
@@ -167,6 +173,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CA8CE912C9E854400C9CADD /* CoreLocation.framework in Frameworks */,
 				1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */,
 				1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */,
 				1C19F1B62C943B290094FBEA /* FirebaseAppCheck in Frameworks */,
@@ -313,6 +320,7 @@
 		1CB5BC8A2C943D74006C66E5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1CA8CE902C9E854300C9CADD /* CoreLocation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -323,6 +331,7 @@
 				1CB5BC9B2C94400B006C66E5 /* FirestoreService.swift */,
 				1C6CC3A02C996F94001C4643 /* AlertService.swift */,
 				1C92AA602C9C77C600194542 /* RecognitionService.swift */,
+				1CA8CE8E2C9E720900C9CADD /* NearbySearch.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -351,6 +360,7 @@
 				1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */,
 				1C7F45CD2C9A793900846B44 /* MapView.swift */,
 				1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */,
+				1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */,
 				1C7F45D82C9A809700846B44 /* RecommendRecipeListView.swift */,
 				1C7F45D32C9A7A8E00846B44 /* RecommendRecipeDetailView.swift */,
 				1C7F45E82C9AF20700846B44 /* ActivityView.swift */,
@@ -537,6 +547,7 @@
 				1C7F45D62C9A7AB600846B44 /* ReviewView.swift in Sources */,
 				1C8DC56D2C99F0A10041A2A2 /* MLIngredientViewModel.swift in Sources */,
 				1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */,
+				1CA8CE8F2C9E720900C9CADD /* NearbySearch.swift in Sources */,
 				1C7F45F22C9B146100846B44 /* CornerRadius.swift in Sources */,
 				1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */,
 				1C7F45B52C9A4BC000846B44 /* UIColor+Ext.swift in Sources */,
@@ -583,6 +594,7 @@
 				1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */,
 				1C2DD5842C9D68D7000173F6 /* HomeView.swift in Sources */,
 				1C8DC56B2C99EDCB0041A2A2 /* TranslationDictionary.swift in Sources */,
+				1C25A3742C9ECE9B00A997C7 /* CustomMapView.swift in Sources */,
 				1C92AA612C9C77C600194542 /* RecognitionService.swift in Sources */,
 				1C7F45F02C9B141D00846B44 /* HorizontalScrolling.swift in Sources */,
 				1C7F45EE2C9B140700846B44 /* SimpleRecipeCard.swift in Sources */,

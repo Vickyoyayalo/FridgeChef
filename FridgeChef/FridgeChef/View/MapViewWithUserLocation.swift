@@ -4,60 +4,107 @@
 //
 //  Created by Vickyhereiam on 2024/9/20.
 //
-
 import SwiftUI
 import MapKit
 
 struct MapViewWithUserLocation: View {
     @ObservedObject var locationManager: LocationManager
     @Binding var isPresented: Bool
-    @State private var trackingMode: MapUserTrackingMode = .follow // 使用追踪模式的绑定属性
+    @State private var selectedSupermarket: Supermarket?
+    @State private var searchText: String = ""
     
     var body: some View {
         ZStack {
-            if let userLocation = locationManager.lastKnownLocation {
-                // 显示用户的当前位置并跟踪用户
-                Map(coordinateRegion: .constant(MKCoordinateRegion(
-                    center: userLocation.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                )), showsUserLocation: true, userTrackingMode: $trackingMode) // 使用 $trackingMode 绑定来跟踪用户
-                .edgesIgnoringSafeArea(.all)
-            } else {
-                // 提示用户授予定位权限
-                Text("定位中...")
-                    .onAppear {
-                        locationManager.requestPermission() // 请求定位权限
+            CustomMapView(region: $locationManager.region, selectedSupermarket: $selectedSupermarket, searchText: $searchText, locationManager: locationManager, supermarkets: locationManager.placesFetcher.supermarkets)
+                .onChange(of: selectedSupermarket) { _ in
+                    // 防止地圖在選擇標記後重新聚焦到用戶位置
+                    locationManager.isUserInteracting = true
+                }
+                .gesture(DragGesture().onChanged { _ in
+                    locationManager.isUserInteracting = true
+                }.onEnded { _ in
+                    locationManager.isUserInteracting = false
+            })
+            VStack {
+                HStack {
+                    TextField("Search for supermarkets...", text: $searchText)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                    Button("Search") {
+                        if let coordinate = locationManager.lastKnownLocation?.coordinate {
+                            locationManager.placesFetcher.fetchNearbyPlaces(coordinate: coordinate)
+                        }
                     }
-                    .alert(isPresented: $locationManager.showAlert) {
-                        Alert(
-                            title: Text("需要定位權限"),
-                            message: Text("請在設置中允許訪問位置信息"),
-                            primaryButton: .default(Text("打開設置"), action: {
-                                if let url = URL(string: UIApplication.openSettingsURLString) {
-                                    UIApplication.shared.open(url)
-                                }
-                            }),
-                            secondaryButton: .cancel()
-                        )
-                    }
-            }
-            VStack{
+                }
                 Spacer()
                 Button(action: {
-                    isPresented = false // 设置为 false 来关闭 sheet
+                    isPresented = false
                 }) {
                     Image(systemName: "xmark.circle.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
                         .padding()
                         .background(Color.white.opacity(0.8))
-                        .shadow(radius: 5)
                         .clipShape(Circle())
+                        .shadow(radius: 5)
                 }
                 .padding()
                 .background(Color.clear)
             }
             .edgesIgnoringSafeArea(.all)
         }
+        .alert(item: $selectedSupermarket) { supermarket in
+            Alert(title: Text(supermarket.name), message: Text("Coordinates: \(supermarket.coordinate.latitude), \(supermarket.coordinate.longitude)"), dismissButton: .default(Text("OK")))
+        }
     }
 }
+
+
+//MARK: GOOD
+//import SwiftUI
+//import MapKit
+//
+//struct MapViewWithUserLocation: View {
+//    @ObservedObject var locationManager: LocationManager
+//    @Binding var isPresented: Bool
+//
+//    var body: some View {
+//        ZStack {
+//            Map(coordinateRegion: $locationManager.region, interactionModes: .all, showsUserLocation: true, annotationItems: locationManager.placesFetcher.supermarkets) { supermarket in
+//                MapMarker(coordinate: supermarket.coordinate, tint: .red)
+//            }
+//            .onAppear {
+//                if let coordinate = locationManager.lastKnownLocation?.coordinate {
+//                    locationManager.updateRegion(coordinate: coordinate, zoomIn: true)
+//                }
+//            }
+//            .gesture(DragGesture().onChanged { _ in
+//                locationManager.isUserInteracting = true
+//            }.onEnded { _ in
+//                locationManager.isUserInteracting = false
+//            })
+//
+//            VStack {
+//                Spacer()
+//                Button(action: {
+//                    isPresented = false
+//                }) {
+//                    Image(systemName: "xmark.circle.fill")
+//                        .resizable()
+//                        .frame(width: 40, height: 40)
+//                        .padding()
+//                        .background(Color.white.opacity(0.8))
+//                        .clipShape(Circle())
+//                        .shadow(radius: 5)
+//                }
+//                .padding()
+//                .background(Color.clear)
+//            }
+//            .edgesIgnoringSafeArea(.all)
+//        }
+//        .alert(isPresented: $locationManager.showAlert) {
+//            Alert(title: Text("需要定位权限"), message: Text("请在设置中允许访问位置信息"), dismissButton: .default(Text("好")))
+//        }
+//    }
+//}
+//

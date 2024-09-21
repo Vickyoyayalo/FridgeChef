@@ -11,8 +11,8 @@ import CoreLocation
 struct Supermarket: Identifiable, Equatable {
     let id: UUID = UUID()
     let name: String
-    let coordinate: CLLocationCoordinate2D
     let address: String
+    let coordinate: CLLocationCoordinate2D
 
     static func == (lhs: Supermarket, rhs: Supermarket) -> Bool {
         return lhs.id == rhs.id
@@ -39,10 +39,10 @@ class PlacesFetcher: ObservableObject {
                 }
                 return
             }
-            if let response = try? JSONDecoder().decode(PlacesResponse.self, from: data) {
+            if let decodedResponse = try? JSONDecoder().decode(PlacesResponse.self, from: data) {
                 DispatchQueue.main.async {
-                    self.supermarkets = response.results.map {
-                        Supermarket(name: $0.name, coordinate: CLLocationCoordinate2D(latitude: $0.geometry.location.lat, longitude: $0.geometry.location.lng), address: String())
+                    self.supermarkets = decodedResponse.results.map { result in
+                        Supermarket(name: result.name, address: result.vicinity, coordinate: CLLocationCoordinate2D(latitude: result.geometry.location.lat, longitude: result.geometry.location.lng))
                     }
                     print("Found places: \(self.supermarkets.count)")
                 }
@@ -62,6 +62,7 @@ struct PlacesResponse: Codable {
 
 struct Place: Codable {
     let name: String
+    let vicinity: String  // Assuming 'vicinity' is the key for the address in the API response
     let geometry: Geometry
 }
 

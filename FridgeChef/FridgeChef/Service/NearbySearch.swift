@@ -12,8 +12,8 @@ struct Supermarket: Identifiable, Equatable {
     let id: UUID = UUID()
     let name: String
     let coordinate: CLLocationCoordinate2D
+    let address: String
 
-    // Equatable 协议实现，用于比较两个 `Supermarket` 实例是否相等
     static func == (lhs: Supermarket, rhs: Supermarket) -> Bool {
         return lhs.id == rhs.id
     }
@@ -42,7 +42,7 @@ class PlacesFetcher: ObservableObject {
             if let response = try? JSONDecoder().decode(PlacesResponse.self, from: data) {
                 DispatchQueue.main.async {
                     self.supermarkets = response.results.map {
-                        Supermarket(name: $0.name, coordinate: CLLocationCoordinate2D(latitude: $0.geometry.location.lat, longitude: $0.geometry.location.lng))
+                        Supermarket(name: $0.name, coordinate: CLLocationCoordinate2D(latitude: $0.geometry.location.lat, longitude: $0.geometry.location.lng), address: String())
                     }
                     print("Found places: \(self.supermarkets.count)")
                 }

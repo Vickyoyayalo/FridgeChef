@@ -19,6 +19,9 @@ struct MapViewWithUserLocation: View {
     var body: some View {
         ZStack {
             map
+                .overlay(
+                    searchResults.isEmpty ? nil : Color.black.opacity(0.4) // Conditional dimming
+                )
             VStack {
                 searchField
                 if !searchResults.isEmpty {
@@ -97,12 +100,12 @@ struct MapViewWithUserLocation: View {
     
     private var map: some View {
         CustomMapView(region: $locationManager.region,
-                      showingNavigationAlert: $showingNavigationAlert, 
+                      showingNavigationAlert: $showingNavigationAlert,
                       selectedSupermarket: $selectedSupermarket,  // 傳遞 showingNavigationAlert
-                          locationManager: locationManager,
-                          supermarkets: locationManager.placesFetcher.supermarkets.filter { supermarket in
-                              searchText.isEmpty || supermarket.name.localizedCaseInsensitiveContains(searchText)
-                          })
+                      locationManager: locationManager,
+                      supermarkets: locationManager.placesFetcher.supermarkets.filter { supermarket in
+            searchText.isEmpty || supermarket.name.localizedCaseInsensitiveContains(searchText)
+        })
         .edgesIgnoringSafeArea(.all)
         .onChange(of: selectedSupermarket) { _ in
             locationManager.isUserInteracting = true
@@ -140,17 +143,6 @@ struct MapViewWithUserLocation: View {
         .background(Color.clear) // Ensure the list’s background is clear
     }
     
-    func fetchSupermarkets() {
-        guard let userLocation = locationManager.lastKnownLocation?.coordinate else { return }
-        searchResults = locationManager.placesFetcher.supermarkets
-        searchResults.sort {
-            let loc1 = CLLocation(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude)
-            let loc2 = CLLocation(latitude: $1.coordinate.latitude, longitude: $1.coordinate.longitude)
-            return loc1.distance(from: CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude))
-                 < loc2.distance(from: CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude))
-        }
-    }
-    
     private var dismissButton: some View {
         Button(action: {
             isPresented = false
@@ -165,27 +157,34 @@ struct MapViewWithUserLocation: View {
         }
         .padding()
     }
-
+    
     
     private func performSearch() {
-            if let coordinate = locationManager.lastKnownLocation?.coordinate {
-                locationManager.placesFetcher.fetchNearbyPlaces(coordinate: coordinate)
-            }
-            // Optionally, navigate to the first result after fetching
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { // assuming delay for fetching
-                if let firstResult = searchResults.first {
-                    self.selectedSupermarket = firstResult
-                    openMapsAppWithDirections(to: firstResult.coordinate, destinationName: firstResult.name)
-                }
+        if let coordinate = locationManager.lastKnownLocation?.coordinate {
+            locationManager.placesFetcher.fetchNearbyPlaces(coordinate: coordinate)
+        }
+        // Optionally, navigate to the first result after fetching
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { // assuming delay for fetching
+            if let firstResult = searchResults.first {
+                self.selectedSupermarket = firstResult
+                openMapsAppWithDirections(to: firstResult.coordinate, destinationName: firstResult.name)
             }
         }
+    }
     
     private func searchSupermarkets() {
-            searchResults = locationManager.placesFetcher.supermarkets.filter {
-                $0.name.localizedCaseInsensitiveContains(searchText)
-            }
+        guard let userLocation = locationManager.lastKnownLocation?.coordinate else { return }
+        searchResults = locationManager.placesFetcher.supermarkets.filter {
+            $0.name.localizedCaseInsensitiveContains(searchText)
+        }.sorted { // Make sure the results are sorted right after filtering
+            let loc1 = CLLocation(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude)
+            let loc2 = CLLocation(latitude: $1.coordinate.latitude, longitude: $1.coordinate.longitude)
+            return loc1.distance(from: CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude))
+            < loc2.distance(from: CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude))
         }
-
+    }
+    
+    
     
     private func openMapsAppWithDirections(to coordinate: CLLocationCoordinate2D, destinationName: String) {
         let placemark = MKPlacemark(coordinate: coordinate)

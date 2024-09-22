@@ -55,6 +55,9 @@
 		1C7F45F22C9B146100846B44 /* CornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F12C9B146100846B44 /* CornerRadius.swift */; };
 		1C7F45F42C9BD96300846B44 /* FridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F32C9BD96300846B44 /* FridgeView.swift */; };
 		1C7F45F62C9C17AE00846B44 /* DatePickerTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */; };
+		1C8A74012C9FFC6C0005E54D /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1C8A74002C9FFC6C0005E54D /* MessageKit */; };
+		1C8A74032C9FFCDE0005E54D /* ChatResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A74022C9FFCDE0005E54D /* ChatResponse.swift */; };
+		1C8A74092CA000980005E54D /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A74082CA000980005E54D /* ChatView.swift */; };
 		1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1C8DC5392C99C5210041A2A2 /* Kingfisher */; };
 		1C8DC55A2C99E0470041A2A2 /* MLIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */; };
 		1C8DC55E2C99E0A20041A2A2 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DC55D2C99E0A20041A2A2 /* ScannerView.swift */; };
@@ -137,6 +140,8 @@
 		1C7F45F12C9B146100846B44 /* CornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadius.swift; sourceTree = "<group>"; };
 		1C7F45F32C9BD96300846B44 /* FridgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeView.swift; sourceTree = "<group>"; };
 		1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTextField.swift; sourceTree = "<group>"; };
+		1C8A74022C9FFCDE0005E54D /* ChatResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatResponse.swift; sourceTree = "<group>"; };
+		1C8A74082CA000980005E54D /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MLIngredientView.swift; sourceTree = "<group>"; };
 		1C8DC55D2C99E0A20041A2A2 /* ScannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
@@ -176,6 +181,7 @@
 				1CA8CE912C9E854400C9CADD /* CoreLocation.framework in Frameworks */,
 				1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */,
 				1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */,
+				1C8A74012C9FFC6C0005E54D /* MessageKit in Frameworks */,
 				1C19F1B62C943B290094FBEA /* FirebaseAppCheck in Frameworks */,
 				1CB5BCA62C94441D006C66E5 /* FirebaseAuthCombine-Community in Frameworks */,
 				1C19F1B02C943B290094FBEA /* FirebaseAnalytics in Frameworks */,
@@ -307,7 +313,9 @@
 			isa = PBXGroup;
 			children = (
 				1CB5BC882C943D36006C66E5 /* User.swift */,
+				1C8A74082CA000980005E54D /* ChatView.swift */,
 				1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */,
+				1C8A74022C9FFCDE0005E54D /* ChatResponse.swift */,
 				1CB5BC912C943DE4006C66E5 /* Ingredient.swift */,
 				1CD4F7C62C98258800F4417D /* Quantity.swift */,
 				1CB5BC932C943DFB006C66E5 /* Recipe.swift */,
@@ -430,6 +438,7 @@
 				1CB5BCA72C944441006C66E5 /* FirebaseStorage */,
 				1CB5BCA92C944441006C66E5 /* FirebaseStorageCombine-Community */,
 				1C8DC5392C99C5210041A2A2 /* Kingfisher */,
+				1C8A74002C9FFC6C0005E54D /* MessageKit */,
 			);
 			productName = FridgeChef;
 			productReference = 1C19F19D2C94372A0094FBEA /* FridgeChef.app */;
@@ -462,6 +471,7 @@
 			packageReferences = (
 				1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				1C8DC5382C99C5210041A2A2 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */,
 			);
 			productRefGroup = 1C19F19E2C94372A0094FBEA /* Products */;
 			projectDirPath = "";
@@ -559,6 +569,7 @@
 				1C7F45D42C9A7A8E00846B44 /* RecommendRecipeDetailView.swift in Sources */,
 				1C7F45E92C9AF20700846B44 /* ActivityView.swift in Sources */,
 				1C8DC5602C99E0C50041A2A2 /* TextRecognition.swift in Sources */,
+				1C8A74032C9FFCDE0005E54D /* ChatResponse.swift in Sources */,
 				1C92AA632C9C780700194542 /* ImageSelectorView.swift in Sources */,
 				1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */,
 				1C7F45CC2C9A787A00846B44 /* RecommendRecipe.swift in Sources */,
@@ -584,6 +595,7 @@
 				1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */,
 				1CA8CE8B2C9D7A2B00C9CADD /* MobileNetV2.mlmodel in Sources */,
 				1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */,
+				1C8A74092CA000980005E54D /* ChatView.swift in Sources */,
 				1C7F45E32C9AC75100846B44 /* GroceryListView.swift in Sources */,
 				1C7F45F42C9BD96300846B44 /* FridgeView.swift in Sources */,
 				1C8DC5622C99E0FD0041A2A2 /* CameraView.swift in Sources */,
@@ -827,6 +839,14 @@
 				minimumVersion = 11.2.0;
 			};
 		};
+		1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MessageKit/MessageKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.0;
+			};
+		};
 		1C8DC5382C99C5210041A2A2 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher";
@@ -862,6 +882,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseAppDistribution-Beta";
+		};
+		1C8A74002C9FFC6C0005E54D /* MessageKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */;
+			productName = MessageKit;
 		};
 		1C8DC5392C99C5210041A2A2 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;

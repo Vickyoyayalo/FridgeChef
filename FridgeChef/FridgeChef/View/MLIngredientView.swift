@@ -37,8 +37,6 @@ struct MLIngredientView: View {
     @State private var photoSource: PhotoSource?
 
     @State private var isSavedAlertPresented = false
-
-    // 儲存已保存的食材資料
     @State private var savedIngredients: [Ingredient] = []
 
     init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {

@@ -184,8 +184,6 @@ struct MapViewWithUserLocation: View {
         }
     }
     
-    
-    
     private func openMapsAppWithDirections(to coordinate: CLLocationCoordinate2D, destinationName: String) {
         let placemark = MKPlacemark(coordinate: coordinate)
         let mapItem = MKMapItem(placemark: placemark)

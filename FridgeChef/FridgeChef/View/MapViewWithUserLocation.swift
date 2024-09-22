@@ -30,8 +30,8 @@ struct MapViewWithUserLocation: View {
         }
         .alert(isPresented: $showingNavigationAlert) { // Alert now depends on showingNavigationAlert
             Alert(
-                title: Text("Navigate to \(selectedSupermarket?.name ?? "the selected location")?"),
-                message: Text("Do you want to navigate to \(selectedSupermarket?.name ?? "this supermarket") located at \(selectedSupermarket?.address ?? "")?"),
+                title: Text("前往 ➡️ \(selectedSupermarket?.name ?? "the selected location")嗎？"),
+                message: Text("📍位置在： \(selectedSupermarket?.address ?? "")"),
                 primaryButton: .default(Text("Let's GO 🛒"), action: {
                     if let supermarket = selectedSupermarket {
                         openMapsAppWithDirections(to: supermarket.coordinate, destinationName: supermarket.name)
@@ -44,7 +44,7 @@ struct MapViewWithUserLocation: View {
     
     private var searchField: some View {
         HStack(alignment: .center) {
-            TextField("搜尋附近超市..🏃🏻‍♀️‍➡️.", text: $searchText)
+            TextField("🔍 搜尋附近超市...", text: $searchText)
                 .padding(.leading, 10)
                 .padding(.vertical, 10) // Vertical padding adjusted for alignment
                 .background(Color.white)
@@ -67,19 +67,6 @@ struct MapViewWithUserLocation: View {
                 .onChange(of: searchText, perform: { _ in
                     searchSupermarkets()
                 })
-            
-            Button(action: {
-                searchSupermarkets()
-            }) {
-                Text("Search🔍")
-                    .bold()
-                    .foregroundColor(.white)
-                    .padding(.vertical, 10)  // Matched vertical padding to TextField
-                    .padding(.horizontal, 20)
-                    .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
-            }
         }
         .padding(.horizontal) // Add padding around the entire HStack
         .padding(.top, 10)    // Add top padding for alignment
@@ -109,9 +96,13 @@ struct MapViewWithUserLocation: View {
     }
     
     private var map: some View {
-        CustomMapView(region: $locationManager.region, selectedSupermarket: $selectedSupermarket, locationManager: locationManager, supermarkets: locationManager.placesFetcher.supermarkets.filter { supermarket in
-            searchText.isEmpty || supermarket.name.localizedCaseInsensitiveContains(searchText)
-        })
+        CustomMapView(region: $locationManager.region,
+                      showingNavigationAlert: $showingNavigationAlert, 
+                      selectedSupermarket: $selectedSupermarket,  // 傳遞 showingNavigationAlert
+                          locationManager: locationManager,
+                          supermarkets: locationManager.placesFetcher.supermarkets.filter { supermarket in
+                              searchText.isEmpty || supermarket.name.localizedCaseInsensitiveContains(searchText)
+                          })
         .edgesIgnoringSafeArea(.all)
         .onChange(of: selectedSupermarket) { _ in
             locationManager.isUserInteracting = true
@@ -127,25 +118,38 @@ struct MapViewWithUserLocation: View {
             VStack(alignment: .leading) {
                 Text(supermarket.name)
                     .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 20)  // 添加左侧内边距为20
                 Text("\(supermarket.address) - \(supermarket.distanceToUser(location: locationManager.lastKnownLocation?.coordinate) ?? 0, specifier: "%.2f") km")
                     .font(.subheadline)
                     .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 20)  // 同样添加左侧内边距为20
             }
             .padding(.vertical) // Add vertical padding to each cell
             .listRowBackground(Color.clear)
             .frame(maxWidth: .infinity)
-            .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.9))) // Optional: if you want some opacity// Make row backgrounds clear
+            .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.9)))
             .onTapGesture {
                 self.selectedSupermarket = supermarket
-                navigateTo(supermarket: supermarket)
                 self.showingNavigationAlert = true
             }
         }
-        .padding(.horizontal, 10) // Add horizontal padding around the list
-        .listStyle(PlainListStyle()) // Use plain style to remove any inherent list styling
+        .padding(.horizontal) // Add horizontal padding around the list
+        .listStyle(PlainListStyle())
         .background(Color.clear) // Ensure the list’s background is clear
     }
     
+    func fetchSupermarkets() {
+        guard let userLocation = locationManager.lastKnownLocation?.coordinate else { return }
+        searchResults = locationManager.placesFetcher.supermarkets
+        searchResults.sort {
+            let loc1 = CLLocation(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude)
+            let loc2 = CLLocation(latitude: $1.coordinate.latitude, longitude: $1.coordinate.longitude)
+            return loc1.distance(from: CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude))
+                 < loc2.distance(from: CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude))
+        }
+    }
     
     private var dismissButton: some View {
         Button(action: {
@@ -161,6 +165,7 @@ struct MapViewWithUserLocation: View {
         }
         .padding()
     }
+
     
     private func performSearch() {
             if let coordinate = locationManager.lastKnownLocation?.coordinate {
@@ -178,10 +183,6 @@ struct MapViewWithUserLocation: View {
     private func searchSupermarkets() {
             searchResults = locationManager.placesFetcher.supermarkets.filter {
                 $0.name.localizedCaseInsensitiveContains(searchText)
-            }
-            if let firstResult = searchResults.first {
-                selectedSupermarket = firstResult
-//                showingNavigationAlert = true // Set to true to show the alert
             }
         }
 

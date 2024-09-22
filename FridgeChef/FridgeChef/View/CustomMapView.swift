@@ -10,6 +10,7 @@ import MapKit
 
 struct CustomMapView: UIViewRepresentable {
     @Binding var region: MKCoordinateRegion
+    @Binding var showingNavigationAlert: Bool 
     @Binding var selectedSupermarket: Supermarket?
     var locationManager: LocationManager
     var supermarkets: [Supermarket]
@@ -29,12 +30,24 @@ struct CustomMapView: UIViewRepresentable {
     }
 
     private func updateAnnotations(from mapView: MKMapView) {
-        mapView.removeAnnotations(mapView.annotations)
-        for supermarket in supermarkets {
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = supermarket.coordinate
-            annotation.title = supermarket.name
-            mapView.addAnnotation(annotation)
+        guard let annotations = mapView.annotations as? [MKPointAnnotation] else { return }
+
+        let currentCoordinates = Set(annotations.map { $0.coordinate })
+        let newCoordinates = Set(supermarkets.map { $0.coordinate })
+
+        let annotationsToRemove = annotations.filter { !newCoordinates.contains($0.coordinate) }
+        for annotation in annotationsToRemove {
+            mapView.removeAnnotation(annotation)
+        }
+
+        let coordinatesToAdd = newCoordinates.subtracting(currentCoordinates)
+        for coordinate in coordinatesToAdd {
+            if let supermarket = supermarkets.first(where: { $0.coordinate == coordinate }) {
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = supermarket.coordinate
+                annotation.title = supermarket.name
+                mapView.addAnnotation(annotation)
+            }
         }
     }
 
@@ -65,15 +78,25 @@ struct CustomMapView: UIViewRepresentable {
             return view
         }
 
-        // 当选择地标时
         func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
             guard let annotation = view.annotation as? MKPointAnnotation else { return }
             if let selectedSupermarket = parent.supermarkets.first(where: { $0.coordinate.latitude == annotation.coordinate.latitude && $0.coordinate.longitude == annotation.coordinate.longitude }) {
                 DispatchQueue.main.async {
                     self.parent.selectedSupermarket = selectedSupermarket
+                    self.parent.showingNavigationAlert = true
                 }
             }
         }
+    }
+}
+extension CLLocationCoordinate2D: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(latitude)
+        hasher.combine(longitude)
+    }
+
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
 }
 

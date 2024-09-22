@@ -25,10 +25,11 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
         manager.startUpdatingLocation()
     }
 
-    func updateRegion(coordinate: CLLocationCoordinate2D, zoomIn: Bool = false) {
+    func updateRegion(coordinate: CLLocationCoordinate2D? = nil, zoomIn: Bool = true) {
         DispatchQueue.main.async {
-            if zoomIn || !self.isUserInteracting {
-                self.region = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+            let newCoordinate = coordinate ?? self.lastKnownLocation?.coordinate
+            if let coordinate = newCoordinate, (zoomIn || !self.isUserInteracting) {
+                self.region = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
             }
         }
     }
@@ -54,6 +55,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
             case .authorizedWhenInUse, .authorizedAlways:
                 manager.startUpdatingLocation()
                 self.showAlert = false
+                if let coordinate = self.lastKnownLocation?.coordinate {
+                    self.updateRegion(coordinate: coordinate, zoomIn: true)
+                }
             default:
                 self.showAlert = true
             }

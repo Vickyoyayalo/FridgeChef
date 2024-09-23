@@ -93,6 +93,8 @@
 		1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */; };
 		1CD4F7C52C981DF600F4417D /* RecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7C42C981DF600F4417D /* RecipeView.swift */; };
 		1CD4F7C72C98258800F4417D /* Quantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7C62C98258800F4417D /* Quantity.swift */; };
+		1CDF1DCA2CA161A3005BD251 /* ChatGPTAPIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF1DC92CA161A3005BD251 /* ChatGPTAPIModel.swift */; };
+		1CDF1DCC2CA161B0005BD251 /* ChatGPTAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -171,6 +173,8 @@
 		1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
 		1CD4F7C42C981DF600F4417D /* RecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeView.swift; sourceTree = "<group>"; };
 		1CD4F7C62C98258800F4417D /* Quantity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quantity.swift; sourceTree = "<group>"; };
+		1CDF1DC92CA161A3005BD251 /* ChatGPTAPIModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatGPTAPIModel.swift; sourceTree = "<group>"; };
+		1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatGPTAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -312,8 +316,9 @@
 		1CB5BC872C943CFE006C66E5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1CDF1DC92CA161A3005BD251 /* ChatGPTAPIModel.swift */,
+				1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */,
 				1CB5BC882C943D36006C66E5 /* User.swift */,
-				1C8A74082CA000980005E54D /* ChatView.swift */,
 				1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */,
 				1C8A74022C9FFCDE0005E54D /* ChatResponse.swift */,
 				1CB5BC912C943DE4006C66E5 /* Ingredient.swift */,
@@ -321,6 +326,7 @@
 				1CB5BC932C943DFB006C66E5 /* Recipe.swift */,
 				1CB5BC952C943E19006C66E5 /* FoodItem.swift */,
 				1C7F45CB2C9A787A00846B44 /* RecommendRecipe.swift */,
+				1C8A74082CA000980005E54D /* ChatView.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -569,6 +575,7 @@
 				1C7F45D42C9A7A8E00846B44 /* RecommendRecipeDetailView.swift in Sources */,
 				1C7F45E92C9AF20700846B44 /* ActivityView.swift in Sources */,
 				1C8DC5602C99E0C50041A2A2 /* TextRecognition.swift in Sources */,
+				1CDF1DCA2CA161A3005BD251 /* ChatGPTAPIModel.swift in Sources */,
 				1C8A74032C9FFCDE0005E54D /* ChatResponse.swift in Sources */,
 				1C92AA632C9C780700194542 /* ImageSelectorView.swift in Sources */,
 				1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */,
@@ -587,6 +594,7 @@
 				1C2DD5852C9D68D7000173F6 /* FreshRecipesView.swift in Sources */,
 				1CD4F7C72C98258800F4417D /* Quantity.swift in Sources */,
 				1C2DD5862C9D68D7000173F6 /* SearchAndFilterView.swift in Sources */,
+				1CDF1DCC2CA161B0005BD251 /* ChatGPTAPI.swift in Sources */,
 				1C2DD5822C9D68D7000173F6 /* RecommendedRecipeCardView.swift in Sources */,
 				1C8DC55E2C99E0A20041A2A2 /* ScannerView.swift in Sources */,
 				1C7F45E52C9AC96100846B44 /* AddGroceryForm.swift in Sources */,

@@ -18,7 +18,7 @@ struct MainTabView: View {
                 TabView(selection: $selectedTabIndex) {
                     HomeView()
                         .tabItem {
-                            Label("Today", systemImage: "house.fill")
+                            Label("收藏", systemImage: "heart.fill")
                         }
                         .tag(0)
                     

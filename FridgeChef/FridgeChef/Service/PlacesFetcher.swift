@@ -76,7 +76,7 @@ struct Location: Decodable {
 class PlacesFetcher: ObservableObject {
     @Published var supermarkets = [Supermarket]()
     private let savedSupermarketsKey = "savedSupermarkets"
-    private let apiKey = "apiKey"//Demo 記得改乘旁邊的 AIzaSyBb_LtEBzE0y2mATvrQ3sZnaWnieTHf6_E
+    private let apiKey = "apiKey"//TODO Demo 記得改乘旁邊的 AIzaSyBb_LtEBzE0y2mATvrQ3sZnaWnieTHf6_E
     
     // 儲存上次 API 請求的位置和超市數據
     private var lastFetchedLocation: CLLocation?

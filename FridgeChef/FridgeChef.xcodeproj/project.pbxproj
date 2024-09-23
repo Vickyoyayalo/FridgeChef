@@ -72,7 +72,7 @@
 		1C92AA652C9C7CBA00194542 /* MicButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C92AA642C9C7CBA00194542 /* MicButtonView.swift */; };
 		1CA8CE8B2C9D7A2B00C9CADD /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8A2C9D7A2B00C9CADD /* MobileNetV2.mlmodel */; };
 		1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */; };
-		1CA8CE8F2C9E720900C9CADD /* NearbySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8E2C9E720900C9CADD /* NearbySearch.swift */; };
+		1CA8CE8F2C9E720900C9CADD /* PlacesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8E2C9E720900C9CADD /* PlacesFetcher.swift */; };
 		1CA8CE912C9E854400C9CADD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA8CE902C9E854300C9CADD /* CoreLocation.framework */; };
 		1CB5BC892C943D36006C66E5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC882C943D36006C66E5 /* User.swift */; };
 		1CB5BC8C2C943D74006C66E5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8B2C943D74006C66E5 /* FirebaseFirestore */; };
@@ -156,7 +156,7 @@
 		1C92AA642C9C7CBA00194542 /* MicButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicButtonView.swift; sourceTree = "<group>"; };
 		1CA8CE8A2C9D7A2B00C9CADD /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
 		1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewWithUserLocation.swift; sourceTree = "<group>"; };
-		1CA8CE8E2C9E720900C9CADD /* NearbySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbySearch.swift; sourceTree = "<group>"; };
+		1CA8CE8E2C9E720900C9CADD /* PlacesFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesFetcher.swift; sourceTree = "<group>"; };
 		1CA8CE902C9E854300C9CADD /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		1CB5BC882C943D36006C66E5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CB5BC912C943DE4006C66E5 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
@@ -339,7 +339,7 @@
 				1CB5BC9B2C94400B006C66E5 /* FirestoreService.swift */,
 				1C6CC3A02C996F94001C4643 /* AlertService.swift */,
 				1C92AA602C9C77C600194542 /* RecognitionService.swift */,
-				1CA8CE8E2C9E720900C9CADD /* NearbySearch.swift */,
+				1CA8CE8E2C9E720900C9CADD /* PlacesFetcher.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -557,7 +557,7 @@
 				1C7F45D62C9A7AB600846B44 /* ReviewView.swift in Sources */,
 				1C8DC56D2C99F0A10041A2A2 /* MLIngredientViewModel.swift in Sources */,
 				1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */,
-				1CA8CE8F2C9E720900C9CADD /* NearbySearch.swift in Sources */,
+				1CA8CE8F2C9E720900C9CADD /* PlacesFetcher.swift in Sources */,
 				1C7F45F22C9B146100846B44 /* CornerRadius.swift in Sources */,
 				1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */,
 				1C7F45B52C9A4BC000846B44 /* UIColor+Ext.swift in Sources */,

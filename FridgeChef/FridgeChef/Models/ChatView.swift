@@ -93,30 +93,33 @@ struct ChatView: View {
                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 }
                 .padding(.leading)
+                .padding(.bottom , 30)
                 .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
                     Button("相機") { photoSource = .camera }
                     Button("相冊") { photoSource = .photoLibrary }
                 }
                 
-                TextField("今天想來點 🥯🍕🥙🍍 ...", text: $inputText)
+                TextField("今天想來點 🥙🍍 ...", text: $inputText)
                     .padding(.horizontal)
                     .padding(5)
                     .background(Color.white)  // 背景色
                     .cornerRadius(10)  // 圆角
-                    .shadow(radius: 3)  // 阴影
+                    .shadow(radius: 3) 
+                    .padding(.bottom , 30)// 阴影
                 
                 Button(action: sendMessage) {
                     Image(systemName: "paperplane.fill")
                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 }
                 .padding(.trailing)
+                .padding(.bottom , 30)
             }
             .padding(.horizontal, 10) // 底部输入区的水平边距
         }
-        .fullScreenCover(item: $photoSource) { source in
-            ImagePicker(image: $image, sourceType: source == .photoLibrary ? .photoLibrary : .camera)
-                .ignoresSafeArea()
-        }
+            .fullScreenCover(item: $photoSource) { source in
+                ImagePicker(image: $image, sourceType: source == .photoLibrary ? .photoLibrary : .camera)
+                    .ignoresSafeArea()
+            }
     }
 
     private func messageView(for message: Message) -> some View {
@@ -128,16 +131,16 @@ struct ChatView: View {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 200, height: 200) // 固定图片大小
-                            .cornerRadius(15) // 图片圆角
+                            .frame(width: 200, height: 200)
+                            .cornerRadius(15)
                             .clipped()
                     } else {
                         Text(message.content)
                             .padding()
                             .background(Color.customColor(named: "NavigationBarTitle"))
                             .foregroundColor(.white) // 文本颜色
-                            .cornerRadius(10) // 文本圆角
-                            .frame(minWidth: 100) // 最小宽度
+                            .cornerRadius(10)
+                            .frame(minWidth: 100)
                     }
                 }
             } else {
@@ -146,15 +149,15 @@ struct ChatView: View {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 200, height: 200) // 固定图片大小
-                            .cornerRadius(15) // 图片圆角
+                            .frame(width: 200, height: 200)
+                            .cornerRadius(15)
                             .clipped()
                     } else {
                         Text(message.content)
                             .padding() // 内边距
-                            .background(Color.gray.opacity(0.2)) // 文本背景色
-                            .cornerRadius(10) // 文本圆角
-                            .frame(minWidth: 100) // 最小宽度
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(10)
+                            .frame(minWidth: 100)
                     }
                 }
                 Spacer() // 把内容推到左边
@@ -164,18 +167,18 @@ struct ChatView: View {
     }
     
     func sendMessage() {
-        // Check if there is an image and prepare it for sending
+       
         if let image = image, let imageData = image.jpegData(compressionQuality: 0.5) {
             let newMessage = Message(content: "📷 Photo", isFromUser: true, imageData: imageData)
             messages.append(newMessage)
-            self.image = nil // Clear the selected image after sending
+            self.image = nil
         }
         
-        // Always check and send text if available, regardless of the image
+       
         if !inputText.isEmpty {
             let newMessage = Message(content: inputText, isFromUser: true)
             messages.append(newMessage)
-            inputText = "" // Clear the text field after sending the message
+            inputText = "" 
         }
     }
 }

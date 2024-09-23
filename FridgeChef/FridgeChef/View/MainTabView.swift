@@ -8,54 +8,59 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTabIndex = 0
-
+    @State private var showChatView = false
+    
     var body: some View {
         ZStack(alignment: .bottom) {
-            TabView(selection: $selectedTabIndex) {
-                HomeView()
-                    .tabItem {
-                        Label("個人", systemImage: "house.fill")
-                    }
-                    .tag(0)
-                
-                FridgeView()
-                    .tabItem {
-                        Label("冰箱", systemImage: "refrigerator.fill")
-                    }
-                    .tag(1)
-                
-                RecipeView(recipeManager: RecipeManager())
-                    .tabItem {
-                        Label("食譜", systemImage: "books.vertical.fill")
-                    }
-                    .tag(2)
-                
-                GroceryListView()
-                    .tabItem {
-                        Label("採買", systemImage: "cart.fill")
-                    }
-                    .tag(3)
+            ZStack {
+                Color("NavigationBarTitle")  // 设置整个视图背景
+                    .edgesIgnoringSafeArea(.all)  // 忽略安全区域，覆盖整个屏幕
+                TabView(selection: $selectedTabIndex) {
+                    HomeView()
+                        .tabItem {
+                            Label("Today", systemImage: "house.fill")
+                        }
+                        .tag(0)
+                    
+                    FridgeView()
+                        .tabItem {
+                            Label("冰箱", systemImage: "refrigerator.fill")
+                        }
+                        .tag(1)
+                    
+                    ChatView()// 占位视图，不实际显示在 TabView 中
+                        .tabItem {
+                            Label("", systemImage: "")
+                        }
+                        .tag(2)
+                    
+                    RecipeView(recipeManager: RecipeManager())
+                        .tabItem {
+                            Label("食譜", systemImage: "heart.text.square")
+                        }
+                        .tag(3)
+                    
+                    GroceryListView()
+                        .tabItem {
+                            Label("採買", systemImage: "storefront.fill")
+                        }
+                        .tag(4)
+                }
+                .tint(Color("NavigationBarTitle"))
             }
-            .tint(Color("NavigationBarTitle"))
-
-            // 添加中心的特别突出的聊天按钮
+            // 中心的浮起按钮，带有自定义Logo
             Button(action: {
-                selectedTabIndex = 4  // 切换到聊天视图
+                selectedTabIndex = 2 // 这将导航到 ChatView
             }) {
-                Image(systemName: "message.fill")
+                Image("Chat") // 这里使用你的 Logo 图片
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: 60, height: 60)
-                    .background(Color("NavigationBarTitle"))
-                    .foregroundColor(.white)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(Color.white, lineWidth: 4)
-                    )
                     .shadow(radius: 10)
             }
-            .offset(y: 0)  // 使按钮稍微向上突出
+            .offset(y: 0) // 将按钮向上浮起一点
+            .accessibility(label: Text("Chat"))
+            .zIndex(1) // 确保这个按钮在最前面
         }
     }
 }
@@ -69,9 +74,9 @@ struct MainView_Previews: PreviewProvider {
 //import SwiftUI
 //
 //struct MainTabView: View {
-//    
+//
 //    @State private var selectedTabIndex = 0
-//    
+//
 //    var body: some View {
 //        TabView(selection: $selectedTabIndex) {
 //            HomeView()
@@ -79,7 +84,7 @@ struct MainView_Previews: PreviewProvider {
 //                    Label("個人", systemImage: "house.fill")
 //                }
 //                .tag(0)
-//            
+//
 //            FridgeView()
 //                .tabItem {
 //                    Label("冰箱", systemImage: "refrigerator.fill")
@@ -90,13 +95,13 @@ struct MainView_Previews: PreviewProvider {
 ////                    }
 //                }
 //                .tag(1)
-//            
+//
 //            RecipeView(recipeManager: RecipeManager())
 //                .tabItem {
 //                    Label("食譜", systemImage: "books.vertical.fill")
 //                }
 //                .tag(2)
-//            
+//
 //            GroceryListView()  // 這裡你可以替換為針對「採買」專用的視圖組件
 //                .tabItem {
 //                    Label("採買", systemImage: "storefront.fill")
@@ -116,10 +121,10 @@ struct MainView_Previews: PreviewProvider {
 //import SwiftUI
 //
 //struct MainView: View {
-//    
+//
 //    @State private var selectedTabIndex = 0
 //    @State private var iconScale: [CGFloat] = [1.0, 1.0, 1.0]
-//    
+//
 //    var body: some View {
 //        TabView(selection: $selectedTabIndex) {
 //            RecommendRecipeListView()

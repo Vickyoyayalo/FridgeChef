@@ -5,7 +5,6 @@
 //  Created by Vickyhereiam on 2024/9/18.
 //
 
-//MARK: GOOD withoutgoogleAPI
 import SwiftUI
 
 struct GroceryListView: View {
@@ -13,30 +12,18 @@ struct GroceryListView: View {
     @State private var showingMLIngredientView = false
     @State private var editingItem: FoodItem?
     @State var foodItems: [FoodItem] = []
-    // 新增：控制地图视图的展示
-       @State private var showingMapView = false
-       @StateObject private var locationManager = LocationManager() // 实例化 LocationManager
-
+    @State private var showingMapView = false
+    @State private var showingFridgeView = false
+    @StateObject private var locationManager = LocationManager()
+    
     var body: some View {
         NavigationView {
-            VStack {
+            ZStack(alignment: .bottomTrailing) {
                 List {
                     ForEach(foodItems.filter { $0.name.lowercased().contains(searchText.lowercased()) || searchText.isEmpty }) { item in
                         HStack {
-                            if let image = item.image {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 60, height: 60)
-                                    .cornerRadius(10)
-                            } else {
-                                Image("newphoto")  // 显示默认图片
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 60, height: 60)
-                                    .cornerRadius(10)
-                            }
-
+                            itemImageView(item: item)
+                            
                             VStack(alignment: .leading) {
                                 Text("\(item.name)")
                                 Text("\(item.quantity) - \(item.status)")
@@ -57,56 +44,47 @@ struct GroceryListView: View {
                     }
                     .onDelete(perform: deleteItems) // 添加删除功能
                 }
-                // 定位图标按钮
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        showingMapView = true
-                    }) {
-                        Image(systemName: "location.fill")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                            .padding()
-                    }
-                    .sheet(isPresented: $showingMapView) {
-                        MapViewWithUserLocation(locationManager: locationManager, isPresented: $showingMapView)
+                .sheet(isPresented: $showingMLIngredientView) {
+                    if let editingItem = editingItem {
+                        // 编辑模式
+                        MLIngredientView(onSave: { updatedIngredient in
+                            handleSave(updatedIngredient)
+                        }, editingFoodItem: Ingredient(
+                            name: editingItem.name,
+                            quantity: "\(editingItem.quantity)",
+                            expirationDate: Date().addingTimeInterval(Double(editingItem.daysRemaining * 24 * 60 * 60)),
+                            storageMethod: editingItem.status,
+                            image: editingItem.image
+                        ))
+                    } else {
+                        // 新增模式
+                        MLIngredientView(onSave: { newIngredient in
+                            handleSave(newIngredient)
+                        })
                     }
                 }
-                .padding()
-            }
-            .sheet(isPresented: $showingMLIngredientView) {
-                if let editingItem = editingItem {
-                    MLIngredientView(onSave: { updatedIngredient in
-                        if let index = foodItems.firstIndex(where: { $0.id == editingItem.id }) {
-                            let today = Calendar.current.startOfDay(for: Date())
-                            let expirationDate = Calendar.current.startOfDay(for: updatedIngredient.expirationDate)
-                            foodItems[index].name = updatedIngredient.name
-                            foodItems[index].quantity = Int(updatedIngredient.quantity) ?? 1
-                            foodItems[index].status = updatedIngredient.storageMethod
-                            foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
-                            foodItems[index].image = updatedIngredient.image
+                VStack {
+                    Button(action: {
+                        showingMapView = true // 触发地图视图
+                    }) {
+                        VStack {
+                            Text("附近超市")
+                            Image(systemName: "location.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 30, height: 30)
+                                .padding(15)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
                         }
-                    }, editingFoodItem: Ingredient(
-                        name: editingItem.name,
-                        quantity: "\(editingItem.quantity)",
-                        expirationDate: Date().addingTimeInterval(Double(editingItem.daysRemaining * 24 * 60 * 60)),
-                        storageMethod: editingItem.status,
-                        image: editingItem.image
-                    ))
-                } else {
-                    // 新增模式
-                    MLIngredientView(onSave: { newIngredient in
-                        let today = Calendar.current.startOfDay(for: Date())
-                        let expirationDate = Calendar.current.startOfDay(for: newIngredient.expirationDate)
-                        let newFoodItem = FoodItem(
-                            name: newIngredient.name,
-                            quantity: Int(newIngredient.quantity) ?? 1,
-                            status: newIngredient.storageMethod,
-                            daysRemaining: Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0,
-                            image: newIngredient.image
-                        )
-                        foodItems.insert(newFoodItem, at: 0)
-                    })
+                    }
+                    .padding(.trailing, 15)
+                    .padding(.bottom, 15)
+                    .sheet(isPresented: $showingMapView) {
+                        MapViewWithUserLocation(locationManager: LocationManager(), isPresented: $showingMapView)
+                        
+                    }
                 }
             }
             .listStyle(PlainListStyle()) // 使用纯样式列表以减少间隙
@@ -118,13 +96,62 @@ struct GroceryListView: View {
             }
         }
     }
+    
     var addButton: some View {
-        Button(action: { showingMLIngredientView = true }) {
+        Button(action: {
+            // 点击添加按钮时设置为新增模式
+            editingItem = nil
+            showingMLIngredientView = true
+        }) {
             Image(systemName: "plus").foregroundColor(.orange)
         }
     }
+    
     func deleteItems(at offsets: IndexSet) {
         foodItems.remove(atOffsets: offsets)
+    }
+    
+    func handleSave(_ ingredient: Ingredient) {
+        if let editing = editingItem, let index = foodItems.firstIndex(where: { $0.id == editing.id }) {
+            // 更新操作
+            let today = Calendar.current.startOfDay(for: Date())
+            let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
+            foodItems[index].name = ingredient.name
+            foodItems[index].quantity = Int(ingredient.quantity) ?? 1
+            foodItems[index].status = ingredient.storageMethod
+            foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
+            foodItems[index].image = ingredient.image
+        } else {
+            // 新增操作
+            let today = Calendar.current.startOfDay(for: Date())
+            let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
+            let newFoodItem = FoodItem(
+                name: ingredient.name,
+                quantity: Int(ingredient.quantity) ?? 1,
+                status: ingredient.storageMethod,
+                daysRemaining: Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0,
+                image: ingredient.image
+            )
+            foodItems.insert(newFoodItem, at: 0)
+        }
+        // 重置 editingItem
+        editingItem = nil
+    }
+
+    private func itemImageView(item: FoodItem) -> some View {
+        if let image = item.image {
+            return Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 60, height: 60)
+                .cornerRadius(10)
+        } else {
+            return Image("newphoto")  // 显示默认图片
+                .resizable()
+                .scaledToFit()
+                .frame(width: 60, height: 60)
+                .cornerRadius(10)
+        }
     }
 }
 

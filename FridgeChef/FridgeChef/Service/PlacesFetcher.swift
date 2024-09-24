@@ -78,7 +78,6 @@ struct Location: Decodable {
     let lng: Double
 }
 
-
 class PlacesFetcher: ObservableObject {
     @Published var supermarkets = [Supermarket]()
     private let savedSupermarketsKey = "savedSupermarkets"

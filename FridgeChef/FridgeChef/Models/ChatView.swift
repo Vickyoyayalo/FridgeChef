@@ -105,14 +105,15 @@ struct ChatView: View {
                                 Button("取消", role: .cancel) {}
                             }
             }
-                HStack {
-                    Button(action: { showPhotoOptions = true }) {
-                        Image(systemName: "camera.fill")
-                            .font(.title)
-                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+            HStack {
+                Button(action: { showPhotoOptions = true }) {
+                    Image(systemName: "camera.fill")
+                        .resizable()
+                        .frame(width: 30, height: 30) // Set a specific size
+                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 }
                 .padding(.leading)
-                .padding(.bottom , 30)
+                .padding(.bottom, 30)
                 .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
                     Button("相機") { photoSource = .camera }
                     Button("相冊") { photoSource = .photoLibrary }
@@ -124,14 +125,16 @@ struct ChatView: View {
                     .background(Color.white)
                     .cornerRadius(10)
                     .shadow(radius: 3)
-                    .padding(.bottom , 30)
+//                    .padding(.bottom, 30)
                 
                 Button(action: sendMessage) {
                     Image(systemName: "paperplane.fill")
+                        .resizable()
+                        .frame(width: 30, height: 30) // Match the size to the camera button
                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 }
                 .padding(.trailing)
-                .padding(.bottom , 30)
+                .padding(.bottom, 30)
             }
             .padding(.horizontal, 10)
         }

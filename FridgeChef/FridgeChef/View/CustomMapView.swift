@@ -52,7 +52,6 @@ struct CustomMapView: UIViewRepresentable {
         }
     }
     
-    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }

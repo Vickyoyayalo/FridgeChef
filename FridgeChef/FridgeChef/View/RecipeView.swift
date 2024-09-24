@@ -9,7 +9,9 @@ import SwiftUI
 
 struct RecipeView: View {
     @ObservedObject var recipeManager: RecipeManager
+    @State private var searchText = ""
     @State var selectedRecipe: Recipe? = nil
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -17,8 +19,11 @@ struct RecipeView: View {
                     .padding(.vertical)
                 
                 VStack {
-                    ForEach(recipeManager.recipes) { recipe in
-                        RecipeCard(recipe: recipe)
+                    // 在这里应用搜索逻辑
+                    ForEach(recipeManager.recipes.filter { recipe in
+                        searchText.isEmpty || recipe.title.lowercased().contains(searchText.lowercased())
+                    }) { recipe in
+                        SimpleRecipeCard(recipe: recipe)
                             .onTapGesture {
                                 selectedRecipe = recipe
                             }
@@ -30,11 +35,11 @@ struct RecipeView: View {
                 .fullScreenCover(item: $selectedRecipe) { recipe in
                     RecipeDetailView(recipe: recipe)
                         .preferredColorScheme(.light)
-
                 }
             }
             .background(.ultraThinMaterial)
             .navigationTitle("Recipes")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Recipes")  
         }
     }
 }

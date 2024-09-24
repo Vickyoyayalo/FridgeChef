@@ -5,6 +5,7 @@
 //  Created by Vickyhereiam on 2024/9/18.
 //
 
+//MARK: GOOD!
 import SwiftUI
 import Vision
 import CoreML
@@ -19,36 +20,34 @@ struct MLIngredientView: View {
     @State private var recognizedText: String = ""
     @State private var quantity: String = "1"
     @State private var expirationDate: Date = Date()
-    
+
     @State private var isAuthorized = false
     @State private var isRecording = false
-    
+
     @State private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     @State private var recognitionTask: SFSpeechRecognitionTask?
-    
+
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
-    
+
     @State private var storageMethod = "冷藏"
     let storageOptions = ["冷凍", "冷藏", "室溫"]
-    
+
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
-    
+
     @State private var isSavedAlertPresented = false
-    
-    // 儲存已保存的食材資料
     @State private var savedIngredients: [Ingredient] = []
-    
+
     init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white // 改變選中的顏色
         UISegmentedControl.appearance().backgroundColor = UIColor.orange
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.orange], for: .selected) // 選中項目文字為白色
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
-        
+
         self.onSave = onSave
         self.editingFoodItem = editingFoodItem
-        
+
         if let item = editingFoodItem {
             // 如果有傳入要編輯的食材，初始化相關值
             _recognizedText = State(initialValue: item.name)
@@ -58,14 +57,14 @@ struct MLIngredientView: View {
             _image = State(initialValue: item.image)
         }
     }
-    
+
     enum PhotoSource: Identifiable {
         case photoLibrary
         case camera
-        
+
         var id: Int { self.hashValue }
     }
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -74,7 +73,7 @@ struct MLIngredientView: View {
                     if let image = image {
                         Image(uiImage: image)
                             .resizable()
-                            .scaledToFit()
+                            .scaledToFill()
                             .frame(minWidth: 0, maxWidth: .infinity)
                             .frame(height: 200)
                             .background(Color(.systemGray6))
@@ -96,7 +95,7 @@ struct MLIngredientView: View {
                                 showPhotoOptions = true
                             }
                     }
-                    
+
                     // Picker 使用全局樣式
                     Picker("選擇存儲方式", selection: $storageMethod) {
                         ForEach(storageOptions, id: \.self) { option in
@@ -106,13 +105,13 @@ struct MLIngredientView: View {
                     .pickerStyle(SegmentedPickerStyle())
                     .padding()
                     .cornerRadius(8)
-                    
+
                     // 名稱、數量、到期日與各自的 TextField 排列為 HStack
                     VStack(alignment: .leading, spacing: 20) {
                         HStack {
                             Text("名稱")
                                 .font(.headline)
-                            
+
                             HStack {
                                 TextField("辨識結果", text: $recognizedText)
                                     .padding()
@@ -142,11 +141,11 @@ struct MLIngredientView: View {
 
                             }
                         }
-                        
+
                         HStack {
                             Text("數量    ")
                                 .font(.headline)
-                                
+
                             TextField("請輸入數量", text: $quantity)
                                 .padding()
                                 .frame(width: 255, alignment: .center)
@@ -155,19 +154,19 @@ struct MLIngredientView: View {
                                         .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                 )
                                 .keyboardType(.numberPad)
-                                
+
                         }
-                        
+
                         HStack {
                             Text("到期日")
                                 .font(.headline)
-                            
+
                             DatePickerTextField(date: $expirationDate, label: "")
                                 .environment(\.locale, Locale(identifier: "zh-Hant"))
                         }
                     }
                     .padding(.horizontal)
-                    
+
                     // 儲存按鈕
                     Button(action: saveIngredient) {
                         Text("儲存")
@@ -177,7 +176,7 @@ struct MLIngredientView: View {
                             .background(Color.orange)
                             .foregroundColor(.white)
                             .cornerRadius(8)
-                        
+
                     }
                     .padding()
                     .alert(isPresented: $isSavedAlertPresented) {
@@ -187,7 +186,7 @@ struct MLIngredientView: View {
                 .padding()
                 .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
                     Button("相機") { photoSource = .camera }
-                    Button("您的相冊") { photoSource = .photoLibrary }
+                    Button("相冊") { photoSource = .photoLibrary }
                 }
                 .fullScreenCover(item: $photoSource) { source in
                     switch source {
@@ -197,6 +196,7 @@ struct MLIngredientView: View {
                             .onDisappear {
                                 if let image = image {
                                     recognizeFood(in: image)
+//                                    performTextRecognition(on: image)
                                 }
                             }
                     case .camera:
@@ -205,6 +205,7 @@ struct MLIngredientView: View {
                             .onDisappear {
                                 if let image = image {
                                     recognizeFood(in: image)
+//                                    performTextRecognition(on: image)
                                 }
                             }
                     }
@@ -224,20 +225,20 @@ struct MLIngredientView: View {
             }
         }
     }
-    
+
     func recognizeFood(in image: UIImage) {
         guard let model = try? VNCoreMLModel(for: Food().model) else {
             print("Failed to load model")
             return
         }
-        
+
         let request = VNCoreMLRequest(model: model) { request, error in
             guard let results = request.results as? [VNClassificationObservation],
                   let topResult = results.first else {
                 print("No results: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
-            
+
             DispatchQueue.main.async {
                 let label = topResult.identifier
                 // Translate the label from the dictionary
@@ -246,12 +247,12 @@ struct MLIngredientView: View {
                 updateUIWithFoodRecognitionResult(result: translatedLabel)
             }
         }
-        
+
         guard let ciImage = CIImage(image: image) else {
             print("Unable to create \(CIImage.self) from \(image).")
             return
         }
-        
+
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
         DispatchQueue.global(qos: .userInitiated).async {
             do {
@@ -261,42 +262,42 @@ struct MLIngredientView: View {
             }
         }
     }
-    
+
     // Helper function to update UI
     func updateUIWithFoodRecognitionResult(result: String) {
         // Update your UI elements, maybe using published properties or calling another method that handles UI updates
         recognizedText = result  // This assumes recognizedText is accessible and updated correctly
     }
-    
+
     //     使用 Vision 進行文字識別 (OCR)
     func performTextRecognition(on image: UIImage) {
         guard let ciImage = CIImage(image: image) else {
             recognizedText = "無法處理圖片"
             return
         }
-        
+
         let request = VNRecognizeTextRequest { (request, error) in
             if let error = error {
                 recognizedText = "文字識別錯誤: \(error.localizedDescription)"
                 return
             }
-            
+
             guard let observations = request.results as? [VNRecognizedTextObservation] else {
                 recognizedText = "無法識別文字"
                 return
             }
-            
+
             let recognizedStrings = observations.compactMap { $0.topCandidates(1).first?.string }
             DispatchQueue.main.async {
                 self.recognizedText = recognizedStrings.joined(separator: "\n")
             }
         }
-        
+
         request.recognitionLanguages = ["zh-Hant", "en-US"]
         request.recognitionLevel = .accurate
-        
+
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
-        
+
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 try handler.perform([request])
@@ -307,7 +308,7 @@ struct MLIngredientView: View {
             }
         }
     }
-    
+
     // 儲存食材資料的函數
     func saveIngredient() {
         let newIngredient = Ingredient(
@@ -320,9 +321,18 @@ struct MLIngredientView: View {
         savedIngredients.append(newIngredient)
         isSavedAlertPresented = true
         onSave?(newIngredient)
+        clearForm()
         dismiss()
     }
-    
+    // 清空表單欄位
+      func clearForm() {
+          recognizedText = ""
+          quantity = "1"
+          expirationDate = Date()
+          image = nil
+          storageMethod = ""
+      }
+
     // 請求語音識別授權
     func requestSpeechRecognitionAuthorization() {
         SFSpeechRecognizer.requestAuthorization { status in
@@ -338,19 +348,19 @@ struct MLIngredientView: View {
             }
         }
     }
-    
+
     // 開始錄音
     func startRecording() {
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         let inputNode = audioEngine.inputNode
-        
+
         let recordingFormat = inputNode.outputFormat(forBus: 0)
-        
+
         guard recordingFormat.sampleRate > 0 && recordingFormat.channelCount > 0 else {
             print("無效的音頻格式: \(recordingFormat)")
             return
         }
-        
+
         recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest!, resultHandler: { result, error in
             if let result = result {
                 self.recognizedText = result.bestTranscription.formattedString
@@ -363,13 +373,13 @@ struct MLIngredientView: View {
                 self.isRecording = false
             }
         })
-        
+
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, when in
             self.recognitionRequest?.append(buffer)
         }
-        
+
         audioEngine.prepare()
-        
+
         do {
             try audioEngine.start()
             isRecording = true
@@ -377,7 +387,7 @@ struct MLIngredientView: View {
             print("Couldn't start recording")
         }
     }
-    
+
     // 停止錄音
     func stopRecording() {
         audioEngine.stop()
@@ -390,7 +400,7 @@ struct MLIngredientView: View {
     MLIngredientView()
 }
 
-//TODO這其實整理的很好只是功能好像有問題，可以未來用這個Textfiled架構去整理
+//MARK: TODO這其實整理的很好只是功能好像有問題，可以未來用這個Textfiled架構去整理
 //import SwiftUI
 //import Vision
 //import CoreML
@@ -845,5 +855,126 @@ struct MLIngredientView: View {
 //
 //#Preview {
 //    MLIngredientView()
+//}
+
+//MARK:MVVM架構可以使用
+//import SwiftUI
+//
+//struct MLIngredientView: View {
+//    @StateObject var viewModel: MLIngredientViewModel
+//    @Environment(\.dismiss) var dismiss
+//
+//    @State private var showPhotoOptions = false
+//    @State private var photoSource: MLIngredientView.PhotoSource?
+//
+//    enum PhotoSource: Identifiable {
+//        case photoLibrary
+//        case camera
+//
+//        var id: Int { self.hashValue }
+//    }
+//
+//    var body: some View {
+//        NavigationStack {
+//            ScrollView {
+//                VStack(spacing: 10) {
+//                    // 圖片選擇器
+//                    ImageSelectorView(image: $viewModel.image)
+//                        .onChange(of: viewModel.image) { newImage in
+//                            if let newImage = newImage {
+//                                viewModel.recognitionService.performTextRecognition(on: newImage) { result in
+//                                    print("Recognized text: \(result)")
+//                                }
+//                                viewModel.recognitionService.recognizeFood(in: newImage) { foodResult in
+//                                    print("Recognized food: \(foodResult)")
+//                                }
+//                            }
+//                        }
+//
+//                    // 存儲方式選擇器
+//                    Picker("選擇存儲方式", selection: $viewModel.storageMethod) {
+//                        ForEach(viewModel.storageOptions, id: \.self) { option in
+//                            Text(option)
+//                        }
+//                    }
+//                    .pickerStyle(SegmentedPickerStyle())
+//                    .padding()
+//
+//                    // 名稱、數量、到期日等輸入欄位
+//                    VStack(alignment: .leading, spacing: 20) {
+//                        HStack {
+//                            Text("名稱")
+//                                .font(.headline)
+//
+//                            TextField("辨識結果", text: $viewModel.recognitionService.recognizedText)
+//                                .padding()
+//                                .overlay(
+//                                    RoundedRectangle(cornerRadius: 8)
+//                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+//                                )
+//                                .padding(.horizontal)
+//
+//                            // 使用封裝的 MicButtonView
+//                            MicButtonView(recognitionService: viewModel.recognitionService)
+//                                .padding(.trailing, 10)
+//                        }
+//
+//                        HStack {
+//                            Text("數量")
+//                                .font(.headline)
+//
+//                            TextField("請輸入數量", text: $viewModel.quantity)
+//                                .padding()
+//                                .frame(width: 255)
+//                                .overlay(
+//                                    RoundedRectangle(cornerRadius: 8)
+//                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+//                                )
+//                                .keyboardType(.numberPad)
+//                        }
+//
+//                        HStack {
+//                            Text("到期日")
+//                                .font(.headline)
+//
+//                            DatePickerTextField(date: $viewModel.expirationDate, label: "")
+//                                .environment(\.locale, Locale(identifier: "zh-Hant"))
+//                        }
+//                    }
+//                    .padding(.horizontal)
+//
+//                    // 儲存按鈕
+//                    Button(action: {
+//                        viewModel.saveIngredient()
+//                    }) {
+//                        Text("儲存")
+//                            .font(.headline)
+//                            .padding()
+//                            .frame(maxWidth: .infinity)
+//                            .background(Color.orange)
+//                            .foregroundColor(.white)
+//                            .cornerRadius(8)
+//                    }
+//                    .padding()
+//                    .alert(isPresented: $viewModel.isSavedAlertPresented) {
+//                        Alert(title: Text("成功"), message: Text("食材已儲存"), dismissButton: .default(Text("確定")))
+//                    }
+//                }
+//                .padding()
+//                .onAppear {
+//                    viewModel.requestSpeechRecognitionAuthorization()
+//                }
+//            }
+//            .navigationTitle("Add Ingredient")
+//            .toolbar {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Button(action: { dismiss() }) {
+//                        Image(systemName: "xmark.circle.fill")
+//                            .foregroundColor(.orange)
+//                    }
+//                }
+//            }
+//        }
+//    }
 //}
 

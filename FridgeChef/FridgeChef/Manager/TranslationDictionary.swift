@@ -9,6 +9,7 @@ import Foundation
 
 struct TranslationDictionary {
     static let foodNames: [String: String] = [
+        "Apple": "蘋果",
         "bawan": "肉圓",
         "beef_noodles": "牛肉麵",
         "beef_soup": "牛肉湯",

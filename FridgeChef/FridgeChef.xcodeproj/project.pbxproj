@@ -272,6 +272,16 @@
 			path = "Media Source";
 			sourceTree = "<group>";
 		};
+		1C75CCAE2CA3B7360072D55C /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				1C7F45CD2C9A793900846B44 /* MapView.swift */,
+				1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */,
+				1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
 		1C7F45B32C9A4BA900846B44 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -365,13 +375,11 @@
 			children = (
 				1C7F45E02C9AA40600846B44 /* MainTabView.swift */,
 				1C2DD5712C9D68A1000173F6 /* Home */,
+				1C75CCAE2CA3B7360072D55C /* Map */,
 				1C6CC3872C984C89001C4643 /* LoginView.swift */,
 				1C6CC38E2C985227001C4643 /* LoginDetailView.swift */,
 				1CD4F7BC2C981D9A00F4417D /* SignUpView.swift */,
 				1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */,
-				1C7F45CD2C9A793900846B44 /* MapView.swift */,
-				1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */,
-				1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */,
 				1C7F45D82C9A809700846B44 /* RecommendRecipeListView.swift */,
 				1C7F45D32C9A7A8E00846B44 /* RecommendRecipeDetailView.swift */,
 				1C7F45E82C9AF20700846B44 /* ActivityView.swift */,

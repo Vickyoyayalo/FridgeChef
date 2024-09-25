@@ -90,8 +90,8 @@ struct ChatView: View {
             Image("LogoFridgeChef")
                 .resizable()
                 .scaledToFill()
-                .frame(width: 300, height: 0)
-                .padding(.top, 30)
+                .frame(width: 300, height: 38)
+                .padding(.top)
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {

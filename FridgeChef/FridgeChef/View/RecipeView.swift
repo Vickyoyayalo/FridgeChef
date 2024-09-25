@@ -16,7 +16,7 @@ struct RecipeView: View {
         NavigationView {
             ScrollView {
                 HorizontalScrolling(recipeManager: recipeManager)
-                    .padding(.vertical)
+//                    .padding(.vertical)
                 
                 VStack {
                     // 在这里应用搜索逻辑
@@ -27,6 +27,7 @@ struct RecipeView: View {
                             .onTapGesture {
                                 selectedRecipe = recipe
                             }
+                            .padding()
                     }
                     .padding(.horizontal)
                 }
@@ -38,10 +39,11 @@ struct RecipeView: View {
                 }
             }
             .background(.ultraThinMaterial)
-            .navigationTitle("Recipes")
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Recipes")  
+            .navigationTitle("My Favorite Recipe")
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Recipes")
         }
     }
+
 }
 
 struct RecipeView_Previews: PreviewProvider {

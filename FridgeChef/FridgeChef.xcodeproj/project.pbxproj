@@ -36,6 +36,8 @@
 		1C6CC39B2C993698001C4643 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39A2C993698001C4643 /* ImagePicker.swift */; };
 		1C6CC39D2C996827001C4643 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */; };
 		1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3A02C996F94001C4643 /* AlertService.swift */; };
+		1C75CCAB2CA2E1690072D55C /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */; };
+		1C75CCAD2CA2E7500072D55C /* KeyboardResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */; };
 		1C7F45B52C9A4BC000846B44 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */; };
 		1C7F45C92C9A752300846B44 /* Nunito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C7F45C62C9A752300846B44 /* Nunito-Bold.ttf */; };
 		1C7F45CA2C9A752300846B44 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C7F45C72C9A752300846B44 /* Nunito-Regular.ttf */; };
@@ -121,6 +123,7 @@
 		1C6CC39A2C993698001C4643 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		1C6CC3A02C996F94001C4643 /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
+		1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponder.swift; sourceTree = "<group>"; };
 		1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		1C7F45C62C9A752300846B44 /* Nunito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Bold.ttf"; sourceTree = "<group>"; };
 		1C7F45C72C9A752300846B44 /* Nunito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Regular.ttf"; sourceTree = "<group>"; };
@@ -183,6 +186,7 @@
 				1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */,
 				1C8A74012C9FFC6C0005E54D /* MessageKit in Frameworks */,
 				1C19F1B62C943B290094FBEA /* FirebaseAppCheck in Frameworks */,
+				1C75CCAB2CA2E1690072D55C /* IQKeyboardManagerSwift in Frameworks */,
 				1CB5BCA62C94441D006C66E5 /* FirebaseAuthCombine-Community in Frameworks */,
 				1C19F1B02C943B290094FBEA /* FirebaseAnalytics in Frameworks */,
 				1CB5BCA82C944441006C66E5 /* FirebaseStorage in Frameworks */,
@@ -359,9 +363,8 @@
 		1CB5BC9F2C9441BF006C66E5 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1C7F45E02C9AA40600846B44 /* MainTabView.swift */,
 				1C2DD5712C9D68A1000173F6 /* Home */,
-				1C92AA622C9C780700194542 /* ImageSelectorView.swift */,
-				1C92AA642C9C7CBA00194542 /* MicButtonView.swift */,
 				1C6CC3872C984C89001C4643 /* LoginView.swift */,
 				1C6CC38E2C985227001C4643 /* LoginDetailView.swift */,
 				1CD4F7BC2C981D9A00F4417D /* SignUpView.swift */,
@@ -381,7 +384,8 @@
 				1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */,
 				1C8DC55D2C99E0A20041A2A2 /* ScannerView.swift */,
 				1C8DC5612C99E0FD0041A2A2 /* CameraView.swift */,
-				1C7F45E02C9AA40600846B44 /* MainTabView.swift */,
+				1C92AA622C9C780700194542 /* ImageSelectorView.swift */,
+				1C92AA642C9C7CBA00194542 /* MicButtonView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -390,6 +394,7 @@
 			isa = PBXGroup;
 			children = (
 				1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */,
+				1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */,
 				1C2DD56F2C9D3E34000173F6 /* LocationManager.swift */,
 				1C6CC39A2C993698001C4643 /* ImagePicker.swift */,
 				1C8DC5682C99E6F70041A2A2 /* CustomBackButtonModifier.swift */,
@@ -439,6 +444,7 @@
 				1CB5BCA92C944441006C66E5 /* FirebaseStorageCombine-Community */,
 				1C8DC5392C99C5210041A2A2 /* Kingfisher */,
 				1C8A74002C9FFC6C0005E54D /* MessageKit */,
+				1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */,
 			);
 			productName = FridgeChef;
 			productReference = 1C19F19D2C94372A0094FBEA /* FridgeChef.app */;
@@ -472,6 +478,7 @@
 				1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				1C8DC5382C99C5210041A2A2 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */,
+				1C75CCA92CA2E1690072D55C /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 			);
 			productRefGroup = 1C19F19E2C94372A0094FBEA /* Products */;
 			projectDirPath = "";
@@ -608,6 +615,7 @@
 				1C8DC56B2C99EDCB0041A2A2 /* TranslationDictionary.swift in Sources */,
 				1C25A3742C9ECE9B00A997C7 /* CustomMapView.swift in Sources */,
 				1C92AA612C9C77C600194542 /* RecognitionService.swift in Sources */,
+				1C75CCAD2CA2E7500072D55C /* KeyboardResponder.swift in Sources */,
 				1C7F45F02C9B141D00846B44 /* HorizontalScrolling.swift in Sources */,
 				1C7F45EE2C9B140700846B44 /* SimpleRecipeCard.swift in Sources */,
 			);
@@ -839,6 +847,14 @@
 				minimumVersion = 11.2.0;
 			};
 		};
+		1C75CCA92CA2E1690072D55C /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.1.1;
+			};
+		};
 		1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/MessageKit/MessageKit.git";
@@ -882,6 +898,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseAppDistribution-Beta";
+		};
+		1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C75CCA92CA2E1690072D55C /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
 		};
 		1C8A74002C9FFC6C0005E54D /* MessageKit */ = {
 			isa = XCSwiftPackageProductDependency;

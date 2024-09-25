@@ -15,7 +15,8 @@ struct HorizontalScrolling: View {
                 ForEach(recipeManager.recipes.shuffled()) { recipe in
                     SimpleRecipeCard(recipe: recipe)
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 2)
+                .padding(.bottom, 10)
             }
         }
     }

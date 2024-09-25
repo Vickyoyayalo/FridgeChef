@@ -4,7 +4,6 @@
 //
 //  Created by Vickyhereiam on 2024/9/18.
 //
-
 import SwiftUI
 
 struct RecipeDetailView: View {
@@ -12,70 +11,71 @@ struct RecipeDetailView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationView{
+        NavigationView {
             ScrollView {
                 VStack(alignment: .leading) {
-                    VStack {
-                        Image(recipe.imageName)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(height: 200)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .padding()
-                            .shadow(color: Color.black.opacity(0.3), radius: 4, x:0, y: 4)
-                    }
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(15)
-                    .padding()
-                    
-                    Text(recipe.headline)
-                        .font(.title).bold()
+                    Image(recipe.imageName)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 300)
+                        .clipped()
+                        .cornerRadius(20)
+                        .shadow(radius: 10)
                         .padding(.horizontal)
+                        .padding(.top)
                     
-                    VStack(alignment: .leading) {
-                        VStack(alignment: .leading) {
-                            Text("Instructions:")
-                                .font(.title3).bold()
-                                .padding(.vertical, 5)
-                            Text(recipe.instructions)
-                                .font(.body)
-                                .foregroundColor(.black.opacity(0.7))
-                        }
-                        .frame(maxHeight: .infinity, alignment: .top)
-                        .padding()
-                        
-                        VStack(alignment: .leading) {
-                            Text("Ingredients:")
-                                .font(.title3).bold()
-                                .padding(.horizontal)
-                            
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                LazyHStack(spacing: -20) {
-                                    ForEach(Array(recipe.ingredients.enumerated()), id: \.element) { index, ingredinet in
-                                        Text(ingredinet)
-                                            .foregroundColor(.black.opacity(0.7))
-                                            .padding(10)
-                                            .background(.ultraThinMaterial)
-                                            .cornerRadius(6)
-                                    }
-                                    .padding(.horizontal)
-                                }
+                    Text(recipe.title)
+                        .font(.largeTitle).bold()
+                        .padding(.horizontal)
+                        .padding(.top, 5)
+                    
+                    Text("Ingredients:")
+                        .font(.headline).bold()
+                        .padding([.horizontal, .top])
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 10) {
+                            ForEach(recipe.ingredients, id: \.self) { ingredient in
+                                Text(ingredient)
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 12)
+                                    .background( Color("NavigationBarTitle"))
+                                    .cornerRadius(10)
                             }
-                            .frame(height: 100)
                         }
+                        .padding(.horizontal)
                     }
-                    .frame(maxWidth: .infinity, alignment: .bottomLeading)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(20, corners: [.topLeft, .topRight])
+                    .frame(height: 40)
+                    
+                    Text("Instructions:")
+                        .font(.headline).bold()
+                        .padding([.horizontal, .top])
+                    
+                    Text(recipe.instructions)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .padding()
+                    
                 }
-                .navigationTitle(recipe.title)
-                .navigationBarItems(trailing: Image(systemName: "xmark.circle.fill")
-//                    .resizable()
-//                    .frame(width: 24, height: 24)
-                    .foregroundColor(.orange)
-                    .onTapGesture {
-                        dismiss()
-                    })
+                .padding(.bottom)
+            }
+            .background(Color(.systemBackground))
+            .navigationTitle("Recipe Details")
+            //            .navigationBarItems(trailing: Button(action: {
+            //                dismiss()
+            //            }) {
+            //                Image(systemName: "xmark.circle.fill")
+            //                    .foregroundColor(.orange)
+            //                    .font(.title)
+            //            })
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.orange)
+                    }
+                }
             }
         }
     }
@@ -90,3 +90,4 @@ struct RecipeDetailView_Previews: PreviewProvider {
         .preferredColorScheme(.light)
     }
 }
+

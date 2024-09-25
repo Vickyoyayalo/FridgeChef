@@ -18,7 +18,7 @@ struct SectionTitleView: View {
             
             Spacer()
             
-            Text("See All")
+            Text("點擊看更多")
                 .foregroundColor(Color("PrimaryColor"))
                 .onTapGesture {
                     

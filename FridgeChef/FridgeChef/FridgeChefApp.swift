@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import IQKeyboardManagerSwift
 
 // 使用 AppDelegate 來初始化 Firebase
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -33,6 +34,8 @@ struct FridgeChefApp: App {
         }
     }
     init() {
+        configureKeyboardManager()
+        
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemRed, .font: UIFont(name: "ArialRoundedMTBold", size: 30)!]
         navBarAppearance.titleTextAttributes = [.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemRed, .font: UIFont(name: "ArialRoundedMTBold", size: 20)!]
@@ -43,5 +46,11 @@ struct FridgeChefApp: App {
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
+    }
+    
+    private func configureKeyboardManager() {
+        IQKeyboardManager.shared.enable = true
+        IQKeyboardManager.shared.enableAutoToolbar = false  // Disable/enable the toolbar as per your need
+        IQKeyboardManager.shared.resignOnTouchOutside = true
     }
 }

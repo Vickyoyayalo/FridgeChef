@@ -9,7 +9,9 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var search: String = ""
-
+    @State private var showReview = false
+    @State private var recommendRecipe = RecommendRecipe(name: "法式藍莓吐司", type: "早餐", location: "廚房", phone: "000-000000", description: "美味的早餐選擇", image: "blueberry_toast", isFavorite: false)
+        
     var body: some View {
         NavigationView {
             ScrollView(showsIndicators: false) {
@@ -23,21 +25,29 @@ struct HomeView: View {
                         .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(Color("NavigationBarTitle"))
-
+                    
                     FreshRecipesView()
-
-                    SectionTitleView(title: "Recommended")
-
-                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_1"), title: "Blueberry Muffins")
-                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_2"), title: "Glazed Salmon")
-                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_3"), title: "Asian Glazed Chicken Thighs")
+                    
+                    SectionTitleView(title: "推薦料理 🤤 ")
+                    
+                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_1"), title: "藍莓馬芬")
+                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_2"), title: "北歐鮭魚")
+                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_3"), title: "義式香料雞腿")
                 }
                 .padding()
             }
             .background(.ultraThinMaterial)
             .navigationTitle("FridgeChef")
-//            .navigationBarItems(leading: menu(), trailing: Notification)
+            //            .navigationBarItems(leading: menu(), trailing: Notification)
             .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Recipes")
+            
+            .overlay(
+                self.showReview ?
+                ZStack {
+                    ReviewView(isDisplayed: $showReview, recommendRecipes: recommendRecipe)
+                }
+                : nil
+            )
         }
     }
 }

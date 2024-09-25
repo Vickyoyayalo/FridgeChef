@@ -20,7 +20,8 @@ struct MapViewWithUserLocation: View {
         ZStack {
             map
                 .overlay(
-                    searchResults.isEmpty ? nil : Color.black.opacity(0.4) // Conditional dimming
+                    searchResults.isEmpty ? nil : Color.black.opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
                 )
             VStack {
                 searchField

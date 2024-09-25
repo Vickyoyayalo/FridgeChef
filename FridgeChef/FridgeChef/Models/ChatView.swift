@@ -36,7 +36,7 @@ struct PlaceholderTextEditor: View {
                     .foregroundColor(.gray)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 12)
-                    .allowsHitTesting(false)  // Allows touches to pass through to TextEditor
+                    .allowsHitTesting(false)  
             }
         }
     }

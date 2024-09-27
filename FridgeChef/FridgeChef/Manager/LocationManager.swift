@@ -12,9 +12,9 @@ import MapKit
 class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     private let manager = CLLocationManager()
     @Published var lastKnownLocation: CLLocation?
-    @Published var showAlert = false
     @Published var region: MKCoordinateRegion = MKCoordinateRegion()
     @Published var isUserInteracting = false
+    @Published var showAlert = false
     var placesFetcher = PlacesFetcher()
     
     private var lastUpdatedLocation: CLLocation?

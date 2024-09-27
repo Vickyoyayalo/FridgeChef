@@ -86,7 +86,6 @@ struct LoginDetailView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                         
-                        
                         // Navigation Links
                         NavigationLink(destination: 
                                         MainTabView(),

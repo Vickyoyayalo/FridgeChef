@@ -24,14 +24,14 @@ struct FridgeView: View {
                                 Image(uiImage: image)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(width: 60, height: 60)
-                                    .cornerRadius(10)
+                                    .frame(width: 80, height: 80)
+                                    .cornerRadius(20)
                             } else {
                                 Image("newphoto")  // 显示默认图片
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(width: 60, height: 60)
-                                    .cornerRadius(10)
+                                    .frame(width: 80, height: 80)
+                                    .cornerRadius(20)
                             }
                             
                             VStack(alignment: .leading) {
@@ -76,7 +76,7 @@ struct FridgeView: View {
             }
             .listStyle(PlainListStyle()) // 使用纯样式列表以减少间隙
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search food ingredient")
-            .navigationBarTitle("Storage", displayMode: .automatic)
+            .navigationBarTitle("Storage 🥬 ", displayMode: .automatic)
             .navigationBarItems(leading: EditButton(), trailing: addButton)
         }
     }

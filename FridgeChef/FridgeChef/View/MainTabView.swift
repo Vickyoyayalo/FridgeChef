@@ -17,9 +17,10 @@ struct MainTabView: View {
                 Color("NavigationBarTitle")  // 设置整个视图背景
                     .edgesIgnoringSafeArea(.all)  // 忽略安全区域，覆盖整个屏幕
                 TabView(selection: $selectedTabIndex) {
-                    RecipeView(recipeManager: RecipeManager())
+                    
+                    HomeView()
                         .tabItem {
-                            Label("收藏", systemImage: "heart.fill")
+                            Label("食譜", systemImage: "heart.text.square")
                         }
                         .tag(0)
                     
@@ -35,9 +36,9 @@ struct MainTabView: View {
                         }
                         .tag(2)
                     
-                    HomeView()
+                    RecipeView(recipeManager: RecipeManager())
                         .tabItem {
-                            Label("食譜", systemImage: "heart.text.square")
+                            Label("收藏", systemImage: "heart.fill")
                         }
                         .tag(3)
                     

@@ -11,6 +11,7 @@ import Vision
 import CoreML
 import PhotosUI
 import Speech
+import IQKeyboardManagerSwift
 
 struct MLIngredientView: View {
     var onSave: ((Ingredient) -> Void)? = nil
@@ -265,8 +266,7 @@ struct MLIngredientView: View {
 
     // Helper function to update UI
     func updateUIWithFoodRecognitionResult(result: String) {
-        // Update your UI elements, maybe using published properties or calling another method that handles UI updates
-        recognizedText = result  // This assumes recognizedText is accessible and updated correctly
+        recognizedText = result
     }
 
     //     使用 Vision 進行文字識別 (OCR)

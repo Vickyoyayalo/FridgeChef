@@ -38,6 +38,7 @@
 		1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3A02C996F94001C4643 /* AlertService.swift */; };
 		1C75CCAB2CA2E1690072D55C /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */; };
 		1C75CCAD2CA2E7500072D55C /* KeyboardResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */; };
+		1C75CCD52CA461920072D55C /* WhatToEatGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C75CCD42CA461920072D55C /* WhatToEatGame.swift */; };
 		1C7F45B52C9A4BC000846B44 /* UIColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */; };
 		1C7F45C92C9A752300846B44 /* Nunito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C7F45C62C9A752300846B44 /* Nunito-Bold.ttf */; };
 		1C7F45CA2C9A752300846B44 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C7F45C72C9A752300846B44 /* Nunito-Regular.ttf */; };
@@ -94,6 +95,7 @@
 		1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */; };
 		1CD4F7C52C981DF600F4417D /* RecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7C42C981DF600F4417D /* RecipeView.swift */; };
 		1CD4F7C72C98258800F4417D /* Quantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7C62C98258800F4417D /* Quantity.swift */; };
+		1CD861772CA5954A007D5195 /* GetRecipeAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD861762CA5954A007D5195 /* GetRecipeAPI.swift */; };
 		1CDF1DCC2CA161B0005BD251 /* ChatGPTAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */; };
 /* End PBXBuildFile section */
 
@@ -124,6 +126,7 @@
 		1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		1C6CC3A02C996F94001C4643 /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
 		1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponder.swift; sourceTree = "<group>"; };
+		1C75CCD42CA461920072D55C /* WhatToEatGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatToEatGame.swift; sourceTree = "<group>"; };
 		1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
 		1C7F45C62C9A752300846B44 /* Nunito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Bold.ttf"; sourceTree = "<group>"; };
 		1C7F45C72C9A752300846B44 /* Nunito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Regular.ttf"; sourceTree = "<group>"; };
@@ -173,6 +176,7 @@
 		1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
 		1CD4F7C42C981DF600F4417D /* RecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeView.swift; sourceTree = "<group>"; };
 		1CD4F7C62C98258800F4417D /* Quantity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quantity.swift; sourceTree = "<group>"; };
+		1CD861762CA5954A007D5195 /* GetRecipeAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRecipeAPI.swift; sourceTree = "<group>"; };
 		1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatGPTAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -282,6 +286,14 @@
 			path = Map;
 			sourceTree = "<group>";
 		};
+		1C75CCAF2CA3B7E00072D55C /* ChatGPT */ = {
+			isa = PBXGroup;
+			children = (
+				1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */,
+			);
+			path = ChatGPT;
+			sourceTree = "<group>";
+		};
 		1C7F45B32C9A4BA900846B44 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -326,15 +338,16 @@
 		1CB5BC872C943CFE006C66E5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */,
+				1C75CCAF2CA3B7E00072D55C /* ChatGPT */,
+				1C8A74082CA000980005E54D /* ChatView.swift */,
 				1CB5BC882C943D36006C66E5 /* User.swift */,
 				1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */,
 				1CB5BC912C943DE4006C66E5 /* Ingredient.swift */,
 				1CD4F7C62C98258800F4417D /* Quantity.swift */,
 				1CB5BC932C943DFB006C66E5 /* Recipe.swift */,
+				1CD861762CA5954A007D5195 /* GetRecipeAPI.swift */,
 				1CB5BC952C943E19006C66E5 /* FoodItem.swift */,
 				1C7F45CB2C9A787A00846B44 /* RecommendRecipe.swift */,
-				1C8A74082CA000980005E54D /* ChatView.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -377,6 +390,7 @@
 				1C2DD5712C9D68A1000173F6 /* Home */,
 				1C75CCAE2CA3B7360072D55C /* Map */,
 				1C6CC3872C984C89001C4643 /* LoginView.swift */,
+				1C75CCD42CA461920072D55C /* WhatToEatGame.swift */,
 				1C6CC38E2C985227001C4643 /* LoginDetailView.swift */,
 				1CD4F7BC2C981D9A00F4417D /* SignUpView.swift */,
 				1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */,
@@ -574,6 +588,7 @@
 				1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */,
 				1CA8CE8F2C9E720900C9CADD /* PlacesFetcher.swift in Sources */,
 				1C7F45F22C9B146100846B44 /* CornerRadius.swift in Sources */,
+				1C75CCD52CA461920072D55C /* WhatToEatGame.swift in Sources */,
 				1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */,
 				1C7F45B52C9A4BC000846B44 /* UIColor+Ext.swift in Sources */,
 				1C7F45EB2C9B13A400846B44 /* RecipeDetailView.swift in Sources */,
@@ -626,6 +641,7 @@
 				1C75CCAD2CA2E7500072D55C /* KeyboardResponder.swift in Sources */,
 				1C7F45F02C9B141D00846B44 /* HorizontalScrolling.swift in Sources */,
 				1C7F45EE2C9B140700846B44 /* SimpleRecipeCard.swift in Sources */,
+				1CD861772CA5954A007D5195 /* GetRecipeAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

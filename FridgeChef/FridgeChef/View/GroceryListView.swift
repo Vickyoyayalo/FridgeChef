@@ -69,6 +69,8 @@ struct GroceryListView: View {
                     }) {
                         VStack {
                             Text("附近超市")
+                                .fontWeight(.bold)
+                                .shadow(radius: 10)
                             Image(systemName: "location.fill")
                                 .resizable()
                                 .scaledToFit()
@@ -89,7 +91,7 @@ struct GroceryListView: View {
             }
             .listStyle(PlainListStyle()) // 使用纯样式列表以减少间隙
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search food ingredient")
-            .navigationBarTitle("Grocery", displayMode: .automatic)
+            .navigationBarTitle("Grocery 🛒 ", displayMode: .automatic)
             .navigationBarItems(leading: EditButton(), trailing: addButton)
             .sheet(isPresented: $showingMLIngredientView) {
                 MLIngredientView()
@@ -143,14 +145,14 @@ struct GroceryListView: View {
             return Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 60, height: 60)
-                .cornerRadius(10)
+                .frame(width: 80, height: 80)
+                .cornerRadius(20)
         } else {
             return Image("newphoto")  // 显示默认图片
                 .resizable()
                 .scaledToFit()
-                .frame(width: 60, height: 60)
-                .cornerRadius(10)
+                .frame(width: 80, height: 80)
+                .cornerRadius(20)
         }
     }
 }

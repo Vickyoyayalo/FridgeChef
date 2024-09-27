@@ -49,17 +49,3 @@ extension FoodItem {
     }
 }
 
-
-//struct GroceryItem: Identifiable, Codable {
-//    @DocumentID var id: String? // Firestore 的文件 ID
-//    var name: String
-//    var isSuggested: Bool
-//    var priority: Int
-//
-//    init(id: String? = nil, ingredientId: String, isPurchased: Bool, priority: Int) {
-//        self.id = id
-//        self.name = name
-//        self.isSuggested = isSuggested
-//        self.priority = priority
-//    }
-//}

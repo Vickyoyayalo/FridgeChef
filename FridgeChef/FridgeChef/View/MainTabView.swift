@@ -36,7 +36,7 @@ struct MainTabView: View {
                         }
                         .tag(2)
                     
-                    RecipeView(recipeManager: RecipeManager())
+                    ReviewView(isDisplayed: .constant(true), recommendRecipes: RecommendRecipe(name: "Cafe Deadend", type: "Coffee & Tea Shop", location: "G/F, 72 Po Hing Fong, Sheung Wan, Hong Kong", phone: "232-923423", description: "Searching for great breakfast eateries and coffee?  Come over and enjoy a great meal.", image: "cafedeadend", isFavorite: true))
                         .tabItem {
                             Label("收藏", systemImage: "heart.fill")
                         }
@@ -69,6 +69,7 @@ struct MainTabView: View {
          // Adjust bottom padding of the entire ZStack based on keyboard
     }
 }
+
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainTabView()

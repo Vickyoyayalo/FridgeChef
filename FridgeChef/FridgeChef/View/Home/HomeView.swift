@@ -19,19 +19,14 @@ struct HomeView: View {
                         .font(.headline)
                         .fontWeight(.medium)
                         .foregroundColor(Color("SecondaryColor"))
-                    
-//                    Text("FridgeChef 給你新點子 💡...")
-//                        .font(.title)
-//                        .fontWeight(.bold)
-//                        .foregroundColor(Color("NavigationBarTitle"))
 
-                    FreshRecipesView()
-
-                    SectionTitleView(title: "推薦料理 🤤 ")
-
-                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_1"), title: "藍莓馬芬")
-                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_2"), title: "北歐鮭魚")
-                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_3"), title: "義式香料雞腿")
+//                    FreshRecipesView()
+//
+//                    SectionTitleView(title: "推薦料理 🤤 ")
+//
+//                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_1"), title: "藍莓馬芬")
+//                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_2"), title: "北歐鮭魚")
+//                    RecommendedRecipeCardView(image: #imageLiteral(resourceName: "reco_3"), title: "義式香料雞腿")
                 }
                 .padding()
             }

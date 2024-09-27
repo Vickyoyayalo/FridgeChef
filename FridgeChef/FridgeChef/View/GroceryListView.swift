@@ -47,15 +47,26 @@ struct GroceryListView: View {
                 .sheet(isPresented: $showingMLIngredientView) {
                     if let editingItem = editingItem {
                         // 编辑模式
-                        MLIngredientView(onSave: { updatedIngredient in
-                            handleSave(updatedIngredient)
-                        }, editingFoodItem: Ingredient(
+                        // 假设默认量和单位
+                        let defaultAmount = 1.0  // 示例默认值
+                        let defaultUnit = "個"  // 示例默认单位
+                        
+                        // 转换UIImage为Base64字符串
+                        let base64Image = editingItem.image?.pngData()?.base64EncodedString()
+                        
+                        let ingredient = Ingredient(
                             name: editingItem.name,
                             quantity: "\(editingItem.quantity)",
+                            amount: defaultAmount,
+                            unit: defaultUnit,
                             expirationDate: Date().addingTimeInterval(Double(editingItem.daysRemaining * 24 * 60 * 60)),
                             storageMethod: editingItem.status,
-                            image: editingItem.image
-                        ))
+                            imageBase64: base64Image
+                        )
+                        
+                        MLIngredientView(onSave: { updatedIngredient in
+                            handleSave(updatedIngredient)
+                        }, editingFoodItem: ingredient)
                     } else {
                         // 新增模式
                         MLIngredientView(onSave: { newIngredient in
@@ -63,6 +74,7 @@ struct GroceryListView: View {
                         })
                     }
                 }
+
                 VStack {
                     Button(action: {
                         showingMapView = true // 触发地图视图

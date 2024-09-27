@@ -311,12 +311,18 @@ struct MLIngredientView: View {
 
     // 儲存食材資料的函數
     func saveIngredient() {
-        let newIngredient = Ingredient(
+        let defaultAmount = 1.0  // 一个示例值
+        let defaultUnit = "個"    // 一个示例单位
+
+        // 创建 Ingredient 实例
+        var newIngredient = Ingredient(
             name: recognizedText,
             quantity: quantity,
+            amount: defaultAmount,
+            unit: defaultUnit,
             expirationDate: expirationDate,
             storageMethod: storageMethod,
-            image: image
+            imageBase64: image?.pngData()?.base64EncodedString()  
         )
         savedIngredients.append(newIngredient)
         isSavedAlertPresented = true

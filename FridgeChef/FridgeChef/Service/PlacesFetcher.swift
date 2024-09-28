@@ -150,6 +150,17 @@ class PlacesFetcher: ObservableObject {
             print("No cache timestamp found in storage.")
         }
     }
+    
+    // 清除緩存資料（僅用於測試）
+//    func clearCacheData() {
+//        UserDefaults.standard.removeObject(forKey: lastFetchedLatitudeKey)
+//        UserDefaults.standard.removeObject(forKey: lastFetchedLongitudeKey)
+//        UserDefaults.standard.removeObject(forKey: cacheTimeStampKey)
+//        UserDefaults.standard.removeObject(forKey: savedSupermarketsKey)
+//        print("Cache data cleared.")
+//    }
+//
+//    
 
     // 用來檢查和載入本地超市數據或從 API 獲取
     func fetchNearbyPlaces(coordinate: CLLocationCoordinate2D) {
@@ -183,10 +194,12 @@ class PlacesFetcher: ObservableObject {
         }
 
         // 設定條件，判斷是否需要發 API
-        let shouldFetchNewData = (lastFetchedLocation == nil) ||  // 第一次使用
-                                 (currentLocation.distance(from: lastFetchedLocation ?? currentLocation) >= fetchThresholdDistance) ||  // 超過距離閾值
-                                 (cacheTimeStamp == nil) ||  // 無緩存時間戳
-                                 (Date().timeIntervalSince(cacheTimeStamp!) >= cacheDuration)  // 緩存過期
+        // **修改這裡，加入 supermarkets.isEmpty 的檢查**
+               let shouldFetchNewData = supermarkets.isEmpty ||  // 如果超市數據為空，則需要發送新的 API 請求
+                                        (lastFetchedLocation == nil) ||
+                                        (currentLocation.distance(from: lastFetchedLocation ?? currentLocation) >= fetchThresholdDistance) ||
+                                        (cacheTimeStamp == nil) ||
+                                        (Date().timeIntervalSince(cacheTimeStamp!) >= cacheDuration) // 緩存過期
 
         if shouldFetchNewData {
             print("Fetching new data from API...")

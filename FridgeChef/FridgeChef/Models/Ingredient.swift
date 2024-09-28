@@ -49,7 +49,7 @@ extension Ingredient {
         self.name = foodItem.name
         self.quantity = "\(foodItem.quantity)"
         self.amount = Double(foodItem.quantity)  // 假设 quantity 和 amount 有关联
-        self.unit = "个"  // 假设 foodItem 没有单位，使用默认值
+        self.unit = "個"  // 假设 foodItem 没有单位，使用默认值
         let today = Date()
         let calendar = Calendar.current
         

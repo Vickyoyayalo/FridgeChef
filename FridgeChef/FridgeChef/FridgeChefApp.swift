@@ -26,11 +26,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct FridgeChefApp: App {
     // 註冊 AppDelegate 以初始化 Firebase
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
+    @StateObject private var viewModel = RecipeSearchViewModel()
     var body: some Scene {
         WindowGroup {
 //            LoginView() // 起始頁面可以是你的註冊頁面
             MainTabView()
+                .environmentObject(viewModel)
         }
     }
     init() {

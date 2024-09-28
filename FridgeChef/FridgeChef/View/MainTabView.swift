@@ -18,7 +18,7 @@ struct MainTabView: View {
                     .edgesIgnoringSafeArea(.all)  // 忽略安全区域，覆盖整个屏幕
                 TabView(selection: $selectedTabIndex) {
                     
-                    HomeView()
+                    RecipeMainView()
                         .tabItem {
                             Label("食譜", systemImage: "heart.text.square")
                         }
@@ -36,7 +36,7 @@ struct MainTabView: View {
                         }
                         .tag(2)
                     
-                    ReviewView(isDisplayed: .constant(true), recommendRecipes: RecommendRecipe(name: "Cafe Deadend", type: "Coffee & Tea Shop", location: "G/F, 72 Po Hing Fong, Sheung Wan, Hong Kong", phone: "232-923423", description: "Searching for great breakfast eateries and coffee?  Come over and enjoy a great meal.", image: "cafedeadend", isFavorite: true))
+                    RecipeMainView()
                         .tabItem {
                             Label("收藏", systemImage: "heart.fill")
                         }

@@ -52,7 +52,7 @@ struct MLIngredientView: View {
         if let item = editingFoodItem {
             // 如果有傳入要編輯的食材，初始化相關值
             _recognizedText = State(initialValue: item.name)
-            _quantity = State(initialValue: item.quantity)
+            _quantity = State(initialValue: item.quantity ?? "")
             _expirationDate = State(initialValue: item.expirationDate)
             _storageMethod = State(initialValue: item.storageMethod)
             _image = State(initialValue: item.image)

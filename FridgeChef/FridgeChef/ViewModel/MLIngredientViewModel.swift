@@ -27,7 +27,7 @@ class MLIngredientViewModel: ObservableObject {
 
         if let item = editingFoodItem {
             recognitionService.recognizedText = item.name
-            quantity = item.quantity
+            quantity = item.quantity ?? ""
             expirationDate = item.expirationDate
             storageMethod = item.storageMethod
             image = item.image
@@ -42,7 +42,7 @@ class MLIngredientViewModel: ObservableObject {
         // 假设我们需要一些默认值或逻辑来计算 amount 和 unit
         let defaultAmount = 1.0  // 一个示例值
         let defaultUnit = "個"    // 一个示例单位
-
+        let base64String = image?.pngData()?.base64EncodedString()
         // 创建 Ingredient 实例
         var newIngredient = Ingredient(
             name: recognitionService.recognizedText,

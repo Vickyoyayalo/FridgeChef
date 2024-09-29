@@ -87,29 +87,7 @@ class RecipeSearchViewModel: ObservableObject {
         selectedRecipe = recipe // 更新視圖
     }
     
-//    func getRecipeDetails(recipeId: Int) {
-//        isLoading = true
-//        errorMessage = nil
-//        
-//        recipeService.getRecipeInformation(recipeId: recipeId) { [weak self] result in
-//            DispatchQueue.main.async {
-//                self?.isLoading = false
-//                switch result {
-//                case .success(var details):
-//                    // 设置收藏状态
-//                    details.isFavorite = self?.getSavedFavoriteIDs().contains(details.id) ?? false
-//                    if details.servings <= 0 {
-//                        print("Warning: Received servings <= 0 from API. Setting to 1.")
-//                        details.servings = 1
-//                    }
-//                    self?.selectedRecipe = details
-//
-//                case .failure(let error):
-//                    self?.errorMessage = ErrorMessage(message: error.localizedDescription)
-//                }
-//            }
-//        }
-//    }
+
     func getRecipeDetails(recipeId: Int) {
         // Start by setting isLoading to true to indicate that data fetching has begun
         isLoading = true
@@ -144,6 +122,5 @@ class RecipeSearchViewModel: ObservableObject {
             }
         }
     }
-
 }
 

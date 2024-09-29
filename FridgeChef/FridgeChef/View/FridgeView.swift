@@ -112,7 +112,7 @@ struct FridgeView: View {
             let today = Calendar.current.startOfDay(for: Date())
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
             foodItems[index].name = ingredient.name
-            foodItems[index].quantity = Int(ingredient.quantity) ?? 1
+            foodItems[index].quantity = Int(ingredient.quantity ?? "") ?? 1
             foodItems[index].status = ingredient.storageMethod
             foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
             foodItems[index].image = ingredient.image
@@ -122,8 +122,8 @@ struct FridgeView: View {
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
             let newFoodItem = FoodItem(
                 name: ingredient.name,
-                quantity: Int(ingredient.quantity) ?? 1,
-                status: ingredient.storageMethod,
+                quantity: Int(ingredient.quantity ?? "") ?? 1,
+                unit: ingredient.unit, status: ingredient.storageMethod,
                 daysRemaining: Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0,
                 image: ingredient.image
             )

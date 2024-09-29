@@ -4,21 +4,28 @@
 //
 //  Created by Vickyhereiam on 2024/9/13.
 //
+
 import Foundation
 import SwiftUI
 
-// 更新後的 Ingredient 結構
+struct SimpleIngredient: Codable, Identifiable {
+    var id: Int
+    var name: String
+    var amount: Double
+    var unit: String
+}
+
 struct Ingredient: Codable, Identifiable {
-    var id: UUID = UUID() // 自动生成ID
+    var id: UUID = UUID()
     var name: String
     var quantity: String
-    var amount: Double    // 你在调用时缺少这个参数
-    var unit: String      // 你在调用时缺少这个参数
+    var amount: Double
+    var unit: String
     var expirationDate: Date
     var storageMethod: String
-    var imageBase64: String?  // 假设我们使用Base64字符串来存储图片
+    var imageBase64: String?
 
-    // 使用计算属性来处理图片的获取和设置
+    
     var image: UIImage? {
         get {
             guard let base64 = imageBase64, let imageData = Data(base64Encoded: base64) else { return nil }
@@ -29,12 +36,10 @@ struct Ingredient: Codable, Identifiable {
         }
     }
 
-    // 編碼和解碼 UIImage 需要自定義編碼/解碼邏輯
     enum CodingKeys: String, CodingKey {
         case id, name, amount, unit, quantity, expirationDate, storageMethod, imageBase64
     }
 }
-
 struct IngredientItem: Codable {
     let id: Int
     let name: String

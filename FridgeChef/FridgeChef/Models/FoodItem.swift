@@ -13,6 +13,7 @@ struct FoodItem: Identifiable {
     var id = UUID()
     var name: String
     var quantity: Int
+    var unit: String 
     var status: String
     var daysRemaining: Int
     var image: UIImage?

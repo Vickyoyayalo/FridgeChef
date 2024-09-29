@@ -29,7 +29,6 @@ struct Recipe: Identifiable, Codable, Equatable {
     }
 }
 
-
 struct RecipeSearchResponse: Codable {
     let results: [Recipe]
     let totalResults: Int
@@ -52,7 +51,7 @@ struct RecipeDetails: Codable, Identifiable {
     let dishTypes: [String]
     let diets: [String]
     let instructions: String?
-    var extendedIngredients: [Ingredient]
+    var extendedIngredients: [SimpleIngredient]
     let analyzedInstructions: [AnalyzedInstruction]?
     var isFavorite: Bool?  // 添加这个属性来标记是否被收藏
     

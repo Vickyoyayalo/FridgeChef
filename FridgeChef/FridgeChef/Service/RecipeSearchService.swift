@@ -35,35 +35,40 @@ class RecipeSearchService {
                 return
             }
             
-            // 打印原始數據
+            // 打印原始數據，便於調試
             if let rawString = String(data: data, encoding: .utf8) {
                 print("Raw Response Data: \(rawString)")
             }
             
             do {
                 let decoder = JSONDecoder()
+                // 進行解碼，使用 T 來解析
                 let decodedResponse = try decoder.decode(T.self, from: data)
                 completion(.success(decodedResponse))
             } catch {
-                // 嘗試解碼為 APIErrorResponse
+                // 嘗試解碼失敗時，進一步捕捉具體錯誤
+                print("Decoding Error: \(error)")
                 do {
+                    // 嘗試解碼 API 錯誤響應
                     let decoder = JSONDecoder()
                     let apiError = try decoder.decode(APIErrorResponse.self, from: data)
                     if let message = apiError.message {
                         print("API Error: \(message)")
                         let apiErrorMsg = NSError(domain: "API Error", code: apiError.code ?? 0, userInfo: [NSLocalizedDescriptionKey: message])
                         completion(.failure(apiErrorMsg))
-                        return
+                    } else {
+                        completion(.failure(error)) // 若無法解碼為 API 錯誤，則回傳原始解碼錯誤
                     }
                 } catch {
-                    // 無法解碼為 APIErrorResponse，仍然返回原始錯誤
+                    // 如果兩次解碼都失敗，返回原始錯誤
+                    print("Decoding or API Error: \(error.localizedDescription)")
+                    completion(.failure(error))
                 }
-                print("Decoding Error: \(error.localizedDescription)")
-                completion(.failure(error))
             }
         }
         task.resume()
     }
+
 
     func searchRecipes(query: String, maxFat: Int?, completion: @escaping (Result<RecipeSearchResponse, Error>) -> Void) {
         var components = URLComponents(string: "\(baseURL)/complexSearch")!

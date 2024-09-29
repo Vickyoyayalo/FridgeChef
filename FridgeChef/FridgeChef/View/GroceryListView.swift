@@ -127,30 +127,34 @@ struct GroceryListView: View {
     
     func handleSave(_ ingredient: Ingredient) {
         if let editing = editingItem, let index = foodItems.firstIndex(where: { $0.id == editing.id }) {
-            // 更新操作
+            // If editing existing item
             let today = Calendar.current.startOfDay(for: Date())
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
+
             foodItems[index].name = ingredient.name
-            foodItems[index].quantity = Int(ingredient.quantity) ?? 1
+            foodItems[index].quantity = Int(ingredient.quantity ?? "") ?? 1
             foodItems[index].status = ingredient.storageMethod
             foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
             foodItems[index].image = ingredient.image
         } else {
-            // 新增操作
+            // If adding a new item
             let today = Calendar.current.startOfDay(for: Date())
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
             let newFoodItem = FoodItem(
                 name: ingredient.name,
-                quantity: Int(ingredient.quantity) ?? 1,
-                status: ingredient.storageMethod,
+                quantity: Int(ingredient.quantity ?? "") ?? 1,
+                unit: ingredient.unit, status: ingredient.storageMethod,
                 daysRemaining: Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0,
                 image: ingredient.image
             )
+
             foodItems.insert(newFoodItem, at: 0)
         }
-        // 重置 editingItem
+
+        // Reset editingItem
         editingItem = nil
     }
+
 
     private func itemImageView(item: FoodItem) -> some View {
         if let image = item.image {

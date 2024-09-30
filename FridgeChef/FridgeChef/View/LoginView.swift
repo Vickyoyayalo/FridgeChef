@@ -5,62 +5,126 @@
 //  Created by Vickyhereiam on 2024/9/16.
 //
 
+
 import SwiftUI
 import AVKit
 
 struct LoginView: View {
-    @State private var email: String = ""
-    @State private var password: String = ""
+    @State private var isShowingLoginDetail = false
+    @State private var isShowingSignUp = false
     
     var body: some View {
-        NavigationView {
+        CustomNavigationBarView(title: "Welcome") {
             ZStack {
                 // 背景影片
                 VideoPlayerView(videoName: "LoginVideo")
                     .ignoresSafeArea()
-                //                    .overlay(Color.white.opacity(0.1)) // 影片加上透明黑色遮罩，讓文字更易閱讀
                 
                 VStack {
+                    
                     Spacer()
                     
-                    // 登入按鈕
-                    Button(action: {
-                        // 登入動作
-                    }) {
-                        NavigationLink(destination: LoginDetailView()) {
-                            Text("登入")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(RoundedRectangle(cornerRadius: 25).stroke(Color.orange, lineWidth: 2))
-                                .background(RoundedRectangle(cornerRadius: 25).fill(Color.clear))
-                        }
-                        .padding(.horizontal)
-                        
-                        // 註冊按鈕
-                        Button(action: {
-                            // 註冊動作
-                        }) {
-                            NavigationLink(destination: SignUpView()) {
-                                Text("註冊")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.orange)
-                                    .cornerRadius(25)
-                            }
-                            
-                        }
-                        .padding()
-                        .navigationBarHidden(true)
+                    // 登入按钮
+                    Button("登入") {
+                        self.isShowingLoginDetail = true
                     }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 25).stroke(
+                        Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
+                    .background(RoundedRectangle(cornerRadius: 25).fill(Color.clear))
+                    .shadow(radius: 25)
+                    .padding(.horizontal)
+                    
+                    // 注册按钮
+                    Button("註冊") {
+                        self.isShowingSignUp = true
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(
+                        Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                    .cornerRadius(25)
+                    .shadow(radius: 25)
+                    .padding(.horizontal)
+                    
+                    //                    Spacer()
                 }
+            }
+            .sheet(isPresented: $isShowingLoginDetail) {
+                LoginDetailView()
+            }
+            .sheet(isPresented: $isShowingSignUp) {
+                SignUpView()
             }
         }
     }
 }
+//struct LoginView: View {
+//    @State private var email: String = ""
+//    @State private var password: String = ""
+//
+//    var body: some View {
+//        NavigationView {
+//            ZStack {
+//                // 背景影片
+//                VideoPlayerView(videoName: "LoginVideo")
+//                    .ignoresSafeArea()
+//                //                    .overlay(Color.white.opacity(0.1)) // 影片加上透明黑色遮罩，讓文字更易閱讀
+//
+//                VStack {
+//                    Spacer()
+//
+//                    // 登入按鈕
+//                    Button(action: {
+//                        // 登入動作
+//                    }) {
+//                        NavigationLink(destination: LoginDetailView()) {
+//                            Text("登入")
+//                                .font(.headline)
+//                                .foregroundColor(.white)
+//                                .fontWeight(.bold)
+//                                .frame(maxWidth: .infinity)
+//                                .padding()
+//                                .background(RoundedRectangle(cornerRadius: 25).stroke(
+//                                    Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
+//                                .background(RoundedRectangle(cornerRadius: 25).fill(Color.clear))
+//                                .shadow(radius: 5)
+//                        }
+//                        .padding(.horizontal)
+//
+//                        // 註冊按鈕
+//                        Button(action: {
+//                            // 註冊動作
+//                        }) {
+//                            NavigationLink(destination: SignUpView()) {
+//                                Text("註冊")
+//                                    .font(.headline)
+//                                    .foregroundColor(.white)
+//                                    .fontWeight(.bold)
+//                                    .frame(maxWidth: .infinity)
+//                                    .padding()
+//                                    .background(
+//                                           Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//                                    .cornerRadius(25)
+//                                    .shadow(radius: 5)
+//                            }
+//
+//                        }
+//                        .padding()
+//                        .navigationBarHidden(true)
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 // 背景影片播放
 struct VideoPlayerView: UIViewRepresentable {
@@ -71,7 +135,7 @@ struct VideoPlayerView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {
-        // 更新邏輯
+        
     }
 }
 

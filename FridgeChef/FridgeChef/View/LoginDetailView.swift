@@ -4,104 +4,258 @@
 //
 //  Created by Vickyhereiam on 2024/9/16.
 //
-
 import SwiftUI
 
 struct LoginDetailView: View {
     
-    @StateObject private var loginViewModel = LoginDetailViewModel() // Manages login specific operations
-    @StateObject private var userViewModel = UserViewModel() // Manages user data across views
+    @StateObject private var loginViewModel = LoginDetailViewModel() // 管理登入相關操作
+    @StateObject private var userViewModel = UserViewModel() // 管理跨視圖的用戶數據
     @State private var navigateToHome = false
     @State private var navigateToForgotPassword = false
     @State private var isLoggedIn = false
     
     var body: some View {
-        CustomNavigationBarView(title: "") {
-            VStack {
-                Image("LogoFridgeChef")
-                    .resizable()
-                    .scaledToFit()
-                //                .frame(width: 350, height: 200)
-                    .padding(.top, 20)
-                
-                TextField("Email", text: $loginViewModel.email)
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 2))
-                    .autocapitalization(.none)
-                    .keyboardType(.emailAddress)
-                
-                SecureField("Password", text: $loginViewModel.password)
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 2))
-                
-                Button("登入") {
-                    self.isLoggedIn = true
-                    //                    loginViewModel.login {
-                    //                        navigateToHome = true  // Trigger navigation on successful login
-                    //                    }
-                }
-                .foregroundColor(.white)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.orange)
-                .cornerRadius(8)
-                
-                Button("忘記密碼?") {
-                    navigateToForgotPassword = true
-                }
-                .foregroundColor(Color.orange)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.orange, lineWidth: 2))
-                
-                Text("Or sign up with")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                
-                HStack(spacing: 20) {
-                    Button(action: {
-                        // Google 登入邏輯
-                    }) {
-                        HStack {
-                            Image(systemName: "g.circle")
-                            Text("Google")
-                        }
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
+        CustomNavigationBarView(title: "") { // 确保有 NavigationView
+            ZStack {
+                VStack(spacing: 20) {
+                    // Logo 圖片
+                    Image("LogoFridgeChef")
+                        .resizable()
+                        .scaledToFit()
+                        .padding(.top, 20)
+                    
+                    // Email TextField
+                    TextField("Email", text: $loginViewModel.email)
                         .padding()
-                        .background(Color.red)
+                        .background(Color(UIColor.systemGray6))
                         .cornerRadius(8)
+                        .shadow(radius: 5)
+                        .autocapitalization(.none)
+                        .keyboardType(.emailAddress)
+                    
+                    // Password SecureField
+                    SecureField("Password", text: $loginViewModel.password)
+                        .padding()
+                        .background(Color(UIColor.systemGray6))
+                        .cornerRadius(8)
+                        .shadow(radius: 5) // 增加陰影效果
+                    
+                    // 登入按鈕
+                    Button(action: {
+                        self.isLoggedIn = true
+                        //                         loginViewModel.login {
+                        //                             navigateToHome = true  // 成功登入後觸發導航
+                        //                         }
+                    }) {
+                        Text("登入")
+                            .foregroundColor(.white)
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(
+                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                            .cornerRadius(8)
+                            .shadow(radius: 5)
                     }
                     
+                    // 忘記密碼按鈕
                     Button(action: {
-                        // Facebook 登入邏輯
+                        print("忘记密码按钮被点击")
+                                           navigateToForgotPassword = true
                     }) {
-                        HStack {
-                            Image(systemName: "f.circle")
-                            Text("Facebook")
-                        }
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(8)
-                        
-                        // Navigation Links
-                        NavigationLink(destination: 
-                                        MainTabView(),
-                                        /*MLIngredientView(viewModel: MLIngredientViewModel()),*/
-                                       isActive: $isLoggedIn) {
-                            EmptyView()} // 隱藏的 NavigationLink
-                        NavigationLink(destination: ForgotPasswordView(), isActive: $navigateToForgotPassword) { EmptyView() }
+                        Text("忘記密碼?")
+                            .foregroundColor(
+                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                            .frame(maxWidth: .infinity)
+                            .fontWeight(.bold)
+                            .padding()
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(
+                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
+                            .shadow(radius: 5)
                     }
+//                    .padding(.horizontal, 30)
+                    .sheet(isPresented: $navigateToForgotPassword) {
+                        ForgotPasswordView()
+                    }
+                    
+                    // 分隔线
+                    Text("Or sign up with")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .padding(.top, 10)
+                    
+                    // 社交登录按钮
+                    HStack(spacing: 20) {
+                        SocialLoginButton(imageName: "applelogo", title: "Apple", backgroundColor: Color.black) {
+                            // Apple 登录逻辑
+                        }
+                    }
+                    
+                    Spacer()
                 }
-                Spacer()
+                .padding()
             }
         }
-        .padding()
         .alert(isPresented: $loginViewModel.showAlert) {
             Alert(title: Text("Error"), message: Text(loginViewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
     }
 }
 
+struct SocialLoginButton: View {
+    let imageName: String
+    let title: String
+    let backgroundColor: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: imageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 20)
+                    .foregroundColor(.white)
+                Text(title)
+                    .foregroundColor(.white)
+                    .fontWeight(.medium)
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(backgroundColor)
+            .cornerRadius(10)
+            .shadow(radius: 5)
+        }
+    }
+}
+
+//import SwiftUI
+//
+//struct LoginDetailView: View {
+//    
+//    @StateObject private var loginViewModel = LoginDetailViewModel() // 管理登入相關操作
+//    @StateObject private var userViewModel = UserViewModel() // 管理跨視圖的用戶數據
+//    @State private var navigateToHome = false
+//    @State private var navigateToForgotPassword = false
+//    @State private var isLoggedIn = false
+//    
+//    var body: some View {
+//        CustomNavigationBarView(title: "") { // 確保有 NavigationView
+//            ZStack {
+//                VStack(spacing: 20) {
+//                    // Logo 圖片
+//                    Image("LogoFridgeChef")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .padding(.top, 20)
+//                    
+//                    // Email TextField
+//                    TextField("Email", text: $loginViewModel.email)
+//                        .padding()
+//                        .background(Color(UIColor.systemGray6))
+//                        .cornerRadius(8)
+//                        .shadow(radius: 5)
+//                        .autocapitalization(.none)
+//                        .keyboardType(.emailAddress)
+//                    
+//                    // Password SecureField
+//                    SecureField("Password", text: $loginViewModel.password)
+//                        .padding()
+//                        .background(Color(UIColor.systemGray6))
+//                        .cornerRadius(8)
+//                        .shadow(radius: 5) // 增加陰影效果
+//                    
+//                    // 登入按鈕
+//                    Button(action: {
+//                        self.isLoggedIn = true
+//                        //                         loginViewModel.login {
+//                        //                             navigateToHome = true  // 成功登入後觸發導航
+//                        //                         }
+//                    }) {
+//                        Text("登入")
+//                            .foregroundColor(.white)
+//                            .fontWeight(.bold)
+//                            .frame(maxWidth: .infinity)
+//                            .padding()
+//                            .background(
+//                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//                            .cornerRadius(8)
+//                            .shadow(radius: 5)
+//                    }
+//                    
+//                    // 忘記密碼按鈕
+//                    Button(action: {
+//                        print("忘记密码按钮被点击")
+//                                           navigateToForgotPassword = true
+//                    }) {
+//                        Text("忘記密碼?")
+//                            .foregroundColor(
+//                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//                            .frame(maxWidth: .infinity)
+//                            .fontWeight(.bold)
+//                            .padding()
+//                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(
+//                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
+//                            .shadow(radius: 5)
+//                    }
+//                    .sheet(isPresented: $navigateToForgotPassword) {
+//                               ForgotPasswordView()
+//                    
+//                    // 分隔線
+//                    Text("Or sign up with")
+//                        .font(.subheadline)
+//                        .foregroundColor(.gray)
+//                    
+//                    // 社交登入按鈕
+//                    HStack(spacing: 20) {
+//                        //                        SocialLoginButton(imageName: "google_icon", title: "Google", backgroundColor: Color(red: 66/255, green: 133/255, blue: 244/255)) {
+//                        //                            // Google 登入邏輯
+//                        //                        }
+//                        //
+//                        //                        SocialLoginButton(imageName: "facebook_icon", title: "Facebook", backgroundColor: Color(red: 59/255, green: 89/255, blue: 152/255)) {
+//                        //                            // Facebook 登入邏輯
+//                        //                        }
+//                        
+//                        SocialLoginButton(imageName: "applelogo", title: "Apple", backgroundColor: Color.black) {
+//                            // Apple 登入邏輯
+//                        }
+//                    }
+//                    
+//                    Spacer()
+//                }
+//                .padding()
+//                }
+//            }
+//        }
+//        .alert(isPresented: $loginViewModel.showAlert) {
+//            Alert(title: Text("Error"), message: Text(loginViewModel.alertMessage), dismissButton: .default(Text("OK")))
+//        }
+//    }
+//}
+//
+//struct SocialLoginButton: View {
+//    let imageName: String
+//    let title: String
+//    let backgroundColor: Color
+//    let action: () -> Void
+//    
+//    var body: some View {
+//        Button(action: action) {
+//            HStack {
+//                // 使用 SF Symbol 的圖標
+//                Image(systemName: imageName)
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 20, height: 20)
+//                    .foregroundColor(.white) // 設置圖標為白色
+//                Text(title)
+//                    .foregroundColor(.white)
+//                    .fontWeight(.medium)
+//            }
+//            .frame(maxWidth: .infinity)
+//            .padding()
+//            .background(backgroundColor)
+//            .cornerRadius(8)
+//        }
+//    }
+//}

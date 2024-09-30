@@ -43,7 +43,7 @@ struct RecipeRowView: View {
                 .cornerRadius(10)
                 .shadow(radius: 5)
             } else {
-                Image(systemName: "photo")
+                Image(systemName: "newphoto")
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: 200)

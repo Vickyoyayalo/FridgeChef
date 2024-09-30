@@ -11,8 +11,8 @@ import CryptoKit
 import FirebaseAuth
 
 struct LoginDetailView: View {
-    @StateObject private var loginViewModel = LoginDetailViewModel() // 管理登入相關操作
-    @StateObject private var userViewModel = UserViewModel() // 管理跨視圖的用戶數據
+    @StateObject private var loginViewModel = LoginDetailViewModel()
+    @StateObject private var userViewModel = UserViewModel() 
     @State private var navigateToHome = false
     @State private var navigateToForgotPassword = false
     @State private var isLoggedIn = false

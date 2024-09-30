@@ -59,9 +59,15 @@ struct LoginView: View {
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(RoundedRectangle(cornerRadius: 25).stroke(
-                        Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
-                    .background(RoundedRectangle(cornerRadius: 25).fill(Color.clear))
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.orange, Color.yellow]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                        .opacity(0.5)  // 应用50%透明度到整个LinearGradient
+                    )
+                    .cornerRadius(25)
                     .shadow(radius: 25)
                     .padding(.horizontal)
                     
@@ -92,66 +98,6 @@ struct LoginView: View {
         }
     }
 }
-
-//struct LoginView: View {
-//    @State private var email: String = ""
-//    @State private var password: String = ""
-//
-//    var body: some View {
-//        NavigationView {
-//            ZStack {
-//                // 背景影片
-//                VideoPlayerView(videoName: "LoginVideo")
-//                    .ignoresSafeArea()
-//                //                    .overlay(Color.white.opacity(0.1)) // 影片加上透明黑色遮罩，讓文字更易閱讀
-//
-//                VStack {
-//                    Spacer()
-//
-//                    // 登入按鈕
-//                    Button(action: {
-//                        // 登入動作
-//                    }) {
-//                        NavigationLink(destination: LoginDetailView()) {
-//                            Text("登入")
-//                                .font(.headline)
-//                                .foregroundColor(.white)
-//                                .fontWeight(.bold)
-//                                .frame(maxWidth: .infinity)
-//                                .padding()
-//                                .background(RoundedRectangle(cornerRadius: 25).stroke(
-//                                    Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
-//                                .background(RoundedRectangle(cornerRadius: 25).fill(Color.clear))
-//                                .shadow(radius: 5)
-//                        }
-//                        .padding(.horizontal)
-//
-//                        // 註冊按鈕
-//                        Button(action: {
-//                            // 註冊動作
-//                        }) {
-//                            NavigationLink(destination: SignUpView()) {
-//                                Text("註冊")
-//                                    .font(.headline)
-//                                    .foregroundColor(.white)
-//                                    .fontWeight(.bold)
-//                                    .frame(maxWidth: .infinity)
-//                                    .padding()
-//                                    .background(
-//                                           Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-//                                    .cornerRadius(25)
-//                                    .shadow(radius: 5)
-//                            }
-//
-//                        }
-//                        .padding()
-//                        .navigationBarHidden(true)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 // 背景影片播放
 struct VideoPlayerView: UIViewRepresentable {

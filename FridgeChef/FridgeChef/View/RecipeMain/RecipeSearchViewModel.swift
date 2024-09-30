@@ -60,11 +60,13 @@ class RecipeSearchViewModel: ObservableObject {
             }
         }
     }
+    
     func toggleFavorite(for recipeId: Int) {
         if let index = recipes.firstIndex(where: { $0.id == recipeId }) {
-            recipes[index].isFavorite.toggle()
-            saveFavorites()
+            recipes[index].isFavorite.toggle()  // Toggle the favorite status
+            saveFavorites()  // Save the favorites to UserDefaults or other storage
         }
+        objectWillChange.send()  // Manually trigger an object update notification
     }
     
     private func saveFavorites() {

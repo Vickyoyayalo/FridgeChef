@@ -65,7 +65,7 @@ struct LoginView: View {
                             startPoint: .leading,
                             endPoint: .trailing
                         )
-                        .opacity(0.5)  // 应用50%透明度到整个LinearGradient
+                        .opacity(0.8)  // 应用50%透明度到整个LinearGradient
                     )
                     .cornerRadius(25)
                     .shadow(radius: 25)

@@ -10,6 +10,7 @@ struct RecipeRowView: View {
     let recipe: Recipe
     let toggleFavorite: () -> Void
     @State private var animate = false
+    @ObservedObject var viewModel: RecipeSearchViewModel
     
     let tagColor = Color(UIColor(named: "SecondaryColor") ?? .black)
 
@@ -73,8 +74,7 @@ struct RecipeRowView: View {
                     }
                 }) {
                     Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
-                        .foregroundColor(recipe.isFavorite ? .orange : .gray)
-                        .foregroundColor(Color(UIColor(named: recipe.isFavorite ? "NavigationBarTitle" : "PrimaryColor") ?? UIColor.gray))
+                        .foregroundColor(Color(UIColor(named: recipe.isFavorite ? "NavigationBarTitle" : "GrayColor") ?? UIColor.gray))
                         .scaleEffect(animate ? 1.5 : 1.0)
                         .opacity(animate ? 0.5 : 1.0)
                         .animation(.easeInOut(duration: 0.3), value: animate)
@@ -89,5 +89,4 @@ struct RecipeRowView: View {
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
     }
 }
-
 

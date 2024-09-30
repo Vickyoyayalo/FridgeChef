@@ -14,16 +14,43 @@ struct LoginView: View {
     
     var body: some View {
         CustomNavigationBarView(title: "Welcome") {
-            ZStack {
+            ZStack(alignment: .bottom) {
+                GeometryReader {
+                    let size = $0.size
+                    
+                    Image(.loginView)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .offset(y: -60)
+                        .frame(width: size.width, height: size.height)
+                }
                 // 背景影片
-                VideoPlayerView(videoName: "LoginVideo")
+//                VideoPlayerView(videoName: "LoginVideo")
+//                    .ignoresSafeArea()
+//                
+                    .mask {
+                        Rectangle()
+                            .fill(.linearGradient(
+                                colors:[
+                                    .white,
+                                    .white,
+                                    .white,
+                                    .white,
+                                    .white,
+                                    .white.opacity(0.6),
+                                    .white.opacity(0.2),
+                                    .clear
+                                ],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            ))
+                    }
                     .ignoresSafeArea()
                 
                 VStack {
                     
                     Spacer()
                     
-                    // 登入按钮
                     Button("登入") {
                         self.isShowingLoginDetail = true
                     }
@@ -65,6 +92,7 @@ struct LoginView: View {
         }
     }
 }
+
 //struct LoginView: View {
 //    @State private var email: String = ""
 //    @State private var password: String = ""

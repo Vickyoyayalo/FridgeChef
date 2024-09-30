@@ -59,9 +59,9 @@ struct ChatView: View {
         • ...
         
         🍳【烹飪步驟】
-        1. 步驟一
-        2. 步驟二
-        3. ...
+         步驟一
+         步驟二
+         ...
         
         👩🏻‍🍳【貼心提醒】
         ...Bon appetit 🍽️
@@ -227,6 +227,62 @@ struct ChatView: View {
         }
     }
     
+    func parseRecipe(from message: String) -> ParsedRecipe {
+        var title: String?
+        var ingredients: [String] = []
+        var steps: [String] = []
+        var tips: String?
+        
+        let lines = message.components(separatedBy: "\n")
+        var currentSection: String?
+        
+        for line in lines {
+            if line.contains("🥙") {
+                // 提取食谱名称
+                title = line.replacingOccurrences(of: "🥙 ", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                continue
+            }
+            if line.contains("【食材】") {
+                currentSection = "ingredients"
+                continue
+            }
+            if line.contains("【烹飪步驟】") {
+                currentSection = "steps"
+                continue
+            }
+            if line.contains("【貼心提醒】") {
+                currentSection = "tips"
+                continue
+            }
+            if line.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                continue
+            }
+            
+            switch currentSection {
+            case "ingredients":
+                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "• ", with: "")
+                if !trimmedLine.isEmpty {
+                    ingredients.append(trimmedLine)
+                }
+            case "steps":
+                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmedLine.isEmpty {
+                    steps.append(trimmedLine)
+                }
+            case "tips":
+                tips = (tips ?? "") + line + "\n"
+            default:
+                continue
+            }
+        }
+        
+        // 移除 tips 最后的换行符
+        tips = tips?.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        return ParsedRecipe(title: title, ingredients: ingredients, steps: steps, tips: tips)
+    }
+
+
     private func messageView(for message: Message) -> some View {
         HStack {
             if message.role == .user {
@@ -244,43 +300,79 @@ struct ChatView: View {
                             .padding()
                             .background(Color.customColor(named: "NavigationBarTitle"))
                             .foregroundColor(.white)
+                            .bold()
                             .cornerRadius(10)
                     }
                 }
             } else {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 10) {
                     if let content = message.content {
-                        let ingredients = extractIngredients(from: content)
-                        if !ingredients.isEmpty {
-                            Text("🥬【食材】")
-                                .font(.headline)
+                        let recipe = parseRecipe(from: content)
+                        
+                        // 显示食谱名称
+                        if let title = recipe.title {
+                            Text("🥙 \(title)")
+                                .font(.title3)
+                                .bold()
                                 .padding(.bottom, 5)
-
-                            ForEach(ingredients, id: \.self) { ingredient in
-                                Button(action: {
-                                    addIngredientToShoppingList(ingredient)
-                                }) {
-                                    HStack {
-                                        Text(ingredient)
-                                            .foregroundColor(.blue)
-                                        Spacer()
-                                        Image(systemName: "plus.circle")
-                                            .foregroundColor(.blue)
+                        }
+                        
+                        // 显示食材列表
+                        if !recipe.ingredients.isEmpty {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("🥬【食材】")
+                                    .font(.headline)
+                                ForEach(recipe.ingredients, id: \.self) { ingredient in
+                                    Button(action: {
+                                        addIngredientToShoppingList(ingredient)
+                                    }) {
+                                        HStack {
+                                            Text(ingredient)
+                                                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                                .bold()
+                                            Spacer()
+                                            Image(systemName: "cart.badge.plus.fill")
+                                                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                        }
+                                        .padding(.vertical, 5)
                                     }
-                                    .padding(.vertical, 5)
+                                    .buttonStyle(PlainButtonStyle())
                                 }
-                                .buttonStyle(PlainButtonStyle())
                             }
-                            let remainingContent = removeIngredientsSection(from: content)
-                            Text(remainingContent)
-                                .padding()
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
-                        } else {
-                            Text(content)
-                                .padding()
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
+                            .padding()
+                            .background(Color.purple.opacity(0.1))
+                            .cornerRadius(10)
+                        }
+                        
+                        // 显示烹饪步骤
+                        if !recipe.steps.isEmpty {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("🍳【烹飪步驟】")
+                                    .font(.headline)
+                                ForEach(Array(recipe.steps.enumerated()), id: \.offset) { index, step in
+                                    HStack(alignment: .top) {
+                                        Text("\(index + 1).")
+                                            .bold()
+                                        Text(step)
+                                            .padding(.vertical, 2)
+                                    }
+                                }
+                            }
+                            .padding()
+                            .background(Color.orange.opacity(0.1))
+                            .cornerRadius(10)
+                        }
+                        
+                        // 显示贴心提醒
+                        if let tips = recipe.tips {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("👩🏻‍🍳【貼心提醒】")
+                                    .font(.headline)
+                                Text(tips)
+                            }
+                            .padding()
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(10)
                         }
                     }
                 }
@@ -316,7 +408,7 @@ struct ChatView: View {
             quantity: 1,
             unit: "個", // 默认单位
             status: "To Buy",
-            daysRemaining: 0,
+            daysRemaining: 2,
             image: nil
         )
 

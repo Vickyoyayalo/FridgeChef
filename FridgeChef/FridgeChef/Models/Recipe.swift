@@ -8,6 +8,12 @@
 import Foundation
 
 // MARK: - Models
+struct ParsedRecipe {
+    var title: String?
+    var ingredients: [String]
+    var steps: [String]
+    var tips: String?
+}
 
 struct Recipe: Identifiable, Codable, Equatable {
     let id: Int
@@ -86,4 +92,5 @@ struct EquipmentItem: Codable {
     let localizedName: String
     let image: String
 }
+
 

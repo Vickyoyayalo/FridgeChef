@@ -80,86 +80,96 @@ struct ChatView: View {
     }
     
     var body: some View {
-        VStack {
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .padding()
-            }
-            
-            Image("LogoFridgeChef")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 300, height: 38)
-                .padding(.top)
-            
-            ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
-                    ForEach(messages) { message in
-                        messageView(for: message)
-                    }
+        ZStack {
+            // 漸層背景
+            LinearGradient(
+                gradient: Gradient(colors: [Color.orange, Color.yellow]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .opacity(0.3)
+            .edgesIgnoringSafeArea(.all)
+            VStack {
+                if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .padding()
                 }
-            }
-            
-            if let image = image {
-                Image(uiImage: image)
+                
+                Image("LogoFridgeChef")
                     .resizable()
-                    .scaledToFit()
-                    .frame(height: 100)
-                    .cornerRadius(15)
-                    .shadow(radius: 3)
-                    .padding(.horizontal)
-                    .padding(.vertical, 5)
-                    .onTapGesture {
-                        self.showChangePhotoDialog = true
-                    }
-                    .confirmationDialog("想換張照片嗎？", isPresented: $showChangePhotoDialog, titleVisibility: .visible) {
-                        Button("換一張") {
-                            showPhotoOptions = true
+                    .scaledToFill()
+                    .frame(width: 300, height: 38)
+                    .padding(.top)
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(messages) { message in
+                            messageView(for: message)
                         }
-                        Button("移除照片", role: .destructive) {
-                            self.image = nil
-                        }
-                        Button("取消", role: .cancel) {}
                     }
-            }
-            HStack {
-                Button(action: { showPhotoOptions = true }) {
-                    Image(systemName: "camera.fill")
-                        .resizable()
-                        .scaledToFit() // Ensure the image scales properly within the frame
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                }
-                .padding(.leading, 10)
-                .fixedSize() // Prevent the button from being compressed
-                .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
-                    Button("相機") { photoSource = .camera }
-                    Button("相冊") { photoSource = .photoLibrary }
                 }
                 
-                Spacer(minLength: 20) // Ensures space distribution
-                
-                PlaceholderTextEditor(text: $inputText, placeholder: "今天想來點 🥙🍍 ...")
-                    .frame(height: 44) // Consistent height with buttons
-                
-                Spacer(minLength: 20) // Ensures space distribution
-                
-                Button(action: sendMessage) {
-                    Image(systemName: "paperplane.fill")
+                if let image = image {
+                    Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 35, height: 35)
-                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        .frame(height: 100)
+                        .cornerRadius(15)
+                        .shadow(radius: 3)
+                        .padding(.horizontal)
+                        .padding(.vertical, 5)
+                        .onTapGesture {
+                            self.showChangePhotoDialog = true
+                        }
+                        .confirmationDialog("想換張照片嗎？", isPresented: $showChangePhotoDialog, titleVisibility: .visible) {
+                            Button("換一張") {
+                                showPhotoOptions = true
+                            }
+                            Button("移除照片", role: .destructive) {
+                                self.image = nil
+                            }
+                            Button("取消", role: .cancel) {}
+                        }
                 }
-                .padding(.trailing, 10)
-                .fixedSize() // Prevent the button from being compressed
+                HStack {
+                    Button(action: { showPhotoOptions = true }) {
+                        Image(systemName: "camera.fill")
+                            .resizable()
+                            .scaledToFit() // Ensure the image scales properly within the frame
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                    }
+                    .padding(.leading, 10)
+                    .fixedSize() // Prevent the button from being compressed
+                    .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
+                        Button("相機") { photoSource = .camera }
+                        Button("相冊") { photoSource = .photoLibrary }
+                    }
+                    
+                    Spacer(minLength: 20) // Ensures space distribution
+                    
+                    PlaceholderTextEditor(text: $inputText, placeholder: "今天想來點 🥙🍍 ...")
+                        .frame(height: 44) // Consistent height with buttons
+                    
+                    Spacer(minLength: 20) // Ensures space distribution
+                    
+                    Button(action: sendMessage) {
+                        Image(systemName: "paperplane.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 35, height: 35)
+                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                    }
+                    .padding(.trailing, 10)
+                    .fixedSize() // Prevent the button from being compressed
+                }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
-        }
-        .fullScreenCover(item: $photoSource) { source in
-            ImagePicker(image: $image, sourceType: source == .photoLibrary ? .photoLibrary : .camera)
-                .ignoresSafeArea()
+            .fullScreenCover(item: $photoSource) { source in
+                ImagePicker(image: $image, sourceType: source == .photoLibrary ? .photoLibrary : .camera)
+                    .ignoresSafeArea()
+            }
         }
     }
     

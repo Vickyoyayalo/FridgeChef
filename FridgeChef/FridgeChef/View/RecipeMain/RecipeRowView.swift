@@ -48,7 +48,7 @@ struct RecipeRowView: View {
                     .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: 200)
                     .foregroundColor(.gray)
-                    .background(Color(.systemGray5))
+                    .background(Color(.clear))
                     .cornerRadius(10)
                     .shadow(radius: 5)
             }
@@ -74,6 +74,7 @@ struct RecipeRowView: View {
                 }) {
                     Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
                         .foregroundColor(recipe.isFavorite ? .orange : .gray)
+                        .foregroundColor(Color(UIColor(named: recipe.isFavorite ? "NavigationBarTitle" : "PrimaryColor") ?? UIColor.gray))
                         .scaleEffect(animate ? 1.5 : 1.0)
                         .opacity(animate ? 0.5 : 1.0)
                         .animation(.easeInOut(duration: 0.3), value: animate)
@@ -83,8 +84,10 @@ struct RecipeRowView: View {
             
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color(.white).opacity(0.3))
         .cornerRadius(15)
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
     }
 }
+
+

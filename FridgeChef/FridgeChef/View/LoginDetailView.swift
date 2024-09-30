@@ -16,7 +16,7 @@ struct LoginDetailView: View {
     
     var body: some View {
         CustomNavigationBarView(title: "") { // 确保有 NavigationView
-            ZStack {
+            ZStack(alignment: .bottomLeading) {
                 VStack(spacing: 20) {
                     // Logo 圖片
                     Image("LogoFridgeChef")
@@ -94,6 +94,12 @@ struct LoginDetailView: View {
                     Spacer()
                 }
                 .padding()
+                Image("monster")
+                                   .resizable()
+                                   .scaledToFill()
+                                   .frame(width: 250, height: 300)
+                                   .offset(x: -50, y: 100) // Adjust position relative to the bottom left
+                           
             }
         }
         .alert(isPresented: $loginViewModel.showAlert) {

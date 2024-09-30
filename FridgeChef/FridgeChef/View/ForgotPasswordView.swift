@@ -1,3 +1,10 @@
+//
+//  ForgotPasswordView.swift
+//  FridgeChef
+//
+//  Created by Vickyhereiam on 2024/9/16.
+//
+
 import SwiftUI
 
 struct ForgotPasswordView: View {
@@ -9,16 +16,6 @@ struct ForgotPasswordView: View {
     
     var body: some View {
         CustomNavigationBarView(title: "") {
-//            ZStack {
-//                // 背景顏色，可以更改為漸變色等
-//                LinearGradient(
-//                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
-//                    startPoint: .top,
-//                    endPoint: .bottom
-//                )
-//                .opacity(0.4) // 設置透明度
-//                .ignoresSafeArea()
-//            }
             
             VStack(spacing: 30) { // 垂直堆疊元素，並設置間距
                 Image("LogoFridgeChef")
@@ -30,7 +27,7 @@ struct ForgotPasswordView: View {
                 
                 // 標題
                 Text("重設密碼 🗝️")
-                    .font(.title2)
+                    .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(
                         Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
@@ -73,8 +70,8 @@ struct ForgotPasswordView: View {
                 Image("monster")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 200, height: 200)
-                    .padding(.top, 20)
+                    .frame(width: 400, height: 400)
+                    .padding(.top)
                 
                 // 彈出提示框
                     .alert(isPresented: $showingAlert) {
@@ -85,7 +82,7 @@ struct ForgotPasswordView: View {
                         )
                     }
             }
-            .padding(.top, 100) // 將堆疊的元素下移
+            .padding(.top, 200) // 將堆疊的元素下移
         }
     }
 }

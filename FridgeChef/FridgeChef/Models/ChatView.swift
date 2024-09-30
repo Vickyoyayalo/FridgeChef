@@ -43,6 +43,9 @@ struct PlaceholderTextEditor: View {
 }
 
 struct ChatView: View {
+    @EnvironmentObject var foodItemStore: FoodItemStore
+    @State private var isWaitingForResponse = false
+    @State private var GroceryList: [String] = []
     @State private var api = ChatGPTAPI(
         apiKey: "sk-8VrzLltl-TexufDVK8RWN-GVvWLusdkCjGi9lKNSSkT3BlbkFJMryR2KSLUPFRKb5VCzGPXJGI8s-8bUt9URrmdfq0gA",
         systemPrompt: """
@@ -80,101 +83,111 @@ struct ChatView: View {
     }
     
     var body: some View {
-        ZStack {
-            // 漸層背景
-            LinearGradient(
-                gradient: Gradient(colors: [Color.orange, Color.yellow]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .opacity(0.3)
-            .edgesIgnoringSafeArea(.all)
-            VStack {
-                if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .padding()
-                }
-                
-                Image("LogoFridgeChef")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 300, height: 38)
-                    .padding(.top)
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
-                        ForEach(messages) { message in
-                            messageView(for: message)
-                        }
+        NavigationView {
+            ZStack {
+                // 漸層背景
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.orange, Color.yellow]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .opacity(0.3)
+                .edgesIgnoringSafeArea(.all)
+                VStack {
+                    if let errorMessage = errorMessage {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .padding()
                     }
-                }
-                
-                if let image = image {
-                    Image(uiImage: image)
+                    
+                    Image("LogoFridgeChef")
                         .resizable()
-                        .scaledToFit()
-                        .frame(height: 100)
-                        .cornerRadius(15)
-                        .shadow(radius: 3)
-                        .padding(.horizontal)
-                        .padding(.vertical, 5)
-                        .onTapGesture {
-                            self.showChangePhotoDialog = true
-                        }
-                        .confirmationDialog("想換張照片嗎？", isPresented: $showChangePhotoDialog, titleVisibility: .visible) {
-                            Button("換一張") {
-                                showPhotoOptions = true
+                        .scaledToFill()
+                        .frame(width: 300, height: 38)
+                        .padding(.top)
+                    
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 10) {
+                            ForEach(messages) { message in
+                                messageView(for: message)
                             }
-                            Button("移除照片", role: .destructive) {
-                                self.image = nil
-                            }
-                            Button("取消", role: .cancel) {}
                         }
-                }
-                HStack {
-                    Button(action: { showPhotoOptions = true }) {
-                        Image(systemName: "camera.fill")
-                            .resizable()
-                            .scaledToFit() // Ensure the image scales properly within the frame
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                    }
-                    .padding(.leading, 10)
-                    .fixedSize() // Prevent the button from being compressed
-                    .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
-                        Button("相機") { photoSource = .camera }
-                        Button("相冊") { photoSource = .photoLibrary }
                     }
                     
-                    Spacer(minLength: 20) // Ensures space distribution
+                    if isWaitingForResponse {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                            .scaleEffect(1.5)
+                            .padding()
+                            .background(Color.clear)
+                    }
                     
-                    PlaceholderTextEditor(text: $inputText, placeholder: "今天想來點 🥙🍍 ...")
-                        .frame(height: 44) // Consistent height with buttons
-                    
-                    Spacer(minLength: 20) // Ensures space distribution
-                    
-                    Button(action: sendMessage) {
-                        Image(systemName: "paperplane.fill")
+                    if let image = image {
+                        Image(uiImage: image)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 35, height: 35)
-                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                            .frame(height: 100)
+                            .cornerRadius(15)
+                            .shadow(radius: 3)
+                            .padding(.horizontal)
+                            .padding(.vertical, 5)
+                            .onTapGesture {
+                                self.showChangePhotoDialog = true
+                            }
+                            .confirmationDialog("想換張照片嗎？", isPresented: $showChangePhotoDialog, titleVisibility: .visible) {
+                                Button("換一張") {
+                                    showPhotoOptions = true
+                                }
+                                Button("移除照片", role: .destructive) {
+                                    self.image = nil
+                                }
+                                Button("取消", role: .cancel) {}
+                            }
                     }
-                    .padding(.trailing, 10)
-                    .fixedSize() // Prevent the button from being compressed
+                    HStack {
+                        Button(action: { showPhotoOptions = true }) {
+                            Image(systemName: "camera.fill")
+                                .resizable()
+                                .scaledToFit() // Ensure the image scales properly within the frame
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        }
+                        .padding(.leading, 10)
+                        .fixedSize() // Prevent the button from being compressed
+                        .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
+                            Button("相機") { photoSource = .camera }
+                            Button("相冊") { photoSource = .photoLibrary }
+                        }
+                        
+                        Spacer(minLength: 20) // Ensures space distribution
+                        
+                        PlaceholderTextEditor(text: $inputText, placeholder: "今天想來點 🥙🍍 ...")
+                            .frame(height: 44) // Consistent height with buttons
+                        
+                        Spacer(minLength: 20) // Ensures space distribution
+                        
+                        Button(action: sendMessage) {
+                            Image(systemName: "paperplane.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 35, height: 35)
+                                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        }
+                        .padding(.trailing, 10)
+                        .fixedSize() // Prevent the button from being compressed
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
-            }
-            .fullScreenCover(item: $photoSource) { source in
-                ImagePicker(image: $image, sourceType: source == .photoLibrary ? .photoLibrary : .camera)
-                    .ignoresSafeArea()
+                .fullScreenCover(item: $photoSource) { source in
+                    ImagePicker(image: $image, sourceType: source == .photoLibrary ? .photoLibrary : .camera)
+                        .ignoresSafeArea()
+                }
             }
         }
     }
     
     func recognizeFood(in image: UIImage, completion: @escaping (String) -> Void) {
-        // 请确保您在项目中包含了 Food.mlmodel 和 TranslationDictionary
+       
         guard let model = try? VNCoreMLModel(for: Food().model) else {
             print("Failed to load model")
             completion("未知食材")
@@ -237,10 +250,38 @@ struct ChatView: View {
             } else {
                 VStack(alignment: .leading) {
                     if let content = message.content {
-                        Text(content)
-                            .padding()
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(10)
+                        let ingredients = extractIngredients(from: content)
+                        if !ingredients.isEmpty {
+                            Text("🥬【食材】")
+                                .font(.headline)
+                                .padding(.bottom, 5)
+
+                            ForEach(ingredients, id: \.self) { ingredient in
+                                Button(action: {
+                                    addIngredientToShoppingList(ingredient)
+                                }) {
+                                    HStack {
+                                        Text(ingredient)
+                                            .foregroundColor(.blue)
+                                        Spacer()
+                                        Image(systemName: "plus.circle")
+                                            .foregroundColor(.blue)
+                                    }
+                                    .padding(.vertical, 5)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+                            let remainingContent = removeIngredientsSection(from: content)
+                            Text(remainingContent)
+                                .padding()
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+                        } else {
+                            Text(content)
+                                .padding()
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+                        }
                     }
                 }
                 Spacer()
@@ -249,6 +290,65 @@ struct ChatView: View {
         .padding(.horizontal)
     }
 
+    func removeIngredientsSection(from message: String) -> String {
+        var lines = message.components(separatedBy: "\n")
+        var newLines: [String] = []
+        var isIngredientSection = false
+
+        for line in lines {
+            if line.contains("【食材】") {
+                isIngredientSection = true
+                continue
+            } else if line.contains("【烹飪步驟】") || line.contains("🍳") {
+                isIngredientSection = false
+            }
+
+            if !isIngredientSection {
+                newLines.append(line)
+            }
+        }
+        return newLines.joined(separator: "\n")
+    }
+
+    func addIngredientToShoppingList(_ ingredientName: String) {
+        let newFoodItem = FoodItem(
+            name: ingredientName,
+            quantity: 1,
+            unit: "個", // 默认单位
+            status: "To Buy",
+            daysRemaining: 0,
+            image: nil
+        )
+
+        // 添加到共享的 foodItems 列表
+        foodItemStore.foodItems.append(newFoodItem)
+    }
+    
+    func extractIngredients(from message: String) -> [String] {
+        var ingredients: [String] = []
+        let lines = message.components(separatedBy: "\n")
+        var isIngredientSection = false
+
+        for line in lines {
+            if line.contains("【食材】") {
+                isIngredientSection = true
+                continue
+            } else if line.contains("【烹飪步驟】") || line.contains("🍳") {
+                break
+            }
+
+            if isIngredientSection {
+                // 移除前面的符号和空格
+                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "• ", with: "")
+                if !trimmedLine.isEmpty {
+                    ingredients.append(trimmedLine)
+                }
+            }
+        }
+        return ingredients
+    }
+
+    
     func sendMessage() {
         // 检查输入文本和图片是否为空
         guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || image != nil else { return }
@@ -271,6 +371,8 @@ struct ChatView: View {
             let userMessage = Message(role: .user, content: messageText, image: nil)
             self.messages.append(userMessage)
         }
+        
+        isWaitingForResponse = true
         
         Task {
             do {
@@ -304,6 +406,8 @@ struct ChatView: View {
                                     print("发送消息时出错：\(error)")
                                     self.errorMessage = "发送消息时出错：\(error.localizedDescription)"
                                 }
+                                // 在成功或失败后，确保隐藏 ProgressView
+                                self.isWaitingForResponse = false
                             }
                         }
                     }
@@ -315,6 +419,8 @@ struct ChatView: View {
                         DispatchQueue.main.async {
                             self.messages.append(responseMessage)
                             self.errorMessage = nil
+                            // 在收到回复后，隐藏 ProgressView
+                            self.isWaitingForResponse = false
                         }
                     }
                 }
@@ -322,6 +428,25 @@ struct ChatView: View {
                 print("发送消息时出错：\(error)")
                 DispatchQueue.main.async {
                     self.errorMessage = "发送消息时出错：\(error.localizedDescription)"
+                    // 在发生错误时，隐藏 ProgressView
+                    self.isWaitingForResponse = false
+                }
+            }
+        }
+    }
+    
+    func sendMessageToAPI(message: String) {
+        Task {
+            do {
+                let responseText = try await api.sendMessage(message)
+                DispatchQueue.main.async {
+                    self.messages.append(Message(role: .assistant, content: responseText, image: nil))
+                    self.isWaitingForResponse = false
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.errorMessage = "發送訊息出錯：\(error.localizedDescription)"
+                    self.isWaitingForResponse = false
                 }
             }
         }

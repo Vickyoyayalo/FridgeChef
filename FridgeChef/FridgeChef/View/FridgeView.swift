@@ -54,6 +54,8 @@ struct FridgeView: View {
                                     .foregroundColor(item.daysRemainingColor)
                                     .fontWeight(item.daysRemainingFontWeight)
                             }
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                             .contentShape(Rectangle())  // 讓整個區域可點擊
                             .onTapGesture {
                                 // 當點擊某個項目時，打開編輯視圖
@@ -63,6 +65,8 @@ struct FridgeView: View {
                         }
                         .onDelete(perform: deleteItems) // 添加删除功能
                     }
+                    .background(Color.clear)
+                    .listStyle(PlainListStyle()) 
                 }
                 .sheet(isPresented: $showingMLIngredientView) {
                     if let editingItem = editingItem {
@@ -94,10 +98,9 @@ struct FridgeView: View {
                         })
                     }
                 }
-                .listStyle(PlainListStyle()) // 使用纯样式列表以减少间隙
                 .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search food ingredient")
                 .navigationBarTitle("Storage 🥬 ", displayMode: .automatic)
-                .navigationBarItems(leading: EditButton(), trailing: addButton)
+                .navigationBarItems(leading: EditButton().bold(), trailing: addButton)
             }
         }
     }
@@ -108,7 +111,8 @@ struct FridgeView: View {
             editingItem = nil
             showingMLIngredientView = true
         }) {
-            Image(systemName: "plus").foregroundColor(.orange)
+            Image(systemName: "plus").foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                .bold()
         }
     }
     

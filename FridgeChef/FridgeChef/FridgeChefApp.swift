@@ -58,15 +58,20 @@ func createGradientImage(colors: [UIColor], size: CGSize, opacity: CGFloat) -> U
 @main
 struct FridgeChefApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var foodItemStore = FoodItemStore()
     @StateObject private var viewModel = RecipeSearchViewModel()
     @AppStorage("log_Status") var isLoggedIn: Bool = false
 
     var body: some Scene {
         WindowGroup {
             if isLoggedIn {
-                MainTabView().environmentObject(viewModel)
+                MainTabView()
+                    .environmentObject(viewModel)
+                    .environmentObject(foodItemStore)
             } else {
-                LoginView().environmentObject(viewModel)
+                LoginView()
+                    .environmentObject(viewModel)
+                    .environmentObject(foodItemStore)
             }
         }
     }

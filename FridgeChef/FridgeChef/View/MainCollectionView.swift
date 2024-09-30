@@ -157,7 +157,7 @@ struct MainCollectionView: View {
         Button(action: {
             showingLogoutConfirmation = true
         }) {
-            Text("登出")
+            Image(systemName: "power.circle.fill")
         }
     }
 
@@ -166,6 +166,7 @@ struct MainCollectionView: View {
             isEditing.toggle()
         }) {
             Text(isEditing ? "Done" : "Edit")
+                .bold()
         }
     }
 

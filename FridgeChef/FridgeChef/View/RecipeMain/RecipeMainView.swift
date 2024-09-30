@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RecipeMainView: View {
     @EnvironmentObject var viewModel: RecipeSearchViewModel
+    @State private var showingAddGroceryForm = false
     @State private var searchQuery: String = ""
     
     var body: some View {
@@ -59,6 +60,7 @@ struct RecipeMainView: View {
                 }
                 .navigationTitle("Recipe 👩🏻‍🍳")
                 .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Recipes")
+                .navigationBarItems(leading: EditButton().bold(), trailing: addButton)
                 .onSubmit(of: .search) {
                     viewModel.searchRecipes(query: searchQuery)
                 }
@@ -71,7 +73,19 @@ struct RecipeMainView: View {
                         }
                     )
                 }
+                .sheet(isPresented: $showingAddGroceryForm) {
+                    AddGroceryForm(viewModel: AddGroceryFormViewModel())
+                }
             }
+        }
+    }
+    var addButton: some View {
+        Button(action: {
+            // 点击添加按钮时设置为新增模式
+            showingAddGroceryForm = true
+        }) {
+            Image(systemName: "plus").foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                .bold()
         }
     }
 }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct GroceryListView: View {
+    @EnvironmentObject var foodItemStore: FoodItemStore
     @State private var searchText = ""
     @State private var showingMLIngredientView = false
     @State private var editingItem: FoodItem?
@@ -29,7 +30,7 @@ struct GroceryListView: View {
                 .edgesIgnoringSafeArea(.all)
                 ZStack(alignment: .bottomTrailing) {
                     List {
-                        ForEach(foodItems.filter { $0.name.lowercased().contains(searchText.lowercased()) || searchText.isEmpty }) { item in
+                        ForEach(foodItemStore.foodItems.filter { $0.name.lowercased().contains(searchText.lowercased()) || searchText.isEmpty }) { item in
                             HStack {
                                 itemImageView(item: item)
                                 
@@ -44,6 +45,8 @@ struct GroceryListView: View {
                                     .foregroundColor(item.daysRemainingColor)
                                     .fontWeight(item.daysRemainingFontWeight)
                             }
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                             .contentShape(Rectangle())  // 讓整個區域可點擊
                             .onTapGesture {
                                 // 當點擊某個項目時，打開編輯視圖
@@ -89,7 +92,7 @@ struct GroceryListView: View {
                             showingMapView = true // 触发地图视图
                         }) {
                             VStack {
-                                Text("附近超市")
+                                Text("Nearby")
                                     .fontWeight(.bold)
                                     .shadow(radius: 10)
                                 Image(systemName: "location.fill")
@@ -113,7 +116,7 @@ struct GroceryListView: View {
                 .listStyle(PlainListStyle()) // 使用纯样式列表以减少间隙
                 .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search food ingredient")
                 .navigationBarTitle("Grocery 🛒 ", displayMode: .automatic)
-                .navigationBarItems(leading: EditButton(), trailing: addButton)
+                .navigationBarItems(leading: EditButton().bold(), trailing: addButton)
                 .sheet(isPresented: $showingMLIngredientView) {
                     MLIngredientView()
                 }
@@ -127,43 +130,46 @@ struct GroceryListView: View {
             editingItem = nil
             showingMLIngredientView = true
         }) {
-            Image(systemName: "plus").foregroundColor(.orange)
+            Image(systemName: "plus").foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                .bold()
         }
     }
     
     func deleteItems(at offsets: IndexSet) {
-        foodItems.remove(atOffsets: offsets)
+        foodItemStore.foodItems.remove(atOffsets: offsets)
     }
     
     func handleSave(_ ingredient: Ingredient) {
-        if let editing = editingItem, let index = foodItems.firstIndex(where: { $0.id == editing.id }) {
-            // If editing existing item
+        if let editing = editingItem, let index = foodItemStore.foodItems.firstIndex(where: { $0.id == editing.id }) {
+            // 更新现有项
             let today = Calendar.current.startOfDay(for: Date())
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
             
-            foodItems[index].name = ingredient.name
-            foodItems[index].quantity = Int(ingredient.quantity ?? "") ?? 1
-            foodItems[index].status = ingredient.storageMethod
-            foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
-            foodItems[index].image = ingredient.image
+            foodItemStore.foodItems[index].name = ingredient.name
+            foodItemStore.foodItems[index].quantity = Int(ingredient.quantity ?? "") ?? 1
+            foodItemStore.foodItems[index].status = ingredient.storageMethod
+            foodItemStore.foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
+            foodItemStore.foodItems[index].image = ingredient.image
         } else {
-            // If adding a new item
+            // 添加新项
             let today = Calendar.current.startOfDay(for: Date())
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
             let newFoodItem = FoodItem(
                 name: ingredient.name,
                 quantity: Int(ingredient.quantity ?? "") ?? 1,
-                unit: ingredient.unit, status: ingredient.storageMethod,
+                unit: ingredient.unit,
+                status: ingredient.storageMethod,
                 daysRemaining: Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0,
                 image: ingredient.image
             )
             
-            foodItems.insert(newFoodItem, at: 0)
+            foodItemStore.foodItems.insert(newFoodItem, at: 0)
         }
         
-        // Reset editingItem
+        // 重置 editingItem
         editingItem = nil
     }
+
     
     
     private func itemImageView(item: FoodItem) -> some View {

@@ -23,6 +23,16 @@ struct AddGroceryForm: View {
 
     var body: some View {
         NavigationStack {
+            ZStack {
+                // 渐层背景
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .opacity(0.3)
+                .edgesIgnoringSafeArea(.all)
+            
             ScrollView {
                 VStack {
                     if let selectedImage = selectedImage {
@@ -35,28 +45,25 @@ struct AddGroceryForm: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20.0))
                             .padding(.bottom)
                     } else {
-                        Image("newphoto")  // Provide a placeholder
+                        Image("RecipeFood")  // Provide a placeholder
                             .resizable()
                             .scaledToFit()  // 保持比例並完整顯示圖片
                             .frame(minWidth: 0, maxWidth: .infinity)
                             .frame(height: 200)
-                            .background(Color(.systemGray5))
+                            .background(Color.white.opacity(0.4))
                             .clipShape(RoundedRectangle(cornerRadius: 20.0))
                             .padding(.bottom)
                             .onTapGesture {
                                 showPhotoOptions = true
                             }
                     }
-
-                    FormTextField(label: "名稱", placeholder: "食材名稱", value: $viewModel.name)
-                    FormTextField(label: "類型", placeholder: "食材類型", value: $viewModel.type)
-//                    FormTextField(label: "ADDRESS", placeholder: "Fill in the grocery address", value: $viewModel.location)
-//                    FormTextField(label: "PHONE", placeholder: "Fill in the grocery phone", value: $viewModel.phone)
-                    FormTextView(label: "Notes", value: $viewModel.description, height: 100)
+                    FormTextField(label: "名稱", placeholder: "食譜名稱", value: $viewModel.name)
+                    FormTextField(label: "類型", placeholder: "食譜類型", value: $viewModel.type)
+                    FormTextField(label: "Notes", placeholder: "食譜紀錄", value: $viewModel.description)
                 }
                 .padding()
             }
-            .navigationTitle("Add Grocery Item")
+            .navigationTitle("Add Recipe")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { dismiss() }) {
@@ -64,15 +71,9 @@ struct AddGroceryForm: View {
                             .foregroundColor(.orange)
                     }
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { save() }) {
-                        Text("Save")
-                            .font(.headline)
-                            .foregroundColor(Color("NavigationBarTitle"))
-                    }
-                }
             }
         }
+    }
         .onDisappear {
             // Handle the image saving here
             if let selectedImage = selectedImage {
@@ -82,7 +83,7 @@ struct AddGroceryForm: View {
         }
         .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
             Button("相機") { photoSource = .camera }
-            Button("您的相冊") { photoSource = .photoLibrary }
+            Button("相冊") { photoSource = .photoLibrary }
         }
         .fullScreenCover(item: $photoSource) { source in
             switch source {
@@ -145,49 +146,20 @@ struct FormTextField: View {
                 .font(.system(.body, design: .rounded))
                 .textFieldStyle(PlainTextFieldStyle())
                 .padding(10)
+                .background(Color.white.opacity(0.3)) // 添加淡色背景
+                .cornerRadius(8) // 圓角設定
                 .overlay(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color(.systemGray5), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.orange, lineWidth: 2) // 修改框線顏色和寬度
                 )
                 .padding(.vertical, 10)
-            
         }
     }
 }
 
-struct FormTextView: View {
-    
-    let label: String
-    
-    @Binding var value: String
-    
-    var height: CGFloat = 200.0
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(label.uppercased())
-                .font(.system(.headline, design: .rounded))
-                .foregroundStyle(Color(.darkGray))
-            
-            TextEditor(text: $value)
-                .frame(maxWidth: .infinity)
-                .frame(height: height)
-                .padding(10)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color(.systemGray5), lineWidth: 1)
-                )
-                .padding(.top, 10)
-            
-        }
-    }
-}
+
 
 #Preview("FormTextField", traits: .fixedLayout(width: 300, height: 200)) {
     FormTextField(label: "NAME", placeholder: "Fill in the restaurant name", value: .constant(""))
-}
-
-#Preview("FormTextView", traits: .sizeThatFitsLayout) {
-    FormTextView(label: "Description", value: .constant(""))
 }
 

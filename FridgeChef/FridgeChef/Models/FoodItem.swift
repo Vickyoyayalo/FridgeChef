@@ -8,6 +8,11 @@
 import Foundation
 import FirebaseFirestore
 import SwiftUI
+import Combine
+
+class FoodItemStore: ObservableObject {
+    @Published var foodItems: [FoodItem] = []
+}
 
 struct FoodItem: Identifiable {
     var id = UUID()

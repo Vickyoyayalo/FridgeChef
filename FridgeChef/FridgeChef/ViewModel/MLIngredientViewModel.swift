@@ -27,7 +27,7 @@ class MLIngredientViewModel: ObservableObject {
 
         if let item = editingFoodItem {
             recognitionService.recognizedText = item.name
-            quantity = item.quantity ?? ""
+            quantity = item.quantity
             expirationDate = item.expirationDate
             storageMethod = item.storageMethod
             image = item.image

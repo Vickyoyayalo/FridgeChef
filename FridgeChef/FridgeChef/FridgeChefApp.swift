@@ -25,7 +25,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         navBarAppearance.shadowImage = UIImage() // 这也可以用来移除分隔线
         
         // 创建并设置渐变图像为背景，这里透明度设置为 0.4 作为示例
-        if let gradientImage = createGradientImage(colors: [UIColor.systemOrange, UIColor.systemYellow], size: CGSize(width: UIScreen.main.bounds.width, height: 50), opacity: 0.3) {
+        if let gradientImage = createGradientImage(colors: [UIColor.systemOrange, UIColor.systemYellow], size: CGSize(width: UIScreen.main.bounds.width, height: 50), opacity: 0.4) {
             navBarAppearance.backgroundImage = gradientImage
         }
         

@@ -45,7 +45,6 @@ struct PlaceholderTextEditor: View {
 struct ChatView: View {
     @EnvironmentObject var foodItemStore: FoodItemStore
     @State private var isWaitingForResponse = false
-    @State private var GroceryList: [String] = []
     @State private var api = ChatGPTAPI(
         apiKey: "sk-8VrzLltl-TexufDVK8RWN-GVvWLusdkCjGi9lKNSSkT3BlbkFJMryR2KSLUPFRKb5VCzGPXJGI8s-8bUt9URrmdfq0gA",
         systemPrompt: """
@@ -59,8 +58,9 @@ struct ChatView: View {
         • ...
         
         🍳【烹飪步驟】
-         步驟一
-         步驟二
+        1. 步驟一
+        2. 步驟二
+        3. 步驟三
          ...
         
         👩🏻‍🍳【貼心提醒】
@@ -91,7 +91,7 @@ struct ChatView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .opacity(0.3)
+                .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
                 VStack {
                     if let errorMessage = errorMessage {
@@ -265,9 +265,11 @@ struct ChatView: View {
                     ingredients.append(trimmedLine)
                 }
             case "steps":
-                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                if !trimmedLine.isEmpty {
-                    steps.append(trimmedLine)
+                   var trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                   if !trimmedLine.isEmpty {
+                       // 移除步骤前的编号，例如 "1. "、"2、" 等
+                       trimmedLine = removeLeadingNumber(from: trimmedLine)
+                       steps.append(trimmedLine)
                 }
             case "tips":
                 tips = (tips ?? "") + line + "\n"
@@ -281,6 +283,17 @@ struct ChatView: View {
         
         return ParsedRecipe(title: title, ingredients: ingredients, steps: steps, tips: tips)
     }
+    
+    func removeLeadingNumber(from string: String) -> String {
+        let pattern = #"^\s*\d+[\.\、]?\s*"#  // 匹配数字后跟 "."、"、" 或空格
+        if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
+            let range = NSRange(string.startIndex..., in: string)
+            return regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")
+        } else {
+            return string
+        }
+    }
+
 
 
     private func messageView(for message: Message) -> some View {
@@ -323,27 +336,13 @@ struct ChatView: View {
                                 Text("🥬【食材】")
                                     .font(.headline)
                                 ForEach(recipe.ingredients, id: \.self) { ingredient in
-                                    Button(action: {
-                                        addIngredientToShoppingList(ingredient)
-                                    }) {
-                                        HStack {
-                                            Text(ingredient)
-                                                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                                                .bold()
-                                            Spacer()
-                                            Image(systemName: "cart.badge.plus.fill")
-                                                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                                        }
-                                        .padding(.vertical, 5)
-                                    }
-                                    .buttonStyle(PlainButtonStyle())
+                                    IngredientRow(ingredient: ingredient, addAction: addIngredientToShoppingList)
                                 }
                             }
                             .padding()
                             .background(Color.purple.opacity(0.1))
                             .cornerRadius(10)
                         }
-                        
                         // 显示烹饪步骤
                         if !recipe.steps.isEmpty {
                             VStack(alignment: .leading, spacing: 5) {
@@ -359,7 +358,7 @@ struct ChatView: View {
                                 }
                             }
                             .padding()
-                            .background(Color.orange.opacity(0.1))
+                            .background(Color.orange.opacity(0.2))
                             .cornerRadius(10)
                         }
                         
@@ -554,5 +553,37 @@ extension Color {
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
         ChatView()
+    }
+}
+
+struct IngredientRow: View {
+    var ingredient: String
+    var addAction: (String) -> Void
+
+    @State private var showAlert = false
+
+    var body: some View {
+        Button(action: {
+            addAction(ingredient)
+            showAlert = true
+        }) {
+            HStack {
+                Text(ingredient)
+                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                    .bold()
+                Spacer()
+                Image(systemName: "cart.badge.plus.fill")
+                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+            }
+            .padding(.vertical, 5)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("已加入購物清單"),
+                message: Text("\(ingredient) 已加入您的購物清單。"),
+                dismissButton: .default(Text("好的"))
+            )
+        }
     }
 }

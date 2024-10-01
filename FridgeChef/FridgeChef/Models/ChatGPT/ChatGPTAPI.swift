@@ -31,7 +31,7 @@ class ChatGPTAPI {
     
     init(
         apiKey: String,
-        model: String = "gpt-3.5-turbo", /*gpt-4*//*gpt-3.5-turbo*/
+        model: String = "gpt-4o", /*gpt-4*//*gpt-3.5-turbo*/
         systemPrompt: String,
         temperature: Double = 0.5,
         top_p: Double = 0.9

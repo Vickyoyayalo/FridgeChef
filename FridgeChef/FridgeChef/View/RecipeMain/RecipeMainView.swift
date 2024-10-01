@@ -41,7 +41,7 @@ struct RecipeMainView: View {
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                         }
-                        .listStyle(PlainListStyle()) // 使用简洁的列表风格
+                        .listStyle(PlainListStyle()) 
                     } else if let errorMessage = viewModel.errorMessage {
                         // 显示错误消息
                         Spacer()

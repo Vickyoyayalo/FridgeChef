@@ -16,9 +16,10 @@ struct APIErrorResponse: Codable {
 
 // MARK: - RecipeSearchService
 class RecipeSearchService {
-    private let apiKey = "148f05700ea74f11ba0ec784cfbbd18f"
+    private let apiKey = "d9a7b48aefd9469c89381e5304712805"
 //   Hannah 148f05700ea74f11ba0ec784cfbbd18f
-//   mine d9a7b48aefd9469c89381e5304712805
+//   mine   d9a7b48aefd9469c89381e5304712805
+//   Arvin  4a29e9b60b6c49fe9eb3d0f869af70c8
     private let baseURL = "https://api.spoonacular.com/recipes"
     
     func fetchData<T: Codable>(url: URL, completion: @escaping (Result<T, Error>) -> Void) {

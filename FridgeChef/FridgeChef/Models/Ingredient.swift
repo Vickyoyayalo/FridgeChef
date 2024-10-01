@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct SimpleIngredient: Codable, Identifiable {
+struct DetailIngredient: Codable, Identifiable {
     var id: Int
     var name: String
     var amount: Double
@@ -24,7 +24,6 @@ struct Ingredient: Codable, Identifiable {
     var expirationDate: Date
     var storageMethod: String
     var imageBase64: String?
-
     
     var image: UIImage? {
         get {

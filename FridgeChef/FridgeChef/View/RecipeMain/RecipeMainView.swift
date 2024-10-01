@@ -15,7 +15,6 @@ struct RecipeMainView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // 漸層背景
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
                     startPoint: .top,
@@ -24,7 +23,7 @@ struct RecipeMainView: View {
                 .opacity(0.3)
                 .edgesIgnoringSafeArea(.all)
                 VStack {
-                    // 如果正在加载显示进度指示器
+                    
                     if viewModel.isLoading {
                         Spacer()
                         ProgressView()
@@ -46,7 +45,7 @@ struct RecipeMainView: View {
                     } else if let errorMessage = viewModel.errorMessage {
                         // 显示错误消息
                         Spacer()
-                        Text("错误：\(errorMessage.message)")
+                        Text("錯誤：\(errorMessage.message)")
                             .foregroundColor(.red)
                             .padding()
                         Spacer()
@@ -66,9 +65,9 @@ struct RecipeMainView: View {
                 }
                 .alert(item: $viewModel.errorMessage) { errorMessage in
                     Alert(
-                        title: Text("错误"),
+                        title: Text("錯誤"),
                         message: Text(errorMessage.message),
-                        dismissButton: .default(Text("确定")) {
+                        dismissButton: .default(Text("確定")) {
                             viewModel.errorMessage = nil
                         }
                     )

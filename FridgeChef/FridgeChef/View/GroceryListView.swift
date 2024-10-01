@@ -34,11 +34,17 @@ struct GroceryListView: View {
                             HStack {
                                 itemImageView(item: item)
                                 
-                                VStack(alignment: .leading) {
-                                    Text("\(item.name)")
-                                    Text("\(item.quantity) - \(item.status)")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(item.name)
+                                        .font(.headline)
+                                    HStack {
+                                        Text("數量：\(item.quantity) \(item.unit)")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                        Text("狀態：\(item.status)")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                                 Spacer()
                                 Text(item.daysRemainingText)
@@ -60,8 +66,8 @@ struct GroceryListView: View {
                         if let editingItem = editingItem {
                             // 编辑模式
                             // 假设默认量和单位
-                            let defaultAmount = 1.0  // 示例默认值
-                            let defaultUnit = "個"  // 示例默认单位
+                            let defaultAmount = 1.0
+                            let defaultUnit = "個"
                             
                             // 转换UIImage为Base64字符串
                             let base64Image = editingItem.image?.pngData()?.base64EncodedString()
@@ -146,7 +152,7 @@ struct GroceryListView: View {
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
             
             foodItemStore.foodItems[index].name = ingredient.name
-            foodItemStore.foodItems[index].quantity = Int(ingredient.quantity ?? "") ?? 1
+            foodItemStore.foodItems[index].quantity = Int(ingredient.quantity) ?? 1
             foodItemStore.foodItems[index].status = ingredient.storageMethod
             foodItemStore.foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
             foodItemStore.foodItems[index].image = ingredient.image
@@ -170,8 +176,6 @@ struct GroceryListView: View {
         editingItem = nil
     }
 
-    
-    
     private func itemImageView(item: FoodItem) -> some View {
         if let image = item.image {
             return Image(uiImage: image)
@@ -180,7 +184,7 @@ struct GroceryListView: View {
                 .frame(width: 80, height: 80)
                 .cornerRadius(20)
         } else {
-            return Image("newphoto")  // 显示默认图片
+            return Image("RecipeFood") 
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)

@@ -8,11 +8,20 @@
 import Foundation
 
 // MARK: - Models
+
+struct ParsedIngredient {
+    var name: String
+    var quantity: String
+    var unit: String
+}
+
 struct ParsedRecipe {
     var title: String?
-    var ingredients: [String]
+    var ingredients: [ParsedIngredient]
     var steps: [String]
+    var link: String?
     var tips: String?
+    var unparsedContent: String?
 }
 
 struct Recipe: Identifiable, Codable, Equatable {
@@ -57,7 +66,7 @@ struct RecipeDetails: Codable, Identifiable {
     let dishTypes: [String]
     let diets: [String]
     let instructions: String?
-    var extendedIngredients: [SimpleIngredient]
+    var extendedIngredients: [DetailIngredient]
     let analyzedInstructions: [AnalyzedInstruction]?
     var isFavorite: Bool?  // 添加这个属性来标记是否被收藏
     

@@ -28,11 +28,12 @@ struct MLIngredientView: View {
     @State private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     @State private var recognitionTask: SFSpeechRecognitionTask?
 
+    //TODO 改成英文也可
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
 
-    @State private var storageMethod = "冷藏"
-    let storageOptions = ["冷凍", "冷藏", "室溫"]
+    @State private var storageMethod = "Refrigerate"
+    let storageOptions = ["Refrigerate", "Freeze"]
 
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?

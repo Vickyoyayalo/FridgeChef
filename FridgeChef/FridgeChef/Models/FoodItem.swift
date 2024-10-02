@@ -24,34 +24,83 @@ struct FoodItem: Identifiable {
     var image: UIImage?
 }
 
+//extension FoodItem {
+//    var daysRemainingText: String {
+//        if daysRemaining > 2 {
+//            return "Can keep \(daysRemaining) days👨🏻‍🌾"
+//        } else if daysRemaining == 1 || daysRemaining == 2 {
+//            return "\(daysRemaining) days left👀"
+//        } else if daysRemaining == 0 {
+//            return "It's TODAY👵🏼"
+//        } else {
+//            return "Already Expired \(abs(daysRemaining)) 天‼️"
+//        }
+//    }
+//
+//    var daysRemainingColor: Color {
+//        if daysRemaining > 2 {
+//            return .gray  // 大於 2 天為灰色
+//        } else if daysRemaining == 1 || daysRemaining == 2 {
+//            return .green  // 1~2 天內為綠色
+//        } else if daysRemaining == 0 {
+//            return .orange  // 今天到期為橘色
+//        } else {
+//            return .red  // 已過期為紅色
+//        }
+//    }
+//    
+//    
+//    var daysRemainingFontWeight: Font.Weight {
+//        return daysRemaining < 0 ? .bold : .regular
+//    }
+//}
+//
+
 extension FoodItem {
     var daysRemainingText: String {
-        if daysRemaining > 2 {
-            return "可以再放 \(daysRemaining) 天耶👨🏻‍🌾"
-        } else if daysRemaining == 1 || daysRemaining == 2 {
-            return "再 \(daysRemaining) 天過期👀"
-        } else if daysRemaining == 0 {
-            return "今天就要到期咯👵🏼"
-        } else {
-            return "過期 \(abs(daysRemaining)) 天‼️"
+        switch status {
+        case "Refrigerate":
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            let today = Date()
+            let dateString = formatter.string(from: today)
+            return "To Buy \(dateString)"
+        default:
+            if daysRemaining > 2 {
+                return "Can keep \(daysRemaining) days👨🏻‍🌾"
+            } else if daysRemaining == 1 || daysRemaining == 2 {
+                return "\(daysRemaining) days left👀"
+            } else if daysRemaining == 0 {
+                return "It's TODAY👵🏼"
+            } else {
+                return "Already Expired \(abs(daysRemaining)) 天‼️"
+            }
         }
     }
 
     var daysRemainingColor: Color {
-        if daysRemaining > 2 {
-            return .gray  // 大於 2 天為灰色
-        } else if daysRemaining == 1 || daysRemaining == 2 {
-            return .green  // 1~2 天內為綠色
-        } else if daysRemaining == 0 {
-            return .orange  // 今天到期為橘色
-        } else {
-            return .red  // 已過期為紅色
+        switch status {
+        case "Refrigerate":
+            return .blue // 冷藏狀態顯示藍色
+        default:
+            if daysRemaining > 2 {
+                return .gray
+            } else if daysRemaining == 1 || daysRemaining == 2 {
+                return .green
+            } else if daysRemaining == 0 {
+                return .orange
+            } else {
+                return .red
+            }
         }
     }
-    
-    
+
     var daysRemainingFontWeight: Font.Weight {
-        return daysRemaining < 0 ? .bold : .regular
+        switch status {
+        case "Refrigerate":
+            return .bold // 冷藏狀態顯示加粗
+        default:
+            return daysRemaining < 0 ? .bold : .regular
+        }
     }
 }
-

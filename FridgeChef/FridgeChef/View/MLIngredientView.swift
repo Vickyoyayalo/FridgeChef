@@ -11,6 +11,7 @@ import Vision
 import CoreML
 import PhotosUI
 import Speech
+import IQKeyboardManagerSwift
 
 struct MLIngredientView: View {
     var onSave: ((Ingredient) -> Void)? = nil
@@ -40,16 +41,15 @@ struct MLIngredientView: View {
     @State private var savedIngredients: [Ingredient] = []
 
     init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {
-        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white // 改變選中的顏色
+        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white
         UISegmentedControl.appearance().backgroundColor = UIColor.orange
-        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.orange], for: .selected) // 選中項目文字為白色
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.orange], for: .selected)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
 
         self.onSave = onSave
         self.editingFoodItem = editingFoodItem
 
         if let item = editingFoodItem {
-            // 如果有傳入要編輯的食材，初始化相關值
             _recognizedText = State(initialValue: item.name)
             _quantity = State(initialValue: item.quantity)
             _expirationDate = State(initialValue: item.expirationDate)
@@ -67,159 +67,169 @@ struct MLIngredientView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 10) {
-                    // 圖片顯示區域（點擊後選擇相機或照片庫）
-                    if let image = image {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .frame(height: 200)
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 20.0))
-                            .padding(.bottom)
-                            .onTapGesture {
-                                showPhotoOptions = true
-                            }
-                    } else {
-                        Image("newphoto")  // Provide a placeholder
-                            .resizable()
-                            .scaledToFit()  // 保持比例並完整顯示圖片
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .frame(height: 200)
-                            .background(Color(.systemGray5))
-                            .clipShape(RoundedRectangle(cornerRadius: 20.0))
-                            .padding(.bottom)
-                            .onTapGesture {
-                                showPhotoOptions = true
-                            }
-                    }
-
-                    // Picker 使用全局樣式
-                    Picker("選擇存儲方式", selection: $storageMethod) {
-                        ForEach(storageOptions, id: \.self) { option in
-                            Text(option)
+            ZStack {
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .opacity(0.3)
+                .edgesIgnoringSafeArea(.all)
+                
+                ScrollView {
+                    VStack(spacing: 10) {
+                        // 圖片顯示區域（點擊後選擇相機或照片庫）
+                        if let image = image {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                                .frame(height: 200)
+                                .background(Color(.systemGray6))
+                                .clipShape(RoundedRectangle(cornerRadius: 20.0))
+                                .padding(.bottom)
+                                .onTapGesture {
+                                    showPhotoOptions = true
+                                }
+                        } else {
+                            Image("RecipeFood")  // Provide a placeholder
+                                .resizable()
+                                .scaledToFit()  // 保持比例並完整顯示圖片
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                                .frame(height: 200)
+                                .background(Color.white.opacity(0.4))
+                                .clipShape(RoundedRectangle(cornerRadius: 20.0))
+                                .padding(.bottom)
+                                .onTapGesture {
+                                    showPhotoOptions = true
+                                }
                         }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .padding()
-                    .cornerRadius(8)
-
-                    // 名稱、數量、到期日與各自的 TextField 排列為 HStack
-                    VStack(alignment: .leading, spacing: 20) {
-                        HStack {
-                            Text("名稱")
-                                .font(.headline)
-
+                        
+                        // Picker 使用全局樣式
+                        Picker("選擇存儲方式", selection: $storageMethod) {
+                            ForEach(storageOptions, id: \.self) { option in
+                                Text(option)
+                            }
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .padding()
+                        .cornerRadius(8)
+                        
+                        // 名稱、數量、到期日與各自的 TextField 排列為 HStack
+                        VStack(alignment: .leading, spacing: 20) {
                             HStack {
-                                TextField("辨識結果", text: $recognizedText)
+                                Text("名稱")
+                                    .font(.headline)
+                                
+                                HStack {
+                                    TextField("辨識結果", text: $recognizedText)
+                                        .padding()
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                        )
+                                        .overlay(
+                                            // 麥克風按鈕放在右邊
+                                            Button(action: {
+                                                if isRecording {
+                                                    stopRecording()
+                                                    isRecording = false
+                                                } else {
+                                                    startRecording()
+                                                    isRecording = true
+                                                }
+                                            }) {
+                                                Image(systemName: isRecording ? "mic.fill" : "mic")
+                                                    .font(.title2)
+                                                    .foregroundColor(Color(UIColor(named: isRecording ? "PrimaryColor" : "NavigationBarTitle") ?? UIColor.orange))
+                                                    .padding(.trailing, 10)
+                                            }
+                                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing) 
+                                        )
+                                        .padding(.horizontal)
+                                    
+                                }
+                            }
+                            
+                            HStack {
+                                Text("數量    ")
+                                    .font(.headline)
+                                
+                                TextField("請輸入數量", text: $quantity)
                                     .padding()
+                                    .frame(width: 255, alignment: .center)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 8)
                                             .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                     )
-                                    .overlay(
-                                        // 麥克風按鈕放在右邊
-                                        Button(action: {
-                                            if isRecording {
-                                                stopRecording()
-                                                isRecording = false
-                                            } else {
-                                                startRecording()
-                                                isRecording = true
-                                            }
-                                        }) {
-                                            Image(systemName: isRecording ? "mic.fill" : "mic")
-                                                .font(.title2)
-                                                .foregroundColor(isRecording ? .red : .orange)
-                                                .padding(.trailing, 10)  // 確保按鈕位於TextField的內部邊緣
-                                        }
-                                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing) // 將按鈕對齊到TextField的右側
-                                    )
-                                    .padding(.horizontal)
-
+                                    .keyboardType(.numberPad)
+                                
+                            }
+                            
+                            HStack {
+                                Text("到期日")
+                                    .font(.headline)
+                                
+                                DatePickerTextField(date: $expirationDate, label: "")
+                                    .environment(\.locale, Locale(identifier: "zh-Hant"))
                             }
                         }
-
-                        HStack {
-                            Text("數量    ")
+                        .padding(.horizontal)
+                        
+                        // 儲存按鈕
+                        Button(action: saveIngredient) {
+                            Text("儲存")
                                 .font(.headline)
-
-                            TextField("請輸入數量", text: $quantity)
                                 .padding()
-                                .frame(width: 255, alignment: .center)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                )
-                                .keyboardType(.numberPad)
-
+                                .frame(maxWidth: .infinity)
+                                .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                            
                         }
-
-                        HStack {
-                            Text("到期日")
-                                .font(.headline)
-
-                            DatePickerTextField(date: $expirationDate, label: "")
-                                .environment(\.locale, Locale(identifier: "zh-Hant"))
+                        .padding()
+                        .alert(isPresented: $isSavedAlertPresented) {
+                            Alert(title: Text("成功"), message: Text("食材已儲存"), dismissButton: .default(Text("確定")))
                         }
-                    }
-                    .padding(.horizontal)
-
-                    // 儲存按鈕
-                    Button(action: saveIngredient) {
-                        Text("儲存")
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.orange)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-
                     }
                     .padding()
-                    .alert(isPresented: $isSavedAlertPresented) {
-                        Alert(title: Text("成功"), message: Text("食材已儲存"), dismissButton: .default(Text("確定")))
+                    .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
+                        Button("相機") { photoSource = .camera }
+                        Button("相冊") { photoSource = .photoLibrary }
+                    }
+                    .fullScreenCover(item: $photoSource) { source in
+                        switch source {
+                        case .photoLibrary:
+                            ImagePicker(image: $image, sourceType: .photoLibrary)
+                                .ignoresSafeArea()
+                                .onDisappear {
+                                    if let image = image {
+                                        recognizeFood(in: image)
+                                        //                                    performTextRecognition(on: image)
+                                    }
+                                }
+                        case .camera:
+                            ImagePicker(image: $image, sourceType: .camera)
+                                .ignoresSafeArea()
+                                .onDisappear {
+                                    if let image = image {
+                                        recognizeFood(in: image)
+                                        //                                    performTextRecognition(on: image)
+                                    }
+                                }
+                        }
+                    }
+                    .onAppear {
+                        requestSpeechRecognitionAuthorization()
                     }
                 }
-                .padding()
-                .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
-                    Button("相機") { photoSource = .camera }
-                    Button("相冊") { photoSource = .photoLibrary }
-                }
-                .fullScreenCover(item: $photoSource) { source in
-                    switch source {
-                    case .photoLibrary:
-                        ImagePicker(image: $image, sourceType: .photoLibrary)
-                            .ignoresSafeArea()
-                            .onDisappear {
-                                if let image = image {
-                                    recognizeFood(in: image)
-//                                    performTextRecognition(on: image)
-                                }
-                            }
-                    case .camera:
-                        ImagePicker(image: $image, sourceType: .camera)
-                            .ignoresSafeArea()
-                            .onDisappear {
-                                if let image = image {
-                                    recognizeFood(in: image)
-//                                    performTextRecognition(on: image)
-                                }
-                            }
-                    }
-                }
-                .onAppear {
-                    requestSpeechRecognitionAuthorization()
-                }
-            }
-            .navigationTitle("Add Ingredient")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.orange)
+                .navigationTitle("Add Ingredient")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        }
                     }
                 }
             }
@@ -265,8 +275,7 @@ struct MLIngredientView: View {
 
     // Helper function to update UI
     func updateUIWithFoodRecognitionResult(result: String) {
-        // Update your UI elements, maybe using published properties or calling another method that handles UI updates
-        recognizedText = result  // This assumes recognizedText is accessible and updated correctly
+        recognizedText = result
     }
 
     //     使用 Vision 進行文字識別 (OCR)
@@ -311,12 +320,18 @@ struct MLIngredientView: View {
 
     // 儲存食材資料的函數
     func saveIngredient() {
-        let newIngredient = Ingredient(
+        let defaultAmount = 1.0  // 一个示例值
+        let defaultUnit = "個"    // 一个示例单位
+
+        // 创建 Ingredient 实例
+        var newIngredient = Ingredient(
             name: recognizedText,
             quantity: quantity,
+            amount: defaultAmount,
+            unit: defaultUnit,
             expirationDate: expirationDate,
             storageMethod: storageMethod,
-            image: image
+            imageBase64: image?.pngData()?.base64EncodedString()  
         )
         savedIngredients.append(newIngredient)
         isSavedAlertPresented = true

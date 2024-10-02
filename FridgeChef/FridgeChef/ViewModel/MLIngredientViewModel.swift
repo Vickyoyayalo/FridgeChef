@@ -39,13 +39,22 @@ class MLIngredientViewModel: ObservableObject {
         }
     // 保存食材
     func saveIngredient() {
-        let newIngredient = Ingredient(
+        // 假设我们需要一些默认值或逻辑来计算 amount 和 unit
+        let defaultAmount = 1.0  // 一个示例值
+        let defaultUnit = "個"    // 一个示例单位
+        let base64String = image?.pngData()?.base64EncodedString()
+        // 创建 Ingredient 实例
+        var newIngredient = Ingredient(
             name: recognitionService.recognizedText,
             quantity: quantity,
+            amount: defaultAmount,
+            unit: defaultUnit,
             expirationDate: expirationDate,
             storageMethod: storageMethod,
-            image: image
+            imageBase64: image?.pngData()?.base64EncodedString()  // 转换 UIImage 为 Base64 字符串
         )
+
+        // 调用 onSave 回调函数保存 Ingredient
         onSave?(newIngredient)
         isSavedAlertPresented = true
     }

@@ -6,82 +6,70 @@
 //
 
 import Foundation
-import FirebaseFirestore
+import SwiftUI
 
-struct Ingredient {
-    var id = UUID()
+struct DetailIngredient: Codable, Identifiable {
+    var id: Int
     var name: String
-    var quantity: String
-    var expirationDate: Date
-    var storageMethod: String
-    var image: UIImage?
+    var amount: Double
+    var unit: String
 }
 
+struct Ingredient: Codable, Identifiable {
+    var id: UUID = UUID()
+    var name: String
+    var quantity: String
+    var amount: Double
+    var unit: String
+    var expirationDate: Date
+    var storageMethod: String
+    var imageBase64: String?
+    
+    var image: UIImage? {
+        get {
+            guard let base64 = imageBase64, let imageData = Data(base64Encoded: base64) else { return nil }
+            return UIImage(data: imageData)
+        }
+        set {
+            imageBase64 = newValue?.pngData()?.base64EncodedString()
+        }
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, amount, unit, quantity, expirationDate, storageMethod, imageBase64
+    }
+}
+struct IngredientItem: Codable {
+    let id: Int
+    let name: String
+    let localizedName: String
+    let image: String
+}
+
+// 擴展 Codable 編碼/解碼邏輯
 extension Ingredient {
     init(from foodItem: FoodItem) {
+        self.id = UUID()  // 直接生成一个新的 UUID
         self.name = foodItem.name
         self.quantity = "\(foodItem.quantity)"
+        self.amount = Double(foodItem.quantity)  // 假设 quantity 和 amount 有关联
+        self.unit = "個"  // 假设 foodItem 没有单位，使用默认值
+        let today = Date()
+        let calendar = Calendar.current
         
-        // Calculate the expiration date based on daysRemaining
-        let today = Date()  // Today's date
-        let calendar = Calendar.current  // User's current calendar
-        
-        // Assuming daysRemaining means the number of days from today
         if let expirationDate = calendar.date(byAdding: .day, value: foodItem.daysRemaining, to: today) {
             self.expirationDate = expirationDate
         } else {
-            self.expirationDate = today  // Fallback to today if the calculation fails
+            self.expirationDate = today
         }
-
+        
         self.storageMethod = foodItem.status
-        self.image = foodItem.image
+        
+        // 将 UIImage 转换为 Base64 字符串
+        if let image = foodItem.image, let imageData = image.pngData() {
+            self.imageBase64 = imageData.base64EncodedString()
+        } else {
+            self.imageBase64 = nil
+        }
     }
 }
-
-//struct Ingredient: Identifiable, Codable {
-//    @DocumentID var id: String? // Firestore 的文件 ID
-//    var name: String // 食材名稱
-//    var ingredientPhoto: [String] // 食材照片的 URL 列表
-//    var expirationDate: Date // 食材有效期
-//    var category: [String] // 食材類別的 Array
-//    var storage: [String] // 儲存分類，例如冰箱、冷凍等
-//
-//    init(id: String? = nil, name: String, ingredientPhoto: [String], expirationDate: Date, category: [String], storage: [String]) {
-//        self.id = id
-//        self.name = name
-//        self.ingredientPhoto = ingredientPhoto
-//        self.expirationDate = expirationDate
-//        self.category = category
-//        self.storage = storage
-//    }
-//}
-
-//import Foundation
-//import FirebaseFirestore
-//
-//struct Ingredient: Identifiable, Codable {
-//    @DocumentID var id: String?
-//    var name: String
-//    var ingredientPhoto: [String] // 可以是食材照片的URL
-//    var quantity: Quantity // 自定義結構來表示數量和單位
-//    var category: [String] // 食材分類的陣列
-//    var expirationDate: Date // 有效期
-//    var storage: [String] // 存放的地方，如冰箱、冷凍等
-//
-//    struct Quantity: Codable {
-//        var amount: String // 數量
-//        var unit: Double   // 單位
-//    }
-//
-//    init(id: String? = nil, name: String, ingredientPhoto: [String], quantity: Quantity, category: [String], expirationDate: Date, storage: [String]) {
-//        self.id = id
-//        self.name = name
-//        self.ingredientPhoto = ingredientPhoto
-//        self.quantity = quantity
-//        self.category = category
-//        self.expirationDate = expirationDate
-//        self.storage = storage
-//    }
-//}
-
-

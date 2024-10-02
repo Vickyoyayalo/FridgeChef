@@ -1,6 +1,6 @@
 //
 //  ChatGPTAPI.swift
-//  TravelChatGPT
+//  FridgeChef
 //
 //  Created by Vickyhereiam on 2024/9/10.
 //
@@ -31,7 +31,7 @@ class ChatGPTAPI {
     
     init(
         apiKey: String,
-        model: String = "gpt-3.5-turbo",
+        model: String = "gpt-4o", /*gpt-4*//*gpt-3.5-turbo*/
         systemPrompt: String,
         temperature: Double = 0.5,
         top_p: Double = 0.9
@@ -55,7 +55,7 @@ class ChatGPTAPI {
             messages: requestMessages,
             temperature: temperature,
             top_p: 0.9,
-            max_tokens: 1500,
+            max_tokens: 2500,
             stream: false
         )
         var urlRequest = self.urlRequest

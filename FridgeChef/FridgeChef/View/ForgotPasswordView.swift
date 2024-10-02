@@ -2,40 +2,87 @@
 //  ForgotPasswordView.swift
 //  FridgeChef
 //
-//  Created by Vickyhereiam on 2024/9/17.
+//  Created by Vickyhereiam on 2024/9/16.
 //
 
 import SwiftUI
 
 struct ForgotPasswordView: View {
     @State private var email = ""
-    @State private var showingAlert = false // State to manage alert visibility
-    @State private var alertMessage = "" // State to hold the alert message
+    @State private var showingAlert = false // 控制彈出提示框的狀態
+    @State private var alertMessage = "" // 提示框的訊息
+    @ObservedObject private var viewModel = UserViewModel() // 確保 ViewModel 初始化正確
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject private var viewModel = UserViewModel()  // Ensuring ViewModel is initialized correctly
     
     var body: some View {
-            VStack {
-                TextField("Email", text: $email)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+        CustomNavigationBarView(title: "") {
+            
+            VStack(spacing: 30) { // 垂直堆疊元素，並設置間距
+                Image("LogoFridgeChef")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 300, height: 100) // 調整 Logo 大小
+                    .padding(.top, 20)
+                    .padding(.bottom, 5)
+                
+                // 標題
+                Text("重設密碼 🗝️")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(
+                        Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                
+                // Email TextField
+                TextField("請輸入您的Email", text: $email)
                     .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
+                    .padding(.horizontal, 20)
                 
-                Button("密碼重設") {
-                    viewModel.sendPasswordReset(email: email)
+                // 密碼重設按鈕
+                Button(action: {
+                    if email.isEmpty {
+                        alertMessage = "請輸入您的Email"
+                        showingAlert = true
+                    } else {
+                        viewModel.sendPasswordReset(email: email)
+                        alertMessage = "密碼重設連結已發送到您的Email"
+                        showingAlert = true
+                    }
+                }) {
+                    Text("發送重設連結")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(
+                            Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
                 }
+                .padding(.horizontal, 20) // 按鈕的左右內邊距，確保與輸入框對齊
                 
-                .padding()
-                .alert(isPresented: $showingAlert) {  // Utilizing local state for alert
-                    Alert(
-                        title: Text("密碼重設"),
-                        message: Text(alertMessage),
-                        dismissButton: .default(Text("確定"))
-                    )
+                Spacer() // 占位符，將按鈕推到中間位置
+                
+                Image("monster")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 400, height: 400)
+                    .padding(.top)
+                
+                // 彈出提示框
+                    .alert(isPresented: $showingAlert) {
+                        Alert(
+                            title: Text("密碼重設"),
+                            message: Text(alertMessage),
+                            dismissButton: .default(Text("確定"))
+                        )
+                    }
             }
-            .navigationBarTitle("Forgot Password", displayMode: .inline)
-            .padding()
+            .padding(.top, 200) // 將堆疊的元素下移
         }
     }
 }

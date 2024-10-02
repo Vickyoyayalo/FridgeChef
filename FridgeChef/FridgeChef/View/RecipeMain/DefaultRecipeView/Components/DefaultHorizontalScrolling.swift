@@ -1,23 +1,22 @@
 //
-//  HorizontalScrolling.swift
-//  FridgeChef
+//  DefaultHorizontalScrolling.swift
+//  RecipeBookUI
 //
-//  Created by Vickyhereiam on 2024/9/18.
+//  Created by Eymen on 16.08.2023.
 //
 
 import SwiftUI
 
-struct HorizontalScrolling: View {
+struct DefaultHorizontalScrolling: View {
     @ObservedObject var recipeManager: RecipeManager
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 0) {
                 ForEach(recipeManager.recipes.shuffled()) { recipe in
-                    SimpleRecipeCard(recipe: recipe)
+                    DefaultRecipeCard(recipe: recipe)
                 }
                 .padding(.horizontal)
             }
         }
     }
 }
-

@@ -9,14 +9,17 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTabIndex = 0
     @State private var showChatView = false
+    @ObservedObject private var keyboardResponder = KeyboardResponder()
     
     var body: some View {
         ZStack(alignment: .bottom) {
             ZStack {
-                Color("NavigationBarTitle")  // 设置整个视图背景
-                    .edgesIgnoringSafeArea(.all)  // 忽略安全区域，覆盖整个屏幕
+                Color("NavigationBarTitle")
+                    .edgesIgnoringSafeArea(.all)
+                
                 TabView(selection: $selectedTabIndex) {
-                    HomeView()
+                    
+                    MainCollectionView()
                         .tabItem {
                             Label("收藏", systemImage: "heart.fill")
                         }
@@ -28,13 +31,13 @@ struct MainTabView: View {
                         }
                         .tag(1)
                     
-                    ChatView()// 占位视图，不实际显示在 TabView 中
+                    ChatView()
                         .tabItem {
                             Label("", systemImage: "")
                         }
                         .tag(2)
                     
-                    RecipeView(recipeManager: RecipeManager())
+                    RecipeMainView()
                         .tabItem {
                             Label("食譜", systemImage: "heart.text.square")
                         }
@@ -47,21 +50,23 @@ struct MainTabView: View {
                         .tag(4)
                 }
                 .tint(Color("NavigationBarTitle"))
+                .padding(.bottom, keyboardResponder.currentHeight)
             }
-            // 中心的浮起按钮，带有自定义Logo
+            
             Button(action: {
-                selectedTabIndex = 2 // 这将导航到 ChatView
+                selectedTabIndex = 2 // Navigate to ChatView
             }) {
-                Image("Chat") // 这里使用你的 Logo 图片
+                Image("Chat")
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
                     .frame(width: 60, height: 60)
                     .shadow(radius: 10)
             }
-            .offset(y: 0) // 将按钮向上浮起一点
-            .accessibility(label: Text("Chat"))
-            .zIndex(1) // 确保这个按钮在最前面
+            .offset(y: -keyboardResponder.currentHeight / 2) // Adjust offset based on the keyboard height
+            .padding(.bottom, 30) // This padding is constant, additional to any keyboard adjustments
+            .zIndex(1) // Ensures the button stays on top
         }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

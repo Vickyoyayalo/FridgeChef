@@ -20,7 +20,8 @@ struct MapViewWithUserLocation: View {
         ZStack {
             map
                 .overlay(
-                    searchResults.isEmpty ? nil : Color.black.opacity(0.4) // Conditional dimming
+                    searchResults.isEmpty ? nil : Color.black.opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
                 )
             VStack {
                 searchField
@@ -107,14 +108,14 @@ struct MapViewWithUserLocation: View {
             searchText.isEmpty || supermarket.name.localizedCaseInsensitiveContains(searchText)
         })
         .edgesIgnoringSafeArea(.all)
-        .onChange(of: selectedSupermarket) { _ in
-            locationManager.isUserInteracting = true
-        }
-        .gesture(DragGesture().onChanged { _ in
-            locationManager.isUserInteracting = true
-        }.onEnded { _ in
-            locationManager.isUserInteracting = false
-        })
+//        .onChange(of: selectedSupermarket) { _ in
+//            locationManager.isUserInteracting = true
+//        }
+//        .gesture(DragGesture().onChanged { _ in
+//            locationManager.isUserInteracting = true
+//        }.onEnded { _ in
+//            locationManager.isUserInteracting = false
+//        })
     }
     private var listResults: some View {
         List(searchResults, id: \.id) { supermarket in
@@ -200,95 +201,3 @@ extension Supermarket {
         return supermarketLocation.distance(from: userCLLocation) / 1000 // Convert to kilometers
     }
 }
-
-
-//import SwiftUI
-//import MapKit
-//
-//struct MapViewWithUserLocation: View {
-//    @ObservedObject var locationManager: LocationManager
-//    @Binding var isPresented: Bool
-//    @State private var selectedSupermarket: Supermarket?
-//    @State private var searchText: String = ""
-//
-//    var body: some View {
-//        ZStack {
-//            CustomMapView(region: $locationManager.region, selectedSupermarket: $selectedSupermarket, locationManager: locationManager, supermarkets: locationManager.placesFetcher.supermarkets.filter { supermarket in
-//                searchText.isEmpty || supermarket.name.localizedCaseInsensitiveContains(searchText)
-//            })
-//            .edgesIgnoringSafeArea(.all)
-//            .onChange(of: selectedSupermarket) { _ in
-//                // 防止地圖在選擇標記後重新聚焦到用戶位置
-//                locationManager.isUserInteracting = true
-//            }
-//            .gesture(DragGesture().onChanged { _ in
-//                locationManager.isUserInteracting = true
-//            }.onEnded { _ in
-//                locationManager.isUserInteracting = false
-//            })
-//
-//            VStack {
-//                HStack {
-//                    TextField("搜尋附近超市..🏃🏻‍♀️‍➡️.", text: $searchText)
-//                        .padding(8)
-//                        .background(Color.white)
-//                        .cornerRadius(10)
-//                        .shadow(radius: 3)
-//                        .padding(.horizontal)
-//                    Button(action: {
-//                        if let coordinate = locationManager.lastKnownLocation?.coordinate {
-//                            locationManager.placesFetcher.fetchNearbyPlaces(coordinate: coordinate)
-//                        }
-//                    }) {
-//                        Text("Search🔍")
-//                            .bold()
-//                            .foregroundColor(.white)
-//                            .padding(.vertical, 10)
-//                            .padding(.horizontal, 20)
-//                            .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange)) // 使用自定 UIColor，如果找不到則回退到藍色
-//                            .cornerRadius(10)
-//                            .shadow(radius: 3)
-//                    }
-//                    .padding(.trailing)
-//                }
-//                .padding(.top, 20) // 為了防止與頂部狀態欄重疊
-//                Spacer()
-//                Button(action: {
-//                    isPresented = false
-//                }) {
-//                    Image(systemName: "xmark.circle.fill")
-//                        .resizable()
-//                        .frame(width: 40, height: 40)
-//                        .padding()
-//                        .background(Color.white.opacity(0.8))
-//                        .clipShape(Circle())
-//                        .shadow(radius: 5)
-//                }
-//                .padding()
-//                .background(Color.clear)
-//            }
-//            .edgesIgnoringSafeArea(.all)
-//        }
-//        // 顯示選中的超市地址和導航按鈕
-//        .alert(item: $selectedSupermarket) { supermarket in
-//            Alert(
-//                title: Text(supermarket.name),
-//                message: Text(supermarket.address),
-//                primaryButton: .default(Text("導航"), action: {
-//                    openMapsAppWithDirections(to: supermarket.coordinate, destinationName: supermarket.name)
-//                }),
-//                sebook.closedcondaryButton: .cancel(Text("取消"))
-//            )
-//        }
-//    }
-//
-//    // 打開 Apple Maps 進行導航
-//    func openMapsAppWithDirections(to coordinate: CLLocationCoordinate2D, destinationName: String) {
-//        let placemark = MKPlacemark(coordinate: coordinate)
-//        let mapItem = MKMapItem(placemark: placemark)
-//        mapItem.name = destinationName
-//        mapItem.openInMaps(launchOptions: [
-//            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
-//        ])
-//    }
-//}

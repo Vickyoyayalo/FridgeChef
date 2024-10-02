@@ -30,7 +30,8 @@ struct DatePickerTextField: View {
             ))
             .disabled(true)
             .padding()
-            .background(Color.white)
+            .foregroundColor(.black)
+            .background(Color.clear)
             .cornerRadius(5)
             .frame(maxWidth: .infinity)  // 確保TextField填滿可用空間
 
@@ -38,8 +39,7 @@ struct DatePickerTextField: View {
                 self.showingDatePicker = true  // 觸發顯示DatePicker
             }) {
                 Image(systemName: "calendar.badge.plus")
-                    .foregroundColor(.orange)
-            }
+                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))            }
             .padding(.trailing, 5)  // 微調按鈕的右內邊距
         }
         .overlay(

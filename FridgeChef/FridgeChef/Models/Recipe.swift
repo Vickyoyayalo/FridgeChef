@@ -106,12 +106,13 @@ enum ActiveAlert: Identifiable {
     case error(ErrorMessage)
     case ingredient(String)
     
-    var id: Int {
+    var id: UUID {
         switch self {
         case .error(_):
-            return 0
+            return UUID()
         case .ingredient(_):
-            return 1
+            return UUID()
         }
     }
 }
+

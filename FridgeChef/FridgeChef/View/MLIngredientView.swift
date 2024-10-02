@@ -32,8 +32,8 @@ struct MLIngredientView: View {
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
 
-    @State private var storageMethod = "Refrigerate"
-    let storageOptions = ["Refrigerate", "Freeze"]
+    @State private var storageMethod = "Fridge"
+    let storageOptions = ["Fridge", "Freeze"]
 
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
@@ -43,9 +43,9 @@ struct MLIngredientView: View {
 
     init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white
-        UISegmentedControl.appearance().backgroundColor = UIColor.orange
-        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.orange], for: .selected)
-        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
+        UISegmentedControl.appearance().backgroundColor = UIColor(named: "NavigationBarTitle") ?? UIColor.orange
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemRed, .font: UIFont(name: "ArialRoundedMTBold", size: 15)!], for: .selected)
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white,.font: UIFont(name: "ArialRoundedMTBold", size: 15)!], for: .normal)
 
         self.onSave = onSave
         self.editingFoodItem = editingFoodItem
@@ -107,7 +107,7 @@ struct MLIngredientView: View {
                         }
                         
                         // Picker 使用全局樣式
-                        Picker("選擇存儲方式", selection: $storageMethod) {
+                        Picker("Choose the storage method.", selection: $storageMethod) {
                             ForEach(storageOptions, id: \.self) { option in
                                 Text(option)
                             }
@@ -119,11 +119,11 @@ struct MLIngredientView: View {
                         // 名稱、數量、到期日與各自的 TextField 排列為 HStack
                         VStack(alignment: .leading, spacing: 20) {
                             HStack {
-                                Text("名稱")
+                                Text("Name")
                                     .font(.headline)
                                 
                                 HStack {
-                                    TextField("辨識結果", text: $recognizedText)
+                                    TextField("Image Recognition", text: $recognizedText)
                                         .padding()
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 8)
@@ -153,10 +153,10 @@ struct MLIngredientView: View {
                             }
                             
                             HStack {
-                                Text("數量    ")
+                                Text("Qty        ")
                                     .font(.headline)
                                 
-                                TextField("請輸入數量", text: $quantity)
+                                TextField("Please insert numbers", text: $quantity)
                                     .padding()
                                     .frame(width: 255, alignment: .center)
                                     .overlay(
@@ -168,18 +168,19 @@ struct MLIngredientView: View {
                             }
                             
                             HStack {
-                                Text("到期日")
+                                Text("Expiry Date")
                                     .font(.headline)
                                 
                                 DatePickerTextField(date: $expirationDate, label: "")
-                                    .environment(\.locale, Locale(identifier: "zh-Hant"))
+                                //TODO "zh-Hant" "en-US"
+                                    .environment(\.locale, Locale(identifier: "en-US"))
                             }
                         }
                         .padding(.horizontal)
                         
                         // 儲存按鈕
                         Button(action: saveIngredient) {
-                            Text("儲存")
+                            Text("Save")
                                 .font(.headline)
                                 .padding()
                                 .frame(maxWidth: .infinity)
@@ -190,13 +191,13 @@ struct MLIngredientView: View {
                         }
                         .padding()
                         .alert(isPresented: $isSavedAlertPresented) {
-                            Alert(title: Text("成功"), message: Text("食材已儲存"), dismissButton: .default(Text("確定")))
+                            Alert(title: Text("Success"), message: Text("Saved the ingredient!"), dismissButton: .default(Text("Sure")))
                         }
                     }
                     .padding()
-                    .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
-                        Button("相機") { photoSource = .camera }
-                        Button("相冊") { photoSource = .photoLibrary }
+                    .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions, titleVisibility: .visible) {
+                        Button("Camera") { photoSource = .camera }
+                        Button("Photo Library") { photoSource = .photoLibrary }
                     }
                     .fullScreenCover(item: $photoSource) { source in
                         switch source {
@@ -282,7 +283,7 @@ struct MLIngredientView: View {
     //     使用 Vision 進行文字識別 (OCR)
     func performTextRecognition(on image: UIImage) {
         guard let ciImage = CIImage(image: image) else {
-            recognizedText = "無法處理圖片"
+            recognizedText = "Cannot processing the photo"
             return
         }
 
@@ -322,7 +323,7 @@ struct MLIngredientView: View {
     // 儲存食材資料的函數
     func saveIngredient() {
         let defaultAmount = 1.0  // 一个示例值
-        let defaultUnit = "個"    // 一个示例单位
+        let defaultUnit = "unit"    // 一个示例单位
 
         // 创建 Ingredient 实例
         var newIngredient = Ingredient(
@@ -373,7 +374,7 @@ struct MLIngredientView: View {
         let recordingFormat = inputNode.outputFormat(forBus: 0)
 
         guard recordingFormat.sampleRate > 0 && recordingFormat.channelCount > 0 else {
-            print("無效的音頻格式: \(recordingFormat)")
+            print("Wrong recording format: \(recordingFormat)")
             return
         }
 

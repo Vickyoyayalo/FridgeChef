@@ -57,9 +57,9 @@ struct AddGroceryForm: View {
                                 showPhotoOptions = true
                             }
                     }
-                    FormTextField(label: "名稱", placeholder: "食譜名稱", value: $viewModel.name)
-                    FormTextField(label: "類型", placeholder: "食譜類型", value: $viewModel.type)
-                    FormTextField(label: "Notes", placeholder: "食譜紀錄", value: $viewModel.description)
+                    FormTextField(label: "Name", placeholder: "Recipe Name", value: $viewModel.name)
+                    FormTextField(label: "Type", placeholder: "Recipe Type", value: $viewModel.type)
+                    FormTextField(label: "Notes", placeholder: "Anything to be keep in here ~", value: $viewModel.description)
                 }
                 .padding()
             }
@@ -81,9 +81,9 @@ struct AddGroceryForm: View {
                 viewModel.image = imageName
             }
         }
-        .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
-            Button("相機") { photoSource = .camera }
-            Button("相冊") { photoSource = .photoLibrary }
+        .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions, titleVisibility: .visible) {
+            Button("Camera") { photoSource = .camera }
+            Button("Photo Library") { photoSource = .photoLibrary }
         }
         .fullScreenCover(item: $photoSource) { source in
             switch source {

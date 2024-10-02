@@ -48,13 +48,13 @@ struct SignUpView: View {
                 }
 
                 // Name Field
-                CustomTextField(placeholder: "姓名", text: $viewModel.name)
+                CustomTextField(placeholder: "Name", text: $viewModel.name)
 
                 // Email Field
                 CustomTextField(placeholder: "Email", text: $viewModel.email, keyboardType: .emailAddress)
 
                 // Password Field
-                SecureField("密碼", text: $viewModel.password)
+                SecureField("Password", text: $viewModel.password)
                     .padding()
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(8)
@@ -64,7 +64,7 @@ struct SignUpView: View {
                 Button(action: {
                     viewModel.signUpUser()
                 }) {
-                    Text("註冊")
+                    Text("Sign Up")
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)

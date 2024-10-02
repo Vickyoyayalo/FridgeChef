@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct FridgeView: View {
+    @EnvironmentObject var foodItemStore: FoodItemStore
     @State private var searchText = ""
-    @State private var isEditing = false // 控制刪除模式的狀態
+    @State private var isEditing = false
     @State private var showingMLIngredientView = false
     @State private var editingItem: FoodItem?
-    @State var foodItems: [FoodItem] = []
+    //    @State var foodItems: [FoodItem] = []
     
     var body: some View {
         NavigationView {
@@ -26,7 +27,7 @@ struct FridgeView: View {
                 .edgesIgnoringSafeArea(.all)
                 VStack {
                     List {
-                        ForEach(foodItems.filter { $0.name.lowercased().contains(searchText.lowercased()) || searchText.isEmpty }) { item in
+                        ForEach(foodItemStore.foodItems.filter { $0.status == "Fridge" && ($0.name.lowercased().contains(searchText.lowercased()) || searchText.isEmpty) }) { item in
                             HStack {
                                 if let image = item.image {
                                     Image(uiImage: image)
@@ -35,7 +36,7 @@ struct FridgeView: View {
                                         .frame(width: 80, height: 80)
                                         .cornerRadius(20)
                                 } else {
-                                    Image("RecipeFood")  // 显示默认图片
+                                    Image("RecipeFood")  // 顯示默認圖片
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 80, height: 80)
@@ -65,14 +66,14 @@ struct FridgeView: View {
                         .onDelete(perform: deleteItems) // 添加删除功能
                     }
                     .background(Color.clear)
-                    .listStyle(PlainListStyle()) 
+                    .listStyle(PlainListStyle())
                 }
                 .sheet(isPresented: $showingMLIngredientView) {
                     if let editingItem = editingItem {
                         // 编辑模式
                         // 假设默认量和单位
                         let defaultAmount = 1.0  // 示例默认值
-                        let defaultUnit = "個"  // 示例默认单位
+                        let defaultUnit = "unit"  // 示例默认单位
                         
                         // 转换UIImage为Base64字符串
                         let base64Image = editingItem.image?.pngData()?.base64EncodedString()
@@ -116,31 +117,32 @@ struct FridgeView: View {
     }
     
     func deleteItems(at offsets: IndexSet) {
-        foodItems.remove(atOffsets: offsets)
+        foodItemStore.foodItems.remove(atOffsets: offsets)
     }
     
     func handleSave(_ ingredient: Ingredient) {
-        if let editing = editingItem, let index = foodItems.firstIndex(where: { $0.id == editing.id }) {
+        if let editing = editingItem, let index = foodItemStore.foodItems.firstIndex(where: { $0.id == editing.id }) {
             // 更新操作
             let today = Calendar.current.startOfDay(for: Date())
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
-            foodItems[index].name = ingredient.name
-            foodItems[index].quantity = Int(ingredient.quantity ?? "") ?? 1
-            foodItems[index].status = ingredient.storageMethod
-            foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
-            foodItems[index].image = ingredient.image
+            foodItemStore.foodItems[index].name = ingredient.name
+            foodItemStore.foodItems[index].quantity = Int(ingredient.quantity) ?? 1
+            foodItemStore.foodItems[index].status = ingredient.storageMethod
+            foodItemStore.foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
+            foodItemStore.foodItems[index].image = ingredient.image
         } else {
             // 新增操作
             let today = Calendar.current.startOfDay(for: Date())
             let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
             let newFoodItem = FoodItem(
                 name: ingredient.name,
-                quantity: Int(ingredient.quantity ?? "") ?? 1,
-                unit: ingredient.unit, status: ingredient.storageMethod,
+                quantity: Int(ingredient.quantity) ?? 1,
+                unit: ingredient.unit,
+                status: ingredient.storageMethod,
                 daysRemaining: Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0,
                 image: ingredient.image
             )
-            foodItems.insert(newFoodItem, at: 0)
+            foodItemStore.foodItems.insert(newFoodItem, at: 0)
         }
         // 重置 editingItem
         editingItem = nil
@@ -150,6 +152,7 @@ struct FridgeView: View {
 struct FridgeView_Previews: PreviewProvider {
     static var previews: some View {
         FridgeView()
+            .environmentObject(FoodItemStore()) // 確保環境對象被傳遞
     }
 }
 

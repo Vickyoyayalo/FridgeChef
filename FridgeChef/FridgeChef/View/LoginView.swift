@@ -50,7 +50,7 @@ struct LoginView: View {
                     
                     Spacer()
                     
-                    Button("登入") {
+                    Button("Sign In") {
                         self.isShowingLoginDetail = true
                     }
                     .font(.headline)
@@ -71,7 +71,7 @@ struct LoginView: View {
                     .padding(.horizontal)
                     
                     // 注册按钮
-                    Button("註冊") {
+                    Button("Sign Up") {
                         self.isShowingSignUp = true
                     }
                     .font(.headline)

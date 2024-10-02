@@ -53,7 +53,7 @@ struct LoginDetailView: View {
                     Button(action: {
                         loginWithEmailPassword()  // Email & Password 登录逻辑
                     }) {
-                        Text("登入")
+                        Text("Sign In")
                             .foregroundColor(.white)
                             .fontWeight(.bold)
                             .frame(maxWidth: .infinity)
@@ -71,7 +71,7 @@ EmptyView()  // 隐藏的链接，只在登录成功后触发
                     Button(action: {
                         navigateToForgotPassword = true
                     }) {
-                        Text("忘記密碼?")
+                        Text("Forget Password?")
                             .foregroundColor(
                                 Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                             .frame(maxWidth: .infinity)

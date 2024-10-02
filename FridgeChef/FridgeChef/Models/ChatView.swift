@@ -199,14 +199,14 @@ struct ChatView: View {
                         }
                         .padding(.leading, 10)
                         .fixedSize() // Prevent the button from being compressed
-                        .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
-                            Button("相機") { photoSource = .camera }
-                            Button("相冊") { photoSource = .photoLibrary }
+                        .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions, titleVisibility: .visible) {
+                            Button("Camera") { photoSource = .camera }
+                            Button("Photo Library") { photoSource = .photoLibrary }
                         }
                         
                         Spacer(minLength: 20) // Ensures space distribution
                         
-                        PlaceholderTextEditor(text: $inputText, placeholder: "今天想來點 🥙🍍 ...")
+                        PlaceholderTextEditor(text: $inputText, placeholder: "Want ideas? 🥙 ...")
                             .frame(maxHeight: 100) // Consistent height with buttons
                         
                         Spacer(minLength: 20) // Ensures space distribution

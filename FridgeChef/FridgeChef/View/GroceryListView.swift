@@ -30,26 +30,26 @@ struct GroceryListView: View {
                 .edgesIgnoringSafeArea(.all)
                 ZStack(alignment: .bottomTrailing) {
                     List {
-                        ForEach(foodItemStore.foodItems.filter { $0.name.lowercased().contains(searchText.lowercased()) || searchText.isEmpty }) { item in
+                        ForEach(foodItemStore.foodItems) { item in
                             HStack {
-                                itemImageView(item: item)
-                                
-                                VStack(alignment: .leading, spacing: 5) {
+                                VStack(alignment: .leading) {
                                     Text(item.name)
                                         .font(.headline)
-                                    HStack {
-                                        Text("數量：\(item.quantity) \(item.unit)")
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
-                                        Text("狀態：\(item.status)")
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
-                                    }
+                                    Text("\(item.quantity) \(item.unit)")
+                                        .font(.subheadline)
+                                    Text(item.daysRemainingText)
+                                        .font(.caption)
+                                        .foregroundColor(item.daysRemainingColor)
+                                        .fontWeight(item.daysRemainingFontWeight)
                                 }
                                 Spacer()
-                                Text(item.daysRemainingText)
-                                    .foregroundColor(item.daysRemainingColor)
-                                    .fontWeight(item.daysRemainingFontWeight)
+                                // 添加操作按鈕，例如將食材移動到 FridgeView
+                                Button(action: {
+                                    moveToFridge(item: item)
+                                }) {
+                                    Image(systemName: "refrigerator.fill")
+                                        .foregroundColor(.orange)
+                                }
                             }
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
@@ -109,14 +109,6 @@ struct GroceryListView: View {
                                     .background(Color.white.opacity(0.7))
                                     .clipShape(Circle())
                                     .shadow(radius: 5)
-                                Image(systemName: "refrigerator.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30, height: 30)
-                                    .padding(15)
-                                    .background(Color.white.opacity(0.7))
-                                    .clipShape(Circle())
-                                    .shadow(radius: 5)
                             }
                         }
                         .padding(.trailing, 15)
@@ -128,13 +120,25 @@ struct GroceryListView: View {
                     }
                 }
                 .listStyle(PlainListStyle()) // 使用纯样式列表以减少间隙
-                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search food ingredient")
+                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search grocery items")
                 .navigationBarTitle("Grocery 🛒 ", displayMode: .automatic)
                 .navigationBarItems(leading: EditButton().bold(), trailing: addButton)
                 .sheet(isPresented: $showingMLIngredientView) {
                     MLIngredientView()
                 }
             }
+        }
+    }
+    
+    private func moveToFridge(item: FoodItem) {
+        // 找到食材在 foodItemStore 中的索引
+        if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
+            // 更新狀態和 daysRemaining
+            foodItemStore.foodItems[index].status = "Fridge"
+            // 設置新的過期日期，例如 14 天後
+            let newExpirationDate = Calendar.current.date(byAdding: .day, value: 14, to: Date()) ?? Date()
+            let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 0
+            foodItemStore.foodItems[index].daysRemaining = daysRemaining
         }
     }
     

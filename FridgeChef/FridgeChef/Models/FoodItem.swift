@@ -59,15 +59,15 @@ struct FoodItem: Identifiable {
 extension FoodItem {
     var daysRemainingText: String {
         switch status {
-        case "Refrigerate":
+        case "冷藏":
             let formatter = DateFormatter()
             formatter.dateStyle = .short
             let today = Date()
             let dateString = formatter.string(from: today)
             return "To Buy \(dateString)"
-        default:
+        case "Fridge":
             if daysRemaining > 2 {
-                return "Can keep \(daysRemaining) days👨🏻‍🌾"
+                return "\(daysRemaining) days left👨🏻‍🌾"
             } else if daysRemaining == 1 || daysRemaining == 2 {
                 return "\(daysRemaining) days left👀"
             } else if daysRemaining == 0 {
@@ -75,14 +75,16 @@ extension FoodItem {
             } else {
                 return "Already Expired \(abs(daysRemaining)) 天‼️"
             }
+        default:
+            return "Unknown Status"
         }
     }
 
     var daysRemainingColor: Color {
         switch status {
-        case "Refrigerate":
+        case "冷藏":
             return .blue // 冷藏狀態顯示藍色
-        default:
+        case "Fridge":
             if daysRemaining > 2 {
                 return .gray
             } else if daysRemaining == 1 || daysRemaining == 2 {
@@ -92,15 +94,19 @@ extension FoodItem {
             } else {
                 return .red
             }
+        default:
+            return .black
         }
     }
 
     var daysRemainingFontWeight: Font.Weight {
         switch status {
-        case "Refrigerate":
+        case "冷藏":
             return .bold // 冷藏狀態顯示加粗
-        default:
+        case "Fridge":
             return daysRemaining < 0 ? .bold : .regular
+        default:
+            return .regular
         }
     }
 }

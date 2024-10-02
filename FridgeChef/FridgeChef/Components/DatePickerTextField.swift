@@ -16,8 +16,8 @@ struct DatePickerTextField: View {
     
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy年MM月dd日"
-        formatter.locale = Locale(identifier: "zh_Hant")  // 設置為繁體中文語系
+        formatter.dateFormat = "yyyy/MM/dd"
+        formatter.locale = Locale(identifier: "en-US")  // TODO 設置為繁體中文語系zh_Hant
         return formatter
     }
     

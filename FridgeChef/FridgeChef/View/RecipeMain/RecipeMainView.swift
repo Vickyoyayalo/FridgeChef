@@ -57,14 +57,14 @@ struct RecipeMainView: View {
                         } else {
                             // 提示输入搜索关键字
                             Spacer()
-                            Text("請輸入關鍵字搜尋食譜")
+                            Text("Search by keywords") //請輸入關鍵字搜尋食譜
                                 .foregroundColor(.gray)
                             Spacer()
                         }
                     }
                 }
                 .navigationTitle("Recipe 👩🏻‍🍳")
-                .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Recipes")
+                .searchable(text: $searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search recipes")
                 .navigationBarItems(leading: EditButton().bold(), trailing: addButton)
                 .onSubmit(of: .search) {
                     if !searchQuery.isEmpty {
@@ -76,9 +76,9 @@ struct RecipeMainView: View {
                 }
                 .alert(item: $viewModel.errorMessage) { errorMessage in
                     Alert(
-                        title: Text("錯誤"),
+                        title: Text("Error"),
                         message: Text(errorMessage.message),
-                        dismissButton: .default(Text("確定")) {
+                        dismissButton: .default(Text("Sure")) {
                             viewModel.errorMessage = nil
                         }
                     )

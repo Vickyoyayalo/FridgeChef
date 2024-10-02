@@ -12,8 +12,8 @@ class MLIngredientViewModel: ObservableObject {
     @Published var quantity: String = "1"
     @Published var expirationDate: Date = Date()
     @Published var isSavedAlertPresented = false
-    @State private var storageMethod = "Refrigerate"
-    let storageOptions = ["Refrigerate", "Freeze"]
+    @State private var storageMethod = "Fridge"
+    let storageOptions = ["Fridge", "Freeze"]
     var ingredient: Ingredient?
     var onSave: ((Ingredient) -> Void)?
     var editingFoodItem: Ingredient?

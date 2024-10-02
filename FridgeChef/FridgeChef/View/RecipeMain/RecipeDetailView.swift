@@ -117,7 +117,7 @@ struct RecipeDetailView: View {
                                 })
                                 .keyboardType(.numberPad)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .font(.custom("ArialRoundedMTBold", size: 15))
+                                .font(.custom("ArialRoundedMTBold", size: 18))
                                 
                                 Button(action: {
                                     updateServings()
@@ -125,7 +125,7 @@ struct RecipeDetailView: View {
                                     Text("Go")
                                         .bold()
                                         .foregroundColor(.white)
-                                        .font(.custom("ArialRoundedMTBold", size: 15))
+                                        .font(.custom("ArialRoundedMTBold", size: 18))
                                         .padding(5)
                                         .background(primaryColor)
                                         .cornerRadius(8)
@@ -159,7 +159,6 @@ struct RecipeDetailView: View {
                                     unit: extIngredient.unit.isEmpty ? "unit" : extIngredient.unit
                                 )
                             }
-                            
                             // 食材區域
                             // 食材區域
                             SectionView(title: "Ingredients") {
@@ -170,7 +169,7 @@ struct RecipeDetailView: View {
                                             if success {
                                                 activeAlert = .ingredient("\(ingredient.name) already in your Grocery List!")
                                             } else {
-                                                activeAlert = .ingredient("\(ingredient.name) already in your Grocery List!")
+                                                activeAlert = .ingredient("\(ingredient.name) already saved in your Grocery List.")
                                             }
                                             return success // 確保返回 Bool 值
                                         }
@@ -264,11 +263,11 @@ struct RecipeDetailView: View {
         let daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
         
         let newFoodItem = FoodItem(
-            name: ingredient.name,
+            name: ingredient.name.capitalized, // 每個單詞的首字母大寫
             quantity: Int(Double(ingredient.quantity) ?? 1.0),
             unit: ingredient.unit,
-            status: "Not Purchased",
-            daysRemaining: daysRemaining,
+            status: "Fridge", // 設置為「冷藏」
+            daysRemaining: 0, // 顯示今天
             image: nil
         )
         
@@ -290,12 +289,12 @@ struct CategoryItemView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Text("•")
-                .font(.custom("ArialRoundedMTBold", size: 18))
+                .font(.custom("ArialRoundedMTBold", size: 16))
                 .foregroundColor(primaryColor)
             
             VStack(alignment: .leading, spacing: 5) {
                 Text("\(title):")
-                    .font(.custom("ArialRoundedMTBold", size: 18))
+                    .font(.custom("ArialRoundedMTBold", size: 16))
                     .foregroundColor(.gray)
                 
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -319,7 +318,7 @@ struct TagView: View {
             .font(.custom("ArialRoundedMTBold", size: 15))
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange).opacity(0.7))
+            .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange).opacity(0.6))
             .foregroundColor(.white)
             .fontWeight(.medium)
             .cornerRadius(8)

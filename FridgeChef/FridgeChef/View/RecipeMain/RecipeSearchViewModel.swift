@@ -62,12 +62,20 @@ class RecipeSearchViewModel: ObservableObject {
     }
     
     func toggleFavorite(for recipeId: Int) {
+        // 在 recipes 中找到对应的 recipe，并切换收藏状态
         if let index = recipes.firstIndex(where: { $0.id == recipeId }) {
-            recipes[index].isFavorite.toggle()  // Toggle the favorite status
-            saveFavorites()  // Save the favorites to UserDefaults or other storage
+            recipes[index].isFavorite.toggle()  // 切换收藏状态
+            saveFavorites()  // 保存收藏状态到 UserDefaults
+
+            // 同步更新 selectedRecipe 的收藏状态（如果当前详情页显示的食谱是该食谱）
+            if selectedRecipe?.id == recipeId {
+                selectedRecipe?.isFavorite = recipes[index].isFavorite
+            }
         }
-        objectWillChange.send()  // Manually trigger an object update notification
+        
+        objectWillChange.send()  // 手动触发视图更新
     }
+
     
     private func saveFavorites() {
         let favorites = recipes.filter { $0.isFavorite }
@@ -89,37 +97,25 @@ class RecipeSearchViewModel: ObservableObject {
         selectedRecipe = recipe // 更新視圖
     }
     
-
+    
     func getRecipeDetails(recipeId: Int) {
-        // Start by setting isLoading to true to indicate that data fetching has begun
+        // 开始加载
         isLoading = true
-        // Clear any existing error messages to ensure fresh state for new data fetch
         errorMessage = nil
-
-        // Call your recipe service to fetch recipe details by ID
+        
         recipeService.getRecipeInformation(recipeId: recipeId) { [weak self] result in
             DispatchQueue.main.async {
-                // Ensure that operations on completion are executed on the main thread
-                self?.isLoading = false  // Stop the loading indicator once the fetch is complete or fails
-
+                self?.isLoading = false
+                
                 switch result {
                 case .success(var details):
-                    // Check and correct data integrity issues, e.g., servings shouldn't be 0 or negative
                     if details.servings <= 0 {
-                        print("Warning: Received servings <= 0 from API. Setting to 1.")
-                        details.servings = 1  // Default to 1 to avoid potential division by zero errors elsewhere
+                        details.servings = 1
                     }
-
-                    // Determine if the fetched recipe is already favorited by the user
                     details.isFavorite = self?.getSavedFavoriteIDs().contains(details.id) ?? false
-
-                    // Update the state with the fetched recipe details
-                    self?.selectedRecipe = details
-
+                    self?.selectedRecipe = details  // 触发视图更新
                 case .failure(let error):
-                    // Handle errors such as network issues, decoding failures, etc.
-                    print("Error fetching recipe details: \(error.localizedDescription)")
-                    self?.errorMessage = ErrorMessage(message: "Failed to fetch recipe details. Please try again.")
+                    self?.errorMessage = ErrorMessage(message: "Failed to fetch recipe details.")
                 }
             }
         }

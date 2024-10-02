@@ -28,9 +28,9 @@ struct SectionView<Content: View>: View {
             content
         }
         .frame(maxWidth: .infinity)
-        .background(Color.white) // 統一背景顏色
-        .cornerRadius(15) // 統一圓角大小
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2) // 統一陰影
-        .padding(.horizontal) // 確保與外部容器的間距一致
+//        .background(Color.white)// 統一背景顏色
+        .cornerRadius(8) // 統一圓角大小
+//        .shadow(color: Color.black, radius: 5, x: 0, y: 2) // 統一陰影
+        .padding(.horizontal, 5)// 確保與外部容器的間距一致
     }
 }

@@ -128,7 +128,7 @@ struct RecipeRowView: View {
                 .cornerRadius(10)
                 .shadow(radius: 5)
             } else {
-                Image(systemName: "newphoto")
+                Image(systemName: "RecipeFood")
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity, maxHeight: 200)
@@ -198,5 +198,4 @@ struct RecipeRowView_Previews: PreviewProvider {
         )
     }
 }
-
 

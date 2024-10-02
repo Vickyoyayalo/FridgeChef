@@ -17,13 +17,12 @@ struct FridgeView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // 漸層背景
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .opacity(0.3)
+                .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
                 VStack {
                     List {
@@ -36,7 +35,7 @@ struct FridgeView: View {
                                         .frame(width: 80, height: 80)
                                         .cornerRadius(20)
                                 } else {
-                                    Image("newphoto")  // 显示默认图片
+                                    Image("RecipeFood")  // 显示默认图片
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 80, height: 80)

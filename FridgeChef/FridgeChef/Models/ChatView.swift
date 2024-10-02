@@ -73,10 +73,17 @@ struct ChatView: View {
     @State private var isFetchingLink: Bool = false
     @State private var isWaitingForResponse = false
     @State private var parsedRecipes: [UUID: ParsedRecipe] = [:]
+    @State private var inputText = ""
+    @State private var messages: [Message] = []
+    @State private var showPhotoOptions = false
+    @State private var photoSource: PhotoSource?
+    @State private var image: UIImage?
+    @State private var showChangePhotoDialog = false
+    @State private var errorMessage: String?
     @State private var api = ChatGPTAPI(
         apiKey: "sk-8VrzLltl-TexufDVK8RWN-GVvWLusdkCjGi9lKNSSkT3BlbkFJMryR2KSLUPFRKb5VCzGPXJGI8s-8bUt9URrmdfq0gA",
         systemPrompt: """
-        你是一個專業的廚師助手，能夠根據用戶提供的食材、圖片和描述，提供詳細的食譜和烹飪步驟。每次回覆時，請務必提供食譜名稱與完整的【食材】清單，並附上一個該指定食譜的有效網址。如果無法提供有效網址，請明確說明無法提供，另外你也能依據使用者的想法推薦相關食譜詳細做法。每次回覆時，請務必提供食譜名稱，格式如下：
+        你是一個專業的廚師助手，能夠根據用戶提供的食材、圖片和描述，提供詳細的食譜和烹飪步驟。每次回覆時，請務必提供食譜名稱與完整的【食材】清單，並附上一個該指定食譜的有效網址。如果無法提供有效網址，請明確說明無法提供，另外你也能依據使用者的想法推薦相關食譜詳細做法，並依照使用著使用的語言做修改與回答。
 
         🥙 食譜名稱：中文名稱 (英文名稱) （請務必同時提供中文和英文的食譜名稱。如果沒有英文名稱，請使用拼音或直接重複中文名稱。）
 
@@ -99,20 +106,13 @@ struct ChatView: View {
         Bon appetit 🍽️
         
         **注意事項：**
+        - **如果使用者使用英文問答，請全部改以英文格式與內容回覆。**
         - **請勿在步驟中添加額外的標題、粗體字、冒號或其他符號。**
         - **每個步驟應該是完整的句子，直接描述操作。**
         - **嚴格按照上述格式回覆，不要添加任何額外的內容或改變格式。**
 
         """
     )
-    
-    @State private var inputText = ""
-    @State private var messages: [Message] = []
-    @State private var showPhotoOptions = false
-    @State private var photoSource: PhotoSource?
-    @State private var image: UIImage?
-    @State private var showChangePhotoDialog = false
-    @State private var errorMessage: String?
     
     enum PhotoSource: Identifiable {
         case photoLibrary
@@ -607,18 +607,23 @@ struct ChatView: View {
         return newLines.joined(separator: "\n")
     }
     
-    func addIngredientToShoppingList(_ ingredient: ParsedIngredient) {
-        let newFoodItem = FoodItem(
-            name: ingredient.name,
-            quantity: Int(ingredient.quantity) ?? 1,
-            unit: ingredient.unit,
-            status: "To Buy",
-            daysRemaining: 2,
-            image: nil
-        )
-        foodItemStore.foodItems.append(newFoodItem)
-    }
-    
+    func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
+            let newFoodItem = FoodItem(
+                name: ingredient.name,
+                quantity: Int(Double(ingredient.quantity) ?? 1.0),
+                unit: ingredient.unit,
+                status: "To Buy",
+                daysRemaining: 2,
+                image: nil
+            )
+
+            if !foodItemStore.foodItems.contains(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
+                foodItemStore.foodItems.append(newFoodItem)
+                return true
+            } else {
+                return false
+            }
+        }
     
     func extractIngredients(from message: String) -> [String] {
         var ingredients: [String] = []
@@ -830,40 +835,52 @@ struct ChatView: View {
 
 struct IngredientRow: View {
     var ingredient: ParsedIngredient
-    var addAction: (ParsedIngredient) -> Void
-    
+    var addAction: (ParsedIngredient) -> Bool
+    @EnvironmentObject var foodItemStore: FoodItemStore
+
     @State private var showAlert = false
-    
+    @State private var alertMessage = ""
+
     var body: some View {
+        let isAdded = foodItemStore.foodItems.contains { $0.name.lowercased() == ingredient.name.lowercased() }
+
         Button(action: {
-            addAction(ingredient)
+            if !isAdded {
+                let success = addAction(ingredient)
+                alertMessage = success ? "\(ingredient.name) add to your Grocery List 🛒" : "\(ingredient.name) already exists!"
+                print("Added \(ingredient.name): \(success)") // Debug
+            } else {
+                alertMessage = "\(ingredient.name) already exists."
+                print("\(ingredient.name) already exists.") // Debug
+            }
             showAlert = true
         }) {
             HStack {
                 VStack(alignment: .leading) {
                     Text(ingredient.name)
-                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        .foregroundColor(isAdded ? .gray : Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                         .bold()
-                        .lineLimit(nil)  // 允许无限行，自动换行
-                        .fixedSize(horizontal: false, vertical: true)  // 允许 Text 根据内容调整大小
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                     if !ingredient.quantity.isEmpty {
-                        Text("數量：\(ingredient.quantity) \(ingredient.unit)")
+                        Text("Qty：\(ingredient.quantity) \(ingredient.unit)")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
                 }
                 Spacer()
-                Image(systemName: "cart.badge.plus.fill")
-                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                Image(systemName: isAdded ? "checkmark.circle.fill" : "cart.badge.plus.fill")
+                    .foregroundColor(isAdded ? .green : Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
             }
             .padding(.vertical, 5)
         }
         .buttonStyle(PlainButtonStyle())
+        .disabled(isAdded)
         .alert(isPresented: $showAlert) {
             Alert(
-                title: Text("已加入購物清單"),
-                message: Text("\(ingredient.name) 已加入您的購物清單。"),
-                dismissButton: .default(Text("好的"))
+                title: Text("Added to your Grocery List!"),
+                message: Text(alertMessage),
+                dismissButton: .default(Text("Sure"))
             )
         }
     }

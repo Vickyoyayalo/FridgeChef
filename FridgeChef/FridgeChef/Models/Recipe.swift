@@ -9,10 +9,11 @@ import Foundation
 
 // MARK: - Models
 
-struct ParsedIngredient {
-    var name: String
-    var quantity: String
-    var unit: String
+struct ParsedIngredient: Identifiable {
+    let id = UUID()
+    let name: String
+    let quantity: String
+    let unit: String
 }
 
 struct ParsedRecipe {
@@ -81,7 +82,6 @@ struct RecipeDetails: Codable, Identifiable {
     }
 }
 
-
 struct AnalyzedInstruction: Codable, Identifiable {
     let id = UUID()
     let name: String
@@ -102,4 +102,16 @@ struct EquipmentItem: Codable {
     let image: String
 }
 
-
+enum ActiveAlert: Identifiable {
+    case error(ErrorMessage)
+    case ingredient(String)
+    
+    var id: Int {
+        switch self {
+        case .error(_):
+            return 0
+        case .ingredient(_):
+            return 1
+        }
+    }
+}

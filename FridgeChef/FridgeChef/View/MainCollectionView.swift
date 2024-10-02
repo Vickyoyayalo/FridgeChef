@@ -114,7 +114,7 @@ struct MainCollectionView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .opacity(0.3)
+                .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
 
                 List {

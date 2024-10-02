@@ -20,7 +20,7 @@ struct DefaultRecipeDetailView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .opacity(0.3)
+                .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
                 
                 ScrollView {
@@ -33,7 +33,7 @@ struct DefaultRecipeDetailView: View {
                                 .padding(10)
                                 .shadow(color: Color.black.opacity(0.3), radius: 4, x:0, y: 4)
                         }
-                        .background(.ultraThinMaterial)
+                        .background(.white.opacity(0.5))
                         .cornerRadius(15)
                         .padding()
                         
@@ -75,11 +75,11 @@ struct DefaultRecipeDetailView: View {
                             }
                         }
 //                        .frame(width: .infinity, height: 500, alignment: .bottomLeading)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(20, corners: [.topLeft, .topRight])
+                        .background(.white.opacity(0.5))
+                        .cornerRadius(30, corners: [.topLeft, .topRight])
                     }
                 }
-                .background(.ultraThinMaterial)
+                .background(.white.opacity(0.4))
                 .navigationTitle(recipe.title)
                 .navigationBarItems(trailing:
                     Image(systemName: "xmark.circle.fill")

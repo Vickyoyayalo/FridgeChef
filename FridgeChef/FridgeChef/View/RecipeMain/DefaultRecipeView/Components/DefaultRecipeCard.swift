@@ -20,7 +20,7 @@ struct DefaultRecipeCard: View {
                 .shadow(color: Color.black.opacity(0.3), radius: 4, x: 0, y:4)
             }
             .frame(maxWidth: .infinity, maxHeight: 200)
-            .background(.ultraThinMaterial)
+            .background(.white.opacity(0.5))
             .cornerRadius(15)
             
             VStack(alignment: .leading, spacing: 7) {

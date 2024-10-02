@@ -26,7 +26,7 @@ struct GroceryListView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .opacity(0.3)
+                .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
                 ZStack(alignment: .bottomTrailing) {
                     List {
@@ -98,10 +98,18 @@ struct GroceryListView: View {
                             showingMapView = true // 触发地图视图
                         }) {
                             VStack {
-                                Text("Nearby")
-                                    .fontWeight(.bold)
-                                    .shadow(radius: 10)
+//                                Text("Nearby")
+//                                    .fontWeight(.bold)
+//                                    .shadow(radius: 10)
                                 Image(systemName: "location.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .padding(15)
+                                    .background(Color.white.opacity(0.7))
+                                    .clipShape(Circle())
+                                    .shadow(radius: 5)
+                                Image(systemName: "refrigerator.fill")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)

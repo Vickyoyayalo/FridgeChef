@@ -15,18 +15,17 @@ struct LoginView: View {
     var body: some View {
         CustomNavigationBarView(title: "Welcome") {
             ZStack(alignment: .bottom) {
-                GeometryReader {
-                    let size = $0.size
-                    
-                    Image(.loginView)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .offset(y: -60)
-                        .frame(width: size.width, height: size.height)
-                }
-                // 背景影片
-//                VideoPlayerView(videoName: "LoginVideo")
-//                    .ignoresSafeArea()
+//                GeometryReader {
+//                    let size = $0.size
+//                    Image(.loginView)
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fill)
+//                        .offset(y: -60)
+//                        .frame(width: size.width, height: size.height)
+//                }
+//                 背景影片
+                VideoPlayerView(videoName: "LoginVideo")
+                    .ignoresSafeArea()
 //                
                     .mask {
                         Rectangle()

@@ -73,7 +73,7 @@ struct MLIngredientView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-                .opacity(0.3)
+                .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
                 
                 ScrollView {
@@ -490,7 +490,7 @@ struct MLIngredientView: View {
 //                                .clipShape(RoundedRectangle(cornerRadius: 20.0))
 //                                .padding(.bottom)
 //                        } else {
-//                            Image("newphoto")  // Provide a placeholder
+//                            Image("RecipeFood")  // Provide a placeholder
 //                                .resizable()
 //                                .scaledToFit()
 //                                .frame(minWidth: 0, maxWidth: .infinity)

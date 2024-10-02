@@ -11,14 +11,14 @@ struct StepView: View {
     let step: Step // 假設 Step 已經定義好
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
+        HStack(alignment: .firstTextBaseline, spacing: 10) { // 使用 firstTextBaseline
             Text("\(step.number).")
-                .fontWeight(.bold)
+                .font(.custom("ArialRoundedMTBold", size: 18)) // 調整字體大小與內容一致
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? .orange))
             Text(step.step)
-                .foregroundColor(.primary)
+                .foregroundColor(.gray)
+                .font(.custom("ArialRoundedMTBold", size: 18))
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 5)
     }
 }
-

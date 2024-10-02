@@ -80,6 +80,8 @@
 		1CAF42FE2CACBF9C0022D393 /* DefaultHorizontalScrolling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF42FB2CACBF9C0022D393 /* DefaultHorizontalScrolling.swift */; };
 		1CAF42FF2CACBF9C0022D393 /* DefaultRecipeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF42FC2CACBF9C0022D393 /* DefaultRecipeCard.swift */; };
 		1CAF43042CACBFA90022D393 /* RecipeClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43012CACBFA90022D393 /* RecipeClass.swift */; };
+		1CAF43082CAD3B650022D393 /* BulletPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43072CAD3B650022D393 /* BulletPointView.swift */; };
+		1CAF430A2CAD52EE0022D393 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43092CAD52EE0022D393 /* String+Extensions.swift */; };
 		1CB14A0D2CAC096400399AAF /* TranslationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */; };
 		1CB5BC892C943D36006C66E5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC882C943D36006C66E5 /* User.swift */; };
 		1CB5BC8C2C943D74006C66E5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8B2C943D74006C66E5 /* FirebaseFirestore */; };
@@ -169,6 +171,8 @@
 		1CAF42FB2CACBF9C0022D393 /* DefaultHorizontalScrolling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultHorizontalScrolling.swift; sourceTree = "<group>"; };
 		1CAF42FC2CACBF9C0022D393 /* DefaultRecipeCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultRecipeCard.swift; sourceTree = "<group>"; };
 		1CAF43012CACBFA90022D393 /* RecipeClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeClass.swift; sourceTree = "<group>"; };
+		1CAF43072CAD3B650022D393 /* BulletPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletPointView.swift; sourceTree = "<group>"; };
+		1CAF43092CAD52EE0022D393 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationAPI.swift; sourceTree = "<group>"; };
 		1CB5BC882C943D36006C66E5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CB5BC912C943DE4006C66E5 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
@@ -304,6 +308,7 @@
 			isa = PBXGroup;
 			children = (
 				1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */,
+				1CAF43092CAD52EE0022D393 /* String+Extensions.swift */,
 				1C7F45F12C9B146100846B44 /* CornerRadius.swift */,
 			);
 			path = Extension;
@@ -335,6 +340,7 @@
 			isa = PBXGroup;
 			children = (
 				1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */,
+				1CAF43072CAD3B650022D393 /* BulletPointView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -656,6 +662,7 @@
 				1C1E9A122CA7B135002A15C8 /* String+HTMLDecoded.swift in Sources */,
 				1C1E9A132CA7B135002A15C8 /* StepView.swift in Sources */,
 				1C7F45E52C9AC96100846B44 /* AddGroceryForm.swift in Sources */,
+				1CAF430A2CAD52EE0022D393 /* String+Extensions.swift in Sources */,
 				1C8DC55A2C99E0470041A2A2 /* MLIngredientView.swift in Sources */,
 				1CB5BC892C943D36006C66E5 /* User.swift in Sources */,
 				1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */,
@@ -664,6 +671,7 @@
 				1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */,
 				1C8A74092CA000980005E54D /* ChatView.swift in Sources */,
 				1C7F45E32C9AC75100846B44 /* GroceryListView.swift in Sources */,
+				1CAF43082CAD3B650022D393 /* BulletPointView.swift in Sources */,
 				1C7F45F42C9BD96300846B44 /* FridgeView.swift in Sources */,
 				1C9568C92CA82944006181F9 /* RecipeDetailView.swift in Sources */,
 				1C4AD1502CAAA75E00C90905 /* MainCollectionView.swift in Sources */,

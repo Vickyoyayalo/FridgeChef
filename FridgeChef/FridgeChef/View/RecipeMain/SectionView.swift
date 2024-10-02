@@ -19,7 +19,7 @@ struct SectionView<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
-                .font(.title3)
+                .font(.custom("ArialRoundedMTBold", size: 20))
                 .foregroundColor(.black)
                 .fontWeight(.bold)
                 .padding(.horizontal)
@@ -28,9 +28,7 @@ struct SectionView<Content: View>: View {
             content
         }
         .frame(maxWidth: .infinity)
-//        .background(Color.white)// 統一背景顏色
         .cornerRadius(8) // 統一圓角大小
-//        .shadow(color: Color.black, radius: 5, x: 0, y: 2) // 統一陰影
         .padding(.horizontal, 5)// 確保與外部容器的間距一致
     }
 }

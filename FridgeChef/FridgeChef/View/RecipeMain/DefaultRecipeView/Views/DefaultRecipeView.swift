@@ -31,7 +31,7 @@ struct DefaultRecipeView: View {
 
                 }
             }
-            .background(.ultraThinMaterial)
+//            .background(.ultraThinMaterial)
 //            .navigationTitle("Recipes")
         }
     }

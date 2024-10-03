@@ -288,24 +288,29 @@ struct ChatView: View {
             let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "• ", with: "")
             if !trimmedLine.isEmpty {
                 let pattern = #"^(\d+\.?\d*)\s*([^\d\s]+)?\s+(.+)$"#
-                if let regex = try? NSRegularExpression(pattern: pattern),
+                if let regex = try? NSRegularExpression(pattern: pattern, options: []),
                    let match = regex.firstMatch(in: trimmedLine, options: [], range: NSRange(location: 0, length: trimmedLine.utf16.count)) {
                     
                     let quantityRange = Range(match.range(at: 1), in: trimmedLine)
                     let unitRange = Range(match.range(at: 2), in: trimmedLine)
                     let nameRange = Range(match.range(at: 3), in: trimmedLine)
                     
-                    let quantity = quantityRange.map { String(trimmedLine[$0]) } ?? ""
-                    let unit = unitRange.map { String(trimmedLine[$0]) } ?? ""
+                    let quantityString = quantityRange.map { String(trimmedLine[$0]) } ?? "1.0"
+                    let quantityDouble = Double(quantityString) ?? 1.0
+                    let unit = unitRange.map { String(trimmedLine[$0]) } ?? "unit"
                     let name = nameRange.map { String(trimmedLine[$0]) } ?? trimmedLine
                     
-                    ingredients.append(ParsedIngredient(name: name, quantity: quantity, unit: unit))
+                    // 設置一個默認的 expirationDate，例如 5 天後
+                    let expirationDate = Calendar.current.date(byAdding: .day, value: 0, to: Date()) ?? Date()
+                    
+                    ingredients.append(ParsedIngredient(name: name, quantity: quantityDouble, unit: unit, expirationDate: expirationDate))
                 } else {
-                    // 如果无法解析，全部作为名称
-                    ingredients.append(ParsedIngredient(name: trimmedLine, quantity: "", unit: ""))
+                    // 如果无法解析，设置默认的 quantity 和 expirationDate
+                    ingredients.append(ParsedIngredient(name: trimmedLine, quantity: 1.0, unit: "unit", expirationDate: Calendar.current.date(byAdding: .day, value: 0, to: Date()) ?? Date()))
                 }
             }
         }
+
         
         func processStepsLine(_ line: String) {
             var trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -607,22 +612,25 @@ struct ChatView: View {
     }
     
     func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
-            let newFoodItem = FoodItem(
-                name: ingredient.name,
-                quantity: Double(Int(Double(ingredient.quantity) ?? 1.0)),
-                unit: ingredient.unit,
-                status: Status(rawValue: "To Buy") ?? .fridge,
-                daysRemaining: 2,
-                image: nil
-            )
+        let newFoodItem = FoodItem(
+            id: UUID(),
+            name: ingredient.name,
+            quantity: ingredient.quantity, // 直接使用 Double，不進行轉換
+            unit: ingredient.unit,
+            status: .toBuy, // 直接使用 .toBuy，不透過 rawValue
+            daysRemaining: Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: ingredient.expirationDate).day ?? 0,
+            expirationDate: ingredient.expirationDate, // 設置 expirationDate
+            image: nil
+        )
 
-            if !foodItemStore.foodItems.contains(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
-                foodItemStore.foodItems.append(newFoodItem)
-                return true
-            } else {
-                return false
-            }
+        if !foodItemStore.foodItems.contains(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
+            foodItemStore.foodItems.append(newFoodItem)
+            return true
+        } else {
+            return false
         }
+    }
+
     
     func extractIngredients(from message: String) -> [String] {
         var ingredients: [String] = []
@@ -861,8 +869,8 @@ struct IngredientRow: View {
                         .bold()
                         .lineLimit(nil)
                         .fixedSize(horizontal: false, vertical: true)
-                    if !ingredient.quantity.isEmpty {
-                        Text("Qty：\(ingredient.quantity) \(ingredient.unit)")
+                    if ingredient.quantity > 0 { // 改為檢查 quantity > 0
+                        Text("Qty：\(ingredient.quantity, specifier: "%.2f") \(ingredient.unit)") // 格式化為兩位小數
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }

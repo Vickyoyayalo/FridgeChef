@@ -12,8 +12,9 @@ import Foundation
 struct ParsedIngredient: Identifiable {
     let id = UUID()
     let name: String
-    let quantity: String
+    let quantity: Double
     let unit: String
+    let expirationDate: Date
 }
 
 struct ParsedRecipe {

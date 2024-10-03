@@ -33,7 +33,8 @@ struct GroceryListView: View {
                     moveToFridge: moveToFridge,
                     moveToFreezer: moveToFreezer,
                     editingItem: $editingItem,
-                    deleteItems: deleteItems
+                    deleteItems: deleteItems,
+                    handleSave: handleSave
                 )
                 .sheet(item: $editingItem) { selectedItem in
                     let ingredient = convertToIngredient(item: selectedItem)
@@ -45,7 +46,6 @@ struct GroceryListView: View {
                 
                 // 漂浮按鈕
                 FloatingMapButton(showingMapView: $showingMapView)
-                    .padding() // 添加內邊距，避免緊貼螢幕邊緣
             }
             .navigationBarTitle("Grocery 🛒", displayMode: .automatic)
             .navigationBarItems(leading: EditButton().bold(), trailing: addButton)
@@ -159,7 +159,6 @@ struct GroceryListView: View {
         editingItem = nil
     }
 
-    
     // 將食材移動到 Fridge 或 Freezer
     func moveToFridge(item: FoodItem) {
         moveToStorage(item: item, storageMethod: "Fridge")
@@ -217,6 +216,7 @@ struct GroceryListContentView: View {
     var moveToFreezer: (FoodItem) -> Void
     @Binding var editingItem: FoodItem?
     var deleteItems: (IndexSet) -> Void
+    var handleSave: (Ingredient) -> Void
     
     var body: some View {
         List {

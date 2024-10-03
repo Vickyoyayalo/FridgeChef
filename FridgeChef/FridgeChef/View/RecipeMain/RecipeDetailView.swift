@@ -155,12 +155,13 @@ struct RecipeDetailView: View {
                             
                             let parsedIngredients = recipe.extendedIngredients.map { extIngredient in
                                 ParsedIngredient(
-                                    name: extIngredient.name.capitalized, // 每個單詞的首字母大寫
-                                    quantity: String(format: "%.2f", extIngredient.amount), // 保留兩位小數
-                                    unit: extIngredient.unit.isEmpty ? "unit" : extIngredient.unit
+                                    name: extIngredient.name.capitalized,
+                                    quantity: extIngredient.amount.rounded(toPlaces: 2), // 保留兩位小數
+                                    unit: extIngredient.unit.isEmpty ? "unit" : extIngredient.unit,
+                                    expirationDate: Calendar.current.date(byAdding: .day, value: 0, to: Date()) ?? Date() // 設置一個默認的 expirationDate
                                 )
                             }
-
+                            
                             // 食材區域
                             SectionView(title: "Ingredients") {
                                 VStack(alignment: .leading, spacing: 10) {

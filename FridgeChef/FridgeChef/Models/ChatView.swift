@@ -27,7 +27,7 @@ enum ChatGPTRole: String {
 struct PlaceholderTextEditor: View {
     @Binding var text: String
     var placeholder: String
-
+    
     @State private var dynamicHeight: CGFloat = 44  // 设置初始高度
     
     var body: some View {
@@ -41,7 +41,7 @@ struct PlaceholderTextEditor: View {
                 .onChange(of: text) { _ in
                     calculateHeight()  // 每当文本改变时重新计算高度
                 }
-
+            
             if text.isEmpty {
                 Text(placeholder)
                     .foregroundColor(.gray)
@@ -80,27 +80,28 @@ struct ChatView: View {
     @State private var image: UIImage?
     @State private var showChangePhotoDialog = false
     @State private var errorMessage: String?
+    @State private var isButtonDisabled = false
     @State private var api = ChatGPTAPI(
         apiKey: "sk-8VrzLltl-TexufDVK8RWN-GVvWLusdkCjGi9lKNSSkT3BlbkFJMryR2KSLUPFRKb5VCzGPXJGI8s-8bUt9URrmdfq0gA",
         systemPrompt: """
         你是一個專業的廚師助手，能夠根據用戶提供的食材、圖片和描述，提供詳細的食譜和烹飪步驟。每次回覆時，請務必提供食譜名稱與完整的【食材】清單，並附上一個該指定食譜的有效網址。如果無法提供有效網址，請明確說明無法提供，另外你也能依據使用者的想法推薦相關食譜詳細做法，並依照使用著使用的語言做修改與回答。
-
+        
         🥙 食譜名稱：中文名稱 (英文名稱) （請務必同時提供中文和英文的食譜名稱。如果沒有英文名稱，請使用拼音或直接重複中文名稱。）
-
+        
         🥬【食材】（必須提供所有食材，並包含數量和單位，格式為：數量 單位 食材名稱）
         • 2 個 蘋果
         • 1 杯 牛奶
         • ...
-
+        
         🍳【烹飪步驟】（（詳細描述每個步驟，每個步驟以數字和句點開頭，直接描述，不要添加額外的標題、粗體字、冒號或其他符號，詳細描述每個步驟）
         1. 步驟一
         2. 步驟二
         3. 步驟三
         ...
-
+        
         🔗【食譜連結】
         (請提供一個與使用者提問的食譜相關的有效網址。)
-
+        
         👩🏻‍🍳【貼心提醒】
         (這裡可以貼心提醒或是回答使用者的問題。)
         Bon appetit 🍽️
@@ -110,7 +111,7 @@ struct ChatView: View {
         - **請勿在步驟中添加額外的標題、粗體字、冒號或其他符號。**
         - **每個步驟應該是完整的句子，直接描述操作。**
         - **嚴格按照上述格式回覆，不要添加任何額外的內容或改變格式。**
-
+        
         """
     )
     
@@ -131,7 +132,7 @@ struct ChatView: View {
                 )
                 .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
-              
+                
                 Color.clear
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -179,14 +180,14 @@ struct ChatView: View {
                             .onTapGesture {
                                 self.showChangePhotoDialog = true
                             }
-                            .confirmationDialog("想換張照片嗎？", isPresented: $showChangePhotoDialog, titleVisibility: .visible) {
-                                Button("換一張") {
+                            .confirmationDialog("Wanna Change?", isPresented: $showChangePhotoDialog, titleVisibility: .visible) {
+                                Button("Change") {
                                     showPhotoOptions = true
                                 }
-                                Button("移除照片", role: .destructive) {
+                                Button("Remove", role: .destructive) {
                                     self.image = nil
                                 }
-                                Button("取消", role: .cancel) {}
+                                Button("Cancel", role: .cancel) {}
                             }
                     }
                     HStack {
@@ -310,7 +311,7 @@ struct ChatView: View {
                 }
             }
         }
-
+        
         
         func processStepsLine(_ line: String) {
             var trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -348,7 +349,7 @@ struct ChatView: View {
             if line.contains("🥙") {
                 var cleanedLine = line.replacingOccurrences(of: "🥙 ", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
                 cleanedLine = cleanedLine.replacingOccurrences(of: "食譜名稱：", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
-
+                
                 // Check for both Chinese and English names
                 if let range = cleanedLine.range(of: #"(.+)\s*\((.+)\)"#, options: .regularExpression) {
                     let chineseName = String(cleanedLine[range.lowerBound..<cleanedLine.range(of: "(")!.lowerBound]).trimmingCharacters(in: .whitespaces)
@@ -357,11 +358,11 @@ struct ChatView: View {
                 } else {
                     title = cleanedLine
                 }
-
+                
                 isParsed = true
                 continue
             }
-
+            
             if line.contains("【食材】") {
                 currentSection = "ingredients"
                 isParsed = true
@@ -470,6 +471,32 @@ struct ChatView: View {
                             .padding()
                             .background(Color.purple.opacity(0.1))
                             .cornerRadius(10)
+                            
+                            // 一個按鈕，根據條件改變文本和動作
+                            Button(action: {
+                                if allIngredientsInCart(ingredients: recipe.ingredients) {
+                                    addRemainingIngredientsToCart(ingredients: recipe.ingredients)
+                                } else {
+                                    addAllIngredientsToCart(ingredients: recipe.ingredients)
+                                }
+                            }) {
+                                Text(allIngredientsInCart(ingredients: recipe.ingredients) ? "Add Remaining Ingredients to Cart" : "Add All Ingredients to Cart")
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background(Color.orange)
+                                    .cornerRadius(10)
+                            }
+                            .frame(maxWidth: .infinity) // 按钮居中
+                            .opacity(isButtonDisabled ? 0.3 : 0.8) // 按钮的透明度
+                            .disabled(isButtonDisabled) // 按钮的禁用状态
+                            .alert(isPresented: $showAlert) {
+                                Alert(
+                                    title: Text(alertTitle),
+                                    message: Text(alertMessage),
+                                    dismissButton: .default(Text("OK"))
+                                )
+                            }
                         }
                         
                         // 顯示烹飪步驟
@@ -560,7 +587,7 @@ struct ChatView: View {
         }
         .padding(.horizontal)
     }
-
+    
     
     func fetchRecipeLink(recipeName: String) async -> String? {
         let service = RecipeSearchService()
@@ -611,6 +638,66 @@ struct ChatView: View {
         return newLines.joined(separator: "\n")
     }
     
+    @State private var showAlert = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+
+    // 判斷所有食材是否已經加入購物車
+    private func allIngredientsInCart(ingredients: [ParsedIngredient]) -> Bool {
+        return ingredients.allSatisfy { ingredient in
+            foodItemStore.foodItems.contains(where: { $0.name.lowercased() == ingredient.name.lowercased() })
+        }
+    }
+
+    // 添加剩餘食材的方法
+    private func addRemainingIngredientsToCart(ingredients: [ParsedIngredient]) {
+        var alreadyInCart = [String]()
+        var addedToCart = [String]()
+        
+        for ingredient in ingredients {
+            if !foodItemStore.foodItems.contains(where: { $0.name.lowercased() == ingredient.name.lowercased() }) {
+                let success = addIngredientToShoppingList(ingredient)
+                if success {
+                    addedToCart.append(ingredient.name)
+                }
+            } else {
+                alreadyInCart.append(ingredient.name)
+            }
+        }
+        
+        // 根據結果更新 Alert 內容
+        if addedToCart.isEmpty {
+            alertTitle = "No New Ingredients Added"
+            alertMessage = "All ingredients are already in your cart."
+        } else {
+            alertTitle = "Ingredients Added"
+            alertMessage = "Added: \(addedToCart.joined(separator: ", "))"
+            
+            if !alreadyInCart.isEmpty {
+                alertMessage += "\nAlready in cart: \(alreadyInCart.joined(separator: ", "))"
+            }
+        }
+        
+        // 顯示 Alert
+        showAlert = true
+    }
+
+    // 添加所有食材的方法
+    private func addAllIngredientsToCart(ingredients: [ParsedIngredient]) {
+        var addedToCart = [String]()
+        
+        for ingredient in ingredients {
+            if addIngredientToShoppingList(ingredient) {
+                addedToCart.append(ingredient.name)
+            }
+        }
+        
+        // 顯示已添加的食材
+        alertTitle = "Ingredients Added"
+        alertMessage = "Added: \(addedToCart.joined(separator: ", "))"
+        showAlert = true
+    }
+    
     func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
         let newFoodItem = FoodItem(
             id: UUID(),
@@ -622,7 +709,7 @@ struct ChatView: View {
             expirationDate: ingredient.expirationDate, // 設置 expirationDate
             image: nil
         )
-
+        
         if !foodItemStore.foodItems.contains(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
             foodItemStore.foodItems.append(newFoodItem)
             return true
@@ -630,7 +717,7 @@ struct ChatView: View {
             return false
         }
     }
-
+    
     
     func extractIngredients(from message: String) -> [String] {
         var ingredients: [String] = []
@@ -748,20 +835,20 @@ struct ChatView: View {
                         if let responseContent = responseMessage.content {
                             var parsedRecipe = parseRecipe(from: responseContent)
                             
-//                            // 任何情況下都從 Spoonacular API 獲取連結
+                            //                            // 任何情況下都從 Spoonacular API 獲取連結
                             if let title = parsedRecipe.title {
                                 if let link = await fetchRecipeLink(recipeName: title) {
                                     parsedRecipe.link = link
                                 }
                             }
                             
-//                            
-//                            當助理的回覆沒有提供連結時（即 parsedRecipe.link == nil），程式會嘗試從 Spoonacular API 獲取連結。
-//                            if parsedRecipe.link == nil, let title = parsedRecipe.title {
-//                                if let link = await fetchRecipeLink(recipeName: title) {
-//                                    parsedRecipe.link = link
-//                                }
-//                            }
+                            //
+                            //                            當助理的回覆沒有提供連結時（即 parsedRecipe.link == nil），程式會嘗試從 Spoonacular API 獲取連結。
+                            //                            if parsedRecipe.link == nil, let title = parsedRecipe.title {
+                            //                                if let link = await fetchRecipeLink(recipeName: title) {
+                            //                                    parsedRecipe.link = link
+                            //                                }
+                            //                            }
                             
                             DispatchQueue.main.async {
                                 self.parsedRecipes[responseMessage.id] = parsedRecipe
@@ -778,7 +865,7 @@ struct ChatView: View {
             }
         }
     }
-
+    
     
     func sendMessageToAPI(message: String) {
         Task {
@@ -800,7 +887,7 @@ struct ChatView: View {
     func processAssistantResponse(_ responseMessage: Message) async {
         if let responseContent = responseMessage.content {
             var parsedRecipe = parseRecipe(from: responseContent)
-
+            
             if var title = parsedRecipe.title {
                 // If the title is in Chinese, translate it to English
                 if isChinese(text: title) {
@@ -822,13 +909,13 @@ struct ChatView: View {
                     parsedRecipe.link = nil
                 }
             }
-
+            
             DispatchQueue.main.async {
                 self.parsedRecipes[responseMessage.id] = parsedRecipe
             }
         }
     }
-
+    
     func isChinese(text: String) -> Bool {
         for scalar in text.unicodeScalars {
             if scalar.value >= 0x4E00 && scalar.value <= 0x9FFF {
@@ -837,20 +924,20 @@ struct ChatView: View {
         }
         return false
     }
-
+    
 }
 
 struct IngredientRow: View {
     var ingredient: ParsedIngredient
     var addAction: (ParsedIngredient) -> Bool
     @EnvironmentObject var foodItemStore: FoodItemStore
-
+    
     @State private var showAlert = false
     @State private var alertMessage = ""
-
+    
     var body: some View {
         let isAdded = foodItemStore.foodItems.contains { $0.name.lowercased() == ingredient.name.lowercased() }
-
+        
         Button(action: {
             if !isAdded {
                 let success = addAction(ingredient)

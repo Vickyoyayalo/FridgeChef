@@ -57,7 +57,7 @@ struct DatePickerTextField: View {
                 .datePickerStyle(GraphicalDatePickerStyle())
                 .padding()
                 
-                Button("確認") {
+                Button("Save") {
                     self.showingDatePicker = false
                 }
                 .font(.headline)
@@ -73,7 +73,7 @@ struct DatePickerTextField: View {
 
 struct DatePickerTextField_Previews: PreviewProvider {
     static var previews: some View {
-        DatePickerTextField(date: .constant(Date()), label: "選擇日期")
+        DatePickerTextField(date: .constant(Date()), label: "Choose a Date")
     }
 }
 

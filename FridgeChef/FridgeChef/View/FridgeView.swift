@@ -112,7 +112,7 @@ struct FridgeView: View {
               let today = Calendar.current.startOfDay(for: Date())
               let expirationDate = Calendar.current.startOfDay(for: ingredient.expirationDate)
               let status = ingredient.storageMethod.isEmpty ? Status.fridge : Status(rawValue: ingredient.storageMethod) ?? .fridge
-              let daysRemaining = status == .fridge ?  5 : 14
+              let daysRemaining = status == .fridge ?  1 : 1
               let newFoodItem = FoodItem(
                   id: ingredient.id,
                   name: ingredient.name,
@@ -143,8 +143,8 @@ struct FridgeView: View {
             // 更新狀態和 daysRemaining
             foodItemStore.foodItems[index].status = .toBuy
             // 設置新的過期日期，例如 7 天後
-            let newExpirationDate = Calendar.current.date(byAdding: .day, value: 5, to: Date()) ?? Date()
-            let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 5
+            let newExpirationDate = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+            let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 1
             foodItemStore.foodItems[index].daysRemaining = daysRemaining
             
             // 顯示 ProgressView
@@ -174,7 +174,7 @@ struct FridgeView: View {
             // 更新狀態和 daysRemaining
             foodItemStore.foodItems[index].status = Status(rawValue: storageMethod) ?? .fridge
             // 設置新的過期日期，例如 Fridge 為 7 天，Freezer 為 30 天
-            let newExpirationDate = Calendar.current.date(byAdding: .day, value: storageMethod == "Fridge" ? 7 : 30, to: Date()) ?? Date()
+            let newExpirationDate = Calendar.current.date(byAdding: .day, value: storageMethod == "Fridge" ? 1 : 1, to: Date()) ?? Date()
             let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 0
             foodItemStore.foodItems[index].daysRemaining = daysRemaining
             
@@ -182,7 +182,7 @@ struct FridgeView: View {
             showingProgressView = true
             progressMessage = "Food added to \(storageMethod)!"
             // 隱藏 ProgressView after delay
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 showingProgressView = false
             }
             

@@ -172,7 +172,7 @@ struct GroceryListView: View {
     func moveToStorage(item: FoodItem, storageMethod: String) {
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
             // 更新狀態和 daysRemaining
-            foodItemStore.foodItems[index].status = Status(rawValue: storageMethod) ?? .fridge
+            foodItemStore.foodItems[index].status = Status(rawValue: storageMethod) ?? .toBuy
             // 設置新的過期日期，例如 Fridge 為 5 天，Freezer 為 14 天
             let newExpirationDate = Calendar.current.date(byAdding: .day, value: storageMethod == "Fridge" ? 5 : 14, to: Date()) ?? Date()
             let daysRemaining = Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: Date()), to: newExpirationDate).day ?? 0

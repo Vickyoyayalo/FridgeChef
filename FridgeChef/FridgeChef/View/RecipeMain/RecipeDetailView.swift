@@ -24,7 +24,8 @@ struct RecipeDetailView: View {
     
     // 新增的狀態變量來管理警告
     @State private var activeAlert: ActiveAlert?
-    @State private var showAddedLabel = false // 用於顯示「Food added」提示
+    @State private var showAddedLabel = false
+    @State private var isButtonDisabled = false
     
     var body: some View {
         ZStack {
@@ -36,6 +37,12 @@ struct RecipeDetailView: View {
             )
             .opacity(0.3)
             .edgesIgnoringSafeArea(.all)
+            
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    IQKeyboardManager.shared.resignFirstResponder()
+                }
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
@@ -177,6 +184,23 @@ struct RecipeDetailView: View {
                                         }
                                         .environmentObject(foodItemStore)
                                     }
+                                    
+                                    // 添加一个按钮，用于将所有食材一次性加入购物车
+                                    Button(action: {
+                                        addAllIngredientsToCart(ingredients: parsedIngredients)
+                                        isButtonDisabled = true // 按下後禁用按鈕
+                                    }) {
+                                        Text("Add All Ingredients to Cart")
+                                            .bold()
+                                            .foregroundColor(.white)
+                                            .padding()
+                                            .background(primaryColor)
+                                            .cornerRadius(10)
+                                    }
+                                    .frame(maxWidth: .infinity) // 按钮居中
+                                    .opacity(isButtonDisabled ? 0.7 : 1.0) // 按钮的透明度
+                                    .disabled(isButtonDisabled) // 按钮的禁用状态
+                                    .padding(.top, 10)
                                 }
                                 .padding(.horizontal)
                                 .padding(.vertical, 1)
@@ -283,6 +307,28 @@ struct RecipeDetailView: View {
             return false
         }
     }
+    
+    private func addAllIngredientsToCart(ingredients: [ParsedIngredient]) {
+            var alreadyInCart = [String]()
+            var addedToCart = [String]()
+            
+            for ingredient in ingredients {
+                let success = addIngredientToShoppingList(ingredient)
+                if success {
+                    addedToCart.append(ingredient.name)
+                } else {
+                    alreadyInCart.append(ingredient.name)
+                }
+            }
+            
+            // 根据结果显示不同的提示
+            if !addedToCart.isEmpty {
+                activeAlert = .ingredient("Added \(addedToCart.joined(separator: ", ")) to your Grocery List!")
+            }
+            if !alreadyInCart.isEmpty {
+                activeAlert = .ingredient("Already in your Grocery List: \(alreadyInCart.joined(separator: ", "))")
+            }
+        }
 }
 
 // 新增一個 CategoryItemView，用於顯示每個分類項目及其 TagViews

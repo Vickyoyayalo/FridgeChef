@@ -22,10 +22,11 @@ struct ProgressOverlay: View {
                         .padding(.top, 5)
                 }
                 .padding()
-                .background(Color.white.opacity(0.6))
+                .background(Color.white.opacity(0.8))
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 .fontWeight(.bold)
                 .cornerRadius(10)
+                .shadow(radius: 5)
                 .padding(.bottom, 50)
             }
         }

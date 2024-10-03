@@ -18,7 +18,7 @@ struct DetailIngredient: Codable, Identifiable {
 struct Ingredient: Codable, Identifiable {
     var id: UUID = UUID()
     var name: String
-    var quantity: String
+    var quantity: Double
     var amount: Double
     var unit: String
     var expirationDate: Date
@@ -51,9 +51,9 @@ extension Ingredient {
     init(from foodItem: FoodItem) {
         self.id = UUID()  // 直接生成一个新的 UUID
         self.name = foodItem.name
-        self.quantity = "\(foodItem.quantity)"
+        self.quantity = foodItem.quantity
         self.amount = Double(foodItem.quantity)  // 假设 quantity 和 amount 有关联
-        self.unit = "個"  // 假设 foodItem 没有单位，使用默认值
+        self.unit = "unit"  // 假设 foodItem 没有单位，使用默认值
         let today = Date()
         let calendar = Calendar.current
         
@@ -63,7 +63,7 @@ extension Ingredient {
             self.expirationDate = today
         }
         
-        self.storageMethod = foodItem.status
+        self.storageMethod = foodItem.status.rawValue
         
         // 将 UIImage 转换为 Base64 字符串
         if let image = foodItem.image, let imageData = image.pngData() {

@@ -18,7 +18,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
-        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemRed, .font: UIFont(name: "ArialRoundedMTBold", size: 30)!]
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemOrange, .font: UIFont(name: "ArialRoundedMTBold", size: 30)!]
         navBarAppearance.titleTextAttributes = [.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemRed, .font: UIFont(name: "ArialRoundedMTBold", size: 20)!]
         navBarAppearance.shadowColor = nil // 这里设置为 nil 来移除分隔线
         navBarAppearance.shadowImage = UIImage() // 这也可以用来移除分隔线

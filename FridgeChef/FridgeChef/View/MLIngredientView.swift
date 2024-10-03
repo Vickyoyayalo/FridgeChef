@@ -17,9 +17,9 @@ struct MLIngredientView: View {
     var onSave: ((Ingredient) -> Void)? = nil
     var editingFoodItem: Ingredient?
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var foodItemStore: FoodItemStore
     @State private var image: UIImage?
     @State private var recognizedText: String = ""
-    @State private var quantity: String = "1"
     @State private var expirationDate: Date = Date()
 
     @State private var isAuthorized = false
@@ -32,14 +32,15 @@ struct MLIngredientView: View {
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
 
-    @State private var storageMethod = "Fridge"
-    let storageOptions = ["Fridge", "Freeze"]
+    @State private var storageMethod: String = "To Buy"
+    let storageOptions = ["To Buy", "Fridge", "Freezer"]
 
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
 
     @State private var isSavedAlertPresented = false
     @State private var savedIngredients: [Ingredient] = []
+    @State private var quantity: String
 
     init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white
@@ -51,13 +52,19 @@ struct MLIngredientView: View {
         self.editingFoodItem = editingFoodItem
 
         if let item = editingFoodItem {
-            _recognizedText = State(initialValue: item.name)
-            _quantity = State(initialValue: item.quantity)
-            _expirationDate = State(initialValue: item.expirationDate)
-            _storageMethod = State(initialValue: item.storageMethod)
-            _image = State(initialValue: item.image)
+                _recognizedText = State(initialValue: item.name)
+            _quantity = State(initialValue: item.quantity != nil ? String(format: "%.2f", item.quantity) : "1.00")
+                _expirationDate = State(initialValue: item.expirationDate)
+                _storageMethod = State(initialValue: item.storageMethod)
+                _image = State(initialValue: item.image != nil ? UIImage(data: Data(base64Encoded: item.imageBase64 ?? "") ?? Data()) : nil)
+            } else {
+                _recognizedText = State(initialValue: "")
+                _quantity = State(initialValue: "1.00")
+                _expirationDate = State(initialValue: Date())
+                _storageMethod = State(initialValue: "Fridge")
+                _image = State(initialValue: nil)
+            }
         }
-    }
 
     enum PhotoSource: Identifiable {
         case photoLibrary
@@ -193,6 +200,65 @@ struct MLIngredientView: View {
                         .alert(isPresented: $isSavedAlertPresented) {
                             Alert(title: Text("Success"), message: Text("Saved the ingredient!"), dismissButton: .default(Text("Sure")))
                         }
+                        // 顯示來自 FridgeListView 和 GroceryListView 的食材
+                        VStack(alignment: .leading, spacing: 20) {
+                            // 標題
+                            Text("👨🏽‍🍳 Summary List....")
+                                .font(.custom("ArialRoundedMTBold", size: 18))
+                                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                            
+                            // 內容區域
+                            VStack(alignment: .leading, spacing: 10) {
+                                // 冰箱物品
+                                Text("🥬 Fridge Items")
+                                ForEach(foodItemStore.foodItems.filter { $0.status == .fridge }) { item in
+                                    HStack {
+                                        Text(item.name)
+                                            .foregroundColor(.blue)
+                                        Spacer()
+                                        Text("\(item.quantity, specifier: "%.2f") \(item.unit)")
+                                            .font(.custom("ArialRoundedMTBold", size: 15))
+                                            .foregroundColor(.gray)
+                                    }
+                                    .padding(.vertical, 1)
+                                }
+                                
+                                // 冷凍庫物品
+                                Text("⛄️ Freezer Items")
+                                ForEach(foodItemStore.foodItems.filter { $0.status == .freezer }) { item in
+                                    HStack {
+                                        Text(item.name)
+                                            .foregroundColor(.blue)
+                                        Spacer()
+                                        Text("\(item.quantity, specifier: "%.2f") \(item.unit)")
+                                            .font(.custom("ArialRoundedMTBold", size: 15))
+                                            .foregroundColor(.gray)
+                                    }
+                                    .padding(.vertical, 1)
+                                }
+                                
+                                // 購物清單物品
+                                Text("🛒 Grocery Items")
+                                    .padding(.top)
+                                ForEach(foodItemStore.foodItems.filter { $0.status == .toBuy }) { item in
+                                    HStack {
+                                        Text(item.name)
+                                            .foregroundColor(.blue)
+                                        Spacer()
+                                        Text("\(item.quantity, specifier: "%.2f") \(item.unit)")
+                                            .font(.custom("ArialRoundedMTBold", size: 15))
+                                            .foregroundColor(.gray)
+                                    }
+                                    .padding(.vertical, 1)
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.white.opacity(0.6))
+                        .cornerRadius(30)
+                        .shadow(radius: 3)
                     }
                     .padding()
                     .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions, titleVisibility: .visible) {
@@ -319,28 +385,39 @@ struct MLIngredientView: View {
             }
         }
     }
-
-    // 儲存食材資料的函數
+    
     func saveIngredient() {
-        let defaultAmount = 1.0  // 一个示例值
-        let defaultUnit = "unit"    // 一个示例单位
-
-        // 创建 Ingredient 实例
+        let defaultAmount = 1.0  // 一個示例值
+        let defaultUnit = "unit" // 一個示例單位
+        
+        // 將 quantity 從 String 轉換為 Double，並四捨五入到兩位小數
+        let quantityValue = (Double(quantity) ?? 1.0).rounded(toPlaces: 2)
+        print("Converted quantity: \(quantityValue)") // 調試輸出
+        
+        // 創建 Ingredient 實例，並將 quantity 設置為 Double
         var newIngredient = Ingredient(
+            id: editingFoodItem?.id ?? UUID(), // 如果是編輯，保持原有的 ID；否則生成新 ID
             name: recognizedText,
-            quantity: quantity,
+            quantity: quantityValue, // 正確設置為 Double，並已四捨五入
             amount: defaultAmount,
-            unit: defaultUnit,
-            expirationDate: expirationDate,
+            unit: defaultUnit, // 使用實際的 unit
+            expirationDate: expirationDate, // 設置 expirationDate
             storageMethod: storageMethod,
-            imageBase64: image?.pngData()?.base64EncodedString()  
+            imageBase64: image?.pngData()?.base64EncodedString()
         )
+        print("New Ingredient: \(newIngredient.quantity)")
         savedIngredients.append(newIngredient)
         isSavedAlertPresented = true
         onSave?(newIngredient)
         clearForm()
         dismiss()
     }
+
+    func handleSave(_ ingredient: Ingredient) {
+        print("Saving ingredient quantity: \(ingredient.quantity)") // 調試輸出
+        // 其餘代碼保持不變
+    }
+
     // 清空表單欄位
       func clearForm() {
           recognizedText = ""
@@ -349,6 +426,21 @@ struct MLIngredientView: View {
           image = nil
           storageMethod = ""
       }
+    
+    func convertToIngredient(item: FoodItem) -> Ingredient {
+        // 轉換 FoodItem 為 Ingredient
+        let base64Image = item.image?.pngData()?.base64EncodedString()
+        return Ingredient(
+            id: item.id,
+            name: item.name,
+            quantity: item.quantity,
+            amount: 1.0, // 假設
+            unit: item.unit,
+            expirationDate: item.expirationDate ?? Date(), // 使用 FoodItem 的 expirationDate 或默認為今天
+            storageMethod: item.status.rawValue,
+            imageBase64: base64Image
+        )
+    }
 
     // 請求語音識別授權
     func requestSpeechRecognitionAuthorization() {
@@ -404,7 +496,6 @@ struct MLIngredientView: View {
             print("Couldn't start recording")
         }
     }
-
     // 停止錄音
     func stopRecording() {
         audioEngine.stop()

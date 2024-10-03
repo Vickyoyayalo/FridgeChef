@@ -586,7 +586,6 @@ struct ChatView: View {
         }
     }
     
-    
     func removeIngredientsSection(from message: String) -> String {
         var lines = message.components(separatedBy: "\n")
         var newLines: [String] = []
@@ -610,9 +609,9 @@ struct ChatView: View {
     func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
             let newFoodItem = FoodItem(
                 name: ingredient.name,
-                quantity: Int(Double(ingredient.quantity) ?? 1.0),
+                quantity: Double(Int(Double(ingredient.quantity) ?? 1.0)),
                 unit: ingredient.unit,
-                status: "To Buy",
+                status: Status(rawValue: "To Buy") ?? .fridge,
                 daysRemaining: 2,
                 image: nil
             )

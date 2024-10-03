@@ -71,6 +71,9 @@
 		1C9568C52CA8290B006181F9 /* RecipeSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9568C42CA8290B006181F9 /* RecipeSearchViewModel.swift */; };
 		1C9568C82CA82944006181F9 /* RecipeRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9568C62CA82944006181F9 /* RecipeRowView.swift */; };
 		1C9568C92CA82944006181F9 /* RecipeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9568C72CA82944006181F9 /* RecipeDetailView.swift */; };
+		1C99D1792CAE6C47003D2997 /* FloatingMapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D1782CAE6C47003D2997 /* FloatingMapButton.swift */; };
+		1C99D17B2CAE6C63003D2997 /* ProgressOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D17A2CAE6C63003D2997 /* ProgressOverlay.swift */; };
+		1C99D17D2CAEA882003D2997 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D17C2CAEA882003D2997 /* Double.swift */; };
 		1CA8CE8B2C9D7A2B00C9CADD /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8A2C9D7A2B00C9CADD /* MobileNetV2.mlmodel */; };
 		1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */; };
 		1CA8CE8F2C9E720900C9CADD /* PlacesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8E2C9E720900C9CADD /* PlacesFetcher.swift */; };
@@ -162,6 +165,9 @@
 		1C9568C42CA8290B006181F9 /* RecipeSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeSearchViewModel.swift; sourceTree = "<group>"; };
 		1C9568C62CA82944006181F9 /* RecipeRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeRowView.swift; sourceTree = "<group>"; };
 		1C9568C72CA82944006181F9 /* RecipeDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeDetailView.swift; sourceTree = "<group>"; };
+		1C99D1782CAE6C47003D2997 /* FloatingMapButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingMapButton.swift; sourceTree = "<group>"; };
+		1C99D17A2CAE6C63003D2997 /* ProgressOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressOverlay.swift; sourceTree = "<group>"; };
+		1C99D17C2CAEA882003D2997 /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		1CA8CE8A2C9D7A2B00C9CADD /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
 		1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewWithUserLocation.swift; sourceTree = "<group>"; };
 		1CA8CE8E2C9E720900C9CADD /* PlacesFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesFetcher.swift; sourceTree = "<group>"; };
@@ -308,6 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */,
+				1C99D17C2CAEA882003D2997 /* Double.swift */,
 				1CAF43092CAD52EE0022D393 /* String+Extensions.swift */,
 				1C7F45F12C9B146100846B44 /* CornerRadius.swift */,
 			);
@@ -340,6 +347,8 @@
 			isa = PBXGroup;
 			children = (
 				1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */,
+				1C99D1782CAE6C47003D2997 /* FloatingMapButton.swift */,
+				1C99D17A2CAE6C63003D2997 /* ProgressOverlay.swift */,
 				1CAF43072CAD3B650022D393 /* BulletPointView.swift */,
 			);
 			path = Components;
@@ -663,10 +672,13 @@
 				1C1E9A132CA7B135002A15C8 /* StepView.swift in Sources */,
 				1C7F45E52C9AC96100846B44 /* AddGroceryForm.swift in Sources */,
 				1CAF430A2CAD52EE0022D393 /* String+Extensions.swift in Sources */,
+				1C99D1792CAE6C47003D2997 /* FloatingMapButton.swift in Sources */,
 				1C8DC55A2C99E0470041A2A2 /* MLIngredientView.swift in Sources */,
 				1CB5BC892C943D36006C66E5 /* User.swift in Sources */,
 				1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */,
+				1C99D17B2CAE6C63003D2997 /* ProgressOverlay.swift in Sources */,
 				1CAF42FA2CACBF8B0022D393 /* DefaultRecipeView.swift in Sources */,
+				1C99D17D2CAEA882003D2997 /* Double.swift in Sources */,
 				1CA8CE8B2C9D7A2B00C9CADD /* MobileNetV2.mlmodel in Sources */,
 				1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */,
 				1C8A74092CA000980005E54D /* ChatView.swift in Sources */,

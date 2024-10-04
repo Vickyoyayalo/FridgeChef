@@ -37,6 +37,7 @@
 		1C6CC39B2C993698001C4643 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39A2C993698001C4643 /* ImagePicker.swift */; };
 		1C6CC39D2C996827001C4643 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */; };
 		1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3A02C996F94001C4643 /* AlertService.swift */; };
+		1C6D2D802CAFCAC0000C49DC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C6D2D7F2CAFCAC0000C49DC /* Launch Screen.storyboard */; };
 		1C75CCAB2CA2E1690072D55C /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */; };
 		1C75CCAD2CA2E7500072D55C /* KeyboardResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */; };
 		1C75CCD52CA461920072D55C /* WhatToEatGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C75CCD42CA461920072D55C /* WhatToEatGame.swift */; };
@@ -133,6 +134,7 @@
 		1C6CC39A2C993698001C4643 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		1C6CC39C2C996827001C4643 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		1C6CC3A02C996F94001C4643 /* AlertService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertService.swift; sourceTree = "<group>"; };
+		1C6D2D7F2CAFCAC0000C49DC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponder.swift; sourceTree = "<group>"; };
 		1C75CCD42CA461920072D55C /* WhatToEatGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatToEatGame.swift; sourceTree = "<group>"; };
 		1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				1C4AD14A2CAA3B5100C90905 /* FridgeChef.entitlements */,
+				1C6D2D7F2CAFCAC0000C49DC /* Launch Screen.storyboard */,
 				1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */,
 				1C19F1A22C94372A0094FBEA /* FridgePageView.swift */,
 				1C7F45C52C9A750700846B44 /* Resource */,
@@ -574,6 +577,7 @@
 				1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */,
 				1C2DD5792C9D68C8000173F6 /* Hellix-Regular.ttf in Resources */,
 				1C7F45C92C9A752300846B44 /* Nunito-Bold.ttf in Resources */,
+				1C6D2D802CAFCAC0000C49DC /* Launch Screen.storyboard in Resources */,
 				1C6CC38D2C985109001C4643 /* LoginVideo.mp4 in Resources */,
 				1C6CC3992C9927CD001C4643 /* Assets.xcassets in Resources */,
 				1CD4F7B32C98032300F4417D /* GoogleService-Info.plist in Resources */,
@@ -847,6 +851,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -884,6 +889,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

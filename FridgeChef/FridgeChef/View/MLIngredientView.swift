@@ -239,7 +239,6 @@ struct MLIngredientView: View {
                                 
                                 // 購物清單物品
                                 Text("🛒 Grocery Items")
-                                    .padding(.top)
                                 ForEach(foodItemStore.foodItems.filter { $0.status == .toBuy }) { item in
                                     HStack {
                                         Text(item.name)

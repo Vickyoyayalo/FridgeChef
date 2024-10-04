@@ -28,6 +28,26 @@ struct FridgeView: View {
                 .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
                 
+                GeometryReader { geometry in
+                    VStack {
+                        // 顯示背景圖片和文字
+                        if filteredFoodItems.isEmpty {
+                            VStack {
+                                Image("Cutiemonster")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 300, height: 250)
+
+                                Text("Happy with FOOD ~")
+                                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                    .padding()
+                            }
+                            .frame(width: geometry.size.width, height: geometry.size.height)
+                            .background(Color.clear)
+                        }
+                    }
+                }
+                
                 VStack {
                     FridgeListView(
                         filteredFoodItems: filteredFoodItems,
@@ -220,7 +240,15 @@ struct FridgeListView: View {
         List {
             // Fridge Section
             if !filteredFoodItems.filter { $0.status == .fridge }.isEmpty {
-                Section(header: Text("Fridge")) {
+                Section(header:
+                            HStack {
+                                Image(uiImage: UIImage(named: "fridge") ?? UIImage(systemName: "refrigerator.fill")!)
+                                    .resizable()
+                                    .frame(width: 24, height: 24) // 調整圖片大小
+                                Text("Fridge")
+                                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange)) 
+                            }
+                ) {
                     ForEach(filteredFoodItems.filter { $0.status == .fridge }) { item in
                         FoodItemRow(
                             item: item,
@@ -240,7 +268,15 @@ struct FridgeListView: View {
 
             // Freezer Section
             if !filteredFoodItems.filter { $0.status == .freezer }.isEmpty {
-                Section(header: Text("Freezer")) {
+                Section(header:
+                            HStack {
+                                Image(uiImage: UIImage(named: "freezer") ?? UIImage(systemName: "snowflake")!)
+                                    .resizable()
+                                    .frame(width: 24, height: 24) // 調整圖片大小
+                                Text("Freezer")
+                                    .foregroundColor(.blue)
+                            }
+                ) {
                     ForEach(filteredFoodItems.filter { $0.status == .freezer }) { item in
                         FoodItemRow(
                             item: item,
@@ -261,6 +297,60 @@ struct FridgeListView: View {
         .listStyle(PlainListStyle())
     }
 }
+
+//struct FridgeListView: View {
+//    var filteredFoodItems: [FoodItem]
+//    var moveToGrocery: (FoodItem) -> Void
+//    var moveToFridge: (FoodItem) -> Void
+//    var moveToFreezer: (FoodItem) -> Void
+//    @Binding var editingItem: FoodItem?
+//    var deleteItems: (IndexSet) -> Void
+//    
+//    var body: some View {
+//        List {
+//            // Fridge Section
+//            if !filteredFoodItems.filter { $0.status == .fridge }.isEmpty {
+//                Section(header: Text("Fridge")) {
+//                    ForEach(filteredFoodItems.filter { $0.status == .fridge }) { item in
+//                        FoodItemRow(
+//                            item: item,
+//                            moveToGrocery: moveToGrocery,
+//                            moveToFridge: moveToFridge,
+//                            moveToFreezer: moveToFreezer,
+//                            onTap: { selectedItem in
+//                                editingItem = selectedItem
+//                            }
+//                        )
+//                    }
+//                    .onDelete(perform: deleteItems)
+//                    .listRowBackground(Color.clear)
+//                    .listRowSeparator(.hidden)
+//                }
+//            }
+//
+//            // Freezer Section
+//            if !filteredFoodItems.filter { $0.status == .freezer }.isEmpty {
+//                Section(header: Text("Freezer")) {
+//                    ForEach(filteredFoodItems.filter { $0.status == .freezer }) { item in
+//                        FoodItemRow(
+//                            item: item,
+//                            moveToGrocery: moveToGrocery,
+//                            moveToFridge: moveToFridge,
+//                            moveToFreezer: moveToFreezer,
+//                            onTap: { selectedItem in
+//                                editingItem = selectedItem
+//                            }
+//                        )
+//                    }
+//                    .onDelete(perform: deleteItems)
+//                    .listRowBackground(Color.clear)
+//                    .listRowSeparator(.hidden)
+//                }
+//            }
+//        }
+//        .listStyle(PlainListStyle())
+//    }
+//}
 
 
 // MARK: - Preview

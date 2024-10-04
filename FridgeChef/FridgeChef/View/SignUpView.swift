@@ -40,7 +40,7 @@ struct SignUpView: View {
                                 .frame(width: 150, height: 150)
                             Image("monster")
                                 .resizable()
-                                .scaledToFit()
+                                .scaledToFill()
                                 .frame(width: 200, height: 200)
                                 .padding(.top, 20)
                         }

@@ -39,7 +39,8 @@ struct DatePickerTextField: View {
                 self.showingDatePicker = true  // 觸發顯示DatePicker
             }) {
                 Image(systemName: "calendar.badge.plus")
-                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))            }
+                .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))          
+            }
             .padding(.trailing, 5)  // 微調按鈕的右內邊距
         }
         .overlay(

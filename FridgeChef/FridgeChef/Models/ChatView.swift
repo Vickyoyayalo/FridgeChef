@@ -123,22 +123,41 @@ struct ChatView: View {
     
     var body: some View {
         NavigationView {
-            ZStack {
-                // 漸層背景
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.orange, Color.yellow]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .opacity(0.4)
-                .edgesIgnoringSafeArea(.all)
-                
-                Color.clear
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        IQKeyboardManager.shared.resignFirstResponder()
+                ZStack {
+                    // 漸層背景
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.yellow, Color.orange]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+
+                    // 使用 GeometryReader 來實現背景的可點擊
+                    GeometryReader { geometry in
+                        VStack {
+                            // 顯示背景圖片和文字
+                            if messages.isEmpty {
+                                VStack {
+                                    Image("monster")
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 300, height: 250)
+
+                                    Text("Want idea, Chat here!")
+                                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                        .padding()
+                                }
+                                .frame(width: geometry.size.width, height: geometry.size.height)
+                                .background(Color.clear)
+                            }
+                        }
+                        .onTapGesture {
+                            // 當點擊背景時，讓使用者能點擊進入輸入框
+                            IQKeyboardManager.shared.resignFirstResponder()
+                        }
                     }
-                
+
                 VStack {
                     if let errorMessage = errorMessage {
                         Text(errorMessage)

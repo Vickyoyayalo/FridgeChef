@@ -31,6 +31,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
         UINavigationBar.appearance().compactAppearance = navBarAppearance
         
+        IQKeyboardManager.shared.enable = true
+        IQKeyboardManager.shared.enableAutoToolbar = false
+        IQKeyboardManager.shared.resignOnTouchOutside = true
+        
         return true
     }
 }
@@ -50,7 +54,6 @@ func createGradientImage(colors: [UIColor], size: CGSize, opacity: CGFloat) -> U
     UIGraphicsEndImageContext()
     return image
 }
-
 
 // 确保添加到App的其他部分
 @main
@@ -74,11 +77,5 @@ struct FridgeChefApp: App {
                     .font(.custom("ArialRoundedMTBold", size: 18))
             }
         }
-    }
-    
-    private func configureKeyboardManager() {
-        IQKeyboardManager.shared.enable = true
-        IQKeyboardManager.shared.enableAutoToolbar = false
-        IQKeyboardManager.shared.resignOnTouchOutside = true
     }
 }

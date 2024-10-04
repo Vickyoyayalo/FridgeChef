@@ -69,7 +69,7 @@ struct ForgotPasswordView: View {
                 
                 Image("monster")
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: 400, height: 400)
                     .padding(.top)
                 

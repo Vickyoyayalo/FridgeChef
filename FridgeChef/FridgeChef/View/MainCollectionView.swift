@@ -7,14 +7,14 @@
 
 import SwiftUI
 import FirebaseAuth
-
+//
 //struct MainCollectionView: View {
 //    // User Log Status
 //    @AppStorage("log_Status") private var logStatus: Bool = false
 //    @EnvironmentObject var viewModel: RecipeSearchViewModel
 //    @State private var showingLogoutConfirmation = false
 //    @State private var isEditing = false
-//    @State private var searchText = ""  
+//    @State private var searchText = ""
 //
 //    var body: some View {
 //        NavigationStack {
@@ -27,7 +27,7 @@ import FirebaseAuth
 //                )
 //                .opacity(0.3)
 //                .edgesIgnoringSafeArea(.all)
-//                
+//
 //                VStack {
 //                    List(viewModel.recipes.filter { $0.isFavorite }) { recipe in
 //                                   RecipeRowView(recipe: recipe, toggleFavorite: {
@@ -97,14 +97,15 @@ import FirebaseAuth
 //        MainCollectionView()
 //    }
 //}
-import SwiftUI
 
+//import SwiftUI
+//
 struct MainCollectionView: View {
     @EnvironmentObject var viewModel: RecipeSearchViewModel
     @State private var showingLogoutConfirmation = false
     @State private var isEditing = false // 控制编辑模式状态
     @State private var searchText = ""
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -116,7 +117,7 @@ struct MainCollectionView: View {
                 )
                 .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
-
+                
                 List {
                     ForEach(viewModel.recipes.filter { $0.isFavorite }) { recipe in
                         RecipeRowView(recipe: recipe, toggleFavorite: {
@@ -151,8 +152,16 @@ struct MainCollectionView: View {
                 }
             }
         }
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search in collection")
+        // 使用 searchText 来过滤你的内容
+        .alert("Are you sure you want to log out?", isPresented: $showingLogoutConfirmation) {
+            Button("Log Out", role: .destructive) {
+                logOut()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
     }
-
+    
     private var logoutButton: some View {
         Button(action: {
             showingLogoutConfirmation = true
@@ -160,7 +169,7 @@ struct MainCollectionView: View {
             Image(systemName: "power.circle.fill")
         }
     }
-
+    
     private var editButton: some View {
         Button(action: {
             isEditing.toggle()
@@ -169,18 +178,18 @@ struct MainCollectionView: View {
                 .bold()
         }
     }
-
+    
     private func logOut() {
         try? Auth.auth().signOut()
         UserDefaults.standard.set(false, forKey: "log_Status") // Ensure log_Status is updated appropriately
     }
-
+    
     private func deleteItems(at offsets: IndexSet) {
         withAnimation {
             viewModel.recipes.remove(atOffsets: offsets)
         }
     }
-
+    
     private func moveItems(from source: IndexSet, to destination: Int) {
         withAnimation {
             viewModel.recipes.move(fromOffsets: source, toOffset: destination)

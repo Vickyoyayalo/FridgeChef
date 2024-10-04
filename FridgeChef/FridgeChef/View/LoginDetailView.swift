@@ -30,8 +30,8 @@ struct LoginDetailView: View {
                     Image("LogoFridgeChef")
                         .resizable()
                         .scaledToFit()
-                        .padding(.vertical, -50)
-                        .padding(.top, -25)
+                        .padding(.vertical, -100)
+                        .padding(.top, -50)
                     
                     // Email TextField
                     TextField("Email", text: $loginViewModel.email)
@@ -64,9 +64,8 @@ struct LoginDetailView: View {
                             .shadow(radius: 5)
                     }
                     NavigationLink(destination: MainTabView(), isActive: $navigateToHome) {
-EmptyView()  // 隐藏的链接，只在登录成功后触发
-}
-
+                        EmptyView()  // 隐藏的链接，只在登录成功后触发
+                    }
                     // 忘記密碼按鈕
                     Button(action: {
                         navigateToForgotPassword = true
@@ -89,7 +88,6 @@ EmptyView()  // 隐藏的链接，只在登录成功后触发
                     Text("Or sign up with")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding(.top, 10)
                     
                     // Apple Sign In
                     SignInWithAppleButton(.signIn) { request in

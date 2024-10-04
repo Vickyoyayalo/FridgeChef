@@ -94,74 +94,6 @@ extension FoodItem {
     }
 }
 
-//extension FoodItem {
-//    var daysRemainingText: String {
-//        switch status {
-//        case .toBuy:
-//            if let expirationDate = expirationDate {
-//                let formatter = DateFormatter()
-//                formatter.dateStyle = .short
-//                let dateString = formatter.string(from: expirationDate)
-//                return "To Buy by \(dateString)"
-//            } else {
-//                let formatter = DateFormatter()
-//                formatter.dateStyle = .short
-//                let today = Date()
-//                let dateString = formatter.string(from: today)
-//                return "To Buy \(dateString)"
-//            }
-//        case .fridge, .freezer:
-//            if daysRemaining > 2 {
-//                return "Can keep \(daysRemaining) days👨🏻‍🌾"
-//            } else if daysRemaining == 1 || daysRemaining == 2 {
-//                return "\(daysRemaining) day left👀"
-//            } else if daysRemaining == 0 {
-//                return "It's TODAY👵🏼"
-//            } else {
-//                return "Expired \(abs(daysRemaining)) days‼️"
-//            }
-//        }
-//    }
-//
-//    var daysRemainingColor: Color {
-//        switch status {
-//        case .toBuy:
-//            return .blue // To Buy 狀態顯示藍色
-//        case .fridge:
-//            if daysRemaining > 2 {
-//                return .purple
-//            } else if daysRemaining == 1 || daysRemaining == 2 {
-//                return .green
-//            } else if daysRemaining == 0 {
-//                return .orange
-//            } else {
-//                return .red
-//            }
-//        case .freezer:
-//            if daysRemaining > 5 {
-//                return .gray
-//            } else if daysRemaining > 0 {
-//                return .purple
-//            } else {
-//                return .red
-//            }
-//        }
-//    }
-//
-//    var daysRemainingFontWeight: Font.Weight {
-//        switch status {
-//        case .toBuy:
-//            return .bold
-//        case .fridge, .freezer:
-//            return daysRemaining < 0 ? .bold : .regular
-//        }
-//    }
-//}
-
-// FoodItemRow.swift
-
-import SwiftUI
-
 struct FoodItemRow: View {
     var item: FoodItem
     var moveToGrocery: ((FoodItem) -> Void)?
@@ -240,3 +172,69 @@ struct FoodItemRow: View {
         }
     }
 }
+
+//extension FoodItem {
+//    var daysRemainingText: String {
+//        switch status {
+//        case .toBuy:
+//            if let expirationDate = expirationDate {
+//                let formatter = DateFormatter()
+//                formatter.dateStyle = .short
+//                let dateString = formatter.string(from: expirationDate)
+//                return "To Buy by \(dateString)"
+//            } else {
+//                let formatter = DateFormatter()
+//                formatter.dateStyle = .short
+//                let today = Date()
+//                let dateString = formatter.string(from: today)
+//                return "To Buy \(dateString)"
+//            }
+//        case .fridge, .freezer:
+//            if daysRemaining > 2 {
+//                return "Can keep \(daysRemaining) days👨🏻‍🌾"
+//            } else if daysRemaining == 1 || daysRemaining == 2 {
+//                return "\(daysRemaining) day left👀"
+//            } else if daysRemaining == 0 {
+//                return "It's TODAY👵🏼"
+//            } else {
+//                return "Expired \(abs(daysRemaining)) days‼️"
+//            }
+//        }
+//    }
+//
+//    var daysRemainingColor: Color {
+//        switch status {
+//        case .toBuy:
+//            return .blue // To Buy 狀態顯示藍色
+//        case .fridge:
+//            if daysRemaining > 2 {
+//                return .purple
+//            } else if daysRemaining == 1 || daysRemaining == 2 {
+//                return .green
+//            } else if daysRemaining == 0 {
+//                return .orange
+//            } else {
+//                return .red
+//            }
+//        case .freezer:
+//            if daysRemaining > 5 {
+//                return .gray
+//            } else if daysRemaining > 0 {
+//                return .purple
+//            } else {
+//                return .red
+//            }
+//        }
+//    }
+//
+//    var daysRemainingFontWeight: Font.Weight {
+//        switch status {
+//        case .toBuy:
+//            return .bold
+//        case .fridge, .freezer:
+//            return daysRemaining < 0 ? .bold : .regular
+//        }
+//    }
+//}
+
+// FoodItemRow.swift

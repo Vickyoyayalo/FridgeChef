@@ -298,61 +298,6 @@ struct FridgeListView: View {
     }
 }
 
-//struct FridgeListView: View {
-//    var filteredFoodItems: [FoodItem]
-//    var moveToGrocery: (FoodItem) -> Void
-//    var moveToFridge: (FoodItem) -> Void
-//    var moveToFreezer: (FoodItem) -> Void
-//    @Binding var editingItem: FoodItem?
-//    var deleteItems: (IndexSet) -> Void
-//    
-//    var body: some View {
-//        List {
-//            // Fridge Section
-//            if !filteredFoodItems.filter { $0.status == .fridge }.isEmpty {
-//                Section(header: Text("Fridge")) {
-//                    ForEach(filteredFoodItems.filter { $0.status == .fridge }) { item in
-//                        FoodItemRow(
-//                            item: item,
-//                            moveToGrocery: moveToGrocery,
-//                            moveToFridge: moveToFridge,
-//                            moveToFreezer: moveToFreezer,
-//                            onTap: { selectedItem in
-//                                editingItem = selectedItem
-//                            }
-//                        )
-//                    }
-//                    .onDelete(perform: deleteItems)
-//                    .listRowBackground(Color.clear)
-//                    .listRowSeparator(.hidden)
-//                }
-//            }
-//
-//            // Freezer Section
-//            if !filteredFoodItems.filter { $0.status == .freezer }.isEmpty {
-//                Section(header: Text("Freezer")) {
-//                    ForEach(filteredFoodItems.filter { $0.status == .freezer }) { item in
-//                        FoodItemRow(
-//                            item: item,
-//                            moveToGrocery: moveToGrocery,
-//                            moveToFridge: moveToFridge,
-//                            moveToFreezer: moveToFreezer,
-//                            onTap: { selectedItem in
-//                                editingItem = selectedItem
-//                            }
-//                        )
-//                    }
-//                    .onDelete(perform: deleteItems)
-//                    .listRowBackground(Color.clear)
-//                    .listRowSeparator(.hidden)
-//                }
-//            }
-//        }
-//        .listStyle(PlainListStyle())
-//    }
-//}
-
-
 // MARK: - Preview
 
 struct FridgeView_Previews: PreviewProvider {

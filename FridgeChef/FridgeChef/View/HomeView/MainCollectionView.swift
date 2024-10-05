@@ -85,7 +85,6 @@ struct MainCollectionView: View {
                 }
                 .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
                 
-                // 浮動按鈕
                 floatingButton
             }
             .sheet(isPresented: $showingLogoutSheet) {

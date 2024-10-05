@@ -1,6 +1,6 @@
 //
 //  RecipeRowView.swift
-//  WhatToEat
+//  FridgeChef
 //
 //  Created by Vickyhereiam on 2024/9/27.
 //

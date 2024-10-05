@@ -1,8 +1,8 @@
 //
 //  SectionTitleView.swift
-//  food
+//  FridgeChef
 //
-//  Created by Abu Anwar MD Abdullah on 25/1/21.
+//  Created by Vickyhereiam on 2024/10/05.
 //
 
 import SwiftUI
@@ -17,12 +17,7 @@ struct SectionTitleView: View {
                 .foregroundColor(Color(UIColor(named: "SecondaryColor") ?? UIColor.blue))
             
             Spacer()
-            
-//            Text("See All")
-//                .foregroundColor(Color("PrimaryColor"))
-//                .onTapGesture {
-//                    
-//                }
+
         }
     }
 }

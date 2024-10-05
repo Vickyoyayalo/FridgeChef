@@ -18,12 +18,17 @@ enum Direction {
 
 struct WhatToEatGameView: View {
     @State var degree = 90.0
-    let array: [myVal] = [
-        myVal(val: "0"), myVal(val: "1"), myVal(val: "2"),
-        myVal(val: "3"), myVal(val: "4"), myVal(val: "5"),
-        myVal(val: "6"), myVal(val: "8"), myVal(val: "9"),
-        myVal(val: "10")
-    ]
+        let array : [myVal] =  [myVal(val: "小吃"),
+                                myVal(val: "素食"),
+                                myVal(val: "西式"),
+                                myVal(val: "中式"),
+                                myVal(val: "泰式"),
+                                myVal(val: "日式"),
+                                myVal(val: "韓式"),
+                                myVal(val: "異國"),
+                                myVal(val: "健康"),
+                                myVal(val: "速食")]
+    
 
     var body: some View {
         VStack {
@@ -37,11 +42,11 @@ struct WhatToEatGameView: View {
                         .font(.custom("ArialRoundedMTBold", size: 25))
                         .padding()
                     
-                    Text("What To Eat Game!")
+                    Text("WAHT TO EAT")
                         .fontWeight(.bold)
                         .padding(.horizontal)
                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                        .font(.custom("ArialRoundedMTBold", size: 25))
+                        .font(.custom("ArialRoundedMTBold", size: 30))
                 }
                 
                 Color.orange.opacity(0.4).ignoresSafeArea()

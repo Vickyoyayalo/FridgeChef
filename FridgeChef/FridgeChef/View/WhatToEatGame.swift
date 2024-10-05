@@ -20,13 +20,14 @@ struct FoodGameItem: Identifiable, Equatable {
     }
 }
 
+import SwiftUI
+
 struct WhatToEatGameView: View {
     @State var degree = 90.0
     @State private var selectedFood: FoodGameItem?
-    @State private var selectedMonsterImage: String? // 新增：選中的可愛照片
+    @State private var selectedMonsterImage: String?
     @State private var showCategoryInitial = true
-    
-    // 將食物和圖片對應在一起
+
     let foodItems: [FoodGameItem] = [
         FoodGameItem(category: "Japanese", name: "Sushi", imageName: "sushi"),
         FoodGameItem(category: "Western", name: "Pizza", imageName: "pizza"),
@@ -36,128 +37,122 @@ struct WhatToEatGameView: View {
         FoodGameItem(category: "Thai", name: "Pad Thai", imageName: "padthai"),
         FoodGameItem(category: "Mexican", name: "Tacos", imageName: "tacos")
     ]
-    
+
     var body: some View {
-        VStack {
-            ZStack(alignment: .center) {
-                // 背景漸變色
-                LinearGradient(gradient: Gradient(colors: [Color.orange.opacity(0.3), Color.pink.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                    .ignoresSafeArea()
-                    .hueRotation(Angle(degrees: degree))
-                    .animation(.easeInOut(duration: 3).repeatForever(autoreverses: true), value: degree)
-                    .onAppear {
-                        degree += 360
-                    }
-                
-                // 輪盤視圖
-                WheelView(degree: $degree, array: foodItems.map { $0.category }, circleSize: 500)
-                    .offset(y: -350)
-                    .shadow(color: .white.opacity(0.7), radius: 10, x: 0, y: 0)
-                    .scaleEffect(0.9)
-                
-                VStack(spacing: 30) {
-                    Spacer()
-                    
-                    // 添加 Logo 圖片，僅在未選擇食物時顯示
-                    if selectedFood == nil {
-                        Image("WhatToEatLogo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 400, height: 300) // 根據需要調整大小
-                            .transition(.move(edge: .bottom)) // 使用滑動過渡
-                            .animation(.easeInOut(duration: 1.0), value: selectedFood) // 延長動畫時間
-                            .padding(.top, 20) // 根據需要調整間距
-                    }
-                    
-                    Spacer()
-                    
-                    // 選中的食物展示區域
-                    if let selectedFood = selectedFood {
-                        VStack(spacing: 10) {
-                            if showCategoryInitial {
-                                Text(String(selectedFood.category.prefix(1)).uppercased())
-                                    .font(.largeTitle)
-                                    .bold()
-                                    .foregroundColor(.white)
-                                    .transition(.opacity)
-                            } else {
-                                VStack {
-                                    Text(selectedFood.category)
-                                        .font(.title2)
-                                        .bold()
-                                        .foregroundColor(.white)
-                                    
-                                    Text(selectedFood.name)
-                                        .font(.largeTitle)
-                                        .bold()
-                                        .foregroundColor(.green)
-                                }
-                                .transition(.scale)
-                            }
-                            
-                            // 顯示隨機選擇的可愛照片
-                            if let monsterImage = selectedMonsterImage {
-                                Image(monsterImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 300, height: 200)
-//                                    .clipShape(Circle())
-                                    .shadow(radius: 10)
-                                    .transition(.slide)
-                            }
-                        }
-                        .animation(.easeInOut(duration: 0.6), value: showCategoryInitial)
-                        .onAppear {
-                            // 延遲顯示完整資訊
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                withAnimation {
-                                    showCategoryInitial = false
-                                }
-                            }
-                        }
-                        .onDisappear {
-                            showCategoryInitial = true
-                        }
-                    }
-                    
-                    // 自訂按鈕
-                    VStack(spacing: 20) {
-                        SpinButton(action: {
-                            spinWheelAndPickFood()
-                        })
-                        
-                        ResetButton(action: {
-                            withAnimation {
-                                selectedFood = nil
-                                selectedMonsterImage = nil // 重置可愛照片
-                            }
-                        })
-                    }
-                    .padding(.bottom)
+        ZStack(alignment: .top) {
+            // 背景漸變色，調整動畫速度
+            LinearGradient(gradient: Gradient(colors: [Color.orange.opacity(0.3), Color.pink.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                .ignoresSafeArea()
+                .hueRotation(Angle(degrees: degree))
+                .animation(.linear(duration: 10).repeatForever(autoreverses: false), value: degree)
+                .onAppear {
+                    degree += 360
                 }
-                .padding()
-                .frame(maxHeight: .infinity)
+
+            WheelView(degree: $degree, array: foodItems.map { $0.category }, circleSize: 500)
+                .shadow(color: .white.opacity(0.7), radius: 10, x: 0, y: 20)
+                .scaleEffect(0.9)
+
+            Image("WhatToEatLogo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 350, height: 250)
+                .padding(.top, -5)
+
+            VStack {
+                Spacer()
+
+                if let selectedFood = selectedFood {
+                    VStack(spacing: 10) {
+                        if showCategoryInitial {
+                            Text(String(selectedFood.category.prefix(1)).uppercased())
+                                .font(.custom("ArialRoundedMTBold", size: 150))
+                                .bold()
+                                .foregroundColor(.orange)
+                                .transition(.opacity)
+                                .offset(y: 150)
+                        } else {
+                            VStack {
+                                // 移動食物類別和名稱的位置
+                                Text(selectedFood.category)
+                                    .bold()
+                                    .font(.custom("ArialRoundedMTBold", size: 30))
+                                    .foregroundColor(.white)
+                                    .padding(.bottom, -5) // 調整文字間距
+                                    .offset(y: 150)
+                                    .shadow(radius: 8)
+
+                                Text(selectedFood.name)
+                                    .font(.custom("ArialRoundedMTBold", size: 60))
+                                    .foregroundColor(.yellow)
+                                    .offset(y: 150)
+                                    .shadow(radius: 8)
+                            }
+                            .transition(.scale)
+                        }
+
+                        // 顯示隨機選擇的可愛照片
+                        if let monsterImage = selectedMonsterImage {
+                            Image(monsterImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 350, height: 350)
+                                .clipShape(Circle())
+                                .shadow(radius: 10)
+                                .transition(.scale)
+                                .offset(y: 100)
+                        }
+                    }
+                    .animation(.easeInOut(duration: 0.6), value: showCategoryInitial)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            withAnimation {
+                                showCategoryInitial = false
+                            }
+                        }
+                    }
+                    .onDisappear {
+                        showCategoryInitial = true
+                    }
+                }
+
+                Spacer()
+
+                Spacer().frame(height: 30)
+
+                VStack(spacing: 20) {
+                    SpinButton(action: {
+                        spinWheelAndPickFood()
+                    })
+
+                    ResetButton(action: {
+                        withAnimation {
+                            selectedFood = nil
+                            selectedMonsterImage = nil
+                        }
+                    })
+                }
+                .padding(.bottom) // 增加底部間距
             }
+            .padding()
+            .frame(maxHeight: .infinity)
         }
     }
-    
-    // 隨機選擇一個食物和對應的可愛照片
+
     func spinWheelAndPickFood() {
-        // 使輪盤旋轉到最後一項，增加動畫的持續時間來使旋轉變慢
         let rotationIncrement = Double(360 / foodItems.count)
         withAnimation(.spring(response: 1.5, dampingFraction: 0.6, blendDuration: 1.0)) {
-            degree += rotationIncrement * Double(foodItems.count * 5) // 多轉幾圈
+            degree += rotationIncrement * Double(foodItems.count * 5)
         }
-        
-        // 隨機選擇一個 FoodGameItem
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             selectedFood = foodItems.randomElement()
-
-            let monsterImages = ["discomonster0", "discomonster1","discomonster2", "discomonster3","discomonster4","discomonster5"]
+            let monsterImages = ["discomonster", "discomonster1", "discomonster2", "discomonster3", "discomonster4", "discomonster5"]
             selectedMonsterImage = monsterImages.randomElement()
         }
     }
 }
+
 
 // 輪盤視圖
 struct WheelView: View {
@@ -189,6 +184,7 @@ struct WheelView: View {
             }
         }
         .frame(width: circleSize, height: circleSize)
+        .opacity(0.9)
     }
 }
 
@@ -249,6 +245,7 @@ struct WhatToEatGameView_Previews: PreviewProvider {
         WhatToEatGameView()
     }
 }
+
 
 //import SwiftUI
 //

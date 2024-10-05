@@ -33,14 +33,16 @@ struct FridgeView: View {
                         // 顯示背景圖片和文字
                         if filteredFoodItems.isEmpty {
                             VStack {
-                                Image("Cutiemonster")
+                                Image("SearchFood")
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: 300, height: 250)
+                                    .frame(width: 350, height: 350)
+                                    .cornerRadius(10)
+                                    .shadow(radius: 8)
 
-                                Text("Happy with FOOD ~")
-                                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                                    .padding()
+//                                Text("Happy with FOOD ~")
+//                                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//                                    .padding()
                             }
                             .frame(width: geometry.size.width, height: geometry.size.height)
                             .background(Color.clear)

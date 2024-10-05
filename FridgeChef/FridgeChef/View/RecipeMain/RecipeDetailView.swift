@@ -86,7 +86,7 @@ struct RecipeDetailView: View {
                                 }
                             }) {
                                 Image(systemName: (recipe.isFavorite ?? false) ? "heart.fill" : "heart")
-                                    .foregroundColor((recipe.isFavorite ?? false) ? Color.red : Color.gray)
+                                    .foregroundColor((recipe.isFavorite ?? false) ? (Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange)) : Color.gray)
                                     .padding(10) // 调整 padding
                                     .background(Color.white.opacity(0.8))
                                     .clipShape(Circle())

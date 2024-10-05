@@ -43,6 +43,7 @@
 		1C6D2D892CB00B65000C49DC /* RecommendedRecipeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2D842CB00B64000C49DC /* RecommendedRecipeCardView.swift */; };
 		1C6D2D8A2CB00B65000C49DC /* SearchAndFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2D852CB00B64000C49DC /* SearchAndFilterView.swift */; };
 		1C6D2D8B2CB00B65000C49DC /* SectionTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2D862CB00B65000C49DC /* SectionTitleView.swift */; };
+		1C6D2D8D2CB04ACA000C49DC /* LogoutSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6D2D8C2CB04ACA000C49DC /* LogoutSheetView.swift */; };
 		1C75CCAB2CA2E1690072D55C /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */; };
 		1C75CCAD2CA2E7500072D55C /* KeyboardResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */; };
 		1C75CCD52CA461920072D55C /* WhatToEatGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C75CCD42CA461920072D55C /* WhatToEatGame.swift */; };
@@ -145,6 +146,7 @@
 		1C6D2D842CB00B64000C49DC /* RecommendedRecipeCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecommendedRecipeCardView.swift; sourceTree = "<group>"; };
 		1C6D2D852CB00B64000C49DC /* SearchAndFilterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchAndFilterView.swift; sourceTree = "<group>"; };
 		1C6D2D862CB00B65000C49DC /* SectionTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SectionTitleView.swift; sourceTree = "<group>"; };
+		1C6D2D8C2CB04ACA000C49DC /* LogoutSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutSheetView.swift; sourceTree = "<group>"; };
 		1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponder.swift; sourceTree = "<group>"; };
 		1C75CCD42CA461920072D55C /* WhatToEatGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatToEatGame.swift; sourceTree = "<group>"; };
 		1C7F45B42C9A4BC000846B44 /* UIColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Ext.swift"; sourceTree = "<group>"; };
@@ -309,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */,
+				1C6D2D8C2CB04ACA000C49DC /* LogoutSheetView.swift */,
 				1C6D2D832CB00B64000C49DC /* FreshRecipesView.swift */,
 				1C6D2D822CB00B64000C49DC /* HomeNavBarView.swift */,
 				1C6D2D842CB00B64000C49DC /* RecommendedRecipeCardView.swift */,
@@ -703,6 +706,7 @@
 				1C99D1792CAE6C47003D2997 /* FloatingMapButton.swift in Sources */,
 				1C8DC55A2C99E0470041A2A2 /* MLIngredientView.swift in Sources */,
 				1CB5BC892C943D36006C66E5 /* User.swift in Sources */,
+				1C6D2D8D2CB04ACA000C49DC /* LogoutSheetView.swift in Sources */,
 				1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */,
 				1C99D17B2CAE6C63003D2997 /* ProgressOverlay.swift in Sources */,
 				1CAF42FA2CACBF8B0022D393 /* DefaultRecipeView.swift in Sources */,

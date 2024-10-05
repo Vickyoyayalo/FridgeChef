@@ -32,13 +32,13 @@ struct GroceryListView: View {
                         // 顯示背景圖片和文字
                         if filteredFoodItems.isEmpty {
                             VStack {
-                                Text("Buy some food!!!")
-                                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                                    .font(.custom("ArialRoundedMTBold", size: 40))
-                                Image("Foood")
+//                                Text("Buy some food!!!")
+//                                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//                                    .font(.custom("ArialRoundedMTBold", size: 40))
+                                Image("Grocerymonster")
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: 400, height: 400)
+                                    .frame(width: 350, height: 350)
                             }
                             .frame(width: geometry.size.width, height: geometry.size.height)
                             .background(Color.clear)

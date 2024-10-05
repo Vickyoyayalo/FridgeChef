@@ -21,12 +21,12 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="monster" translatesAutoresizingMaskIntoConstraints="NO" id="ydZ-I2-sbl">
-                                <rect key="frame" x="-263" y="362" width="960" height="540"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Launchmonster" translatesAutoresizingMaskIntoConstraints="NO" id="XKs-iz-w4Z">
+                                <rect key="frame" x="-235" y="210" width="880" height="762"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" fixedFrame="YES" image="LogoFridgeChef" translatesAutoresizingMaskIntoConstraints="NO" id="zV0-UJ-ist">
-                                <rect key="frame" x="-28" y="138" width="472" height="248"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Logoo" translatesAutoresizingMaskIntoConstraints="NO" id="gfU-2X-dZD">
+                                <rect key="frame" x="-67" y="73" width="545" height="272"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -46,7 +46,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LogoFridgeChef" width="666" height="375"/>
-        <image name="monster" width="960" height="540"/>
+        <image name="Launchmonster" width="880" height="495"/>
+        <image name="Logoo" width="880" height="495"/>
     </resources>
 </document>

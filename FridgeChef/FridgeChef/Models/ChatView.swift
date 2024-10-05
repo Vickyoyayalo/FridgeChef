@@ -139,14 +139,14 @@ struct ChatView: View {
                             // 顯示背景圖片和文字
                             if messages.isEmpty {
                                 VStack {
-                                    Image("monster")
+                                    Image("Chatmonster")
                                         .resizable()
                                         .scaledToFill()
-                                        .frame(width: 300, height: 250)
+                                        .frame(width: 300, height: 300)
 
-                                    Text("Want idea, Chat here!")
-                                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                                        .padding()
+//                                    Text("Want idea, Chat here!")
+//                                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//                                        .padding()
                                 }
                                 .frame(width: geometry.size.width, height: geometry.size.height)
                                 .background(Color.clear)
@@ -165,7 +165,7 @@ struct ChatView: View {
                             .padding()
                     }
                     
-                    Image("LogoFridgeChef")
+                    Image("Logoo")
                         .resizable()
                         .scaledToFill()
                         .frame(width: 300, height: 38)

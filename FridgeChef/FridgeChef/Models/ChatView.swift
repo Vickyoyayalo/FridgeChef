@@ -165,7 +165,7 @@ struct ChatView: View {
                             .padding()
                     }
                     
-                    Image("Logoo")
+                    Image("FridgeChefLogo")
                         .resizable()
                         .scaledToFill()
                         .frame(width: 300, height: 38)

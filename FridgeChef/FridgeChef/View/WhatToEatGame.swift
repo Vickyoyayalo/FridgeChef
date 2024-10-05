@@ -27,14 +27,32 @@ struct WhatToEatGameView: View {
 
     var body: some View {
         VStack {
+            
             ZStack(alignment: .center) {
+                VStack {
+                    Text("Welcome to ")
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
+                        .foregroundColor(Color(UIColor(named: "SecondaryColor") ?? UIColor.blue))
+                        .font(.custom("ArialRoundedMTBold", size: 25))
+                        .padding()
+                    
+                    Text("What To Eat Game!")
+                        .fontWeight(.bold)
+                        .padding(.horizontal)
+                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        .font(.custom("ArialRoundedMTBold", size: 25))
+                }
+                
                 Color.orange.opacity(0.4).ignoresSafeArea()
                     .hueRotation(Angle(degrees: degree))
                 
                 WheelView(degree: $degree, array: array, circleSize: 400)
-                    .offset(y: -50)
+                    .offset(y: -300)
                     .shadow(color: .white, radius: 4, x: 0, y: 0)
+                
             }
+           
 
             // Spin Button
             Button("Spin Wheel") {

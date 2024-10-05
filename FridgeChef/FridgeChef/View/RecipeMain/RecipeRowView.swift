@@ -106,7 +106,8 @@ struct RecipeRowView_Previews: PreviewProvider {
                 servings: 1,
                 readyInMinutes: 0,
                 summary: "Sample",
-                isFavorite: false
+                isFavorite: false,
+                dishTypes: ["breakfast"]
             ),
             toggleFavorite: {},
             viewModel: RecipeSearchViewModel()

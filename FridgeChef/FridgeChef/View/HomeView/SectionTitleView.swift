@@ -13,16 +13,16 @@ struct SectionTitleView: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.title2)
-                .fontWeight(.bold)
+                .font(.custom("ArialRoundedMTBold", size: 20))
+                .foregroundColor(Color(UIColor(named: "SecondaryColor") ?? UIColor.blue))
             
             Spacer()
             
-            Text("See All")
-                .foregroundColor(Color("PrimaryColor"))
-                .onTapGesture {
-                    
-                }
+//            Text("See All")
+//                .foregroundColor(Color("PrimaryColor"))
+//                .onTapGesture {
+//                    
+//                }
         }
     }
 }

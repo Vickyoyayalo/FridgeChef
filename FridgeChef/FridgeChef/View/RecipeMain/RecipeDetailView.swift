@@ -288,7 +288,7 @@ struct RecipeDetailView: View {
         let daysRemaining = Calendar.current.dateComponents([.day], from: today, to: expirationDate).day ?? 0
         
         // 直接將 String 轉換為 Double，並四捨五入到兩位小數
-        let quantityDouble = (Double(ingredient.quantity) ?? 1.0).rounded(toPlaces: 2)
+        let quantityDouble = (Double(ingredient.quantity)).rounded(toPlaces: 2)
         
         let newFoodItem = FoodItem(
             id: UUID(), // 確保每個 FoodItem 有唯一的 ID

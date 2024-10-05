@@ -14,7 +14,6 @@ struct FridgeView: View {
     @State private var showingProgressView = false
     @State private var progressMessage = ""
     @State private var showingMLIngredientView = false
-  
     
     var body: some View {
         NavigationView {
@@ -39,10 +38,6 @@ struct FridgeView: View {
                                     .frame(width: 350, height: 350)
                                     .cornerRadius(10)
                                     .shadow(radius: 8)
-
-//                                Text("Happy with FOOD ~")
-//                                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-//                                    .padding()
                             }
                             .frame(width: geometry.size.width, height: geometry.size.height)
                             .background(Color.clear)
@@ -59,6 +54,7 @@ struct FridgeView: View {
                         editingItem: $editingItem,
                         deleteItems: deleteItems
                     )
+                    
                 }
             }
             .sheet(item: $editingItem) { selectedItem in

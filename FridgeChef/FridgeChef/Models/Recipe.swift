@@ -33,7 +33,8 @@ struct Recipe: Identifiable, Codable, Equatable {
     let servings: Int
     let readyInMinutes: Int
     let summary: String
-    var isFavorite: Bool = false  // 本地屬性，默認為 false
+    var isFavorite: Bool = false
+    let dishTypes: [String]// 本地屬性，默認為 false
 
     // CodingKeys 用來匹配 JSON key 和模型屬性
     enum CodingKeys: String, CodingKey {
@@ -43,6 +44,7 @@ struct Recipe: Identifiable, Codable, Equatable {
         case servings
         case readyInMinutes
         case summary
+        case dishTypes
     }
 }
 

@@ -59,7 +59,6 @@ struct FridgeReminderView: View {
     }
 }
 
-
 // 預設顯示的紅色或藍色卡片，當用戶沒有即將過期或已過期的食品時
 struct DefaultFridgeReminderCard: View {
     let color: Color
@@ -73,22 +72,25 @@ struct DefaultFridgeReminderCard: View {
                 Image("RecipeFood")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 120, height: 120)
+                    .frame(width: 100, height: 100)
                     .cornerRadius(10)
                     .clipped() // 確保圖片不溢出邊界
                 
                 // 提示信息，設置為相同的最大高度，避免卡片大小不一
                 Text(message)
                     .fontWeight(.medium)
-                    .font(.title2)
+                    .font(.custom("ArialRoundedMTBold", size: 14))
                     .multilineTextAlignment(.center)
+                    .lineLimit(nil)
                     .foregroundColor(textColor) // 根據情況設置顏色
                     .frame(maxWidth: .infinity, maxHeight: 40) // 設置固定高度以確保大小一致
                     .padding(.top, 8)
+                
             }
             .padding()
             .background(color) // 使用傳遞進來的顏色
             .cornerRadius(20.0)
+            .shadow(radius: 8)
         }
         .frame(width: 180, height: 250) // 調整卡片寬度和高度
         .padding(.trailing, 10)

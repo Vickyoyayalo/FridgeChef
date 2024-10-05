@@ -65,7 +65,7 @@ struct MainCollectionView: View {
                     .padding(.top)
                 }
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Bonjour, Vicky 🍻")
+                .navigationTitle("")/*Bonjour, Vicky 🍻 */
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         menuButton
@@ -75,7 +75,7 @@ struct MainCollectionView: View {
                         Image("FridgeChefLogo")
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 250, height: 150)
+                            .frame(width: 250, height: 180)
                             .padding(.top)
                     }
                     
@@ -148,7 +148,7 @@ struct MainCollectionView: View {
             Text("Notification Summary")
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 .font(.custom("ArialRoundedMTBold", size: 30))
-                .padding(.top)
+                .padding(.top, 5)
                 .frame(maxWidth: .infinity)
             
             Divider()

@@ -16,7 +16,7 @@ struct MainCollectionView: View {
     @State private var searchText = ""
     @State private var isShowingGameView = false // 控制 WhatToEatGameView 的顯示
     @State private var editingItem: FoodItem?
-    
+
     var body: some View {
         NavigationStack {
             ZStack(alignment: .topTrailing) { // 設置 ZStack 的對齊方式為 topTrailing
@@ -25,30 +25,25 @@ struct MainCollectionView: View {
 
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 16) {
-//                        Text("Bonjour, Vicky 🍻")
-//                            .fontWeight(.bold)
-//                            .padding(.horizontal)
-//                            .foregroundColor(.gray)
-                        
+
                         // 標題文字
                         Text("What would you like to cook today?")
-                            .fontWeight(.bold)
                             .padding(.horizontal)
-                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.systemOrange))
-                            .font(.custom("ArialRoundedMTBold", size: 25))
-                        
+                            .foregroundColor(.orange)
+//                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.systemOrange))
+                            .font(.custom("Menlo-BoldItalic", size: 25))
+                            .shadow(radius: 8)
+
                         // 新鮮食譜視圖
                         SectionTitleView(title: "⏰ Fridge Updates")
                             .padding(.horizontal)
-                            .font(.custom("ArialRoundedMTBold", size: 18))
-                        
+
                         FridgeReminderView(editingItem: $editingItem)
                             .padding(.horizontal)
-                        
+
                         SectionTitleView(title: "📚 Favorite Recipe")
                             .padding(.horizontal)
-                            .font(.custom("ArialRoundedMTBold", size: 18))
-                        
+
                         ForEach(viewModel.recipes.filter { $0.isFavorite }.isEmpty ? [RecipeCollectionView_Previews.sampleRecipe] : viewModel.recipes.filter { $0.isFavorite }) { recipe in
                             NavigationLink(destination: recipe.id == RecipeCollectionView_Previews.sampleRecipe.id ? AnyView(RecipeMainView()) : AnyView(RecipeDetailView(recipeId: recipe.id))) {
                                 RecipeCollectionView(recipe: recipe, toggleFavorite: {
@@ -64,13 +59,13 @@ struct MainCollectionView: View {
                     }
                     .padding(.top)
                 }
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("")/*Bonjour, Vicky 🍻 */
+                .navigationBarTitleDisplayMode(.automatic)
+                .navigationTitle("Bonjour, Vicky🍻")/* Bonjour, Vicky 🍻 */
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         menuButton
                     }
-                    
+
                     ToolbarItem(placement: .principal) {
                         Image("FridgeChefLogo")
                             .resizable()
@@ -78,13 +73,13 @@ struct MainCollectionView: View {
                             .frame(width: 250, height: 180)
                             .padding(.top)
                     }
-                    
+
                     ToolbarItem(placement: .navigationBarTrailing) {
                         notificationButton
                     }
                 }
                 .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
-                
+
                 floatingButton
             }
             .sheet(isPresented: $showingLogoutSheet) {
@@ -97,7 +92,7 @@ struct MainCollectionView: View {
                 ZStack {
                     gradientBackground
                         .edgesIgnoringSafeArea(.all)
-                    
+
                     notificationSheetContent
                 }
                 .presentationDetents([.fraction(0.48)])
@@ -118,7 +113,7 @@ struct MainCollectionView: View {
         .opacity(0.4)
         .edgesIgnoringSafeArea(.all)
     }
-    
+
     private var notificationButton: some View {
         Button(action: {
             showingNotificationSheet = true
@@ -129,7 +124,7 @@ struct MainCollectionView: View {
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
         }
     }
-    
+
     private var menuButton: some View {
         Button(action: {
             showingLogoutSheet = true
@@ -141,19 +136,19 @@ struct MainCollectionView: View {
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange).opacity(0.8))
         }
     }
-    
+
     private var notificationSheetContent: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Notification Summary")
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                .font(.custom("ArialRoundedMTBold", size: 30))
+                .font(.custom("ZenLoop-Regular", size: 60))
                 .padding(.top, 5)
                 .frame(maxWidth: .infinity)
-            
+
             Divider()
-                .background(Color.white)
+                .background(Color.orange)
                 .padding(.horizontal)
-            
+
             if expiringItemsCount > 0 {
                 HStack {
                     Text("• ")
@@ -167,7 +162,7 @@ struct MainCollectionView: View {
                 }
                 .fontWeight(.regular)
             }
-            
+
             if expiredItemsCount > 0 {
                 HStack {
                     Text("• ")
@@ -201,11 +196,11 @@ struct MainCollectionView: View {
             Image("himonster")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 100, height: 100)
+                .frame(width: 120, height: 120)
                 .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
         }
         .padding(.trailing, -10)
-        .padding(.top, 20)
+        .padding(.top, 40)
     }
 
     private func logOut() {

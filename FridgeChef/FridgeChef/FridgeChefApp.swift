@@ -62,7 +62,7 @@ struct FridgeChefApp: App {
     @StateObject private var foodItemStore = FoodItemStore()
     @StateObject private var viewModel = RecipeSearchViewModel()
     @AppStorage("log_Status") var isLoggedIn: Bool = false
-
+    
     var body: some Scene {
         WindowGroup {
             if isLoggedIn {

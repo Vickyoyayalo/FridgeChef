@@ -25,13 +25,13 @@ struct LoginDetailView: View {
     
     var body: some View {
         CustomNavigationBarView(title: "") {
-            ZStack(alignment: .bottomLeading) {
+            ZStack(alignment: .topLeading) {
                 VStack(spacing: 15) {
                     Image("LogoFridgeChef")
                         .resizable()
                         .scaledToFit()
                         .padding(.vertical, -100)
-                        .padding(.top, -50)
+                        .padding(.top, -100)
                     
                     // Email TextField
                     TextField("Email", text: $loginViewModel.email)
@@ -118,11 +118,11 @@ struct LoginDetailView: View {
                     }
                 }
                 .padding()
-                Image("monster")
+                Image("Launchmonster")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 250, height: 300)
-                    .offset(x: -50, y: 250)
+                    .offset(x: -60, y: 380)
             }
         }
         .alert(errorMessage, isPresented: $showAlert) {}

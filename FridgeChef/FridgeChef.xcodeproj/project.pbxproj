@@ -22,12 +22,15 @@
 		1C1E9A132CA7B135002A15C8 /* StepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1E9A112CA7B135002A15C8 /* StepView.swift */; };
 		1C25A3742C9ECE9B00A997C7 /* CustomMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */; };
 		1C2DD5702C9D3E34000173F6 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2DD56F2C9D3E34000173F6 /* LocationManager.swift */; };
-		1C2DD5772C9D68C8000173F6 /* Hellix-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DD5722C9D68C7000173F6 /* Hellix-Thin.ttf */; };
-		1C2DD5782C9D68C8000173F6 /* Hellix-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DD5732C9D68C7000173F6 /* Hellix-Medium.ttf */; };
-		1C2DD5792C9D68C8000173F6 /* Hellix-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DD5742C9D68C7000173F6 /* Hellix-Regular.ttf */; };
-		1C2DD57A2C9D68C8000173F6 /* Hellix-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DD5752C9D68C7000173F6 /* Hellix-SemiBold.ttf */; };
 		1C2DD57B2C9D68C8000173F6 /* Hellix-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C2DD5762C9D68C8000173F6 /* Hellix-Bold.ttf */; };
 		1C2DD5842C9D68D7000173F6 /* RecipeMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2DD57E2C9D68D6000173F6 /* RecipeMainView.swift */; };
+		1C4490A62CB24DC200675765 /* ZenLoop-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C4490A42CB24DC200675765 /* ZenLoop-Regular.ttf */; };
+		1C4490A72CB24DC200675765 /* ZenLoop-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C4490A52CB24DC200675765 /* ZenLoop-Italic.ttf */; };
+		1C4490A92CB27F7C00675765 /* RecipeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490A82CB27F7C00675765 /* RecipeCardView.swift */; };
+		1C4490AB2CB27F9500675765 /* CategoryIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490AA2CB27F9500675765 /* CategoryIconView.swift */; };
+		1C4490AD2CB27FA500675765 /* FeatureRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490AC2CB27FA500675765 /* FeatureRowView.swift */; };
+		1C4490AF2CB27FB500675765 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490AE2CB27FB500675765 /* FlowLayout.swift */; };
+		1C4490B12CB2810200675765 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490B02CB2810200675765 /* CategoryView.swift */; };
 		1C4AD1502CAAA75E00C90905 /* MainCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */; };
 		1C6CC3882C984C89001C4643 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3872C984C89001C4643 /* LoginView.swift */; };
 		1C6CC38D2C985109001C4643 /* LoginVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */; };
@@ -124,12 +127,15 @@
 		1C1E9A112CA7B135002A15C8 /* StepView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepView.swift; sourceTree = "<group>"; };
 		1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapView.swift; sourceTree = "<group>"; };
 		1C2DD56F2C9D3E34000173F6 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
-		1C2DD5722C9D68C7000173F6 /* Hellix-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hellix-Thin.ttf"; sourceTree = "<group>"; };
-		1C2DD5732C9D68C7000173F6 /* Hellix-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hellix-Medium.ttf"; sourceTree = "<group>"; };
-		1C2DD5742C9D68C7000173F6 /* Hellix-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hellix-Regular.ttf"; sourceTree = "<group>"; };
-		1C2DD5752C9D68C7000173F6 /* Hellix-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hellix-SemiBold.ttf"; sourceTree = "<group>"; };
 		1C2DD5762C9D68C8000173F6 /* Hellix-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hellix-Bold.ttf"; sourceTree = "<group>"; };
 		1C2DD57E2C9D68D6000173F6 /* RecipeMainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeMainView.swift; sourceTree = "<group>"; };
+		1C4490A42CB24DC200675765 /* ZenLoop-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ZenLoop-Regular.ttf"; sourceTree = "<group>"; };
+		1C4490A52CB24DC200675765 /* ZenLoop-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ZenLoop-Italic.ttf"; sourceTree = "<group>"; };
+		1C4490A82CB27F7C00675765 /* RecipeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCardView.swift; sourceTree = "<group>"; };
+		1C4490AA2CB27F9500675765 /* CategoryIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryIconView.swift; sourceTree = "<group>"; };
+		1C4490AC2CB27FA500675765 /* FeatureRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureRowView.swift; sourceTree = "<group>"; };
+		1C4490AE2CB27FB500675765 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
+		1C4490B02CB2810200675765 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		1C4AD14A2CAA3B5100C90905 /* FridgeChef.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FridgeChef.entitlements; sourceTree = "<group>"; };
 		1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionView.swift; sourceTree = "<group>"; };
 		1C6CC3872C984C89001C4643 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -363,10 +369,8 @@
 			children = (
 				1C7F45C62C9A752300846B44 /* Nunito-Bold.ttf */,
 				1C2DD5762C9D68C8000173F6 /* Hellix-Bold.ttf */,
-				1C2DD5732C9D68C7000173F6 /* Hellix-Medium.ttf */,
-				1C2DD5742C9D68C7000173F6 /* Hellix-Regular.ttf */,
-				1C2DD5752C9D68C7000173F6 /* Hellix-SemiBold.ttf */,
-				1C2DD5722C9D68C7000173F6 /* Hellix-Thin.ttf */,
+				1C4490A52CB24DC200675765 /* ZenLoop-Italic.ttf */,
+				1C4490A42CB24DC200675765 /* ZenLoop-Regular.ttf */,
 				1C7F45C72C9A752300846B44 /* Nunito-Regular.ttf */,
 			);
 			path = Fonts;
@@ -398,6 +402,11 @@
 			children = (
 				1CAF42F62CACBF8B0022D393 /* DefaultRecipeDetailView.swift */,
 				1CAF42F72CACBF8B0022D393 /* DefaultRecipeView.swift */,
+				1C4490A82CB27F7C00675765 /* RecipeCardView.swift */,
+				1C4490B02CB2810200675765 /* CategoryView.swift */,
+				1C4490AA2CB27F9500675765 /* CategoryIconView.swift */,
+				1C4490AC2CB27FA500675765 /* FeatureRowView.swift */,
+				1C4490AE2CB27FB500675765 /* FlowLayout.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -597,18 +606,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C2DD5772C9D68C8000173F6 /* Hellix-Thin.ttf in Resources */,
-				1C2DD5782C9D68C8000173F6 /* Hellix-Medium.ttf in Resources */,
 				1C7F45CA2C9A752300846B44 /* Nunito-Regular.ttf in Resources */,
 				1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */,
-				1C2DD5792C9D68C8000173F6 /* Hellix-Regular.ttf in Resources */,
 				1C7F45C92C9A752300846B44 /* Nunito-Bold.ttf in Resources */,
 				1CFFB0A82CB0E1A1007AF8FC /* Launch Screen.storyboard in Resources */,
 				1C6CC38D2C985109001C4643 /* LoginVideo.mp4 in Resources */,
+				1C4490A72CB24DC200675765 /* ZenLoop-Italic.ttf in Resources */,
 				1C6CC3992C9927CD001C4643 /* Assets.xcassets in Resources */,
 				1CD4F7B32C98032300F4417D /* GoogleService-Info.plist in Resources */,
+				1C4490A62CB24DC200675765 /* ZenLoop-Regular.ttf in Resources */,
 				1C2DD57B2C9D68C8000173F6 /* Hellix-Bold.ttf in Resources */,
-				1C2DD57A2C9D68C8000173F6 /* Hellix-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -677,6 +684,8 @@
 				1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */,
 				1C6D2D882CB00B65000C49DC /* FridgeReminderView.swift in Sources */,
 				1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */,
+				1C4490AF2CB27FB500675765 /* FlowLayout.swift in Sources */,
+				1C4490AB2CB27F9500675765 /* CategoryIconView.swift in Sources */,
 				1C7F45CE2C9A793900846B44 /* MapView.swift in Sources */,
 				1CAF42F92CACBF8B0022D393 /* DefaultRecipeDetailView.swift in Sources */,
 				1C7F45E92C9AF20700846B44 /* ActivityView.swift in Sources */,
@@ -698,6 +707,7 @@
 				1C8DC5642C99E1DA0041A2A2 /* Food.mlmodel in Sources */,
 				1C7F45E12C9AA40600846B44 /* MainTabView.swift in Sources */,
 				1CDF1DCC2CA161B0005BD251 /* ChatGPTAPI.swift in Sources */,
+				1C4490AD2CB27FA500675765 /* FeatureRowView.swift in Sources */,
 				1C8DC55E2C99E0A20041A2A2 /* ScannerView.swift in Sources */,
 				1C1E9A122CA7B135002A15C8 /* String+HTMLDecoded.swift in Sources */,
 				1C1E9A132CA7B135002A15C8 /* StepView.swift in Sources */,
@@ -710,12 +720,14 @@
 				1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */,
 				1C99D17B2CAE6C63003D2997 /* ProgressOverlay.swift in Sources */,
 				1CAF42FA2CACBF8B0022D393 /* DefaultRecipeView.swift in Sources */,
+				1C4490B12CB2810200675765 /* CategoryView.swift in Sources */,
 				1C99D17D2CAEA882003D2997 /* Double.swift in Sources */,
 				1CA8CE8B2C9D7A2B00C9CADD /* MobileNetV2.mlmodel in Sources */,
 				1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */,
 				1C8A74092CA000980005E54D /* ChatView.swift in Sources */,
 				1C7F45E32C9AC75100846B44 /* GroceryListView.swift in Sources */,
 				1CAF43082CAD3B650022D393 /* BulletPointView.swift in Sources */,
+				1C4490A92CB27F7C00675765 /* RecipeCardView.swift in Sources */,
 				1C7F45F42C9BD96300846B44 /* FridgeView.swift in Sources */,
 				1C9568C92CA82944006181F9 /* RecipeDetailView.swift in Sources */,
 				1C4AD1502CAAA75E00C90905 /* MainCollectionView.swift in Sources */,

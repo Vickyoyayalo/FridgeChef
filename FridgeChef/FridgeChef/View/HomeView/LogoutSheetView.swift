@@ -46,8 +46,7 @@ struct LogoutSheetView: View {
                         .font(.title)
                     Text("Log Out")
                         .foregroundColor(.white)
-                        .font(.title3)
-                        .bold()
+                        .font(.custom("ArialRoundedMTBold", size: 25))
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -77,8 +76,7 @@ struct LogoutSheetView: View {
                         .font(.title)
                     Text("Delete Account")
                         .foregroundColor(.white)
-                        .font(.title3)
-                        .bold()
+                        .font(.custom("ArialRoundedMTBold", size: 25))
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -89,7 +87,7 @@ struct LogoutSheetView: View {
             .alert(isPresented: $showDeleteAccountAlert) {
                 Alert(
                     title: Text("Delete Account"),
-                    message: Text("Are you sure you want to delete your account? This action cannot be undone."),
+                    message: Text("Are you sure you want to delete your account🥲? \nThis action cannot be undone."),
                     primaryButton: .destructive(Text("Delete")) {
                         deleteAccount()
                         presentationMode.wrappedValue.dismiss()

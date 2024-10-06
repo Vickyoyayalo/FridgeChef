@@ -13,7 +13,7 @@ struct SectionTitleView: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.custom("ArialRoundedMTBold", size: 20))
+                .font(.custom("ArialRoundedMTBold", size: 22))
                 .foregroundColor(Color(UIColor(named: "SecondaryColor") ?? UIColor.blue))
             
             Spacer()

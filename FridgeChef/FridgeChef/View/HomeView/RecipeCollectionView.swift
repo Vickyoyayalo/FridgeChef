@@ -1,8 +1,8 @@
 //
-//  RecommendedRecipeCardView.swift
-//  food
+//  RecipeCollectionView.swift
+//  FridgeChef
 //
-//  Created by Abu Anwar MD Abdullah on 25/1/21.
+//  Created by Vickyhereiam on 2024/10/06.
 //
 import SwiftUI
 
@@ -44,7 +44,7 @@ struct RecipeCollectionView: View {
             VStack(alignment: .leading, spacing: 4) {
                 // 食譜類型
                 if let dishType = recipe.dishTypes.first {
-                    Text(dishType)
+                    Text(dishType.capitalized)
                         .font(.caption2)
                         .foregroundColor(Color(#colorLiteral(red: 0, green: 0.6272217631, blue: 0.7377799153, alpha: 1)))
                 } else {
@@ -73,7 +73,7 @@ struct RecipeCollectionView: View {
                         .resizable()
                         .frame(width: 15, height: 15)
                         .foregroundColor(Color("GrayColor"))
-                        .padding(.leading)
+                        .padding(.leading, 5)
                     
                     Text("\(recipe.readyInMinutes) mins")
                         .font(.caption2)

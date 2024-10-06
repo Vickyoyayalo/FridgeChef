@@ -21,7 +21,7 @@ struct DefaultRecipeView: View {
                     Image("discomonster3") // 替換為你的插圖名稱
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 200)
+                        .frame(height: 300)
                         .shadow(radius: 10)
                     // 使用 @State 變數控制水平偏移
                         .offset(x: moveLeft ? -20 : 20)

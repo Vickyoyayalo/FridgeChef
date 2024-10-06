@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct LoginView: View {
+    @State private var isShowingLoginDetail = false
+    @State private var isShowingSignUp = false
+    
     @State private var scaleEffect1: CGFloat = 0.5
     @State private var opacityEffect1 = 0.0
     
-    @State private var scaleEffect2: CGFloat = 0.5
-    @State private var opacityEffect2 = 0.0
-    
-    @State private var offsetEffect3: CGFloat = 200
-    @State private var scaleEffect3: CGFloat = 0.8
-    @State private var opacityEffect3 = 0.0
+    @State private var scaleEffect2: CGFloat = 1.0
+    @State private var opacityEffect2 = 1.0
+    @State private var offsetXEffect2: CGFloat = 0 // 用於控制X軸位移
 
     var body: some View {
         CustomNavigationBarView(title: "Welcome") {
@@ -24,14 +24,14 @@ struct LoginView: View {
                 GeometryReader { geometry in
                     ZStack {
                         // 左上角的圖片
-                        Image("himonster")
+                        Image("LetsCook")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 300)
                             .shadow(radius: 10)
                             .scaleEffect(scaleEffect1)
                             .opacity(opacityEffect1)
-                            .position(x: geometry.size.width * 0.2, y: geometry.size.height * 0.2) // 左上角位置
+                            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.2) // 左上角位置
                             .onAppear {
                                 withAnimation(.easeInOut(duration: 1.5)) {
                                     scaleEffect1 = 1.0
@@ -39,37 +39,28 @@ struct LoginView: View {
                                 }
                             }
                         
-                        // 中間的圖片
-                        Image("Launchmonster")
+                        // 中間的圖片 - hi效果，左右位移
+                        Image("himonster")
                             .resizable()
                             .scaledToFit()
-                            .frame(height: 1000)
+                            .frame(height: 500) // 控制大小
                             .shadow(radius: 10)
                             .scaleEffect(scaleEffect2)
                             .opacity(opacityEffect2)
+                            .offset(x: offsetXEffect2) // 左右位移動畫
                             .position(x: geometry.size.width / 2, y: geometry.size.height / 2) // 視圖中心位置
                             .onAppear {
-                                withAnimation(.easeInOut(duration: 1.5).delay(0.5)) {
-                                    scaleEffect2 = 1.0
-                                    opacityEffect2 = 1.0
+                                // 組合動畫
+                                withAnimation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
+                                    offsetXEffect2 = 30 // 模擬左右移動的動作，向左
                                 }
-                            }
-                        
-                        // 右下角的圖片，從下往上進場
-                        Image("discomonster")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 400)
-                            .shadow(radius: 10)
-                            .scaleEffect(scaleEffect3)
-                            .opacity(opacityEffect3)
-                            .offset(y: offsetEffect3) // 控制從下往上的動畫
-                            .position(x: geometry.size.width * 0.8, y: geometry.size.height * 0.8) // 右下角位置
-                            .onAppear {
-                                withAnimation(.easeInOut(duration: 1.5)) {
-                                    offsetEffect3 = 0 // 位移動畫從下往上
-                                    scaleEffect3 = 1.0
-                                    opacityEffect3 = 1.0
+                                
+                                withAnimation(Animation.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
+                                    scaleEffect2 = 1.1 // 稍微放大縮小
+                                }
+                                
+                                withAnimation(Animation.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                                    opacityEffect2 = 0.9 // 透明度變化
                                 }
                             }
                     }
@@ -78,8 +69,9 @@ struct LoginView: View {
                 
                 VStack {
                     Spacer()
+                    
                     Button("Sign In") {
-                        // 按鈕邏輯
+                        self.isShowingLoginDetail = true
                     }
                     .font(.headline)
                     .foregroundColor(.white)
@@ -92,14 +84,15 @@ struct LoginView: View {
                             startPoint: .leading,
                             endPoint: .trailing
                         )
-                        .opacity(0.8)
+                        .opacity(0.8)  // 应用50%透明度到整个LinearGradient
                     )
                     .cornerRadius(25)
                     .shadow(radius: 25)
                     .padding(.horizontal)
                     
+                    // 注册按钮
                     Button("Sign Up") {
-                        // 按鈕邏輯
+                        self.isShowingSignUp = true
                     }
                     .font(.headline)
                     .foregroundColor(.white)
@@ -107,29 +100,24 @@ struct LoginView: View {
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(
-                        Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange)
-                    )
+                        Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                     .cornerRadius(25)
                     .shadow(radius: 25)
                     .padding(.horizontal)
+                    
+                    //                    Spacer()
                 }
+            }
+            .sheet(isPresented: $isShowingLoginDetail) {
+                LoginDetailView()
+            }
+            .sheet(isPresented: $isShowingSignUp) {
+                SignUpView()
             }
         }
     }
-//    
-//    // 隨機生成位置，避開底部的按鈕區域
-//    private func randomPosition(in size: CGSize) -> CGPoint {
-//        let minX: CGFloat = 50
-//        let maxX: CGFloat = size.width - 50
-//        let minY: CGFloat = 100
-//        let maxY: CGFloat = size.height * 0.6 // 防止圖片出現在按鈕區域
-//        
-//        let randomX = CGFloat.random(in: minX...maxX)
-//        let randomY = CGFloat.random(in: minY...maxY)
-//        
-//        return CGPoint(x: randomX, y: randomY)
-//    }
 }
+
 
 
 //

@@ -8,23 +8,59 @@
 import Foundation
 
 // MARK: - Models
-
-struct ParsedIngredient: Identifiable {
+struct ParsedIngredient: Identifiable, CustomStringConvertible {
     let id = UUID()
     let name: String
     let quantity: Double
     let unit: String
     let expirationDate: Date
+    
+    var description: String {
+        return "ParsedIngredient(id: \(id), name: \"\(name)\", quantity: \(quantity), unit: \"\(unit)\", expirationDate: \(expirationDate))"
+    }
 }
 
-struct ParsedRecipe {
-    var title: String?
-    var ingredients: [ParsedIngredient]
-    var steps: [String]
+struct ParsedRecipe: Identifiable, CustomStringConvertible {
+    let id = UUID()
+    let title: String?
+    let ingredients: [ParsedIngredient]
+    let steps: [String]
     var link: String?
-    var tips: String?
-    var unparsedContent: String?
+    let tips: String?
+    let unparsedContent: String?
+//    let language: String // 新增字段
+
+    var description: String {
+        return """
+        ParsedRecipe(
+            id: \(id),
+            title: \(title ?? "nil"),
+            ingredients: \(ingredients),
+            steps: \(steps),
+            link: \(link ?? "nil"),
+            tips: \(tips ?? "nil"),
+            unparsedContent: \(unparsedContent ?? "nil")
+        )
+        """
+    }
 }
+
+//struct ParsedIngredient: Identifiable {
+//    let id = UUID()
+//    let name: String
+//    let quantity: Double
+//    let unit: String
+//    let expirationDate: Date
+//}
+//
+//struct ParsedRecipe {
+//    var title: String?
+//    var ingredients: [ParsedIngredient]
+//    var steps: [String]
+//    var link: String?
+//    var tips: String?
+//    var unparsedContent: String?
+//}
 
 struct Recipe: Identifiable, Codable, Equatable {
     let id: Int

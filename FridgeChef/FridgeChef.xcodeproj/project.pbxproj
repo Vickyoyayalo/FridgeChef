@@ -32,6 +32,7 @@
 		1C4490AF2CB27FB500675765 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490AE2CB27FB500675765 /* FlowLayout.swift */; };
 		1C4490B12CB2810200675765 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490B02CB2810200675765 /* CategoryView.swift */; };
 		1C4AD1502CAAA75E00C90905 /* MainCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */; };
+		1C59F54B2CB37589002451A8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C59F54A2CB37589002451A8 /* SettingsView.swift */; };
 		1C6CC3882C984C89001C4643 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3872C984C89001C4643 /* LoginView.swift */; };
 		1C6CC38D2C985109001C4643 /* LoginVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */; };
 		1C6CC38F2C985227001C4643 /* LoginDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC38E2C985227001C4643 /* LoginDetailView.swift */; };
@@ -138,6 +139,7 @@
 		1C4490B02CB2810200675765 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		1C4AD14A2CAA3B5100C90905 /* FridgeChef.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FridgeChef.entitlements; sourceTree = "<group>"; };
 		1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionView.swift; sourceTree = "<group>"; };
+		1C59F54A2CB37589002451A8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1C6CC3872C984C89001C4643 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = LoginVideo.mp4; sourceTree = "<group>"; };
 		1C6CC38E2C985227001C4643 /* LoginDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDetailView.swift; sourceTree = "<group>"; };
@@ -506,6 +508,7 @@
 			isa = PBXGroup;
 			children = (
 				1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */,
+				1C59F54A2CB37589002451A8 /* SettingsView.swift */,
 				1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */,
 				1C2DD56F2C9D3E34000173F6 /* LocationManager.swift */,
 				1C6CC39A2C993698001C4643 /* ImagePicker.swift */,
@@ -718,6 +721,7 @@
 				1CB5BC892C943D36006C66E5 /* User.swift in Sources */,
 				1C6D2D8D2CB04ACA000C49DC /* LogoutSheetView.swift in Sources */,
 				1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */,
+				1C59F54B2CB37589002451A8 /* SettingsView.swift in Sources */,
 				1C99D17B2CAE6C63003D2997 /* ProgressOverlay.swift in Sources */,
 				1CAF42FA2CACBF8B0022D393 /* DefaultRecipeView.swift in Sources */,
 				1C4490B12CB2810200675765 /* CategoryView.swift in Sources */,

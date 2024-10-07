@@ -10,7 +10,7 @@ import SwiftUI
 struct DefaultRecipeView: View {
     @ObservedObject var recipeManager: RecipeManager
     @State var selectedRecipe: DefaultRecipe? = nil
-    @State private var moveLeft = false
+    @State private var moveUp = false
     
     var body: some View {
         //        NavigationView {
@@ -18,25 +18,25 @@ struct DefaultRecipeView: View {
             VStack(spacing: 20) {
                 // 1. 視覺吸引力
                 VStack {
-                    Image("discomonster3") // 替換為你的插圖名稱
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 300)
-                        .shadow(radius: 10)
-                    // 使用 @State 變數控制水平偏移
-                        .offset(x: moveLeft ? -20 : 20)
-                    
-                    // 設置動畫，持續重複並自動反轉
-                        .animation(
-                            Animation.easeInOut(duration: 2)
-                                .repeatForever(autoreverses: true),
-                            value: moveLeft
-                        )
-                        .onAppear {
-                            // 啟動動畫
-                            moveLeft = true
-                            
-                        }
+                    ZStack {
+                        Image("discomonster3") // 替換為你的插圖名稱
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 300)
+                            .shadow(radius: 10)
+                        // 使用 @State 變數控制水平偏移
+                            .offset(y: moveUp ? -30 : 30)
+                            .animation(
+                                Animation.easeInOut(duration: 1)
+                                    .repeatForever(autoreverses: true),
+                                value: moveUp
+                            )
+                            .onAppear {
+                                // 啟動動畫
+                                moveUp = true
+                                
+                            }
+                    }
                     
                     Text("Looking for inspiration? \nEnter a keyword to get started!")
                         .font(.custom("Menlo-BoldItalic", size: 17))

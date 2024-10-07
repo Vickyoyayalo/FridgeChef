@@ -25,7 +25,7 @@ class RecipeManager:  ObservableObject {
                imageName: "confessional"),
         
         DefaultRecipe(title: "Grilled Chicken Salad", headline: "Lunch",
-               ingredients: ["Chicken breasts", "Mixed greens", "Cherry tomatoes", "Cucumbers", "Balsamic vinaigrette"],
+               ingredients: ["Chicken breasts", "Mixed greens", "Cherry tomatoes", "Cucumbers"],
                instructions: "1. Start by grilling the chicken breasts until they are cooked through and have nice grill marks. \n2.While the chicken is cooking, prepare the salad by washing and drying the mixed greens, slicing the cherry tomatoes, and chopping the cucumbers.\n3. Once the chicken is done, let it rest for a few minutes before slicing it.\n4. In a large bowl, toss the greens, tomatoes, and cucumbers together. ",
                imageName: "graham"),
         

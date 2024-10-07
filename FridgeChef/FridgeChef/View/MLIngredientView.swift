@@ -21,58 +21,64 @@ struct MLIngredientView: View {
     @State private var image: UIImage?
     @State private var recognizedText: String = ""
     @State private var expirationDate: Date = Date()
-
+    
     @State private var isAuthorized = false
     @State private var isRecording = false
-
+    
     @State private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     @State private var recognitionTask: SFSpeechRecognitionTask?
-
+    
     //TODO 改成英文也可
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
-
+    
     @State private var storageMethod: String = "To Buy"
     let storageOptions = ["To Buy", "Fridge", "Freezer"]
-
+    
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
-
+    
     @State private var isSavedAlertPresented = false
     @State private var savedIngredients: [Ingredient] = []
     @State private var quantity: String
-
+    
     init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white
         UISegmentedControl.appearance().backgroundColor = UIColor(named: "NavigationBarTitle") ?? UIColor.orange
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemRed, .font: UIFont(name: "ArialRoundedMTBold", size: 15)!], for: .selected)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white,.font: UIFont(name: "ArialRoundedMTBold", size: 15)!], for: .normal)
-
+        
         self.onSave = onSave
         self.editingFoodItem = editingFoodItem
-
+        
         if let item = editingFoodItem {
-                _recognizedText = State(initialValue: item.name)
+            _recognizedText = State(initialValue: item.name)
             _quantity = State(initialValue: item.quantity != nil ? String(format: "%.2f", item.quantity) : "1.00")
-                _expirationDate = State(initialValue: item.expirationDate)
-                _storageMethod = State(initialValue: item.storageMethod)
-                _image = State(initialValue: item.image != nil ? UIImage(data: Data(base64Encoded: item.imageBase64 ?? "") ?? Data()) : nil)
-            } else {
-                _recognizedText = State(initialValue: "")
-                _quantity = State(initialValue: "1.00")
-                _expirationDate = State(initialValue: Date())
-                _storageMethod = State(initialValue: "Fridge")
-                _image = State(initialValue: nil)
-            }
+            _expirationDate = State(initialValue: item.expirationDate)
+            _storageMethod = State(initialValue: item.storageMethod)
+            _image = State(initialValue: item.image != nil ? UIImage(data: Data(base64Encoded: item.imageBase64 ?? "") ?? Data()) : nil)
+        } else {
+            _recognizedText = State(initialValue: "")
+            _quantity = State(initialValue: "1.00")
+            _expirationDate = State(initialValue: Date())
+            _storageMethod = State(initialValue: "Fridge")
+            _image = State(initialValue: nil)
         }
-
+    }
+    
     enum PhotoSource: Identifiable {
         case photoLibrary
         case camera
-
+        
         var id: Int { self.hashValue }
     }
-
+    
+    let columns = [
+        GridItem(.fixed(120), alignment: .leading), // 固定寬度的標題
+        GridItem(.flexible())                       // 靈活寬度的輸入框
+    ]
+    
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -124,71 +130,65 @@ struct MLIngredientView: View {
                         .cornerRadius(8)
                         
                         // 名稱、數量、到期日與各自的 TextField 排列為 HStack
-                        VStack(alignment: .leading, spacing: 20) {
+                        LazyVGrid(columns: columns, alignment: .leading, spacing: 20) {
+                            // Name
+                            Text("Name")
+                                .font(.custom("ArialRoundedMTBold", size: 18))
                             HStack {
-                                Text("Name")
-                                    .font(.headline)
-                                
-                                HStack {
-                                    TextField("Image Recognition", text: $recognizedText)
-                                        .padding()
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                        )
-                                        .overlay(
-                                            // 麥克風按鈕放在右邊
-                                            Button(action: {
-                                                if isRecording {
-                                                    stopRecording()
-                                                    isRecording = false
-                                                } else {
-                                                    startRecording()
-                                                    isRecording = true
-                                                }
-                                            }) {
-                                                Image(systemName: isRecording ? "mic.fill" : "mic")
-                                                    .font(.title2)
-                                                    .foregroundColor(Color(UIColor(named: isRecording ? "PrimaryColor" : "NavigationBarTitle") ?? UIColor.orange))
-                                                    .padding(.trailing, 10)
-                                            }
-                                                .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing) 
-                                        )
-                                        .padding(.horizontal)
-                                    
-                                }
-                            }
-                            
-                            HStack {
-                                Text("Qty        ")
-                                    .font(.headline)
-                                
-                                TextField("Please insert numbers", text: $quantity)
+                                TextField("Detect Image", text: $recognizedText)
                                     .padding()
-                                    .frame(width: 255, alignment: .center)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 8)
                                             .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                     )
-                                    .keyboardType(.numberPad)
-                                
+                                    .overlay(
+                                        // 麥克風按鈕放在右邊
+                                        Button(action: {
+                                            if isRecording {
+                                                stopRecording()
+                                                isRecording = false
+                                            } else {
+                                                startRecording()
+                                                isRecording = true
+                                            }
+                                        }) {
+                                            Image(systemName: isRecording ? "mic.fill" : "mic")
+                                                .font(.title2)
+                                                .foregroundColor(Color(UIColor(named: isRecording ? "PrimaryColor" : "NavigationBarTitle") ?? UIColor.orange))
+                                                .padding(.trailing, 10)
+                                        }
+                                            .frame(maxWidth: .infinity, alignment: .trailing)
+                                    )
                             }
+                            .frame(maxWidth: .infinity)
                             
-                            HStack {
-                                Text("Expiry Date")
-                                    .font(.headline)
-                                
-                                DatePickerTextField(date: $expirationDate, label: "")
-                                //TODO "zh-Hant" "en-US"
-                                    .environment(\.locale, Locale(identifier: "en-US"))
-                            }
+                            // Quantity
+                            Text("Quantity")
+                                .font(.custom("ArialRoundedMTBold", size: 18))
+                            TextField("Please insert numbers", text: $quantity)
+                                .padding()
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                )
+                                .keyboardType(.numberPad)
+                                .frame(maxWidth: .infinity)
+                            
+                            // Expiry Date
+                            Text("Expiry Date")
+                                .font(.custom("ArialRoundedMTBold", size: 18))
+                            DatePickerTextField(date: $expirationDate, label: "Choose a Date!")
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                                )
+                                .frame(maxWidth: .infinity)
                         }
                         .padding(.horizontal)
-                        
                         // 儲存按鈕
                         Button(action: saveIngredient) {
                             Text("Save")
-                                .font(.headline)
+                                .font(.custom("ArialRoundedMTBold", size: 20))
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
@@ -302,20 +302,20 @@ struct MLIngredientView: View {
             }
         }
     }
-
+    
     func recognizeFood(in image: UIImage) {
         guard let model = try? VNCoreMLModel(for: Food().model) else {
             print("Failed to load model")
             return
         }
-
+        
         let request = VNCoreMLRequest(model: model) { request, error in
             guard let results = request.results as? [VNClassificationObservation],
                   let topResult = results.first else {
                 print("No results: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
-
+            
             DispatchQueue.main.async {
                 let label = topResult.identifier
                 // Translate the label from the dictionary
@@ -324,12 +324,12 @@ struct MLIngredientView: View {
                 updateUIWithFoodRecognitionResult(result: translatedLabel)
             }
         }
-
+        
         guard let ciImage = CIImage(image: image) else {
             print("Unable to create \(CIImage.self) from \(image).")
             return
         }
-
+        
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
         DispatchQueue.global(qos: .userInitiated).async {
             do {
@@ -339,41 +339,41 @@ struct MLIngredientView: View {
             }
         }
     }
-
+    
     // Helper function to update UI
     func updateUIWithFoodRecognitionResult(result: String) {
         recognizedText = result
     }
-
+    
     //     使用 Vision 進行文字識別 (OCR)
     func performTextRecognition(on image: UIImage) {
         guard let ciImage = CIImage(image: image) else {
             recognizedText = "Cannot processing the photo"
             return
         }
-
+        
         let request = VNRecognizeTextRequest { (request, error) in
             if let error = error {
                 recognizedText = "文字識別錯誤: \(error.localizedDescription)"
                 return
             }
-
+            
             guard let observations = request.results as? [VNRecognizedTextObservation] else {
                 recognizedText = "無法識別文字"
                 return
             }
-
+            
             let recognizedStrings = observations.compactMap { $0.topCandidates(1).first?.string }
             DispatchQueue.main.async {
                 self.recognizedText = recognizedStrings.joined(separator: "\n")
             }
         }
-
+        
         request.recognitionLanguages = ["zh-Hant", "en-US"]
         request.recognitionLevel = .accurate
-
+        
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
-
+        
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 try handler.perform([request])
@@ -411,20 +411,20 @@ struct MLIngredientView: View {
         clearForm()
         dismiss()
     }
-
+    
     func handleSave(_ ingredient: Ingredient) {
         print("Saving ingredient quantity: \(ingredient.quantity)") // 調試輸出
         // 其餘代碼保持不變
     }
-
+    
     // 清空表單欄位
-      func clearForm() {
-          recognizedText = ""
-          quantity = "1"
-          expirationDate = Date()
-          image = nil
-          storageMethod = ""
-      }
+    func clearForm() {
+        recognizedText = ""
+        quantity = "1"
+        expirationDate = Date()
+        image = nil
+        storageMethod = ""
+    }
     
     func convertToIngredient(item: FoodItem) -> Ingredient {
         // 轉換 FoodItem 為 Ingredient
@@ -440,7 +440,7 @@ struct MLIngredientView: View {
             imageBase64: base64Image
         )
     }
-
+    
     // 請求語音識別授權
     func requestSpeechRecognitionAuthorization() {
         SFSpeechRecognizer.requestAuthorization { status in
@@ -456,19 +456,19 @@ struct MLIngredientView: View {
             }
         }
     }
-
+    
     // 開始錄音
     func startRecording() {
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         let inputNode = audioEngine.inputNode
-
+        
         let recordingFormat = inputNode.outputFormat(forBus: 0)
-
+        
         guard recordingFormat.sampleRate > 0 && recordingFormat.channelCount > 0 else {
             print("Wrong recording format: \(recordingFormat)")
             return
         }
-
+        
         recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest!, resultHandler: { result, error in
             if let result = result {
                 self.recognizedText = result.bestTranscription.formattedString
@@ -481,13 +481,13 @@ struct MLIngredientView: View {
                 self.isRecording = false
             }
         })
-
+        
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, when in
             self.recognitionRequest?.append(buffer)
         }
-
+        
         audioEngine.prepare()
-
+        
         do {
             try audioEngine.start()
             isRecording = true
@@ -504,7 +504,9 @@ struct MLIngredientView: View {
 }
 
 #Preview {
-    MLIngredientView()
+    let foodItemStore = FoodItemStore()
+    return MLIngredientView()
+        .environmentObject(foodItemStore)
 }
 
 //MARK: TODO這其實整理的很好只是功能好像有問題，可以未來用這個Textfiled架構去整理

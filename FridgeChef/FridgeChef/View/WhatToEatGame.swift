@@ -146,18 +146,16 @@ struct WhatToEatGameView: View {
                                 selectedFood = nil
                                 selectedMonsterImage = nil
                             }
+                            
                         })
                         
                         RecipeButton(action: {
                             showingRecipeSheet = true // 點擊 RecipeButton 時顯示 sheet
                         })
-                        /*.padding(.horizontal)*/ // 增加水平內邊距
-//                        .frame(maxWidth: .infinity) // 讓 HStack 填滿寬度
                         .sheet(isPresented: $showingRecipeSheet) { // 添加 sheet 修飾符
                             RecipeMainView()
                                 .environmentObject(RecipeSearchViewModel()) // 確保傳遞 EnvironmentObject
                         }
-//                        .padding(.bottom)
                     }
                    
                 }

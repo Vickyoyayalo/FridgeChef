@@ -22,6 +22,7 @@ struct WhatToEatGameView: View {
     @State private var selectedFood: (category: String, food: String)?
     @State private var selectedMonsterImage: String?
     @State private var showCategoryInitial = true
+    @State private var showingRecipeSheet = false
 
     let foodCategories: [FoodCategory] = [
         FoodCategory(category: "Japanese", foods: ["Sushi", "Ramen", "Tempura"]),
@@ -48,7 +49,7 @@ struct WhatToEatGameView: View {
         FoodCategory(category: "Korean", foods: ["Kimchi", "Bulgogi", "Bibimbap", "Japchae", "Samgyeopsal", "Tteokbokki", "Sundubu-jjigae", "Gimbap", "Galbi", "Naengmyeon"]),
         FoodCategory(category: "Thai", foods: ["Pad Thai", "Tom Yum Soup", "Green Curry", "Som Tum", "Massaman Curry", "Pad See Ew", "Mango Sticky Rice", "Panang Curry", "Kai Yang", "Tom Kha Gai"])
     ]
-
+    
     var body: some View {
         ZStack(alignment: .top) {
             // 背景漸變色
@@ -59,20 +60,20 @@ struct WhatToEatGameView: View {
                 .onAppear {
                     degree += 360
                 }
-
+            
             WheelView(degree: $degree, array: foodCategories.map { $0.category }, circleSize: 500)
                 .shadow(color: .white.opacity(0.7), radius: 10, x: 0, y: 20)
                 .scaleEffect(0.9)
-
+            
             Image("WhatToEatLogo")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 350, height: 250)
                 .padding(.top, -5)
-
+            
             VStack {
                 Spacer()
-
+                
                 if let selectedFood = selectedFood {
                     VStack(spacing: 10) {
                         if showCategoryInitial {
@@ -92,7 +93,7 @@ struct WhatToEatGameView: View {
                                     .padding(.bottom, -5)
                                     .offset(y: 130)
                                     .shadow(radius: 8)
-
+                                
                                 Text(selectedFood.food)
                                     .font(.custom("ArialRoundedMTBold", size:40))
                                     .foregroundColor(.yellow)
@@ -104,7 +105,7 @@ struct WhatToEatGameView: View {
                             }
                             .transition(.scale)
                         }
-
+                        
                         // 顯示隨機選擇的可愛 monster 圖片
                         if let monsterImage = selectedMonsterImage {
                             Image(monsterImage)
@@ -129,26 +130,39 @@ struct WhatToEatGameView: View {
                         showCategoryInitial = true
                     }
                 }
-
+                
                 Spacer()
-
+                
                 Spacer().frame(height: 30)
-
+                
                 VStack(spacing: 20) {
                     SpinButton(action: {
                         spinWheelAndPickFood()
                     })
-
-                    ResetButton(action: {
-                        withAnimation {
-                            selectedFood = nil
-                            selectedMonsterImage = nil
+                    
+                    HStack(spacing: 30) { // 使用 HStack 包含 Reset 和新按鈕
+                        ResetButton(action: {
+                            withAnimation {
+                                selectedFood = nil
+                                selectedMonsterImage = nil
+                            }
+                        })
+                        
+                        RecipeButton(action: {
+                            showingRecipeSheet = true // 點擊 RecipeButton 時顯示 sheet
+                        })
+                        /*.padding(.horizontal)*/ // 增加水平內邊距
+//                        .frame(maxWidth: .infinity) // 讓 HStack 填滿寬度
+                        .sheet(isPresented: $showingRecipeSheet) { // 添加 sheet 修飾符
+                            RecipeMainView()
+                                .environmentObject(RecipeSearchViewModel()) // 確保傳遞 EnvironmentObject
                         }
-                    })
+//                        .padding(.bottom)
+                    }
+                   
                 }
-                .padding(.bottom) // 增加底部間距
             }
-            .padding()
+            .padding(.bottom, 30)
             .frame(maxHeight: .infinity)
         }
     }
@@ -173,6 +187,31 @@ struct WhatToEatGameView: View {
         }
     }
 }
+// 新增一個自訂的 Recipe 按鈕視圖
+struct RecipeButton: View {
+        var action: () -> Void
+        
+        var body: some View {
+            Button(action: action) {
+                HStack {
+                    Image(systemName: "book.fill")
+                        .font(.title2)
+                    Text("Recipes")
+                        .fontWeight(.semibold)
+                        .font(.title3)
+                }
+                .padding()
+                .foregroundColor(.white)
+                .background(
+                    LinearGradient(gradient: Gradient(colors: [Color.green, Color.blue]), startPoint: .leading, endPoint: .trailing)
+                )
+                .cornerRadius(30)
+                .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
+            }
+//            .frame(maxWidth: .infinity, minHeight: 50) // 統一寬度和高度
+        }
+    }
+
 
 // 輪盤視圖
 struct WheelView: View {
@@ -223,6 +262,7 @@ struct SpinButton: View {
             }
             .padding()
             .foregroundColor(.white)
+            .frame(width: 300)
             .background(
                 LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
             )
@@ -415,6 +455,7 @@ struct WhatToEatGameView_Previews: PreviewProvider {
 //            .frame(maxHeight: .infinity)
 //        }
 //    }
+//
 //
 //    func spinWheelAndPickFood() {
 //        let rotationIncrement = Double(360 / foodItems.count)

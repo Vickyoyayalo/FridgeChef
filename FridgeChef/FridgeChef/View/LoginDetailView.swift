@@ -25,13 +25,13 @@ struct LoginDetailView: View {
     
     var body: some View {
         CustomNavigationBarView(title: "") {
-            ZStack(alignment: .bottomLeading) {
+            ZStack(alignment: .topLeading) {
                 VStack(spacing: 15) {
                     Image("LogoFridgeChef")
                         .resizable()
                         .scaledToFit()
-                        .padding(.vertical, -50)
-                        .padding(.top, -25)
+                        .padding(.vertical, -100)
+                        .padding(.top, -100)
                     
                     // Email TextField
                     TextField("Email", text: $loginViewModel.email)
@@ -53,7 +53,7 @@ struct LoginDetailView: View {
                     Button(action: {
                         loginWithEmailPassword()  // Email & Password 登录逻辑
                     }) {
-                        Text("登入")
+                        Text("Sign In")
                             .foregroundColor(.white)
                             .fontWeight(.bold)
                             .frame(maxWidth: .infinity)
@@ -64,14 +64,13 @@ struct LoginDetailView: View {
                             .shadow(radius: 5)
                     }
                     NavigationLink(destination: MainTabView(), isActive: $navigateToHome) {
-EmptyView()  // 隐藏的链接，只在登录成功后触发
-}
-
+                        EmptyView()  // 隐藏的链接，只在登录成功后触发
+                    }
                     // 忘記密碼按鈕
                     Button(action: {
                         navigateToForgotPassword = true
                     }) {
-                        Text("忘記密碼?")
+                        Text("Forget Password?")
                             .foregroundColor(
                                 Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                             .frame(maxWidth: .infinity)
@@ -89,7 +88,6 @@ EmptyView()  // 隐藏的链接，只在登录成功后触发
                     Text("Or sign up with")
                         .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding(.top, 10)
                     
                     // Apple Sign In
                     SignInWithAppleButton(.signIn) { request in
@@ -120,11 +118,11 @@ EmptyView()  // 隐藏的链接，只在登录成功后触发
                     }
                 }
                 .padding()
-                Image("monster")
+                Image("Loginmonster")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 250, height: 300)
-                    .offset(x: -50, y: 250)
+                    .offset(x: 70, y: 400)
             }
         }
         .alert(errorMessage, isPresented: $showAlert) {}

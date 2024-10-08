@@ -8,21 +8,59 @@
 import Foundation
 
 // MARK: - Models
-
-struct ParsedIngredient {
-    var name: String
-    var quantity: String
-    var unit: String
+struct ParsedIngredient: Identifiable, CustomStringConvertible {
+    let id = UUID()
+    let name: String
+    let quantity: Double
+    let unit: String
+    let expirationDate: Date
+    
+    var description: String {
+        return "ParsedIngredient(id: \(id), name: \"\(name)\", quantity: \(quantity), unit: \"\(unit)\", expirationDate: \(expirationDate))"
+    }
 }
 
-struct ParsedRecipe {
-    var title: String?
-    var ingredients: [ParsedIngredient]
-    var steps: [String]
+struct ParsedRecipe: Identifiable, CustomStringConvertible {
+    let id = UUID()
+    let title: String?
+    let ingredients: [ParsedIngredient]
+    let steps: [String]
     var link: String?
-    var tips: String?
-    var unparsedContent: String?
+    let tips: String?
+    let unparsedContent: String?
+//    let language: String // 新增字段
+
+    var description: String {
+        return """
+        ParsedRecipe(
+            id: \(id),
+            title: \(title ?? "nil"),
+            ingredients: \(ingredients),
+            steps: \(steps),
+            link: \(link ?? "nil"),
+            tips: \(tips ?? "nil"),
+            unparsedContent: \(unparsedContent ?? "nil")
+        )
+        """
+    }
 }
+
+//struct ParsedIngredient: Identifiable {
+//    let id = UUID()
+//    let name: String
+//    let quantity: Double
+//    let unit: String
+//    let expirationDate: Date
+//}
+//
+//struct ParsedRecipe {
+//    var title: String?
+//    var ingredients: [ParsedIngredient]
+//    var steps: [String]
+//    var link: String?
+//    var tips: String?
+//    var unparsedContent: String?
+//}
 
 struct Recipe: Identifiable, Codable, Equatable {
     let id: Int
@@ -31,7 +69,8 @@ struct Recipe: Identifiable, Codable, Equatable {
     let servings: Int
     let readyInMinutes: Int
     let summary: String
-    var isFavorite: Bool = false  // 本地屬性，默認為 false
+    var isFavorite: Bool = false
+    let dishTypes: [String]// 本地屬性，默認為 false
 
     // CodingKeys 用來匹配 JSON key 和模型屬性
     enum CodingKeys: String, CodingKey {
@@ -41,6 +80,7 @@ struct Recipe: Identifiable, Codable, Equatable {
         case servings
         case readyInMinutes
         case summary
+        case dishTypes
     }
 }
 
@@ -81,7 +121,6 @@ struct RecipeDetails: Codable, Identifiable {
     }
 }
 
-
 struct AnalyzedInstruction: Codable, Identifiable {
     let id = UUID()
     let name: String
@@ -102,4 +141,17 @@ struct EquipmentItem: Codable {
     let image: String
 }
 
+enum ActiveAlert: Identifiable {
+    case error(ErrorMessage)
+    case ingredient(String)
+    
+    var id: UUID {
+        switch self {
+        case .error(_):
+            return UUID()
+        case .ingredient(_):
+            return UUID()
+        }
+    }
+}
 

@@ -1,15 +1,40 @@
 //
-//  MainView.swift
-//  FoodPin
+//  MainTabView.swift
+//  FridgeChef
 //
-//  Created by Simon Ng on 17/10/2023.
+//  Created by Vickyhereiam on 2024/9/10.
 //
+
 import SwiftUI
+import UIKit
 
 struct MainTabView: View {
     @State private var selectedTabIndex = 0
     @State private var showChatView = false
     @ObservedObject private var keyboardResponder = KeyboardResponder()
+
+    init() {
+        let appearance = UITabBarAppearance()
+        appearance.shadowImage = UIImage()
+        appearance.shadowColor = .clear
+//        appearance.configureWithTransparentBackground()
+        
+        // 將 HEX 顏色 #ccb562 轉換為 UIColor
+        let customColor = UIColor(hex: "#ccb562")
+
+        // 使用 createGradientImage 函數來創建漸變圖像，並應用到 UITabBar 的背景
+        if let gradientImage = createGradientImage(colors: [UIColor.systemOrange, UIColor.systemYellow], size: CGSize(width: UIScreen.main.bounds.width, height: 50), opacity: 0.4) {
+            appearance.backgroundImage = gradientImage  // 將漸變圖像作為背景
+        }
+        appearance.stackedLayoutAppearance.normal.iconColor = customColor
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: customColor]
+        
+        UITabBar.appearance().standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -21,13 +46,13 @@ struct MainTabView: View {
                     
                     MainCollectionView()
                         .tabItem {
-                            Label("收藏", systemImage: "heart.fill")
+                            Label("Main", systemImage: "heart.fill")
                         }
                         .tag(0)
                     
                     FridgeView()
                         .tabItem {
-                            Label("冰箱", systemImage: "refrigerator.fill")
+                            Label("Fridge", systemImage: "refrigerator.fill")
                         }
                         .tag(1)
                     
@@ -39,13 +64,13 @@ struct MainTabView: View {
                     
                     RecipeMainView()
                         .tabItem {
-                            Label("食譜", systemImage: "heart.text.square")
+                            Label("Recipe", systemImage: "heart.text.square")
                         }
                         .tag(3)
                     
                     GroceryListView()
                         .tabItem {
-                            Label("採買", systemImage: "storefront.fill")
+                            Label("Shopping", systemImage: "storefront.fill")
                         }
                         .tag(4)
                 }
@@ -75,3 +100,4 @@ struct MainView_Previews: PreviewProvider {
         MainTabView()
     }
 }
+

@@ -16,7 +16,7 @@ class LoginDetailViewModel: ObservableObject {
 
     func login(completion: @escaping () -> Void) {
         guard !email.isEmpty, !password.isEmpty else {
-            self.alertMessage = "請輸入電子郵件和密碼。"
+            self.alertMessage = "Please filled the Email and Password."
             self.showAlert = true
             return
         }

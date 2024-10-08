@@ -30,13 +30,13 @@ class UserViewModel: ObservableObject {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 if let error = error {
-                    self.alert = Alert(title: Text("註冊失敗"), message: Text(error.localizedDescription))
+                    self.alert = Alert(title: Text("Sign Up failed"), message: Text(error.localizedDescription))
                     self.showAlert = true
                     return
                 }
 
                 guard let uid = result?.user.uid else {
-                    self.alert = Alert(title: Text("註冊失敗"), message: Text("無法獲取用戶ID"))
+                    self.alert = Alert(title: Text("Sign Up failed"), message: Text("Cannot get the user ID"))
                     self.showAlert = true
                     return
                 }
@@ -50,9 +50,9 @@ class UserViewModel: ObservableObject {
                     self.firestoreService.saveUser(userData, uid: uid) { result in
                         switch result {
                         case .success():
-                            self.alert = Alert(title: Text("註冊成功"), message: Text("註冊成功!"))
+                            self.alert = Alert(title: Text("Sign Up Successful"), message: Text("Sign Up Successful!"))
                         case .failure(let error):
-                            self.alert = Alert(title: Text("註冊失敗"), message: Text("無法儲存大頭照: \(error.localizedDescription)"))
+                            self.alert = Alert(title: Text("Failed to Sign Up"), message: Text("Cannot save the avatar: \(error.localizedDescription)"))
                         }
                         self.showAlert = true
                     }

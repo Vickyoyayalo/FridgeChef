@@ -26,14 +26,14 @@ struct ForgotPasswordView: View {
                     .padding(.bottom, 5)
                 
                 // 標題
-                Text("重設密碼 🗝️")
+                Text("Reset Password 🗝️")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(
                         Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 
                 // Email TextField
-                TextField("請輸入您的Email", text: $email)
+                TextField("Enter your Email", text: $email)
                     .padding()
                     .background(Color.white)
                     .cornerRadius(10)
@@ -45,15 +45,15 @@ struct ForgotPasswordView: View {
                 // 密碼重設按鈕
                 Button(action: {
                     if email.isEmpty {
-                        alertMessage = "請輸入您的Email"
+                        alertMessage = "Enter your Email"
                         showingAlert = true
                     } else {
                         viewModel.sendPasswordReset(email: email)
-                        alertMessage = "密碼重設連結已發送到您的Email"
+                        alertMessage = "Send the reset password link to your Email."
                         showingAlert = true
                     }
                 }) {
-                    Text("發送重設連結")
+                    Text("Send reset Email link")
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
@@ -69,16 +69,16 @@ struct ForgotPasswordView: View {
                 
                 Image("monster")
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: 400, height: 400)
                     .padding(.top)
                 
                 // 彈出提示框
                     .alert(isPresented: $showingAlert) {
                         Alert(
-                            title: Text("密碼重設"),
+                            title: Text("Reset Password"),
                             message: Text(alertMessage),
-                            dismissButton: .default(Text("確定"))
+                            dismissButton: .default(Text("Sure"))
                         )
                     }
             }

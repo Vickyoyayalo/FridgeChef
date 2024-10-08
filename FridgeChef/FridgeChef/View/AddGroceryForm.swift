@@ -13,14 +13,16 @@ struct AddGroceryForm: View {
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
     @State private var selectedImage: UIImage?
-
+    @State private var isSavedAlertPresented = false
+    @State private var savedIngredients: [Ingredient] = []
+    
     enum PhotoSource: Identifiable {
         case photoLibrary
         case camera
         
         var id: Int { self.hashValue }
     }
-
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -32,58 +34,64 @@ struct AddGroceryForm: View {
                 )
                 .opacity(0.3)
                 .edgesIgnoringSafeArea(.all)
-            
-            ScrollView {
-                VStack {
-                    if let selectedImage = selectedImage {
-                        Image(uiImage: selectedImage)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .frame(height: 200)
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 20.0))
-                            .padding(.bottom)
-                    } else {
-                        Image("RecipeFood")  // Provide a placeholder
-                            .resizable()
-                            .scaledToFit()  // 保持比例並完整顯示圖片
-                            .frame(minWidth: 0, maxWidth: .infinity)
-                            .frame(height: 200)
-                            .background(Color.white.opacity(0.4))
-                            .clipShape(RoundedRectangle(cornerRadius: 20.0))
-                            .padding(.bottom)
-                            .onTapGesture {
-                                showPhotoOptions = true
-                            }
+                
+                ScrollView {
+                    VStack {
+                        if let selectedImage = selectedImage {
+                            Image(uiImage: selectedImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                                .frame(height: 200)
+                                .background(Color(.systemGray6))
+                                .clipShape(RoundedRectangle(cornerRadius: 20.0))
+                                .padding(.bottom)
+                        } else {
+                            Image("RecipeFood")  // Provide a placeholder
+                                .resizable()
+                                .scaledToFit()  // 保持比例並完整顯示圖片
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                                .frame(height: 200)
+                                .background(Color.white.opacity(0.4))
+                                .clipShape(RoundedRectangle(cornerRadius: 20.0))
+                                .padding(.bottom)
+                                .onTapGesture {
+                                    showPhotoOptions = true
+                                }
+                        }
+                        FormTextField(label: "Name", placeholder: "Recipe Name", value: $viewModel.name)
+                        FormTextField(label: "Type", placeholder: "Recipe Type", value: $viewModel.type)
+                        FormTextField(label: "Notes", placeholder: "Anything to be keep in here ~", value: $viewModel.description)
                     }
-                    FormTextField(label: "名稱", placeholder: "食譜名稱", value: $viewModel.name)
-                    FormTextField(label: "類型", placeholder: "食譜類型", value: $viewModel.type)
-                    FormTextField(label: "Notes", placeholder: "食譜紀錄", value: $viewModel.description)
+                    .padding()
                 }
-                .padding()
-            }
-            .navigationTitle("Add Recipe")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { dismiss() }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.orange)
+//                Button(action: saveIngredient) {
+//                    Text("Save")
+//                        .font(.headline)
+//                        .padding()
+//                        .frame(maxWidth: .infinity)
+//                        .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//                        .foregroundColor(.white)
+//                        .cornerRadius(8)
+//                    
+//                }
+//                .padding()
+//                .alert(isPresented: $isSavedAlertPresented) {
+//                    Alert(title: Text("Success"), message: Text("Saved the ingredient!"), dismissButton: .default(Text("Sure")))
+                }
+                .navigationTitle("Add Recipe")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { dismiss() }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.orange)
+                        }
                     }
                 }
             }
-        }
-    }
-        .onDisappear {
-            // Handle the image saving here
-            if let selectedImage = selectedImage {
-                let imageName = saveImageToFileSystem(selectedImage)
-                viewModel.image = imageName
-            }
-        }
-        .confirmationDialog("選擇你的相片來源", isPresented: $showPhotoOptions, titleVisibility: .visible) {
-            Button("相機") { photoSource = .camera }
-            Button("相冊") { photoSource = .photoLibrary }
+        .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions, titleVisibility: .visible) {
+            Button("Camera") { photoSource = .camera }
+            Button("Photo Library") { photoSource = .photoLibrary }
         }
         .fullScreenCover(item: $photoSource) { source in
             switch source {
@@ -95,33 +103,33 @@ struct AddGroceryForm: View {
         }
         .tint(.primary)
     }
-
-    private func save() {
-        let recommendRecipe = RecommendRecipe(
-            name: viewModel.name,
-            type: viewModel.type,
-            location: viewModel.location,
-            phone: viewModel.phone,
-            description: viewModel.description,
-            image: viewModel.image ?? "default_image"
-        )
-        // Save recommendRecipe somewhere
-    }
-
-    private func saveImageToFileSystem(_ image: UIImage) -> String {
-        let imageData = image.jpegData(compressionQuality: 1.0) ?? Data()
-        let uniqueID = UUID().uuidString
-        let filePath = NSTemporaryDirectory() + uniqueID + ".jpg"
-        let fileURL = URL(fileURLWithPath: filePath)
-
-        do {
-            try imageData.write(to: fileURL)
-            return filePath
-        } catch {
-            print("Error saving image: \(error)")
-            return "default_image"
-        }
-    }
+//    func saveIngredient() {
+//        let defaultAmount = 1.0  // 一個示例值
+//        let defaultUnit = "unit" // 一個示例單位
+//        
+//        // 將 quantity 從 String 轉換為 Double，並四捨五入到兩位小數
+//        let quantityValue = (Double(quantity) ?? 1.0).rounded(toPlaces: 2)
+//        print("Converted quantity: \(quantityValue)") // 調試輸出
+//        
+//        // 創建 Ingredient 實例，並將 quantity 設置為 Double
+//        var newIngredient = Ingredient(
+//            id: editingFoodItem?.id ?? UUID(), // 如果是編輯，保持原有的 ID；否則生成新 ID
+//            name: recognizedText,
+//            quantity: quantityValue, // 正確設置為 Double，並已四捨五入
+//            amount: defaultAmount,
+//            unit: defaultUnit, // 使用實際的 unit
+//            expirationDate: expirationDate, // 設置 expirationDate
+//            storageMethod: storageMethod,
+//            imageBase64: image?.pngData()?.base64EncodedString()
+//        )
+//        print("New Ingredient: \(newIngredient.quantity)")
+//        savedIngredients.append(newIngredient)
+//        isSavedAlertPresented = true
+//        onSave?(newIngredient)
+//        clearForm()
+//        dismiss()
+//    }
+    
 }
 
 #Preview{

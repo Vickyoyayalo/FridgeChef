@@ -8,27 +8,27 @@
 import SwiftUI
 
 struct SearchAndFilterView: View {
-    @Binding var search: String
+    @Binding var searchText: String
     
     var body: some View {
-        HStack (spacing: 16){
+        HStack(spacing: 16) {
             //                Search
             HStack {
                 Image(uiImage: #imageLiteral(resourceName: "search"))
-                TextField("Search for recipes", text: $search)
+                TextField("Search my favorites", text: $searchText)
                 
             }
-            .padding()
-            .background(Color("LightGrayColor"))
+            .padding(8)
+            .background(Color.lightGray).opacity(0.7)
             .cornerRadius(8)
-            
-            Image(uiImage: #imageLiteral(resourceName: "filter"))
-                .padding()
-                .background(Color("LightGrayColor"))
-                .cornerRadius(8.0)
-                .onTapGesture {
-                    
-                }
+//            
+//            Image(uiImage: #imageLiteral(resourceName: "filter"))
+//                .padding()
+//                .background(Color("LightGrayColor"))
+//                .cornerRadius(8.0)
+//                .onTapGesture {
+//                    
+//                }
         }
     }
 }

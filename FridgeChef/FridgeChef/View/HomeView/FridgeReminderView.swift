@@ -9,6 +9,8 @@ import SwiftUI
 struct FridgeReminderView: View {
     @EnvironmentObject var foodItemStore: FoodItemStore
     @Binding var editingItem: FoodItem?
+    @State private var selectedFoodItem: FoodItem? // 用於顯示的已選擇食物
+    @State private var showingSheet = false // 用於控制 sheet 顯示
 
     private var expiringItems: [FoodItem] {
         foodItemStore.foodItems.filter { $0.daysRemaining <= 3 && $0.daysRemaining >= 0 }
@@ -25,29 +27,34 @@ struct FridgeReminderView: View {
                     // 預設紅色卡片
                     if expiringItems.isEmpty {
                         DefaultFridgeReminderCard(color: .blue.opacity(0.2), message: "No items will expire within 3 days.", textColor: .blue)
-                            .frame(width: 180, height: 250)
+//                            .frame(width: 180, height: 250)
                     }
 
                     // 預設藍色卡片
                     if expiredItems.isEmpty {
                         DefaultFridgeReminderCard(color: .red.opacity(0.2), message: "No items expired.", textColor: .red)
-                            .frame(width: 180, height: 250)
+//                            .frame(width: 180, height: 250)
                     }
 
                     // 顯示即將過期的食物
                     ForEach(expiringItems) { item in
-                        // 移除 onTapGesture，直接使用 NavigationLink
-                        NavigationLink(destination: FridgeView()) {
+                        Button(action: {
+                            selectedFoodItem = item
+                            showingSheet = true
+                        }) {
                             FridgeRecipeCard(foodItem: item, isExpired: false)
-                                .frame(width: 180, height: 250)
+//                                .frame(width: 180, height: 250)
                         }
                     }
 
                     // 顯示已過期的食物
                     ForEach(expiredItems) { item in
-                        NavigationLink(destination: FridgeView()) {
+                        Button(action: {
+                            selectedFoodItem = item
+                            showingSheet = true
+                        }) {
                             FridgeRecipeCard(foodItem: item, isExpired: true)
-                                .frame(width: 180, height: 250)
+//                                .frame(width: 180, height: 250)
                         }
                     }
                 }
@@ -55,7 +62,10 @@ struct FridgeReminderView: View {
             }
             .padding(.horizontal, -16) // 去除邊界
         }
-        .padding(.horizontal, 0)
+        .padding(.horizontal)
+        .sheet(item: $selectedFoodItem) { foodItem in
+            FridgeView() // 在這裡呈現 FridgeView
+        }
     }
 }
 
@@ -93,7 +103,7 @@ struct DefaultFridgeReminderCard: View {
             .shadow(radius: 8)
         }
         .frame(width: 180, height: 250) // 調整卡片寬度和高度
-        .padding(.trailing, 10)
+//        .padding(.trailing, 10)
     }
 }
 
@@ -157,3 +167,13 @@ struct FridgeRecipeCard: View {
         .padding(.trailing, 10)
     }
 }
+
+struct FridgeReminderView_Preview: PreviewProvider {
+    @State static var editingItem: FoodItem? = nil
+
+    static var previews: some View {
+        FridgeReminderView(editingItem: $editingItem)
+            .environmentObject(FoodItemStore()) // 提供環境對象
+    }
+}
+

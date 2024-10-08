@@ -140,18 +140,19 @@ struct WhatToEatGameView: View {
                         spinWheelAndPickFood()
                     })
                     
-                    HStack(spacing: 30) { // 使用 HStack 包含 Reset 和新按鈕
+                    HStack(spacing: 18) { // 使用 HStack 包含 Reset 和新按鈕
                         ResetButton(action: {
                             withAnimation {
                                 selectedFood = nil
                                 selectedMonsterImage = nil
                             }
-                            
                         })
                         
                         RecipeButton(action: {
-                            showingRecipeSheet = true // 點擊 RecipeButton 時顯示 sheet
+                            showingRecipeSheet = true
                         })
+//                        .padding(.horizontal) // 增加水平內邊距
+//                        .frame(maxWidth: .infinity) // 讓 HStack 填滿寬度
                         .sheet(isPresented: $showingRecipeSheet) { // 添加 sheet 修飾符
                             RecipeMainView()
                                 .environmentObject(RecipeSearchViewModel()) // 確保傳遞 EnvironmentObject
@@ -196,7 +197,7 @@ struct RecipeButton: View {
                         .font(.title2)
                     Text("Recipes")
                         .fontWeight(.semibold)
-                        .font(.title3)
+                        .font(.custom("ArialRoundedMTBold", size:20))
                 }
                 .padding()
                 .foregroundColor(.white)
@@ -256,7 +257,7 @@ struct SpinButton: View {
                     .font(.title2)
                 Text("Spin and Pick Food")
                     .fontWeight(.semibold)
-                    .font(.title3)
+                    .font(.custom("ArialRoundedMTBold", size:20))
             }
             .padding()
             .foregroundColor(.white)
@@ -283,7 +284,7 @@ struct ResetButton: View {
                     .font(.title2)
                 Text("Reset")
                     .fontWeight(.semibold)
-                    .font(.title3)
+                    .font(.custom("ArialRoundedMTBold", size:20))
             }
             .padding()
             .foregroundColor(.white)

@@ -12,9 +12,9 @@ struct TutorialView: View {
     
     let pageHeadings = [
         "TAKE CONTROL OF YOUR FRIDGE",
-        "STAY AHEAD OF EXPIRATION DATES",
-        "FIND RECIPES AND SHOP EFFORTLESSLY",
-        "SNAP AND IDENTIFY INGREDIENTS",
+        "STAY AHEAD OF \nEXPIRATION DATES",
+        "FIND RECIPES & \nSHOP EFFORTLESSLY",
+        "SNAP & IDENTIFY \nINGREDIENTS",
         "COOK LIKE A PRO",
         "UNLOCK ENDLESS RECIPE IDEAS"
     ]
@@ -69,7 +69,7 @@ struct TutorialView: View {
                             }
                         }) {
                             Text(currentPage == pageHeadings.count - 1 ? "GET STARTED" : "NEXT")
-                                .font(.custom("Menlo-BoldItalic", size: 25))
+                                .font(.custom("Menlo-BoldItalic", size: 20))
                                 .foregroundStyle(.white)
                                 .padding()
                                 .padding(.horizontal, 50)
@@ -84,7 +84,7 @@ struct TutorialView: View {
                                 navigateToLogin = true  // 跳轉標記為 true
                             }) {
                                 Text("Skip")
-                                    .font(.custom("Menlo-BoldItalic", size: 18))
+                                    .font(.custom("Menlo-BoldItalic", size: 16))
                                     .foregroundStyle(Color(.darkGray))
                             }
                         }
@@ -121,14 +121,17 @@ struct TutorialPage: View {
             
             VStack(spacing: 10) {
                 Text(heading)
-                    .font(.custom("ArialRoundedMTBold", size: 15))
-                    
+                    .font(.custom("ArialRoundedMTBold", size: 20))
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(8)
+
                 
                 Text(subHeading)
-                    .font(.custom("ArialRoundedMTBold", size: 15))
+                    .font(.custom("ArialRoundedMTBold", size: 18))
                     .foregroundStyle(.gray)
                     .multilineTextAlignment(.leading)
                     .lineSpacing(8)
+                    .frame(minWidth: 300)
                 
             }
             .padding(.horizontal, 40)

@@ -64,10 +64,10 @@ struct FridgeChefApp: App {
     @AppStorage("hasSeenTutorial") var hasSeenTutorial: Bool = false
     @AppStorage("log_Status") var isLoggedIn: Bool = false
     
-    init() {
-           // 臨時重置 hasSeenTutorial，模擬首次啟動
-           UserDefaults.standard.set(false, forKey: "hasSeenTutorial")
-       }
+//    init() {
+//           // 臨時重置 hasSeenTutorial，模擬首次啟動
+//           UserDefaults.standard.set(false, forKey: "hasSeenTutorial")
+//       }
     
     var body: some Scene {
         WindowGroup {

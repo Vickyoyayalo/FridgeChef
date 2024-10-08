@@ -118,11 +118,11 @@ struct LoginDetailView: View {
                     }
                 }
                 .padding()
-                Image("Launchmonster")
+                Image("Loginmonster")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 250, height: 300)
-                    .offset(x: -60, y: 380)
+                    .offset(x: 70, y: 400)
             }
         }
         .alert(errorMessage, isPresented: $showAlert) {}

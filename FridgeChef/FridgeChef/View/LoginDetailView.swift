@@ -86,7 +86,7 @@ struct LoginDetailView: View {
                     
                     // 分隔线
                     Text("Or sign up with")
-                        .font(.subheadline)
+                        .font(.custom("ArialRoundedMTBold", size: 15))
                         .foregroundColor(.gray)
                     
                     // Apple Sign In

@@ -73,9 +73,8 @@ struct LoginView: View {
                     Button("Sign In") {
                         self.isShowingLoginDetail = true
                     }
-                    .font(.headline)
+                    .font(.custom("ArialRoundedMTBold", size: 19))
                     .foregroundColor(.white)
-                    .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(
@@ -94,9 +93,8 @@ struct LoginView: View {
                     Button("Sign Up") {
                         self.isShowingSignUp = true
                     }
-                    .font(.headline)
+                    .font(.custom("ArialRoundedMTBold", size: 18))
                     .foregroundColor(.white)
-                    .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(

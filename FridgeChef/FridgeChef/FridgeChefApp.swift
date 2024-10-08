@@ -61,11 +61,25 @@ struct FridgeChefApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var foodItemStore = FoodItemStore()
     @StateObject private var viewModel = RecipeSearchViewModel()
+    @AppStorage("hasSeenTutorial") var hasSeenTutorial: Bool = false
     @AppStorage("log_Status") var isLoggedIn: Bool = false
+    
+    init() {
+           // 臨時重置 hasSeenTutorial，模擬首次啟動
+           UserDefaults.standard.set(false, forKey: "hasSeenTutorial")
+       }
     
     var body: some Scene {
         WindowGroup {
-            if isLoggedIn {
+            if !hasSeenTutorial {
+                TutorialView()
+                    .onDisappear {
+                        hasSeenTutorial = true  // 用戶完成教程後，設定為 true
+                    }
+                    .environmentObject(viewModel)
+                    .environmentObject(foodItemStore)
+                    .font(.custom("ArialRoundedMTBold", size: 18))
+            } else if isLoggedIn {
                 MainTabView()
                     .environmentObject(viewModel)
                     .environmentObject(foodItemStore)

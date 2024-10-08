@@ -178,11 +178,11 @@ struct MLIngredientView: View {
                             Text("Expiry Date")
                                 .font(.custom("ArialRoundedMTBold", size: 18))
                             DatePickerTextField(date: $expirationDate, label: "Choose a Date!")
+                                .frame(maxWidth: .infinity)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                 )
-                                .frame(maxWidth: .infinity)
                         }
                         .padding(.horizontal)
                         // 儲存按鈕

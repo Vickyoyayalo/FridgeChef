@@ -101,11 +101,7 @@ struct DatePickerTextField: View {
         }
         .padding()
         .background(Color.clear)  // 设置背景为透明
-        .overlay(
-            RoundedRectangle(cornerRadius: 5)
-                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-        )
-        
+        .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingDatePicker) {
             VStack{
                 DatePicker("Choose a date!", selection: $date, displayedComponents: .date)

@@ -191,7 +191,7 @@ struct MainCollectionView: View {
                        .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
                }
                .padding(.trailing, -10)
-               .padding(.top, 70)
+               .padding(.top, 50)
                .scaleEffect(isScaledUp ? 1.0 : 0.8) // 根據狀態縮放
                .onAppear {
                    withAnimation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
@@ -206,7 +206,7 @@ struct MainCollectionView: View {
                 .opacity(showClickMe ? 1 : 0) // 根據動畫狀態控制透明度
                 .scaleEffect(showClickMe ? 1.2 : 1.0) // 放大縮小效果
                 .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-                .offset(x: 0, y: -20) // 調整 "Click me" 的位置
+                .offset(x: 0, y: -30) // 調整 "Click me" 的位置
                 .onAppear {
                     withAnimation(
                         Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {

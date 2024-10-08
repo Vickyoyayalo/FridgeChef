@@ -113,7 +113,7 @@
 		1CD4F7BD2C981D9A00F4417D /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7BC2C981D9A00F4417D /* SignUpView.swift */; };
 		1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */; };
 		1CDF1DCC2CA161B0005BD251 /* ChatGPTAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */; };
-		1CF493AA2CB43AFF00BEAFB5 /* MovingText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493A92CB43AFF00BEAFB5 /* MovingText.swift */; };
+		1CF493AC2CB4CC9D00BEAFB5 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493AB2CB4CC9D00BEAFB5 /* TutorialView.swift */; };
 		1CFFB0A82CB0E1A1007AF8FC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CFFB0A72CB0E1A1007AF8FC /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -213,7 +213,7 @@
 		1CD4F7BC2C981D9A00F4417D /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
 		1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatGPTAPI.swift; sourceTree = "<group>"; };
-		1CF493A92CB43AFF00BEAFB5 /* MovingText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingText.swift; sourceTree = "<group>"; };
+		1CF493AB2CB4CC9D00BEAFB5 /* TutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
 		1CFFB0A72CB0E1A1007AF8FC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -321,7 +321,6 @@
 			isa = PBXGroup;
 			children = (
 				1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */,
-				1CF493A92CB43AFF00BEAFB5 /* MovingText.swift */,
 				1C6D2D8C2CB04ACA000C49DC /* LogoutSheetView.swift */,
 				1C6D2D832CB00B64000C49DC /* FridgeReminderView.swift */,
 				1C6D2D822CB00B64000C49DC /* HomeNavBarView.swift */,
@@ -485,6 +484,7 @@
 			isa = PBXGroup;
 			children = (
 				1C7F45E02C9AA40600846B44 /* MainTabView.swift */,
+				1CF493AB2CB4CC9D00BEAFB5 /* TutorialView.swift */,
 				1C6D2D812CB00B43000C49DC /* HomeView */,
 				1C2DD5712C9D68A1000173F6 /* RecipeMain */,
 				1C75CCAE2CA3B7360072D55C /* Map */,
@@ -716,7 +716,6 @@
 				1C4490AD2CB27FA500675765 /* FeatureRowView.swift in Sources */,
 				1C8DC55E2C99E0A20041A2A2 /* ScannerView.swift in Sources */,
 				1C1E9A122CA7B135002A15C8 /* String+HTMLDecoded.swift in Sources */,
-				1CF493AA2CB43AFF00BEAFB5 /* MovingText.swift in Sources */,
 				1C1E9A132CA7B135002A15C8 /* StepView.swift in Sources */,
 				1C7F45E52C9AC96100846B44 /* AddGroceryForm.swift in Sources */,
 				1CAF430A2CAD52EE0022D393 /* String+Extensions.swift in Sources */,
@@ -753,6 +752,7 @@
 				1C2DD5842C9D68D7000173F6 /* RecipeMainView.swift in Sources */,
 				1C8DC56B2C99EDCB0041A2A2 /* TranslationDictionary.swift in Sources */,
 				1CAF43042CACBFA90022D393 /* RecipeClass.swift in Sources */,
+				1CF493AC2CB4CC9D00BEAFB5 /* TutorialView.swift in Sources */,
 				1C25A3742C9ECE9B00A997C7 /* CustomMapView.swift in Sources */,
 				1C92AA612C9C77C600194542 /* RecognitionService.swift in Sources */,
 				1C75CCAD2CA2E7500072D55C /* KeyboardResponder.swift in Sources */,

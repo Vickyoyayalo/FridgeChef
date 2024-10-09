@@ -82,12 +82,13 @@ struct ChatView: View {
     @State private var showChangePhotoDialog = false
     @State private var errorMessage: String?
     @State private var isButtonDisabled = false
+    @State private var moveRight = true
     @State private var api = ChatGPTAPI(
         apiKey: "sk-8VrzLltl-TexufDVK8RWN-GVvWLusdkCjGi9lKNSSkT3BlbkFJMryR2KSLUPFRKb5VCzGPXJGI8s-8bUt9URrmdfq0gA",
         systemPrompt: """
         You are a professional chef assistant capable of providing detailed recipes and cooking steps based on the ingredients, images, and descriptions provided by the user. Each reply must include the recipe name and a complete list of 【Ingredients】, along with a valid URL for the specified recipe. If a valid URL cannot be provided, please explicitly state so.
 
-        🥙 Recipe Name: [Chinese Name] ([English Name]) (Please provide both Chinese and English names for the recipe. If there is no English name, use pinyin or repeat the Chinese name.)
+        🥙 Recipe Name: [Chinese Name in Traditional Chinese] ([English Name]) (Please provide both the Chinese name in Traditional Chinese and the English name for the recipe. If there is no English name, use pinyin.)
 
         🥬【Ingredients】 (All ingredients must be provided, including quantities and units, formatted as: Quantity Unit Ingredient Name)
         • 2 apples
@@ -176,15 +177,32 @@ struct ChatView: View {
                             }
                         }
                     }
-
+                    
                     if isWaitingForResponse {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .orange))
-                            .scaleEffect(1.5)
-                            .padding()
-                            .background(Color.clear)
+                        ZStack {
+                            Image("runmonster")
+                                .resizable()
+                                .frame(width: 100, height: 100)
+                                .offset(x: moveRight ? 180 : -150) // runmonster 在 CHICKEN 後面追逐
+                                .animation(
+                                    Animation.easeInOut(duration: 2.0)
+                                        .repeatForever(autoreverses: false)
+                                )
+                            
+                            Image("RUNchicken")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .offset(x: moveRight ? 120 : -280)// CHICKEN 從左到右移動
+                                .animation(
+                                    Animation.easeInOut(duration: 2.0)
+                                        .repeatForever(autoreverses: false)
+                                )
+                        }
+                        .onAppear {
+                            moveRight.toggle() // 切換動畫方向
+                        }
                     }
-
+                    
                     if let image = image {
                         Image(uiImage: image)
                             .resizable()
@@ -256,6 +274,7 @@ struct ChatView: View {
         guard let language = recognizer.dominantLanguage else { return nil }
         return language.rawValue
     }
+    
     func recognizeFood(in image: UIImage, completion: @escaping (String) -> Void) {
 
         // 嘗試加載 CoreML 模型
@@ -301,6 +320,7 @@ struct ChatView: View {
         }
     }
 
+// TODO 在想要不要變成按鈕切換語言，在zh時辨識食物成中文TranslationDictionary
 //    func recognizeFood(in image: UIImage, completion: @escaping (String) -> Void) {
 //
 //        guard let model = try? VNCoreMLModel(for: Food().model) else {
@@ -1156,6 +1176,7 @@ struct IngredientRow: View {
         }
     }
 }
+
 
 extension Color {
     static func customColor(named name: String) -> Color {

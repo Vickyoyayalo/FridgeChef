@@ -34,8 +34,8 @@ struct MapViewWithUserLocation: View {
         }
         .alert(isPresented: $showingNavigationAlert) { // Alert now depends on showingNavigationAlert
             Alert(
-                title: Text("前往 ➡️ \(selectedSupermarket?.name ?? "the selected location")嗎？"),
-                message: Text("📍位置在： \(selectedSupermarket?.address ?? "")"),
+                title: Text("Go to ➡️ \(selectedSupermarket?.name ?? "the selected location")？"),
+                message: Text("📍Direction： \(selectedSupermarket?.address ?? "")"),
                 primaryButton: .default(Text("Let's GO 🛒"), action: {
                     if let supermarket = selectedSupermarket {
                         openMapsAppWithDirections(to: supermarket.coordinate, destinationName: supermarket.name)
@@ -48,7 +48,7 @@ struct MapViewWithUserLocation: View {
     
     private var searchField: some View {
         HStack(alignment: .center) {
-            TextField("🔍 搜尋附近超市...", text: $searchText)
+            TextField("🔍 Search the supermarkets nearby...", text: $searchText)
                 .padding(.leading, 10)
                 .padding(.vertical, 10) // Vertical padding adjusted for alignment
                 .background(Color.white)

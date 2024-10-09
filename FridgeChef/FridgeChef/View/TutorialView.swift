@@ -11,7 +11,7 @@ struct TutorialView: View {
     @State private var navigateToLogin: Bool = false  // 用來控制跳轉
     
     let pageHeadings = [
-        "TAKE CONTROL OF YOUR FRIDGE",
+        "TAKE CONTROL \nOF YOUR FRIDGE",
         "STAY AHEAD OF \nEXPIRATION DATES",
         "FIND RECIPES & \nSHOP EFFORTLESSLY",
         "SNAP & IDENTIFY \nINGREDIENTS",
@@ -90,7 +90,6 @@ struct TutorialView: View {
                         }
                     }
                     .padding(.bottom)
-                    
                     // 跳轉到 LoginView
                     NavigationLink(destination: LoginView(), isActive: $navigateToLogin) {
                         EmptyView()
@@ -121,18 +120,18 @@ struct TutorialPage: View {
             
             VStack(spacing: 10) {
                 Text(heading)
-                    .font(.custom("ArialRoundedMTBold", size: 20))
+                    .font(.custom("ArialRoundedMTBold", size: 18))
                     .multilineTextAlignment(.center)
                     .lineSpacing(8)
-
+                    .padding(.bottom, 5)
                 
                 Text(subHeading)
-                    .font(.custom("ArialRoundedMTBold", size: 18))
+                    .font(.custom("ArialRoundedMTBold", size: 16))
                     .foregroundStyle(.gray)
-                    .multilineTextAlignment(.leading)
+                    .multilineTextAlignment(.center)
                     .lineSpacing(8)
                     .frame(minWidth: 300)
-                
+                    .padding(.top, 5)
             }
             .padding(.horizontal, 40)
             

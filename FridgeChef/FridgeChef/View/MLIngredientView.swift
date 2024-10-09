@@ -32,8 +32,8 @@ struct MLIngredientView: View {
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
     
-    @State private var storageMethod: String = "To Buy"
-    let storageOptions = ["To Buy", "Fridge", "Freezer"]
+    @State private var storageMethod: String = "Fridge"
+    let storageOptions = ["Fridge", "Freezer"]
     
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
@@ -190,6 +190,7 @@ struct MLIngredientView: View {
                             Text("Save")
                                 .font(.custom("ArialRoundedMTBold", size: 20))
                                 .padding()
+                                .contentShape(Rectangle())
                                 .frame(maxWidth: .infinity)
                                 .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                                 .foregroundColor(.white)

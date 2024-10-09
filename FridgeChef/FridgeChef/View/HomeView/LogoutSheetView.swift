@@ -13,7 +13,7 @@ struct LogoutSheetView: View {
     @State private var showLogoutAlert = false
     @State private var showDeleteAccountAlert = false
     @State private var userName: String = "User"
-    @State private var userImage: Image = Image(systemName: "person.crop.circle")
+    @State private var userImage: Image = Image("himonster")
     
     var body: some View {
         VStack(spacing: 20) {

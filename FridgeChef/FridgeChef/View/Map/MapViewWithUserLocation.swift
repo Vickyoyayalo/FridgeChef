@@ -48,7 +48,7 @@ struct MapViewWithUserLocation: View {
     
     private var searchField: some View {
         HStack(alignment: .center) {
-            TextField("🔍 Search the supermarkets nearby...", text: $searchText)
+            TextField("🔍 Search supermarkets nearby", text: $searchText)
                 .padding(.leading, 10)
                 .padding(.vertical, 10) // Vertical padding adjusted for alignment
                 .background(Color.white)

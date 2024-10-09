@@ -100,6 +100,7 @@ struct DatePickerTextField: View {
             }
         }
         .padding()
+        .contentShape(Rectangle())
         .background(Color.clear)  // 设置背景为透明
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingDatePicker) {
@@ -115,7 +116,8 @@ struct DatePickerTextField: View {
                     }
                 }
                 .padding()
-                .frame(maxWidth: 300)
+                .frame(width: 100, height: 50)
+                .contentShape(Rectangle())
                 .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 .foregroundColor(.white)
                 .font(.custom("ArialRoundedMTBold", size: 18))

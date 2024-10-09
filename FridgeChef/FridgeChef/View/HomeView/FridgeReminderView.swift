@@ -79,13 +79,13 @@ struct DefaultFridgeReminderCard: View {
         ZStack {
             VStack(alignment: .center, spacing: 8) {
                 // 圖片佔位符
-                Image("RecipeFood")
+                Image("FridgeUpdate")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 100, height: 100)
+                    .frame(width: 120, height: 120)
                     .cornerRadius(10)
                     .clipped() // 確保圖片不溢出邊界
-                
+                    .shadow(radius: 5)
                 // 提示信息，設置為相同的最大高度，避免卡片大小不一
                 Text(message)
                     .fontWeight(.medium)

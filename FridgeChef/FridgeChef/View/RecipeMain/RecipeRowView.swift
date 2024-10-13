@@ -32,7 +32,7 @@ struct RecipeRowView: View {
                     case .failure:
                         Image("RecipeFood")
                             .resizable()
-                            .scaledToFit()
+                            .scaledToFill()
                             .frame(maxWidth: .infinity, maxHeight: 200)
                             .foregroundColor(.gray)
                             .background(Color(.systemGray5))

@@ -5,6 +5,7 @@
 //  Created by Vickyhereiam on 2024/10/05.
 //
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct FridgeReminderView: View {
     @EnvironmentObject var foodItemStore: FoodItemStore
@@ -13,11 +14,11 @@ struct FridgeReminderView: View {
     @State private var showingSheet = false // 用於控制 sheet 顯示
 
     private var expiringItems: [FoodItem] {
-        foodItemStore.foodItems.filter { $0.daysRemaining <= 3 && $0.daysRemaining >= 0 }
+        foodItemStore.foodItems.filter { $0.status != .toBuy && $0.daysRemaining <= 3 && $0.daysRemaining >= 0 }
     }
 
     private var expiredItems: [FoodItem] {
-        foodItemStore.foodItems.filter { $0.daysRemaining < 0 }
+        foodItemStore.foodItems.filter { $0.status != .toBuy && $0.daysRemaining < 0 }
     }
 
     var body: some View {
@@ -27,13 +28,11 @@ struct FridgeReminderView: View {
                     // 預設紅色卡片
                     if expiringItems.isEmpty {
                         DefaultFridgeReminderCard(color: .blue.opacity(0.2), message: "No items will expire within 3 days.", textColor: .blue)
-//                            .frame(width: 180, height: 250)
                     }
 
                     // 預設藍色卡片
                     if expiredItems.isEmpty {
                         DefaultFridgeReminderCard(color: .red.opacity(0.2), message: "No items expired.", textColor: .red)
-//                            .frame(width: 180, height: 250)
                     }
 
                     // 顯示即將過期的食物
@@ -43,7 +42,6 @@ struct FridgeReminderView: View {
                             showingSheet = true
                         }) {
                             FridgeRecipeCard(foodItem: item, isExpired: false)
-//                                .frame(width: 180, height: 250)
                         }
                     }
 
@@ -54,7 +52,6 @@ struct FridgeReminderView: View {
                             showingSheet = true
                         }) {
                             FridgeRecipeCard(foodItem: item, isExpired: true)
-//                                .frame(width: 180, height: 250)
                         }
                     }
                 }
@@ -63,8 +60,14 @@ struct FridgeReminderView: View {
             .padding(.horizontal, -16) // 去除邊界
         }
         .padding(.horizontal)
+
+        // .sheet 根據選中的 FoodItem 顯示不同的內容
         .sheet(item: $selectedFoodItem) { foodItem in
-            FridgeView() // 在這裡呈現 FridgeView
+            if foodItem.status == .toBuy {
+                GroceryListView() // 導航到購物清單
+            } else {
+                FridgeView() // 導航到冰箱
+            }
         }
     }
 }
@@ -114,44 +117,63 @@ struct FridgeRecipeCard: View {
     var body: some View {
         ZStack {
             VStack(alignment: .center, spacing: 8) {
-                // 食物圖片
-                if let image = foodItem.image {
-                    Image(uiImage: image)
+                // Food image
+                if let imageURLString = foodItem.imageURL, let imageURL = URL(string: imageURLString) {
+                    WebImage(url: imageURL)
                         .resizable()
+                        .background(
+                            Image("RecipeFood") // Placeholder
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 120, height: 120)
+                        )
+                        .overlay(
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .opacity(0.8)
+                        )
+                        .transition(.opacity) // SwiftUI's native fade transition
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 120, height: 120)
                         .cornerRadius(10)
                         .clipped()
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity) // Ensure that maxWidth is correctly applied
                 } else {
                     Image("RecipeFood")
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
                         .frame(width: 120, height: 120)
                         .cornerRadius(10)
                         .clipped()
                         .frame(maxWidth: .infinity)
                 }
 
-                // 食物名稱，支持換行
+                // Food name
                 Text(foodItem.name)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
 
-                // 食物數量和單位
+                // Food quantity and unit
                 Text("\(foodItem.quantity, specifier: "%.2f") \(foodItem.unit)")
                     .font(.caption)
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
 
-                // 剩餘天數或已過期天數
+                // Days remaining or expired days
+                // Days remaining or expired days
                 if isExpired {
                     Text("Expired \(abs(foodItem.daysRemaining)) days ago‼️")
                         .font(.caption)
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
+                } else if foodItem.daysRemaining == 0 {
+                    Text("It's TODAY 🍳")
+                        .font(.caption)
+                        .foregroundColor(.purple) // 用不同顏色顯示當天到期
+                        .multilineTextAlignment(.center)
+                        .fontWeight(.bold)
                 } else {
                     Text("⚠️ \(foodItem.daysRemaining) days remaining")
                         .font(.caption)
@@ -167,6 +189,7 @@ struct FridgeRecipeCard: View {
         .padding(.trailing, 10)
     }
 }
+
 
 struct FridgeReminderView_Preview: PreviewProvider {
     @State static var editingItem: FoodItem? = nil

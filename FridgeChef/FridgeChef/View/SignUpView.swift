@@ -81,9 +81,9 @@ struct SignUpView: View {
             .padding()
 //            .background(Color(UIColor.systemGray6).edgesIgnoringSafeArea(.all)) // 背景顏色
         }
-        .sheet(isPresented: $isShowingImagePicker) {
-            ImagePicker(image: self.$viewModel.avatar)
-        }
+//        .sheet(isPresented: $isShowingImagePicker) {
+//            ImagePicker(image: self.$viewModel.avatar)
+//        }
         .alert(isPresented: $viewModel.showAlert) {
             viewModel.alert
         }

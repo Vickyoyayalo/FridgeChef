@@ -4,35 +4,166 @@
 //
 //  Created by Vickyhereiam on 2024/9/13.
 //
-
 import Foundation
-import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
 
-// 食材存儲類
+
 class FoodItemStore: ObservableObject {
     @Published var foodItems: [FoodItem] = []
+    private var listener: ListenerRegistration?
+
+    init() {
+        fetchFoodItems()
+    }
+
+    func fetchFoodItems() {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("No user is currently logged in.")
+            return
+        }
+
+        listener = FirestoreService().listenToFoodItems(forUser: currentUser.uid) { [weak self] result in
+            switch result {
+            case .success(let items):
+                DispatchQueue.main.async {
+                    self?.foodItems = items  // 正確設置
+                    print("Fetched \(items.count) food items from Firebase.")
+                }
+            case .failure(let error):
+                print("Failed to fetch food items: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    deinit {
+        listener?.remove()
+    }
 }
 
+
+import SwiftUI
 // 食材結構
-struct FoodItem: Identifiable, Equatable {
-    var id = UUID()
+struct FoodItem: Identifiable, Codable, Equatable {
+    var id: String
     var name: String
     var quantity: Double
     var unit: String
     var status: Status
     var daysRemaining: Int
     var expirationDate: Date?
-    var image: UIImage?
+    var imageURL: String?  // Replace imageBase64 with imageURL
+    
+    var uiImage: UIImage? {
+            get {
+                guard let imageURL = imageURL else { return nil }
+                if let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
+                    return UIImage(data: data)
+                }
+                return nil
+            }
+        }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, quantity, unit, status, daysRemaining, expirationDate, imageURL
+    }
 }
 
-// 狀態枚舉
-enum Status: String {
+
+//struct FoodItem: Identifiable, Codable, Equatable {
+//    var id = UUID()
+//    var name: String
+//    var quantity: Double
+//    var unit: String
+//    var status: Status
+//    var daysRemaining: Int
+//    var expirationDate: Date?
+//    var imageBase64: String?  // 將 UIImage 轉換為 Base64 字串儲存
+//
+//    enum CodingKeys: String, CodingKey {
+//        case id, name, quantity, unit, status, daysRemaining, expirationDate, imageBase64
+//    }
+//    
+//    // 用於將 UIImage 轉換為 Base64 字串
+//    var image: UIImage? {
+//        get {
+//            guard let base64 = imageBase64, let imageData = Data(base64Encoded: base64) else { return nil }
+//            return UIImage(data: imageData)
+//        }
+//        set {
+//            imageBase64 = newValue?.jpegData(compressionQuality: 0.8)?.base64EncodedString()
+//        }
+//    }
+//}
+//
+//// 狀態枚舉
+enum Status: String, Codable {
     case toBuy = "toBuy"
     case fridge = "Fridge"
     case freezer = "Freezer"
 }
 
 // FoodItem.swift
+//extension FoodItem {
+//    // 根據剩餘天數顯示不同的提示文字
+//    var daysRemainingText: String {
+//        switch status {
+//        case .toBuy:
+//            if let expirationDate = expirationDate {
+//                let formatter = DateFormatter()
+//                formatter.dateStyle = .short
+//                let dateString = formatter.string(from: expirationDate)
+//                return "To Buy by \(dateString)"
+//            } else {
+//                let formatter = DateFormatter()
+//                formatter.dateStyle = .short
+//                let today = Date()
+//                let dateString = formatter.string(from: today)
+//                return "To Buy \(dateString)"
+//            }
+//        case .fridge, .freezer:
+//            if daysRemaining > 5 {
+//                return "Can keep \(daysRemaining) days👨🏻‍🌾"
+//            } else if daysRemaining > 0 {
+//                return "\(daysRemaining) day\(daysRemaining > 1 ? "s" : "") left👀"
+//            } else if daysRemaining == 0 {
+//                return "It's TODAY🌶️"
+//            } else {
+//                return "Expired \(abs(daysRemaining)) days‼️"
+//            }
+//        }
+//    }
+//
+//    // 根據剩餘天數顯示不同的顏色，Fridge 和 Freezer 顏色統一
+//    var daysRemainingColor: Color {
+//        switch status {
+//        case .toBuy:
+//            return .blue
+//        case .fridge, .freezer:
+//            if daysRemaining > 5 {
+//                return .gray // 超過5天顯示灰色
+//            } else if daysRemaining > 2 {
+//                return .purple // 3-5天顯示紫色
+//            } else if daysRemaining > 0 {
+//                return .blue // 1-2天顯示綠色
+//            } else if daysRemaining == 0 {
+//                return .orange // 當天顯示橙色
+//            } else {
+//                return .red // 已過期顯示紅色
+//            }
+//        }
+//    }
+//
+//    // 5天內加粗字體
+//    var daysRemainingFontWeight: Font.Weight {
+//        switch status {
+//        case .toBuy:
+//            return .bold // To Buy 狀態加粗
+//        case .fridge, .freezer:
+//            return daysRemaining <= 5 ? .bold : .regular // 5天內的食材加粗字體
+//        }
+//    }
+//}
 extension FoodItem {
     // 根據剩餘天數顯示不同的提示文字
     var daysRemainingText: String {
@@ -63,18 +194,26 @@ extension FoodItem {
         }
     }
 
-    // 根據剩餘天數顯示不同的顏色，Fridge 和 Freezer 顏色統一
+    // 根據剩餘天數顯示不同的顏色，Fridge 和 Freezer 顏色統一，To Buy 狀態超過今天的日期變成紅色
     var daysRemainingColor: Color {
         switch status {
         case .toBuy:
-            return .blue
+            if let expirationDate = expirationDate {
+                if expirationDate < Date() { // 如果 expirationDate 小於當前日期，表示已過期
+                    return .red
+                } else {
+                    return .blue
+                }
+            } else {
+                return .blue
+            }
         case .fridge, .freezer:
             if daysRemaining > 5 {
                 return .gray // 超過5天顯示灰色
             } else if daysRemaining > 2 {
                 return .purple // 3-5天顯示紫色
             } else if daysRemaining > 0 {
-                return .blue // 1-2天顯示綠色
+                return .blue // 1-2天顯示藍色
             } else if daysRemaining == 0 {
                 return .orange // 當天顯示橙色
             } else {
@@ -94,30 +233,40 @@ extension FoodItem {
     }
 }
 
+import SDWebImageSwiftUI
+
 struct FoodItemRow: View {
     var item: FoodItem
     var moveToGrocery: ((FoodItem) -> Void)?
     var moveToFridge: ((FoodItem) -> Void)?
     var moveToFreezer: ((FoodItem) -> Void)?
-    var onTap: ((FoodItem) -> Void)? // 新增 onTap 閉包
-
+    var onTap: ((FoodItem) -> Void)? // onTap 閉包
+    
     var body: some View {
         HStack {
-            // 食材圖片
-            if let image = item.image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .cornerRadius(20)
+            if let imageURLString = item.imageURL, let imageURL = URL(string: imageURLString) {
+                WebImage(url: imageURL)
+                    .onSuccess { image, data, cacheType in
+                        // Success handler if needed
+                    }
+                    .resizable() // Add resizable directly
+                    .scaledToFill()
+                    .frame(width: 50, height: 50)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .background(
+                        Image(systemName: "RecipeFood")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .opacity(0.3) // Add opacity for a background-like effect
+                    )
+                
             } else {
-                Image("RecipeFood") // 默認圖片
+                Image("RecipeFood")
                     .resizable()
-                    .scaledToFit()
-                    .frame(width: 80, height: 80)
-                    .cornerRadius(20)
+                    .scaledToFill()
+                    .frame(width: 50, height: 50)
             }
-            
             // 食材詳細信息
             VStack(alignment: .leading) {
                 Text(item.name)
@@ -172,69 +321,3 @@ struct FoodItemRow: View {
         }
     }
 }
-
-//extension FoodItem {
-//    var daysRemainingText: String {
-//        switch status {
-//        case .toBuy:
-//            if let expirationDate = expirationDate {
-//                let formatter = DateFormatter()
-//                formatter.dateStyle = .short
-//                let dateString = formatter.string(from: expirationDate)
-//                return "To Buy by \(dateString)"
-//            } else {
-//                let formatter = DateFormatter()
-//                formatter.dateStyle = .short
-//                let today = Date()
-//                let dateString = formatter.string(from: today)
-//                return "To Buy \(dateString)"
-//            }
-//        case .fridge, .freezer:
-//            if daysRemaining > 2 {
-//                return "Can keep \(daysRemaining) days👨🏻‍🌾"
-//            } else if daysRemaining == 1 || daysRemaining == 2 {
-//                return "\(daysRemaining) day left👀"
-//            } else if daysRemaining == 0 {
-//                return "It's TODAY👵🏼"
-//            } else {
-//                return "Expired \(abs(daysRemaining)) days‼️"
-//            }
-//        }
-//    }
-//
-//    var daysRemainingColor: Color {
-//        switch status {
-//        case .toBuy:
-//            return .blue // To Buy 狀態顯示藍色
-//        case .fridge:
-//            if daysRemaining > 2 {
-//                return .purple
-//            } else if daysRemaining == 1 || daysRemaining == 2 {
-//                return .green
-//            } else if daysRemaining == 0 {
-//                return .orange
-//            } else {
-//                return .red
-//            }
-//        case .freezer:
-//            if daysRemaining > 5 {
-//                return .gray
-//            } else if daysRemaining > 0 {
-//                return .purple
-//            } else {
-//                return .red
-//            }
-//        }
-//    }
-//
-//    var daysRemainingFontWeight: Font.Weight {
-//        switch status {
-//        case .toBuy:
-//            return .bold
-//        case .fridge, .freezer:
-//            return daysRemaining < 0 ? .bold : .regular
-//        }
-//    }
-//}
-
-// FoodItemRow.swift

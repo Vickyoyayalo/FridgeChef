@@ -45,23 +45,6 @@ struct ParsedRecipe: Identifiable, CustomStringConvertible {
     }
 }
 
-//struct ParsedIngredient: Identifiable {
-//    let id = UUID()
-//    let name: String
-//    let quantity: Double
-//    let unit: String
-//    let expirationDate: Date
-//}
-//
-//struct ParsedRecipe {
-//    var title: String?
-//    var ingredients: [ParsedIngredient]
-//    var steps: [String]
-//    var link: String?
-//    var tips: String?
-//    var unparsedContent: String?
-//}
-
 struct Recipe: Identifiable, Codable, Equatable {
     let id: Int
     let title: String

@@ -49,7 +49,7 @@ struct AddGroceryForm: View {
                         } else {
                             Image("RecipeFood")  // Provide a placeholder
                                 .resizable()
-                                .scaledToFit()  // 保持比例並完整顯示圖片
+                                .scaledToFill()  // 保持比例並完整顯示圖片
                                 .frame(minWidth: 0, maxWidth: .infinity)
                                 .frame(height: 200)
                                 .background(Color.white.opacity(0.4))

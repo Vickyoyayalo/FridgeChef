@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C0F699D2CB8D566004D481F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CD4F7B22C98032300F4417D /* GoogleService-Info.plist */; };
+		1C0F699F2CB8FFE0004D481F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F699E2CB8FFE0004D481F /* FirebaseAnalytics */; };
+		1C0F69A12CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69A02CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion */; };
+		1C0F69A32CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69A22CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		1C0F69A52CB8FFE0004D481F /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69A42CB8FFE0004D481F /* FirebaseAppCheck */; };
+		1C0F69A72CB8FFE0004D481F /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69A62CB8FFE0004D481F /* FirebaseAppDistribution-Beta */; };
+		1C0F69AC2CBA44C5004D481F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69AB2CBA44C5004D481F /* SDWebImageSwiftUI */; };
+		1C0F69AE2CBA454B004D481F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69AD2CBA454B004D481F /* SDWebImageSwiftUI */; };
 		1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */; };
 		1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19F1A22C94372A0094FBEA /* FridgePageView.swift */; };
 		1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C19F1A72C94372B0094FBEA /* Preview Assets.xcassets */; };
@@ -64,7 +72,6 @@
 		1C7F45F22C9B146100846B44 /* CornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F12C9B146100846B44 /* CornerRadius.swift */; };
 		1C7F45F42C9BD96300846B44 /* FridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F32C9BD96300846B44 /* FridgeView.swift */; };
 		1C7F45F62C9C17AE00846B44 /* DatePickerTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */; };
-		1C8A74012C9FFC6C0005E54D /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1C8A74002C9FFC6C0005E54D /* MessageKit */; };
 		1C8A74092CA000980005E54D /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A74082CA000980005E54D /* ChatView.swift */; };
 		1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1C8DC5392C99C5210041A2A2 /* Kingfisher */; };
 		1C8DC55A2C99E0470041A2A2 /* MLIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */; };
@@ -121,7 +128,6 @@
 		1CF493BE2CB538D300BEAFB5 /* FridgeChefWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493BD2CB538D300BEAFB5 /* FridgeChefWidget.swift */; };
 		1CF493C02CB538D500BEAFB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CF493BF2CB538D500BEAFB5 /* Assets.xcassets */; };
 		1CF493C42CB538D500BEAFB5 /* FridgeChefWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1CF493B32CB538D300BEAFB5 /* FridgeChefWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1CF493CA2CB5398500BEAFB5 /* FoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC952C943E19006C66E5 /* FoodItem.swift */; };
 		1CF493CC2CB539C400BEAFB5 /* FridgeChefEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493CB2CB539C400BEAFB5 /* FridgeChefEntry.swift */; };
 		1CFFB0A82CB0E1A1007AF8FC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CFFB0A72CB0E1A1007AF8FC /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
@@ -265,10 +271,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C0F69AE2CBA454B004D481F /* SDWebImageSwiftUI in Frameworks */,
 				1CA8CE912C9E854400C9CADD /* CoreLocation.framework in Frameworks */,
 				1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */,
 				1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */,
-				1C8A74012C9FFC6C0005E54D /* MessageKit in Frameworks */,
 				1C19F1B62C943B290094FBEA /* FirebaseAppCheck in Frameworks */,
 				1C75CCAB2CA2E1690072D55C /* IQKeyboardManagerSwift in Frameworks */,
 				1CB5BCA62C94441D006C66E5 /* FirebaseAuthCombine-Community in Frameworks */,
@@ -287,8 +293,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C0F69A72CB8FFE0004D481F /* FirebaseAppDistribution-Beta in Frameworks */,
 				1CF493B72CB538D300BEAFB5 /* SwiftUI.framework in Frameworks */,
+				1C0F69A32CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				1CF493B52CB538D300BEAFB5 /* WidgetKit.framework in Frameworks */,
+				1C0F69AC2CBA44C5004D481F /* SDWebImageSwiftUI in Frameworks */,
+				1C0F699F2CB8FFE0004D481F /* FirebaseAnalytics in Frameworks */,
+				1C0F69A52CB8FFE0004D481F /* FirebaseAppCheck in Frameworks */,
+				1C0F69A12CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -633,8 +645,8 @@
 				1CB5BCA72C944441006C66E5 /* FirebaseStorage */,
 				1CB5BCA92C944441006C66E5 /* FirebaseStorageCombine-Community */,
 				1C8DC5392C99C5210041A2A2 /* Kingfisher */,
-				1C8A74002C9FFC6C0005E54D /* MessageKit */,
 				1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */,
+				1C0F69AD2CBA454B004D481F /* SDWebImageSwiftUI */,
 			);
 			productName = FridgeChef;
 			productReference = 1C19F19D2C94372A0094FBEA /* FridgeChef.app */;
@@ -653,6 +665,14 @@
 			dependencies = (
 			);
 			name = FridgeChefWidgetExtension;
+			packageProductDependencies = (
+				1C0F699E2CB8FFE0004D481F /* FirebaseAnalytics */,
+				1C0F69A02CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion */,
+				1C0F69A22CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport */,
+				1C0F69A42CB8FFE0004D481F /* FirebaseAppCheck */,
+				1C0F69A62CB8FFE0004D481F /* FirebaseAppDistribution-Beta */,
+				1C0F69AB2CBA44C5004D481F /* SDWebImageSwiftUI */,
+			);
 			productName = FridgeChefWidgetExtension;
 			productReference = 1CF493B32CB538D300BEAFB5 /* FridgeChefWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -689,6 +709,7 @@
 				1C8DC5382C99C5210041A2A2 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */,
 				1C75CCA92CA2E1690072D55C /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
+				1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			productRefGroup = 1C19F19E2C94372A0094FBEA /* Products */;
 			projectDirPath = "";
@@ -723,6 +744,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CF493C02CB538D500BEAFB5 /* Assets.xcassets in Resources */,
+				1C0F699D2CB8D566004D481F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -867,7 +889,6 @@
 				1CF493BE2CB538D300BEAFB5 /* FridgeChefWidget.swift in Sources */,
 				1CF493BA2CB538D300BEAFB5 /* FridgeChefWidgetBundle.swift in Sources */,
 				1CF493BC2CB538D300BEAFB5 /* FridgeChefWidgetLiveActivity.swift in Sources */,
-				1CF493CA2CB5398500BEAFB5 /* FoodItem.swift in Sources */,
 				1CF493CC2CB539C400BEAFB5 /* FridgeChefEntry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1173,6 +1194,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.2;
+			};
+		};
 		1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -1208,6 +1237,41 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1C0F699E2CB8FFE0004D481F /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		1C0F69A02CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsOnDeviceConversion;
+		};
+		1C0F69A22CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+		1C0F69A42CB8FFE0004D481F /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
+		1C0F69A62CB8FFE0004D481F /* FirebaseAppDistribution-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseAppDistribution-Beta";
+		};
+		1C0F69AB2CBA44C5004D481F /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+		1C0F69AD2CBA454B004D481F /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
 		1C19F1AF2C943B290094FBEA /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -1237,11 +1301,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1C75CCA92CA2E1690072D55C /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
 			productName = IQKeyboardManagerSwift;
-		};
-		1C8A74002C9FFC6C0005E54D /* MessageKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */;
-			productName = MessageKit;
 		};
 		1C8DC5392C99C5210041A2A2 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;

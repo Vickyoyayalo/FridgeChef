@@ -187,32 +187,33 @@ struct ChatView: View {
                         }
                         
                         VStack {
-                            
-                            HStack {
+                            ZStack {
+                                // HStack 用於放置錯誤訊息和搜尋按鈕
+                                HStack {
+                                    if let errorMessage = errorMessage {
+                                        Text(errorMessage)
+                                            .foregroundColor(.red)
+                                            .padding()
+                                    }
+                                    Spacer()
+                                    Button(action: {
+                                        withAnimation {
+                                            isSearchVisible.toggle()
+                                        }
+                                    }) {
+                                        Image(systemName: isSearchVisible ? "xmark.circle.fill" : "magnifyingglass")
+                                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                            .imageScale(.medium)
+                                            .padding()
+                                    }
+                                }
                                 
+                                // Logo 放在 ZStack 的中心
                                 Image("FridgeChefLogo")
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 300, height: 38)
                                     .padding(.top)
-                                
-                                if let errorMessage = errorMessage {
-                                    Text(errorMessage)
-                                        .foregroundColor(.red)
-                                        .padding()
-                                }
-                                Spacer()
-                                
-                                Button(action: {
-                                    withAnimation {
-                                        isSearchVisible.toggle()
-                                    }
-                                }) {
-                                    Image(systemName: isSearchVisible ? "xmark.circle.fill" : "magnifyingglass")
-                                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                                        .imageScale(.medium)
-                                        .padding()
-                                }
                             }
 
                             // 自定義搜尋框（從右邊滑入的動畫）
@@ -334,9 +335,9 @@ struct ChatView: View {
                         }
                         
                     }
-                    .onAppear {
-                        fetchMessages()
-                    }
+//                    .onAppear {
+//                        fetchMessages()
+//                    }
                 }
             } else {
                 VStack {
@@ -353,15 +354,15 @@ struct ChatView: View {
     
     // 搜尋結果過濾
     var filteredMessages: [Message] {
-        if searchText.isEmpty {
-            return messages
-        } else {
-            // 根據使用者的搜尋文字過濾訊息內容
-            return messages.filter { message in
-                message.content?.lowercased().contains(searchText.lowercased()) ?? false
-            }
-        }
-    }
+           if searchText.isEmpty {
+               return messages
+           } else {
+               // 根據使用者的搜尋文字過濾訊息內容，保持大小寫敏感
+               return messages.filter { message in
+                   message.content?.contains(searchText) ?? false
+               }
+           }
+       }
     
     // 執行搜尋並清空搜尋框
     func performSearch() {

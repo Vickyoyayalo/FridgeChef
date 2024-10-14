@@ -16,108 +16,118 @@ struct LogoutSheetView: View {
     @State private var userImage: Image = Image("himonster")
     
     var body: some View {
-        VStack(spacing: 20) {
-            // 用戶信息
-            HStack {
-                userImage
-                    .resizable()
-                    .frame(width: 60, height: 60)
-                    .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                    .shadow(radius: 10)
-                    .padding()
-                Text(userName)
-                    .font(.custom("ArialRoundedMTBold", size: 30))
-                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-            }
-            .padding(.top, 40)
+        ZStack {
+            // 漸層背景
+            LinearGradient(
+                gradient: Gradient(colors: [Color.yellow, Color.orange]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .opacity(0.4)
+            .edgesIgnoringSafeArea(.all)
             
-            Divider()
-                .background(Color.orange)
-                .padding(.horizontal)
-            
-            // Log Out 按鈕
-            Button(action: {
-                showLogoutAlert = true
-            }) {
+            VStack(spacing: 20) {
+                // 用戶信息
                 HStack {
-                    Image(systemName: "power.circle.fill")
-                        .foregroundColor(.white)
-                        .font(.title)
-                    Text("Log Out")
-                        .foregroundColor(.white)
-                        .font(.custom("ArialRoundedMTBold", size: 25))
+                    userImage
+                        .resizable()
+                        .frame(width: 60, height: 60)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                        .shadow(radius: 10)
+                        .padding()
+                    Text(userName)
+                        .font(.custom("ArialRoundedMTBold", size: 30))
+                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.red.opacity(0.7))
-                .cornerRadius(10)
-                .padding(.horizontal)
-            }
-            .alert(isPresented: $showLogoutAlert) {
-                Alert(
-                    title: Text("Log Out"),
-                    message: Text("Are you sure you want to log out?"),
-                    primaryButton: .destructive(Text("Log Out")) {
-                        logOut()
-                        presentationMode.wrappedValue.dismiss()
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
-            
-            // Delete Account 按鈕
-            Button(action: {
-                showDeleteAccountAlert = true
-            }) {
-                HStack {
-                    Image(systemName: "trash.fill")
-                        .foregroundColor(.white)
-                        .font(.title)
-                    Text("Delete Account")
-                        .foregroundColor(.white)
-                        .font(.custom("ArialRoundedMTBold", size: 25))
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.gray.opacity(0.7))
-                .cornerRadius(10)
-                .padding(.horizontal)
-            }
-            .alert(isPresented: $showDeleteAccountAlert) {
-                Alert(
-                    title: Text("Delete Account"),
-                    message: Text("Are you sure you want to delete your account🥲? \nThis action cannot be undone."),
-                    primaryButton: .destructive(Text("Delete")) {
-                        deleteAccount()
-                        presentationMode.wrappedValue.dismiss()
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
-            
-            // Cancel 按鈕
-            Button(action: {
-                presentationMode.wrappedValue.dismiss()
-            }) {
-                Text("Cancel")
-                    .foregroundColor(.white)
-                    .padding()
+                .padding(.top, 40)
+                
+                Divider()
+                
+                // Log Out 按鈕
+                Button(action: {
+                    showLogoutAlert = true
+                }) {
+                    HStack {
+                        Image(systemName: "power.circle.fill")
+                            .foregroundColor(.white)
+                            .font(.title)
+                        Text("Log Out")
+                            .foregroundColor(.white)
+                            .font(.custom("ArialRoundedMTBold", size: 25))
+                    }
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue.opacity(0.7))
+                    .padding()
+                    .background(Color.red.opacity(0.7))
                     .cornerRadius(10)
                     .padding(.horizontal)
+                }
+                .alert(isPresented: $showLogoutAlert) {
+                    Alert(
+                        title: Text("Log Out"),
+                        message: Text("Are you sure you want to log out?"),
+                        primaryButton: .destructive(Text("Log Out")) {
+                            logOut()
+                            presentationMode.wrappedValue.dismiss()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+                
+                // Delete Account 按鈕
+                Button(action: {
+                    showDeleteAccountAlert = true
+                }) {
+                    HStack {
+                        Image(systemName: "trash.fill")
+                            .foregroundColor(.white)
+                            .font(.title)
+                        Text("Delete Account")
+                            .foregroundColor(.white)
+                            .font(.custom("ArialRoundedMTBold", size: 25))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.gray.opacity(0.7))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                }
+                .alert(isPresented: $showDeleteAccountAlert) {
+                    Alert(
+                        title: Text("Delete Account"),
+                        message: Text("Are you sure you want to delete your account🥲? \nThis action cannot be undone."),
+                        primaryButton: .destructive(Text("Delete")) {
+                            deleteAccount()
+                            presentationMode.wrappedValue.dismiss()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+                
+                // Cancel 按鈕
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Text("Cancel")
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue.opacity(0.7))
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+                }
+                Spacer()
             }
+            .padding()
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(LinearGradient(
-                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
-                    startPoint: .top,
-                    endPoint: .bottom))
-                .opacity(0.4)
-        )
+//        .background(
+//            RoundedRectangle(cornerRadius: 20)
+//                .fill(LinearGradient(
+//                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
+//                    startPoint: .top,
+//                    endPoint: .bottom))
+//                .opacity(0.4)
+//        )
         .shadow(radius: 10)
         .onAppear {
             loadUserInfo()

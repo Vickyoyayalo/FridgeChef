@@ -101,11 +101,12 @@ struct MainCollectionView: View {
                     }
                     .padding(.top)
                 }
+                .padding(.top, 20)
                 .scrollIndicators(.hidden)
                 .navigationBarTitleDisplayMode(.inline)
 //                .navigationTitle("Bonjour, Vicky🍻")
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItem(placement: .navigationBarTrailing) {
                         menuButton
                     }
 
@@ -117,9 +118,9 @@ struct MainCollectionView: View {
                             .padding(.top)
                     }
 
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        notificationButton
-                    }
+//                    ToolbarItem(placement: .navigationBarLeading) {
+//                        notificationButton
+//                    }
                 }
                 .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
 

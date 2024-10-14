@@ -89,7 +89,7 @@ struct MainTabView: View {
             }
             .offset(y: -keyboardResponder.currentHeight / 2) // Adjust offset based on the keyboard height
             .padding(.bottom, -5) // This padding is constant, additional to any keyboard adjustments
-            .zIndex(1) // Ensures the button stays on top
+            /*.zIndex(1)*/ // Ensures the button stays on top
         }
         .edgesIgnoringSafeArea(.all)
     }

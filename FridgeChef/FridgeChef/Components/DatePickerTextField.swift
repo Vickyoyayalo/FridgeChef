@@ -92,12 +92,12 @@ struct DatePickerTextField: View {
                 .font(.custom("ArialRoundedMTBold", size: 18))
                 .environment(\.locale, Locale(identifier: "en-US"))  // 设置为繁体中文
             
-            Button(action: {
-                self.showingDatePicker = true
-            }) {
-                Image(systemName: "calendar.badge.plus")
-                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-            }
+//            Button(action: {
+//                self.showingDatePicker = true
+//            }) {
+//                Image(systemName: "calendar.badge.plus")
+//                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//            }
         }
         .padding()
         .contentShape(Rectangle())

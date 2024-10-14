@@ -19,7 +19,7 @@ Privacy — Photo Library Usage
 Privacy — Photo Library Usage
 
 Privacy — Photo Library Usage</key>
-	<string>此應用需要使用您的手機相簿上傳照片。</string>
+	<string>This app needs to access your photo library to select images.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Nunito-Bold.ttf</string>

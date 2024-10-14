@@ -35,7 +35,10 @@ class MLIngredientViewModel: ObservableObject {
     @Published var isSavedAlertPresented: Bool = false
     @Published var progressMessage: String = ""
     @Published var showingProgressView: Bool = false
-    
+    @Published var showPhotoPermissionAlert: Bool = false
+    @Published var photoPermissionDenied: Bool = false
+    @Published var showCameraPermissionAlert: Bool = false
+    @Published var cameraPermissionDenied: Bool = false
     // MARK: - Dependencies
     private var speechRecognizer: SFSpeechRecognizer?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
@@ -81,6 +84,80 @@ class MLIngredientViewModel: ObservableObject {
                     }
                 } else {
                     print("Failed to load image from URL: \(error?.localizedDescription ?? "Unknown error")")
+                }
+            }
+        }
+    // MARK: - Camera Permission
+    func checkCameraPermission() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        switch status {
+        case .notDetermined:
+            DispatchQueue.main.async {
+                self.showCameraPermissionAlert = true
+            }
+        case .authorized:
+            DispatchQueue.main.async {
+                self.showPhotoOptions = true
+            }
+        case .denied, .restricted:
+            DispatchQueue.main.async {
+                self.cameraPermissionDenied = true
+            }
+        @unknown default:
+            break
+        }
+    }
+
+    func requestCameraPermission() {
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+            DispatchQueue.main.async {
+                if granted {
+                    self.showPhotoOptions = true
+                } else {
+                    self.cameraPermissionDenied = true
+                }
+            }
+        }
+    }
+
+    
+    // MARK: - PhotoLibrary Permission
+    func checkPhotoLibraryPermission() {
+            let status = PHPhotoLibrary.authorizationStatus()
+            switch status {
+            case .notDetermined:
+                // 第一次請求權限，顯示自定義警告
+                DispatchQueue.main.async {
+                    self.showPhotoPermissionAlert = true
+                }
+            case .authorized, .limited:
+                // 已授權，直接顯示相片選項
+                DispatchQueue.main.async {
+                    self.showPhotoOptions = true
+                }
+            case .denied, .restricted:
+                // 權限被拒絕或受限，提示用戶前往設置
+                DispatchQueue.main.async {
+                    self.photoPermissionDenied = true
+                }
+            @unknown default:
+                break
+            }
+        }
+        
+        func requestPhotoLibraryPermission() {
+            PHPhotoLibrary.requestAuthorization { status in
+                switch status {
+                case .authorized, .limited:
+                    DispatchQueue.main.async {
+                        self.showPhotoOptions = true
+                    }
+                case .denied, .restricted, .notDetermined:
+                    DispatchQueue.main.async {
+                        self.photoPermissionDenied = true
+                    }
+                @unknown default:
+                    break
                 }
             }
         }
@@ -173,9 +250,10 @@ class MLIngredientViewModel: ObservableObject {
             DispatchQueue.main.async {
                 let label = topResult.identifier
                 // Translate the label from the dictionary
-                let translatedLabel = TranslationDictionary.foodNames[label] ?? "未知"
+//                let translatedLabel = TranslationDictionary.foodNames[label] ?? "未知"
                 // Update UI with the translated label
-                self?.recognizedText = translatedLabel
+//                self?.recognizedText = translatedLabel
+                self?.recognizedText = label.isEmpty ? "Unknown" : label
             }
         }
         

@@ -48,6 +48,14 @@ enum ChatGPTRole: String, Codable {
     case assistant
 }
 
+struct CachedResponse: Identifiable, Codable {
+    @DocumentID var id: String?
+    let userId: String
+    let message: String
+    let response: String
+    let timestamp: Date
+}
+
 struct PlaceholderTextEditor: View {
     @Binding var text: String
     var placeholder: String
@@ -112,6 +120,7 @@ struct ChatView: View {
     @State private var isWaitingForResponse = false
     @State private var isSearchVisible = false
     @State private var selectedMessageID: String? = nil
+    @State private var listener: ListenerRegistration?
     @State private var api = ChatGPTAPI(
         apiKey: "sk-8VrzLltl-TexufDVK8RWN-GVvWLusdkCjGi9lKNSSkT3BlbkFJMryR2KSLUPFRKb5VCzGPXJGI8s-8bUt9URrmdfq0gA",
         systemPrompt: """
@@ -247,6 +256,29 @@ struct ChatView: View {
                                 .transition(.move(edge: .trailing)) // 從右邊滑入
                             }
 
+//                            ScrollViewReader { proxy in
+//                                ScrollView {
+//                                    VStack(alignment: .leading, spacing: 10) {
+//                                        ForEach(filteredMessages) { message in
+//                                            messageView(for: message)
+//                                                .id(message.id) // 確保每個訊息有唯一的 ID
+//                                        }
+//                                    }
+//                                    .onChange(of: messages.count) { _ in
+//                                        if let lastMessage = messages.last {
+//                                            // 這裡可以選擇是否保留滾動到最後一個訊息的行為
+//                                             proxy.scrollTo(lastMessage.id, anchor: .bottom)
+//                                        }
+//                                    }
+//                                    .onChange(of: selectedMessageID) { id in
+//                                        if let id = id {
+//                                            withAnimation {
+//                                                proxy.scrollTo(id, anchor: .top) // 使用 .top 錨點滾動到訊息的開頭
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
                             ScrollViewReader { proxy in
                                 ScrollView {
                                     VStack(alignment: .leading, spacing: 10) {
@@ -256,21 +288,15 @@ struct ChatView: View {
                                         }
                                     }
                                     .onChange(of: messages.count) { _ in
-                                        if let lastMessage = messages.last {
-                                            // 這裡可以選擇是否保留滾動到最後一個訊息的行為
-                                            // proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                                        }
-                                    }
-                                    .onChange(of: selectedMessageID) { id in
-                                        if let id = id {
+                                        // 滾動到最新的訊息
+                                        if let lastMessage = messages.last, let id = lastMessage.id {
                                             withAnimation {
-                                                proxy.scrollTo(id, anchor: .top) // 使用 .top 錨點滾動到訊息的開頭
+                                                proxy.scrollTo(id, anchor: .top)
                                             }
                                         }
                                     }
                                 }
                             }
-                            
                             
                             if isWaitingForResponse {
                                 MonsterAnimationView()
@@ -335,9 +361,12 @@ struct ChatView: View {
                         }
                         
                     }
-//                    .onAppear {
-//                        fetchMessages()
-//                    }
+                    .onAppear {
+                        fetchMessages()
+                                        }
+                    .onDisappear {
+                        listener?.remove()
+                    }
                 }
             } else {
                 VStack {
@@ -379,29 +408,32 @@ struct ChatView: View {
             return
         }
         
-        firestoreService.fetchMessages(forUser: currentUser.uid) { result in
+        listener = firestoreService.listenForMessages(forUser: currentUser.uid) { result in
             switch result {
             case .success(let fetchedMessages):
                 DispatchQueue.main.async {
-                    self.messages = fetchedMessages
-                    
-                    // 重新解析助手的消息并更新 parsedRecipes
-                    for message in fetchedMessages {
-                        if message.role == .assistant, let content = message.content {
-                            let parsedRecipe = self.parseRecipe(from: content)
-                            if let id = message.id {
-                                self.parsedRecipes[id] = parsedRecipe
-                            }
-                        }
+                    // 比較現有的 messages 與 fetchedMessages，僅添加新的訊息
+                    let newMessages = fetchedMessages.filter { fetchedMessage in
+                        !self.messages.contains(where: { $0.id == fetchedMessage.id })
                     }
+                    
+                    let parsedNewMessages = newMessages.map { message in
+                        var mutableMessage = message
+                        if message.role == .assistant, let content = message.content {
+                            mutableMessage.parsedRecipe = self.parseRecipe(from: content)
+                            print("Parsed recipe for message ID \(message.id ?? "unknown"): \(mutableMessage.parsedRecipe?.title ?? "No Title")")
+                        }
+                        return mutableMessage
+                    }
+                    
+                    self.messages.append(contentsOf: parsedNewMessages)
+                    print("Fetched and updated messages: \(self.messages.count) messages") // 日誌
                 }
             case .failure(let error):
                 print("Error fetching messages: \(error.localizedDescription)")
             }
         }
     }
-
-
 
     // MARK: - Save Message to Firestore
     func saveMessageToFirestore(_ message: Message) {
@@ -420,7 +452,6 @@ struct ChatView: View {
         }
     }
 
-    
     // MARK: - Send Message
     func sendMessage() {
         // 確保有文字或圖片要傳送
@@ -436,39 +467,93 @@ struct ChatView: View {
         let timestamp = Date()
         
         if let messageImage = messageImage {
-            // 上傳圖片
+            // 上傳圖片並識別食材
             firestoreService.uploadImage(messageImage, path: "chat_images/\(UUID().uuidString).jpg") { result in
                 switch result {
                 case .success(let imageURL):
                     // 辨識圖片中的食材
                     recognizeFood(in: messageImage) { recognizedText in
                         let finalMessageText = "Identified ingredient: \(recognizedText).\nPlease provide detailed recipes and cooking steps."
-                        let userMessage = Message(id: UUID().uuidString, role: .user, content: finalMessageText, imageURL: imageURL, timestamp: timestamp)
+                        let userMessage = Message(
+                            id: nil, // 不手動設置 ID
+                            role: .user,
+                            content: finalMessageText,
+                            imageURL: imageURL,
+                            timestamp: timestamp,
+                            parsedRecipe: nil
+                        )
                         
-                        // 將用戶訊息加入訊息列表
-                        DispatchQueue.main.async {
-                            self.messages.append(userMessage)
-                            self.saveMessageToFirestore(userMessage)
-                            self.sendMessageToAssistant(finalMessageText)
-                        }
+                        // 保存到 Firestore，實時監聽器會自動更新 messages
+                        self.saveMessageToFirestore(userMessage)
+                        self.checkCachedResponseAndRespond(message: finalMessageText)
                     }
                 case .failure(let error):
                     print("Failed to upload image: \(error.localizedDescription)")
                     // 如果圖片上傳失敗，只傳送文字訊息
-                    let userMessage = Message(id: UUID().uuidString, role: .user, content: messageText, imageURL: nil, timestamp: timestamp)
-                    DispatchQueue.main.async {
-                        self.messages.append(userMessage)
-                        self.saveMessageToFirestore(userMessage)
-                        self.sendMessageToAssistant(messageText)
-                    }
+                    let userMessage = Message(
+                        id: nil, // 不手動設置 ID
+                        role: .user,
+                        content: messageText,
+                        imageURL: nil,
+                        timestamp: timestamp,
+                        parsedRecipe: nil
+                    )
+                    // 保存到 Firestore，實時監聽器會自動更新 messages
+                    self.saveMessageToFirestore(userMessage)
+                    self.checkCachedResponseAndRespond(message: messageText)
                 }
             }
         } else {
             // 如果沒有圖片，只傳送文字訊息
-            let userMessage = Message(id: UUID().uuidString, role: .user, content: messageText, imageURL: nil, timestamp: timestamp)
-            self.messages.append(userMessage)
+            let userMessage = Message(
+                id: nil, // 不手動設置 ID
+                role: .user,
+                content: messageText,
+                imageURL: nil,
+                timestamp: timestamp,
+                parsedRecipe: nil
+            )
+            // 保存到 Firestore，實時監聽器會自動更新 messages
             self.saveMessageToFirestore(userMessage)
-            self.sendMessageToAssistant(messageText)
+            self.checkCachedResponseAndRespond(message: messageText)
+        }
+    }
+    
+    func checkCachedResponseAndRespond(message: String) {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("No user is currently logged in.")
+            self.isWaitingForResponse = false
+            return
+        }
+        
+        firestoreService.getCachedResponse(forUser: currentUser.uid, message: message) { result in
+            switch result {
+            case .success(let cachedResponse):
+                if let cachedResponse = cachedResponse {
+                    print("🔍 使用緩存回應: \(cachedResponse.response)") // 新增日誌
+                    // 使用緩存的回應
+                    let assistantMessage = Message(
+                        id: nil, // 讓 Firestore 自動生成 ID
+                        role: .assistant,
+                        content: cachedResponse.response,
+                        imageURL: nil,
+                        timestamp: Date(),
+                        parsedRecipe: self.parseRecipe(from: cachedResponse.response)
+                    )
+                    
+                    // 保存到 Firestore，實時監聽器會自動更新 messages
+                    self.saveMessageToFirestore(assistantMessage)
+                    self.isWaitingForResponse = false
+                } else {
+                    print("🔄 沒有找到緩存回應，呼叫 API...") // 新增日誌
+                    // 沒有緩存，調用API
+                    self.sendMessageToAssistant(message)
+                }
+            case .failure(let error):
+                print("❌ 獲取緩存回應時出錯: \(error)") // 新增日誌
+                // 如果出錯，仍然調用API
+                self.sendMessageToAssistant(message)
+            }
         }
     }
 
@@ -479,34 +564,46 @@ struct ChatView: View {
 
         Task {
             do {
+                print("📤 正在呼叫 API 並發送訊息: \(messageToSend)") // 新增日誌
                 let responseText = try await api.sendMessage(messageToSend)
-                let parsedRecipe = parseRecipe(from: responseText) // 解析食谱
+                print("📥 收到 API 回應: \(responseText)") // 新增日誌
 
+                let parsedRecipe = parseRecipe(from: responseText) // 解析食譜
+
+                // 保存到緩存
+                guard let currentUser = Auth.auth().currentUser else {
+                    print("🔒 沒有用戶登錄。")
+                    self.isWaitingForResponse = false
+                    return
+                }
+
+                firestoreService.saveCachedResponse(forUser: currentUser.uid, message: messageText, response: responseText) { result in
+                    switch result {
+                    case .success():
+                        print("✅ 緩存回應已保存。")
+                    case .failure(let error):
+                        print("❌ 無法保存緩存回應: \(error)")
+                    }
+                }
+
+                // 保存到 chats 集合，讓實時監聽器更新 messages
                 let responseMessage = Message(
-                    id: UUID().uuidString,
+                    id: nil, // 讓 Firestore 自動生成 ID
                     role: .assistant,
                     content: responseText,
                     imageURL: nil,
                     timestamp: Date(),
-                    parsedRecipe: parsedRecipe // 将解析后的食谱包含在消息中
+                    parsedRecipe: parsedRecipe
                 )
 
-                DispatchQueue.main.async {
-                    self.messages.append(responseMessage)
-                    self.saveMessageToFirestore(responseMessage)
-                    self.errorMessage = nil
-                    self.isWaitingForResponse = false
-
-                    if let id = responseMessage.id {
-                        self.parsedRecipes[id] = parsedRecipe
-                        self.selectedMessageID = id
-                    }
-                }
+                self.saveMessageToFirestore(responseMessage)
+                self.errorMessage = nil
+                self.isWaitingForResponse = false
 
             } catch {
-                print("Message sending error: \(error)")
+                print("❌ 發送訊息時出錯: \(error)")
                 DispatchQueue.main.async {
-                    self.errorMessage = "Message sending error: \(error.localizedDescription)"
+                    self.errorMessage = "發送訊息時出錯: \(error.localizedDescription)"
                     self.isWaitingForResponse = false
                 }
             }
@@ -515,10 +612,8 @@ struct ChatView: View {
 
     // MARK: - Message View
     private func messageView(for message: Message) -> some View {
-        let messageId = message.id ?? ""
-
         return HStack {
-            if let recipe = parsedRecipes[messageId] {
+            if let recipe = message.parsedRecipe {
                 if message.role == .user {
                     Spacer()
                     VStack(alignment: .trailing) {
@@ -894,15 +989,15 @@ struct ChatView: View {
         }
         
         let parsedRecipe = ParsedRecipe(
-            title: title,
-            ingredients: ingredients,
-            steps: steps,
-            link: link,
-            tips: tips,
-            unparsedContent: unparsedContent
-        )
+               title: title,
+               ingredients: ingredients,
+               steps: steps,
+               link: link,
+               tips: tips,
+               unparsedContent: unparsedContent
+           )
         
-        print("Final Parsed Recipe: \(ParsedRecipe.self)") // 調試日誌
+        print("Final Parsed Recipe: \(parsedRecipe)") // 調試日誌
         
         return parsedRecipe
     }
@@ -1136,24 +1231,24 @@ struct ChatView: View {
     }
     
     // MARK: - Send Message to API
-    func sendMessageToAPI(message: String) {
-        Task {
-            do {
-                let responseText = try await api.sendMessage(message)
-                let responseMessage = Message(id: UUID().uuidString, role: .assistant, content: responseText, imageURL: nil, timestamp: Date())
-                DispatchQueue.main.async {
-                    self.messages.append(responseMessage)
-                    self.saveMessageToFirestore(responseMessage)
-                    self.isWaitingForResponse = false
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    self.errorMessage = "Message sending error: \(error.localizedDescription)"
-                    self.isWaitingForResponse = false
-                }
-            }
-        }
-    }
+//    func sendMessageToAPI(message: String) {
+//        Task {
+//            do {
+//                let responseText = try await api.sendMessage(message)
+//                let responseMessage = Message(id: UUID().uuidString, role: .assistant, content: responseText, imageURL: nil, timestamp: Date())
+//                DispatchQueue.main.async {
+//                    self.messages.append(responseMessage)
+//                    self.saveMessageToFirestore(responseMessage)
+//                    self.isWaitingForResponse = false
+//                }
+//            } catch {
+//                DispatchQueue.main.async {
+//                    self.errorMessage = "Message sending error: \(error.localizedDescription)"
+//                    self.isWaitingForResponse = false
+//                }
+//            }
+//        }
+//    }
 }
 
 
@@ -1218,20 +1313,24 @@ struct MonsterAnimationView: View {
                 .resizable()
                 .frame(width: 100, height: 100)
                 .offset(x: moveRight ? 180 : -150) // runmonster 在 CHICKEN 後面追逐
+                .animation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: moveRight)
             
             Image("RUNchicken")
                 .resizable()
                 .frame(width: 60, height: 60)
                 .offset(x: moveRight ? 120 : -280) // CHICKEN 從左到右移動
+                .animation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: moveRight)
         }
         .onAppear {
-            // 使用 withAnimation 並設定 repeatForever 和 autoreverses
-            withAnimation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
-                self.moveRight.toggle()
-            }
+            moveRight = true
+            print("Animation started")
+        }
+        .onDisappear {
+            print("Animation stopped")
         }
     }
 }
+
 
 extension Color {
     static func customColor(named name: String) -> Color {

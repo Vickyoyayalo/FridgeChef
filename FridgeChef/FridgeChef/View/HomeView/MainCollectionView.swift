@@ -56,27 +56,13 @@ struct MainCollectionView: View {
 
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 16) {
-                        // 標題文字
-//                        Text("What would you like to cook today?")
-//                            .padding(.horizontal)
-//                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-//                            .foregroundColor(.orange)
-//                            .font(.custom("Menlo-BoldItalic", size: 25))
-                            
-//                            .offset(x: offsetX) // 使用 offset 根據 x 軸偏移
-//                            .onAppear {
-//                                // 當視圖顯示時開始動畫
-//                                withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
-//                                    offsetX = 20 // 移動到右側
-//                                }
-//                            }
 
                         // 新鮮食譜視圖
                         SectionTitleView(title: "⏰ Fridge Updates")
                             .padding(.horizontal)
 
                         FridgeReminderView(editingItem: $editingItem)
-//                            .padding(.horizontal)
+                            .padding(.horizontal)
 
                         // Favorite Recipe 顯示區域
                         SectionTitleView(title: "📚 Favorite Recipe")

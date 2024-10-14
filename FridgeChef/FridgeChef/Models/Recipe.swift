@@ -20,8 +20,8 @@ struct ParsedIngredient: Identifiable, Codable, CustomStringConvertible {
     }
 }
 
-struct ParsedRecipe: Identifiable, Codable, CustomStringConvertible {
-    let id = UUID()
+struct ParsedRecipe: Codable, CustomStringConvertible {
+//    let id = UUID()
     let title: String?
     let ingredients: [ParsedIngredient]
     let steps: [String]
@@ -33,7 +33,6 @@ struct ParsedRecipe: Identifiable, Codable, CustomStringConvertible {
     var description: String {
         return """
         ParsedRecipe(
-            id: \(id),
             title: \(title ?? "nil"),
             ingredients: \(ingredients),
             steps: \(steps),

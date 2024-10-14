@@ -78,7 +78,7 @@ struct MLIngredientView: View {
                                     viewModel.showPhotoOptions = true
                                 }
                         }
-
+                        
                         // Picker 使用全局樣式
                         Picker("Choose the storage method.", selection: $viewModel.storageMethod) {
                             ForEach(storageOptions, id: \.self) { option in
@@ -102,22 +102,22 @@ struct MLIngredientView: View {
                                         RoundedRectangle(cornerRadius: 8)
                                             .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                     )
-                                    .overlay(
-                                        // 麥克風按鈕放在右邊
-                                        Button(action: {
-                                            if viewModel.isRecording {
-                                                viewModel.stopRecording()
-                                            } else {
-                                                viewModel.startRecording()
-                                            }
-                                        }) {
-                                            Image(systemName: viewModel.isRecording ? "mic.fill" : "mic")
-                                                .font(.title2)
-                                                .foregroundColor(Color(viewModel.isRecording ? UIColor(named: "PrimaryColor") ?? .orange : UIColor(named: "NavigationBarTitle") ?? .orange))
-                                                .padding(.trailing, 10)
-                                        }
-                                            .frame(maxWidth: .infinity, alignment: .trailing)
-                                    )
+//                                    .overlay(
+//                                        // 麥克風按鈕放在右邊
+//                                        Button(action: {
+//                                            if viewModel.isRecording {
+//                                                viewModel.stopRecording()
+//                                            } else {
+//                                                viewModel.startRecording()
+//                                            }
+//                                        }) {
+//                                            Image(systemName: viewModel.isRecording ? "mic.fill" : "mic")
+//                                                .font(.title2)
+//                                                .foregroundColor(Color(viewModel.isRecording ? UIColor(named: "PrimaryColor") ?? .orange : UIColor(named: "NavigationBarTitle") ?? .orange))
+//                                                .padding(.trailing, 10)
+//                                        }
+//                                            .frame(maxWidth: .infinity, alignment: .trailing)
+//                                    )
                             }
                             .frame(maxWidth: .infinity)
                             
@@ -226,6 +226,7 @@ struct MLIngredientView: View {
                         .cornerRadius(30)
                         .shadow(radius: 3)
                     }
+                    
                     .padding()
                     .confirmationDialog("Choose your photos from", isPresented: $viewModel.showPhotoOptions, titleVisibility: .visible) {
                         Button("Camera") { viewModel.photoSource = .camera }
@@ -263,6 +264,53 @@ struct MLIngredientView: View {
                                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                         }
                     }
+                }
+                .alert(isPresented: $viewModel.showPhotoPermissionAlert) {
+                    Alert(
+                        title: Text("Allow Photo Access"),
+                        message: Text("We need your permission to access the photo library so you can upload ingredient images."),
+                        primaryButton: .default(Text("Allow")) {
+                            viewModel.requestPhotoLibraryPermission()
+                        },
+                        secondaryButton: .cancel(Text("Cancel"))
+                    )
+                }
+                // Alert when permission is denied
+                .alert(isPresented: $viewModel.photoPermissionDenied) {
+                    Alert(
+                        title: Text("Cannot Access Photos"),
+                        message: Text("Please go to the app settings to enable photo access permissions."),
+                        primaryButton: .default(Text("Settings")) {
+                            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(appSettings)
+                            }
+                        },
+                        secondaryButton: .cancel(Text("Cancel"))
+                    )
+                }
+                
+                .alert(isPresented: $viewModel.showCameraPermissionAlert) {
+                    Alert(
+                        title: Text("Allow Camera Access"),
+                        message: Text("We need your permission to access the camera so you can take photos of ingredients."),
+                        primaryButton: .default(Text("Allow")) {
+                            viewModel.requestCameraPermission()
+                        },
+                        secondaryButton: .cancel(Text("Cancel"))
+                    )
+                }
+                // Alert when camera permission is denied
+                .alert(isPresented: $viewModel.cameraPermissionDenied) {
+                    Alert(
+                        title: Text("Cannot Access Camera"),
+                        message: Text("Please go to the app settings to enable camera access permissions."),
+                        primaryButton: .default(Text("Settings")) {
+                            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(appSettings)
+                            }
+                        },
+                        secondaryButton: .cancel(Text("Cancel"))
+                    )
                 }
             }
         }

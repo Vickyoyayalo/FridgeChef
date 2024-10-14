@@ -397,21 +397,70 @@ class FirestoreService {
     
     // MARK: - Message CRUD Operations
     
+    // 獲取緩存的回應
+        func getCachedResponse(forUser userId: String, message: String, completion: @escaping (Result<CachedResponse?, Error>) -> Void) {
+            db.collection("cachedResponses")
+                .whereField("userId", isEqualTo: userId)
+                .whereField("message", isEqualTo: message)
+                .order(by: "timestamp", descending: true)
+                .limit(to: 1)
+                .getDocuments { snapshot, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+                    if let document = snapshot?.documents.first {
+                        do {
+                            let cachedResponse = try document.data(as: CachedResponse.self)
+                            completion(.success(cachedResponse))
+                        } catch {
+                            completion(.failure(error))
+                        }
+                    } else {
+                        completion(.success(nil))
+                    }
+                }
+        }
+       
+    // 保存新的緩存回應
+        func saveCachedResponse(forUser userId: String, message: String, response: String, completion: @escaping (Result<Void, Error>) -> Void) {
+            let cachedResponse = CachedResponse(userId: userId, message: message, response: response, timestamp: Date())
+            do {
+                _ = try db.collection("cachedResponses").addDocument(from: cachedResponse)
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    
     func saveMessage(_ message: Message, forUser userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
-            _ = try db.collection("users").document(userId).collection("chats").addDocument(from: message) { error in
-                if let error = error {
-                    print("Error saving message: \(error.localizedDescription)")
-                    completion(.failure(error))
-                } else {
-                    completion(.success(()))
-                }
-            }
+            _ = try db.collection("users").document(userId).collection("chats").addDocument(from: message)
+            completion(.success(()))
         } catch {
-            print("Error encoding message: \(error)")
             completion(.failure(error))
         }
     }
+    
+    func listenForMessages(forUser userId: String, completion: @escaping (Result<[Message], Error>) -> Void) -> ListenerRegistration {
+            return db.collection("users").document(userId).collection("chats").order(by: "timestamp", descending: false).addSnapshotListener { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let documents = snapshot?.documents else {
+                    completion(.success([]))
+                    return
+                }
+                do {
+                    let messages = try documents.compactMap { try $0.data(as: Message.self) }
+                    completion(.success(messages))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+
     
     func fetchMessages(forUser userId: String, completion: @escaping (Result<[Message], Error>) -> Void) {
         db.collection("users").document(userId).collection("chats").order(by: "timestamp").addSnapshotListener { snapshot, error in

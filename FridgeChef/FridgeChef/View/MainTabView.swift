@@ -81,14 +81,14 @@ struct MainTabView: View {
             Button(action: {
                 selectedTabIndex = 2 // Navigate to ChatView
             }) {
-                Image("Chat")
+                Image("CenterChat")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 60, height: 60)
-                    .shadow(radius: 10)
+                    .frame(width: 100, height: 130)
+                    .shadow(radius: 5)
             }
             .offset(y: -keyboardResponder.currentHeight / 2) // Adjust offset based on the keyboard height
-            .padding(.bottom, 30) // This padding is constant, additional to any keyboard adjustments
+            .padding(.bottom, -5) // This padding is constant, additional to any keyboard adjustments
             .zIndex(1) // Ensures the button stays on top
         }
         .edgesIgnoringSafeArea(.all)

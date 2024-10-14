@@ -102,6 +102,7 @@
 		1CAF43042CACBFA90022D393 /* RecipeClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43012CACBFA90022D393 /* RecipeClass.swift */; };
 		1CAF43082CAD3B650022D393 /* BulletPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43072CAD3B650022D393 /* BulletPointView.swift */; };
 		1CAF430A2CAD52EE0022D393 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43092CAD52EE0022D393 /* String+Extensions.swift */; };
+		1CB019142CBCE56F00156C81 /* GroceryListStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB019132CBCE56F00156C81 /* GroceryListStore.swift */; };
 		1CB14A0D2CAC096400399AAF /* TranslationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */; };
 		1CB5BC892C943D36006C66E5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC882C943D36006C66E5 /* User.swift */; };
 		1CB5BC8C2C943D74006C66E5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8B2C943D74006C66E5 /* FirebaseFirestore */; };
@@ -241,6 +242,7 @@
 		1CAF43012CACBFA90022D393 /* RecipeClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeClass.swift; sourceTree = "<group>"; };
 		1CAF43072CAD3B650022D393 /* BulletPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletPointView.swift; sourceTree = "<group>"; };
 		1CAF43092CAD52EE0022D393 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		1CB019132CBCE56F00156C81 /* GroceryListStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListStore.swift; sourceTree = "<group>"; };
 		1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationAPI.swift; sourceTree = "<group>"; };
 		1CB5BC882C943D36006C66E5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CB5BC912C943DE4006C66E5 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
@@ -509,6 +511,7 @@
 				1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */,
 				1CB5BC912C943DE4006C66E5 /* Ingredient.swift */,
 				1CB5BC952C943E19006C66E5 /* FoodItem.swift */,
+				1CB019132CBCE56F00156C81 /* GroceryListStore.swift */,
 				1CF493CB2CB539C400BEAFB5 /* FridgeChefEntry.swift */,
 				1C7F45CB2C9A787A00846B44 /* RecommendRecipe.swift */,
 				1C1E9A0A2CA7AF8C002A15C8 /* Recipe.swift */,
@@ -869,6 +872,7 @@
 				1C6CC39B2C993698001C4643 /* ImagePicker.swift in Sources */,
 				1C6D2D872CB00B65000C49DC /* HomeNavBarView.swift in Sources */,
 				1C6CC3882C984C89001C4643 /* LoginView.swift in Sources */,
+				1CB019142CBCE56F00156C81 /* GroceryListStore.swift in Sources */,
 				1C6D2D892CB00B65000C49DC /* RecipeCollectionView.swift in Sources */,
 				1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */,
 				1C6D2D8B2CB00B65000C49DC /* SectionTitleView.swift in Sources */,

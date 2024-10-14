@@ -16,23 +16,27 @@ struct FloatingMapButton: View {
             Spacer()
             HStack {
                 Spacer()
+                
                 Button(action: {
                     showingMapView = true
                 }) {
                     Image("mapmonster")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 100, height: 100)
-                        .scaleEffect(isScaledUp ? 1.0 : 0.8) // 控制放大縮小比例
+                        .frame(width: 80, height: 80)
+                        .scaleEffect(isScaledUp ? 1.0 : 0.8)
                         .animation(
                             Animation.easeInOut(duration: 1.0)
-                                .repeatForever(autoreverses: true)
+                                .repeatForever(autoreverses: true),
+                            value: isScaledUp // 添加 value 確保動畫更新
                         )
                         .background(Color.orange.opacity(0.2))
                         .clipShape(Circle())
-                        .shadow(radius: 10)
                         .onAppear {
-                            isScaledUp.toggle() // 切換放大縮小狀態
+                            isScaledUp = true // 確保動畫從頭開始
+                        }
+                        .onDisappear {
+                            isScaledUp = false // 避免動畫狀態失效
                         }
                 }
                 .sheet(isPresented: $showingMapView) {
@@ -40,6 +44,7 @@ struct FloatingMapButton: View {
                 }
                 .padding(.trailing, 15)
                 .padding(.bottom, 15)
+                .shadow(radius: 10)
             }
         }
     }

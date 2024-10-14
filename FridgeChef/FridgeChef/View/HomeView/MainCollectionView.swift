@@ -103,7 +103,7 @@ struct MainCollectionView: View {
                 }
                 .scrollIndicators(.hidden)
                 .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle("Bonjour, Vicky🍻")
+//                .navigationTitle("Bonjour, Vicky🍻")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         menuButton
@@ -184,7 +184,7 @@ struct MainCollectionView: View {
             Button(action: {
                    isShowingGameView = true
                }) {
-                   Image("himonster")
+                   Image("clickmemonster")
                        .resizable()
                        .scaledToFit()
                        .frame(width: 120, height: 120)
@@ -198,21 +198,21 @@ struct MainCollectionView: View {
                        isScaledUp.toggle() // 切換縮放狀態
                    }
             }
-//             "Click me" Text
-            Text("Click me")
-                .font(.custom("Menlo-BoldItalic", size: 10))
-                .fontWeight(.bold)
-                .foregroundColor(.red)
-                .opacity(showClickMe ? 1 : 0) // 根據動畫狀態控制透明度
-                .scaleEffect(showClickMe ? 1.2 : 1.0) // 放大縮小效果
-                .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-                .offset(x: 0, y: 80) // 調整 "Click me" 的位置
-                .onAppear {
-                    withAnimation(
-                        Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
-                            showClickMe.toggle() // 閃爍動畫
-                        }
-                }
+////             "Click me" Text
+//            Text("Click me")
+//                .font(.custom("Menlo-BoldItalic", size: 10))
+//                .fontWeight(.bold)
+//                .foregroundColor(.red)
+//                .opacity(showClickMe ? 1 : 0) // 根據動畫狀態控制透明度
+//                .scaleEffect(showClickMe ? 1.2 : 1.0) // 放大縮小效果
+//                .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+//                .offset(x: 0, y: 80) // 調整 "Click me" 的位置
+//                .onAppear {
+//                    withAnimation(
+//                        Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+//                            showClickMe.toggle() // 閃爍動畫
+//                        }
+//                }
         }
     }
 

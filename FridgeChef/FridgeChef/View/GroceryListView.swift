@@ -87,13 +87,12 @@ struct GroceryListView: View {
             print("No user is currently logged in.")
             return
         }
-        
+
         firestoreService.listenToFoodItems(forUser: currentUser.uid) { result in
             switch result {
             case .success(let items):
                 DispatchQueue.main.async {
                     self.foodItemStore.foodItems = items
-                    print("Real-time update: Fetched \(items.count) food items from Firebase.")
                 }
             case .failure(let error):
                 print("Failed to listen to food items: \(error.localizedDescription)")

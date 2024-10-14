@@ -5,7 +5,6 @@
 //  Created by Vickyhereiam on 2024/9/10.
 //
 //MARK: 會辨識語言來做回答，但以英文為主
-
 import SwiftUI
 import PhotosUI
 import Vision
@@ -16,12 +15,22 @@ import FirebaseAuth
 import FirebaseFirestore
 import SDWebImageSwiftUI
 
+struct ViewOffsetKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
+    }
+}
+
 struct Message: Identifiable, Codable {
     @DocumentID var id: String?
     let role: ChatGPTRole
     let content: String?
     var imageURL: String?
     let timestamp: Date
+    var parsedRecipe: ParsedRecipe?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -29,6 +38,7 @@ struct Message: Identifiable, Codable {
         case content
         case imageURL
         case timestamp
+        case parsedRecipe
     }
 }
 
@@ -83,22 +93,25 @@ struct PlaceholderTextEditor: View {
 
 struct ChatView: View {
     let firestoreService = FirestoreService()
-    @State private var showAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
-    @EnvironmentObject var foodItemStore: FoodItemStore
-    @State private var isFetchingLink: Bool = false
-    @State private var isWaitingForResponse = false
-    @State private var parsedRecipes: [String: ParsedRecipe] = [:]
+    @State private var searchText = ""
     @State private var inputText = ""
-    @State private var messages: [Message] = []
-    @State private var showPhotoOptions = false
+    @EnvironmentObject var foodItemStore: FoodItemStore
     @State private var photoSource: PhotoSource?
+    @State private var parsedRecipes: [String: ParsedRecipe] = [:]
+    @State private var messages: [Message] = []
     @State private var image: UIImage?
+    @State private var showAlert = false
+    @State private var showPhotoOptions = false
     @State private var showChangePhotoDialog = false
     @State private var errorMessage: String?
     @State private var isButtonDisabled = false
     @State private var moveRight = true
+    @State private var isFetchingLink: Bool = false
+    @State private var isWaitingForResponse = false
+    @State private var isSearchVisible = false
+    @State private var selectedMessageID: String? = nil
     @State private var api = ChatGPTAPI(
         apiKey: "sk-8VrzLltl-TexufDVK8RWN-GVvWLusdkCjGi9lKNSSkT3BlbkFJMryR2KSLUPFRKb5VCzGPXJGI8s-8bUt9URrmdfq0gA",
         systemPrompt: """
@@ -174,49 +187,92 @@ struct ChatView: View {
                         }
                         
                         VStack {
-                            if let errorMessage = errorMessage {
-                                Text(errorMessage)
-                                    .foregroundColor(.red)
-                                    .padding()
+                            
+                            HStack {
+                                
+                                Image("FridgeChefLogo")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 300, height: 38)
+                                    .padding(.top)
+                                
+                                if let errorMessage = errorMessage {
+                                    Text(errorMessage)
+                                        .foregroundColor(.red)
+                                        .padding()
+                                }
+                                Spacer()
+                                
+                                Button(action: {
+                                    withAnimation {
+                                        isSearchVisible.toggle()
+                                    }
+                                }) {
+                                    Image(systemName: isSearchVisible ? "xmark.circle.fill" : "magnifyingglass")
+                                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                        .imageScale(.medium)
+                                        .padding()
+                                }
                             }
-                            
-                            Image("FridgeChefLogo")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 300, height: 38)
-                                .padding(.top)
-                            
-                            ScrollView {
-                                VStack(alignment: .leading, spacing: 10) {
-                                    ForEach(messages) { message in
-                                        messageView(for: message)
+
+                            // 自定義搜尋框（從右邊滑入的動畫）
+                            if isSearchVisible {
+                                HStack(spacing: 10) { // 設置內部元素的間距
+                                    Image(systemName: "magnifyingglass")
+                                        .foregroundColor(.orange)
+                                        .padding(.leading, 8) // 左側內邊距
+
+                                    TextField("Search messages...", text: $searchText, onCommit: {
+                                        // 當使用者按下回車鍵時，執行搜尋並清空搜尋框
+                                        performSearch()
+                                    })
+                                    .textFieldStyle(PlainTextFieldStyle())
+                                    .padding(.vertical, 8)
+                                    .padding(.trailing, 8) // 右側內邊距，避免與 xmark 圖標重疊
+
+                                    if !searchText.isEmpty {
+                                        Button(action: {
+                                            self.searchText = ""
+                                        }) {
+                                            Image(systemName: "xmark.circle.fill")
+                                                .foregroundColor(.orange)
+                                                .padding(.trailing, 8) // 右側內邊距
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                }
+                                .background(RoundedRectangle(cornerRadius: 10).fill(Color.white).opacity(0.3))
+                                .padding(.horizontal)
+                                .transition(.move(edge: .trailing)) // 從右邊滑入
+                            }
+
+                            ScrollViewReader { proxy in
+                                ScrollView {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        ForEach(filteredMessages) { message in
+                                            messageView(for: message)
+                                                .id(message.id) // 確保每個訊息有唯一的 ID
+                                        }
+                                    }
+                                    .onChange(of: messages.count) { _ in
+                                        if let lastMessage = messages.last {
+                                            // 這裡可以選擇是否保留滾動到最後一個訊息的行為
+                                            // proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                                        }
+                                    }
+                                    .onChange(of: selectedMessageID) { id in
+                                        if let id = id {
+                                            withAnimation {
+                                                proxy.scrollTo(id, anchor: .top) // 使用 .top 錨點滾動到訊息的開頭
+                                            }
+                                        }
                                     }
                                 }
                             }
                             
+                            
                             if isWaitingForResponse {
-                                ZStack {
-                                    Image("runmonster")
-                                        .resizable()
-                                        .frame(width: 100, height: 100)
-                                        .offset(x: moveRight ? 180 : -150) // runmonster 在 CHICKEN 後面追逐
-                                        .animation(
-                                            Animation.easeInOut(duration: 2.0)
-                                                .repeatForever(autoreverses: false)
-                                        )
-                                    
-                                    Image("RUNchicken")
-                                        .resizable()
-                                        .frame(width: 60, height: 60)
-                                        .offset(x: moveRight ? 120 : -280)// CHICKEN 從左到右移動
-                                        .animation(
-                                            Animation.easeInOut(duration: 2.0)
-                                                .repeatForever(autoreverses: false)
-                                        )
-                                }
-                                .onAppear {
-                                    moveRight.toggle() // 切換動畫方向
-                                }
+                                MonsterAnimationView()
                             }
                             
                             if let image = image {
@@ -246,35 +302,35 @@ struct ChatView: View {
                                 Button(action: { showPhotoOptions = true }) {
                                     Image(systemName: "camera.fill")
                                         .resizable()
-                                        .scaledToFit() // Ensure the image scales properly within the frame
-                                        .frame(width: 40, height: 40)
+                                        .scaledToFit() // 確保圖片在框架內正確縮放
+                                        .frame(width: 35, height: 35)
                                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                                 }
-                                .padding(.leading, 10)
-                                .fixedSize() // Prevent the button from being compressed
+                                .padding(.leading, 15)
+                                .fixedSize() // 防止按鈕被壓縮
                                 .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions, titleVisibility: .visible) {
                                     Button("Camera") { photoSource = .camera }
                                     Button("Photo Library") { photoSource = .photoLibrary }
                                 }
                                 
-                                Spacer(minLength: 20) // Ensures space distribution
+                                Spacer(minLength: 20) // 確保空間分佈
                                 
                                 PlaceholderTextEditor(text: $inputText, placeholder: "Want ideas? 🥙 ...")
-                                    .frame(maxHeight: 100) // Consistent height with buttons
+                                    .frame(minHeight: 40, maxHeight: 60) // 與按鈕高度一致
                                 
-                                Spacer(minLength: 20) // Ensures space distribution
+                                Spacer(minLength: 20) // 確保空間分佈
                                 
                                 Button(action: sendMessage) {
                                     Image(systemName: "paperplane.fill")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 35, height: 35)
+                                        .frame(width: 30, height: 30)
                                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                                 }
-                                .padding(.trailing, 10)
-                                .fixedSize() // Prevent the button from being compressed
+                                .padding(.trailing, 15)
+                                .fixedSize() // 防止按鈕被壓縮
                             }
-                            .padding(.horizontal)
+                            .padding(.bottom, 8)
                         }
                         
                     }
@@ -284,9 +340,8 @@ struct ChatView: View {
                 }
             } else {
                 VStack {
-                    Text("請先登錄以使用聊天功能。")
+                    Text("Please login to continue chats!")
                         .padding()
-                    // 你可以在這裡添加登錄按鈕或導航到登錄頁面
                 }
             }
         }
@@ -296,6 +351,26 @@ struct ChatView: View {
         }
     }
     
+    // 搜尋結果過濾
+    var filteredMessages: [Message] {
+        if searchText.isEmpty {
+            return messages
+        } else {
+            // 根據使用者的搜尋文字過濾訊息內容
+            return messages.filter { message in
+                message.content?.lowercased().contains(searchText.lowercased()) ?? false
+            }
+        }
+    }
+    
+    // 執行搜尋並清空搜尋框
+    func performSearch() {
+        if let matchedMessage = messages.first(where: { $0.content?.lowercased().contains(searchText.lowercased()) ?? false }) {
+            selectedMessageID = matchedMessage.id
+        }
+        searchText = ""
+    }
+
     // MARK: - Fetch Messages
     func fetchMessages() {
         guard let currentUser = Auth.auth().currentUser else {
@@ -308,19 +383,32 @@ struct ChatView: View {
             case .success(let fetchedMessages):
                 DispatchQueue.main.async {
                     self.messages = fetchedMessages
+                    
+                    // 重新解析助手的消息并更新 parsedRecipes
+                    for message in fetchedMessages {
+                        if message.role == .assistant, let content = message.content {
+                            let parsedRecipe = self.parseRecipe(from: content)
+                            if let id = message.id {
+                                self.parsedRecipes[id] = parsedRecipe
+                            }
+                        }
+                    }
                 }
             case .failure(let error):
                 print("Error fetching messages: \(error.localizedDescription)")
             }
         }
     }
+
+
+
     // MARK: - Save Message to Firestore
     func saveMessageToFirestore(_ message: Message) {
         guard let currentUser = Auth.auth().currentUser else {
             print("No user is currently logged in.")
             return
         }
-        
+
         firestoreService.saveMessage(message, forUser: currentUser.uid) { result in
             switch result {
             case .success():
@@ -330,9 +418,11 @@ struct ChatView: View {
             }
         }
     }
+
     
     // MARK: - Send Message
     func sendMessage() {
+        // 確保有文字或圖片要傳送
         guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || image != nil else { return }
         
         let messageText = inputText
@@ -343,80 +433,75 @@ struct ChatView: View {
         isWaitingForResponse = true
         
         let timestamp = Date()
-        let messageId = UUID().uuidString
-        
-        var userMessage = Message(id: messageId, role: .user, content: messageText, imageURL: nil, timestamp: timestamp)
-        
-        self.messages.append(userMessage)
         
         if let messageImage = messageImage {
+            // 上傳圖片
             firestoreService.uploadImage(messageImage, path: "chat_images/\(UUID().uuidString).jpg") { result in
                 switch result {
                 case .success(let imageURL):
-                    userMessage.imageURL = imageURL
-                    if let index = self.messages.firstIndex(where: { $0.id == userMessage.id }) {
-                        self.messages[index] = userMessage
+                    // 辨識圖片中的食材
+                    recognizeFood(in: messageImage) { recognizedText in
+                        let finalMessageText = "Identified ingredient: \(recognizedText).\nPlease provide detailed recipes and cooking steps."
+                        let userMessage = Message(id: UUID().uuidString, role: .user, content: finalMessageText, imageURL: imageURL, timestamp: timestamp)
+                        
+                        // 將用戶訊息加入訊息列表
+                        DispatchQueue.main.async {
+                            self.messages.append(userMessage)
+                            self.saveMessageToFirestore(userMessage)
+                            self.sendMessageToAssistant(finalMessageText)
+                        }
                     }
-                    self.saveMessageToFirestore(userMessage)
                 case .failure(let error):
                     print("Failed to upload image: \(error.localizedDescription)")
-                    self.saveMessageToFirestore(userMessage)
-                }
-            }
-        } else {
-            self.saveMessageToFirestore(userMessage)
-        }
-        
-        processUserMessage(userMessage)
-    }
-    
-    // MARK: - Process User Message
-    func processUserMessage(_ userMessage: Message) {
-        isWaitingForResponse = true
-        var finalMessageText = userMessage.content ?? ""
-        
-        if let messageImage = image {
-            recognizeFood(in: messageImage) { recognizedText in
-                DispatchQueue.main.async {
-                    if !finalMessageText.isEmpty {
-                        finalMessageText += "\nIdentified ingredient: \(recognizedText)."
-                    } else {
-                        finalMessageText = "Identified ingredient: \(recognizedText)."
+                    // 如果圖片上傳失敗，只傳送文字訊息
+                    let userMessage = Message(id: UUID().uuidString, role: .user, content: messageText, imageURL: nil, timestamp: timestamp)
+                    DispatchQueue.main.async {
+                        self.messages.append(userMessage)
+                        self.saveMessageToFirestore(userMessage)
+                        self.sendMessageToAssistant(messageText)
                     }
-                    self.sendMessageToAssistant(finalMessageText)
                 }
             }
         } else {
-            self.sendMessageToAssistant(finalMessageText)
+            // 如果沒有圖片，只傳送文字訊息
+            let userMessage = Message(id: UUID().uuidString, role: .user, content: messageText, imageURL: nil, timestamp: timestamp)
+            self.messages.append(userMessage)
+            self.saveMessageToFirestore(userMessage)
+            self.sendMessageToAssistant(messageText)
         }
     }
-    
+
     // MARK: - Send Message to Assistant
     func sendMessageToAssistant(_ messageText: String) {
         guard !messageText.isEmpty else { return }
         let messageToSend = messageText
-        
+
         Task {
             do {
                 let responseText = try await api.sendMessage(messageToSend)
-                let responseMessage = Message(id: UUID().uuidString, role: .assistant, content: responseText, imageURL: nil, timestamp: Date())
-                
+                let parsedRecipe = parseRecipe(from: responseText) // 解析食谱
+
+                let responseMessage = Message(
+                    id: UUID().uuidString,
+                    role: .assistant,
+                    content: responseText,
+                    imageURL: nil,
+                    timestamp: Date(),
+                    parsedRecipe: parsedRecipe // 将解析后的食谱包含在消息中
+                )
+
                 DispatchQueue.main.async {
                     self.messages.append(responseMessage)
                     self.saveMessageToFirestore(responseMessage)
                     self.errorMessage = nil
                     self.isWaitingForResponse = false
-                }
-                
-                if let responseContent = responseMessage.content {
-                    let parsedRecipe = parseRecipe(from: responseContent)
+
                     if let id = responseMessage.id {
-                        DispatchQueue.main.async {
-                            self.parsedRecipes[id] = parsedRecipe
-                        }
+                        self.parsedRecipes[id] = parsedRecipe
+                        self.selectedMessageID = id
                     }
                 }
-                
+
             } catch {
                 print("Message sending error: \(error)")
                 DispatchQueue.main.async {
@@ -426,21 +511,43 @@ struct ChatView: View {
             }
         }
     }
-    
-    
+
     // MARK: - Message View
     private func messageView(for message: Message) -> some View {
-        HStack {
-            if message.role == .assistant {
-                VStack(alignment: .leading, spacing: 10) {
-                    if let recipe = parsedRecipes[message.id ?? ""] {
-                        // 顯示已解析的食譜內容
+        let messageId = message.id ?? ""
+
+        return HStack {
+            if let recipe = parsedRecipes[messageId] {
+                if message.role == .user {
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        if let imageURL = message.imageURL, let url = URL(string: imageURL) {
+                            WebImage(url: url)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 150)
+                                .cornerRadius(10)
+                        }
+                        if let content = message.content {
+                            Text(content)
+                                .padding()
+                                .background(Color.customColor(named: "NavigationBarTitle"))
+                                .foregroundColor(.white)
+                                .bold()
+                                .cornerRadius(10)
+                        }
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 10) {
+                        // 顯示食譜名稱
                         if let title = recipe.title {
-                            Text(" \(title) 🥙")
+                            Text("\(title) 🥙")
                                 .font(.title3)
                                 .bold()
                                 .padding(.bottom, 5)
                         }
+
+                        // 顯示食材列表
                         if !recipe.ingredients.isEmpty {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("🥬【Ingredients】")
@@ -452,7 +559,35 @@ struct ChatView: View {
                             .padding()
                             .background(Color.purple.opacity(0.1))
                             .cornerRadius(10)
+
+                            // 添加按鈕
+                            Button(action: {
+                                if allIngredientsInCart(ingredients: recipe.ingredients) {
+                                    addRemainingIngredientsToCart(ingredients: recipe.ingredients)
+                                } else {
+                                    addAllIngredientsToCart(ingredients: recipe.ingredients)
+                                }
+                            }) {
+                                Text(allIngredientsInCart(ingredients: recipe.ingredients) ? "Add Remaining Ingredients to Cart" : "Add All Ingredients to Cart")
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background(Color.orange)
+                                    .cornerRadius(10)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .opacity(isButtonDisabled ? 0.3 : 0.8)
+                            .disabled(isButtonDisabled)
+                            .alert(isPresented: $showAlert) {
+                                Alert(
+                                    title: Text(alertTitle),
+                                    message: Text(alertMessage),
+                                    dismissButton: .default(Text("OK"))
+                                )
+                            }
                         }
+
+                        // 顯示烹飪步驟
                         if !recipe.steps.isEmpty {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("🍳【Cooking Steps】")
@@ -470,7 +605,63 @@ struct ChatView: View {
                             .background(Color.orange.opacity(0.3))
                             .cornerRadius(10)
                         }
-                    } else {
+
+                        // 顯示食譜連結
+                        if let link = recipe.link, let url = URL(string: link) {
+                            Link(destination: url) {
+                                HStack {
+                                    Text("🔗 View Full Recipe")
+                                        .font(.headline)
+                                        .foregroundColor(.blue)
+                                }
+                                .padding()
+                                .background(Color.blue.opacity(0.1))
+                                .cornerRadius(10)
+                            }
+                        } else {
+                            Text("Oops! Can't share the recipe link right now. Got other ingredients or meals in mind? \nLet me help you find something tasty! 👨🏻‍🌾")
+                                .padding()
+                                .background(Color.gray.opacity(0.1))
+                                .cornerRadius(10)
+                        }
+
+                        // 顯示貼心提醒
+                        if let tips = recipe.tips {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("👩🏻‍🍳【Friendly Reminder】")
+                                    .font(.headline)
+                                Text(tips)
+                            }
+                            .padding()
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(10)
+                        }
+                    }
+                    Spacer()
+                }
+            } else {
+                // 未解析的訊息
+                if message.role == .user {
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        if let imageURL = message.imageURL, let url = URL(string: imageURL) {
+                            WebImage(url: url)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 150)
+                                .cornerRadius(10)
+                        }
+                        if let content = message.content {
+                            Text(content)
+                                .padding()
+                                .background(Color.customColor(named: "NavigationBarTitle"))
+                                .foregroundColor(.white)
+                                .bold()
+                                .cornerRadius(10)
+                        }
+                    }
+                } else {
+                    VStack(alignment: .leading) {
                         if let content = message.content {
                             Text(content)
                                 .padding()
@@ -478,33 +669,12 @@ struct ChatView: View {
                                 .cornerRadius(10)
                         }
                     }
-                }
-                Spacer()
-            } else {
-                // 用戶訊息
-                Spacer()
-                VStack(alignment: .trailing) {
-                    if let imageURL = message.imageURL, let url = URL(string: imageURL) {
-                        WebImage(url: url)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 150)
-                            .cornerRadius(10)
-                    }
-                    if let content = message.content {
-                        Text(content)
-                            .padding()
-                            .background(Color.customColor(named: "NavigationBarTitle"))
-                            .foregroundColor(.white)
-                            .bold()
-                            .cornerRadius(10)
-                    }
+                    Spacer()
                 }
             }
         }
         .padding(.horizontal)
     }
-
     
     // MARK: - Detect Language
     func detectLanguage(for text: String) -> String? {
@@ -798,7 +968,7 @@ struct ChatView: View {
             print("No user is currently logged in.")
             return false
         }
-        
+
         let newFoodItem = FoodItem(
             id: UUID().uuidString,
             name: ingredient.name,
@@ -809,26 +979,29 @@ struct ChatView: View {
             expirationDate: ingredient.expirationDate,
             imageURL: nil
         )
-        
+
         if !foodItemStore.foodItems.contains(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
-            foodItemStore.foodItems.append(newFoodItem)
-            
-            // Save to Firestore
+            // 添加到本地数组
+            DispatchQueue.main.async {
+                self.foodItemStore.foodItems.append(newFoodItem)
+            }
+
+            // 保存到 Firestore
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: newFoodItem, image: nil) { result in
                 switch result {
                 case .success():
-                    print("Food item successfully added to Firebase.")
+                    print("Food item successfully added to Firestore.")
                 case .failure(let error):
-                    print("Failed to add food item to Firebase: \(error.localizedDescription)")
+                    print("Failed to add food item to Firestore: \(error.localizedDescription)")
                 }
             }
-            
+
             return true
         } else {
             return false
         }
     }
-    
+
     // MARK: - Check All Ingredients in Cart
     private func allIngredientsInCart(ingredients: [ParsedIngredient]) -> Bool {
         return ingredients.allSatisfy { ingredient in
@@ -1035,6 +1208,29 @@ struct IngredientRow: View {
     }
 }
 
+struct MonsterAnimationView: View {
+    @State private var moveRight = false
+    
+    var body: some View {
+        ZStack {
+            Image("runmonster")
+                .resizable()
+                .frame(width: 100, height: 100)
+                .offset(x: moveRight ? 180 : -150) // runmonster 在 CHICKEN 後面追逐
+            
+            Image("RUNchicken")
+                .resizable()
+                .frame(width: 60, height: 60)
+                .offset(x: moveRight ? 120 : -280) // CHICKEN 從左到右移動
+        }
+        .onAppear {
+            // 使用 withAnimation 並設定 repeatForever 和 autoreverses
+            withAnimation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
+                self.moveRight.toggle()
+            }
+        }
+    }
+}
 
 extension Color {
     static func customColor(named name: String) -> Color {

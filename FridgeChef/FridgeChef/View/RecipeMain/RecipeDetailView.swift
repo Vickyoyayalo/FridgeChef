@@ -63,7 +63,7 @@ struct RecipeDetailView: View {
                                         .frame(height: 250)
                                 }
                             } else {
-                                Image(systemName: "RecipeFood")
+                                Image("RecipeFood")
                                     .resizable()
                                     .scaledToFill()
                                     .frame(height: 250)
@@ -445,7 +445,7 @@ struct RecipeDetailView_Previews: PreviewProvider {
 //                                        .frame(height: 250)
 //                                }
 //                            } else {
-//                                Image(systemName: "RecipeFood")
+//                                Image("RecipeFood")
 //                                    .resizable()
 //                                    .scaledToFill()
 //                                    .frame(height: 250)

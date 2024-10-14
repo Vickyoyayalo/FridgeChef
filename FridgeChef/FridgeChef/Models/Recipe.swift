@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Models
-struct ParsedIngredient: Identifiable, CustomStringConvertible {
+struct ParsedIngredient: Identifiable, Codable, CustomStringConvertible {
     let id = UUID()
     let name: String
     let quantity: Double
@@ -20,7 +20,7 @@ struct ParsedIngredient: Identifiable, CustomStringConvertible {
     }
 }
 
-struct ParsedRecipe: Identifiable, CustomStringConvertible {
+struct ParsedRecipe: Identifiable, Codable, CustomStringConvertible {
     let id = UUID()
     let title: String?
     let ingredients: [ParsedIngredient]

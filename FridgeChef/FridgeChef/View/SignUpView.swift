@@ -9,15 +9,16 @@ import SwiftUI
 struct SignUpView: View {
     @ObservedObject private var viewModel = UserViewModel()
     @State private var isShowingImagePicker = false
+    @Environment(\.presentationMode) var presentationMode // 用來控制視圖的 dismiss
 
     var body: some View {
         CustomNavigationBarView(title: "") {
-            VStack(spacing: 10) { // 調整垂直間距
+            VStack(spacing: 10) {
                 // App Logo
                 Image("LogoFridgeChef")
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 300, height: 100) // 調整 Logo 大小
+                    .frame(width: 300, height: 100)
                     .padding(.top, 20)
                     .padding(.bottom, 5)
 
@@ -31,8 +32,8 @@ struct SignUpView: View {
                             .scaledToFill()
                             .frame(width: 150, height: 150)
                             .clipShape(Circle())
-                            .overlay(Circle().stroke(Color.orange, lineWidth: 4)) // 添加橙色邊框
-                            .shadow(radius: 5) // 添加陰影
+                            .overlay(Circle().stroke(Color.orange, lineWidth: 4))
+                            .shadow(radius: 5)
                     } else {
                         ZStack {
                             Circle()
@@ -69,23 +70,26 @@ struct SignUpView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(
-                               Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                         .cornerRadius(12)
-                        .shadow(radius: 5) // 增加陰影效果
+                        .shadow(radius: 5)
                 }
                 .padding(.top, 10)
 
                 Spacer()
             }
             .padding()
-//            .background(Color(UIColor.systemGray6).edgesIgnoringSafeArea(.all)) // 背景顏色
         }
-//        .sheet(isPresented: $isShowingImagePicker) {
-//            ImagePicker(image: self.$viewModel.avatar)
-//        }
+        .sheet(isPresented: $isShowingImagePicker) {
+            ImagePicker(image: self.$viewModel.avatar, sourceType: .photoLibrary)
+        }
         .alert(isPresented: $viewModel.showAlert) {
             viewModel.alert
+        }
+        .onChange(of: viewModel.isSignUpSuccessful) { success in
+            if success {
+                presentationMode.wrappedValue.dismiss() // 註冊成功後自動關閉當前頁面
+            }
         }
     }
 }

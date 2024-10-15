@@ -16,7 +16,7 @@ struct LoginView: View {
     
     @State private var scaleEffect2: CGFloat = 1.0
     @State private var opacityEffect2 = 1.0
-    @State private var offsetXEffect2: CGFloat = 0 // 用於控制X軸位移
+    @State private var offsetXEffect2: CGFloat = 0
     
     var body: some View {
         CustomNavigationBarView(title: "Welcome") {
@@ -88,9 +88,9 @@ struct LoginView: View {
                                 .opacity(0.8)  // 50%透明度
                             )
                             .cornerRadius(25)
-                            .shadow(radius: 25)
+                            .shadow(radius: 10)
                             .padding(.horizontal)
-                            .contentShape(Rectangle()) // 扩大点击范围
+                            .contentShape(Rectangle())
                     }
                     
                     // Sign Up Button
@@ -106,11 +106,17 @@ struct LoginView: View {
                                 Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange)
                             )
                             .cornerRadius(25)
-                            .shadow(radius: 25)
+                            .shadow(radius: 10)
                             .padding(.horizontal)
-                            .contentShape(Rectangle()) 
+                            .contentShape(Rectangle())
                     }
-                    
+
+                    // EULA Link
+                    Link("End-User License Agreement (EULA)", destination: URL(string: "https://www.privacypolicies.com/live/3068621d-05a8-47a8-8321-28522fc642ed")!)
+                        .font(.custom("ArialRoundedMTBold", size: 14))
+                        .foregroundColor(.orange)
+                        .padding(.top, 10)
+
                 }
                 .sheet(isPresented: $isShowingLoginDetail) {
                     LoginDetailView()
@@ -122,8 +128,7 @@ struct LoginView: View {
         }
     }
 }
-    
-    
+
     
     //
     //// 背景影片播放部分保持不變

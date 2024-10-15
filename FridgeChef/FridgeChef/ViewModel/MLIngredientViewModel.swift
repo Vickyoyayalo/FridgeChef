@@ -10,35 +10,157 @@ import CoreML
 import PhotosUI
 import Speech
 import Combine
+import FirebaseFirestore
+import FirebaseAuth
+import SDWebImageSwiftUI
 
 class MLIngredientViewModel: ObservableObject {
-    // MARK: - Input Properties
+    // MARK: - PhotoSource Enum
+    enum PhotoSource: Int, Identifiable {
+        case photoLibrary = 0
+        case camera = 1
+
+        var id: Int { self.rawValue }
+    }
+    
+    // MARK: - Published Properties
     @Published var image: UIImage?
     @Published var recognizedText: String = ""
-    @Published var quantity: String = "1"
+    @Published var quantity: String = "1.00"
     @Published var expirationDate: Date = Date()
     @Published var storageMethod: String = "Fridge"
     @Published var isRecording: Bool = false
     @Published var showPhotoOptions: Bool = false
-    @Published var photoSource: MLIngredientView.PhotoSource?
+    @Published var photoSource: PhotoSource?
     @Published var isSavedAlertPresented: Bool = false
     @Published var progressMessage: String = ""
     @Published var showingProgressView: Bool = false
-    
+    @Published var showPhotoPermissionAlert: Bool = false
+    @Published var photoPermissionDenied: Bool = false
+    @Published var showCameraPermissionAlert: Bool = false
+    @Published var cameraPermissionDenied: Bool = false
     // MARK: - Dependencies
     private var speechRecognizer: SFSpeechRecognizer?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
     
-    // MARK: - Callbacks
+    // Firestore Service
+    private let firestoreService = FirestoreService()
+    
+    // Callbacks
     var onSave: ((Ingredient) -> Void)?
     
-    // MARK: - Initialization
-    init(speechLocale: Locale = Locale(identifier: "zh-Hant")) {
-        self.speechRecognizer = SFSpeechRecognizer(locale: speechLocale)
-        requestSpeechRecognitionAuthorization()
+    // Editing food item
+    var editingFoodItem: Ingredient?
+    var ingredient: Ingredient?
+   
+    init(editingFoodItem: Ingredient? = nil, onSave: ((Ingredient) -> Void)? = nil) {
+            self.onSave = onSave
+            self.ingredient = editingFoodItem
+
+            if let editingFoodItem = editingFoodItem {
+                self.recognizedText = editingFoodItem.name
+                self.quantity = String(editingFoodItem.quantity)
+                self.expirationDate = editingFoodItem.expirationDate
+                self.storageMethod = editingFoodItem.storageMethod
+                
+                // 加载已有的图片
+                if let existingImage = editingFoodItem.image {
+                    self.image = existingImage
+                } else if let imageURLString = editingFoodItem.imageURL, let url = URL(string: imageURLString) {
+                    loadImageFromURL(url)
+                }
+            }
+        }
+    
+    func loadImageFromURL(_ url: URL) {
+            // You can use SDWebImage to load the image
+            SDWebImageDownloader.shared.downloadImage(with: url) { [weak self] (image, data, error, finished) in
+                if let image = image {
+                    DispatchQueue.main.async {
+                        self?.image = image
+                    }
+                } else {
+                    print("Failed to load image from URL: \(error?.localizedDescription ?? "Unknown error")")
+                }
+            }
+        }
+    // MARK: - Camera Permission
+    func checkCameraPermission() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        switch status {
+        case .notDetermined:
+            DispatchQueue.main.async {
+                self.showCameraPermissionAlert = true
+            }
+        case .authorized:
+            DispatchQueue.main.async {
+                self.showPhotoOptions = true
+            }
+        case .denied, .restricted:
+            DispatchQueue.main.async {
+                self.cameraPermissionDenied = true
+            }
+        @unknown default:
+            break
+        }
     }
+
+    func requestCameraPermission() {
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+            DispatchQueue.main.async {
+                if granted {
+                    self.showPhotoOptions = true
+                } else {
+                    self.cameraPermissionDenied = true
+                }
+            }
+        }
+    }
+
+    
+    // MARK: - PhotoLibrary Permission
+    func checkPhotoLibraryPermission() {
+            let status = PHPhotoLibrary.authorizationStatus()
+            switch status {
+            case .notDetermined:
+                // 第一次請求權限，顯示自定義警告
+                DispatchQueue.main.async {
+                    self.showPhotoPermissionAlert = true
+                }
+            case .authorized, .limited:
+                // 已授權，直接顯示相片選項
+                DispatchQueue.main.async {
+                    self.showPhotoOptions = true
+                }
+            case .denied, .restricted:
+                // 權限被拒絕或受限，提示用戶前往設置
+                DispatchQueue.main.async {
+                    self.photoPermissionDenied = true
+                }
+            @unknown default:
+                break
+            }
+        }
+        
+        func requestPhotoLibraryPermission() {
+            PHPhotoLibrary.requestAuthorization { status in
+                switch status {
+                case .authorized, .limited:
+                    DispatchQueue.main.async {
+                        self.showPhotoOptions = true
+                    }
+                case .denied, .restricted, .notDetermined:
+                    DispatchQueue.main.async {
+                        self.photoPermissionDenied = true
+                    }
+                @unknown default:
+                    break
+                }
+            }
+        }
+
     
     // MARK: - Speech Recognition
     func requestSpeechRecognitionAuthorization() {
@@ -116,28 +238,29 @@ class MLIngredientViewModel: ObservableObject {
             print("Failed to load model")
             return
         }
-
+        
         let request = VNCoreMLRequest(model: model) { [weak self] request, error in
             guard let results = request.results as? [VNClassificationObservation],
                   let topResult = results.first else {
                 print("No results: \(error?.localizedDescription ?? "Unknown error")")
                 return
             }
-
+            
             DispatchQueue.main.async {
                 let label = topResult.identifier
                 // Translate the label from the dictionary
-                let translatedLabel = TranslationDictionary.foodNames[label] ?? "未知"
+                let translatedLabel = TranslationDictionary.foodNames[label] ?? "Unknown"
                 // Update UI with the translated label
                 self?.recognizedText = translatedLabel
+//                self?.recognizedText = label.isEmpty ? "Unknown" : label
             }
         }
-
+        
         guard let ciImage = CIImage(image: image) else {
             print("Unable to create \(CIImage.self) from \(image).")
             return
         }
-
+        
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
         DispatchQueue.global(qos: .userInitiated).async {
             do {
@@ -154,29 +277,29 @@ class MLIngredientViewModel: ObservableObject {
             recognizedText = "Cannot process the photo"
             return
         }
-
+        
         let request = VNRecognizeTextRequest { [weak self] (request, error) in
             if let error = error {
                 self?.recognizedText = "文字識別錯誤: \(error.localizedDescription)"
                 return
             }
-
+            
             guard let observations = request.results as? [VNRecognizedTextObservation] else {
                 self?.recognizedText = "無法識別文字"
                 return
             }
-
+            
             let recognizedStrings = observations.compactMap { $0.topCandidates(1).first?.string }
             DispatchQueue.main.async {
                 self?.recognizedText = recognizedStrings.joined(separator: "\n")
             }
         }
-
+        
         request.recognitionLanguages = ["zh-Hant", "en-US"]
         request.recognitionLevel = .accurate
-
+        
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
-
+        
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 try handler.perform([request])
@@ -190,34 +313,50 @@ class MLIngredientViewModel: ObservableObject {
     
     // MARK: - Save Ingredient
     func saveIngredient() {
-        let defaultAmount = 1.0  // 示例值
-        let defaultUnit = "unit"    // 示例单位
+            guard let quantityValue = Double(quantity) else {
+                // 处理无效的数量输入
+                return
+            }
 
-        // 创建 Ingredient 实例
-        var newIngredient = Ingredient(
-            name: recognizedText,
-            quantity: Double(Int(quantity ?? "1.00") ?? 1),
-            amount: defaultAmount,
-            unit: defaultUnit,
-            expirationDate: expirationDate,
-            storageMethod: storageMethod,
-            imageBase64: image?.pngData()?.base64EncodedString()
-        )
-        
-        isSavedAlertPresented = true
-        onSave?(newIngredient)
+            let ingredient = Ingredient(
+                id: self.ingredient?.id ?? UUID().uuidString, // 如果有已有的 id，则使用它；否则生成新的
+                name: recognizedText,
+                quantity: quantityValue,
+                amount: 1.0, // 根据需要调整
+                unit: "unit", // 根据需要调整
+                expirationDate: expirationDate,
+                storageMethod: storageMethod,
+                image: image,
+                imageURL: self.ingredient?.imageURL // 保留已有的 imageURL
+            )
+
+            onSave?(ingredient)
+        // Clear form
         clearForm()
+
+        // Show success alert
+        isSavedAlertPresented = true
     }
-    
+
+    // 計算剩餘天數的輔助方法
+    func calculateDaysRemaining(expirationDate: Date?) -> Int {
+        guard let expirationDate = expirationDate else { return 0 }
+        let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: expirationDate).day ?? 0
+        return max(0, daysRemaining)
+    }
+
+
+
     // MARK: - Clear Form
     func clearForm() {
         recognizedText = ""
-        quantity = "1"
+        quantity = "1.00"
         expirationDate = Date()
         image = nil
         storageMethod = "Fridge"
     }
 }
+
 
 //import SwiftUI
 //

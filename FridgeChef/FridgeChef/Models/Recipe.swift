@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Models
-struct ParsedIngredient: Identifiable, CustomStringConvertible {
+struct ParsedIngredient: Identifiable, Codable, CustomStringConvertible {
     let id = UUID()
     let name: String
     let quantity: Double
@@ -20,8 +20,8 @@ struct ParsedIngredient: Identifiable, CustomStringConvertible {
     }
 }
 
-struct ParsedRecipe: Identifiable, CustomStringConvertible {
-    let id = UUID()
+struct ParsedRecipe: Codable, CustomStringConvertible {
+//    let id = UUID()
     let title: String?
     let ingredients: [ParsedIngredient]
     let steps: [String]
@@ -33,7 +33,6 @@ struct ParsedRecipe: Identifiable, CustomStringConvertible {
     var description: String {
         return """
         ParsedRecipe(
-            id: \(id),
             title: \(title ?? "nil"),
             ingredients: \(ingredients),
             steps: \(steps),
@@ -44,23 +43,6 @@ struct ParsedRecipe: Identifiable, CustomStringConvertible {
         """
     }
 }
-
-//struct ParsedIngredient: Identifiable {
-//    let id = UUID()
-//    let name: String
-//    let quantity: Double
-//    let unit: String
-//    let expirationDate: Date
-//}
-//
-//struct ParsedRecipe {
-//    var title: String?
-//    var ingredients: [ParsedIngredient]
-//    var steps: [String]
-//    var link: String?
-//    var tips: String?
-//    var unparsedContent: String?
-//}
 
 struct Recipe: Identifiable, Codable, Equatable {
     let id: Int
@@ -94,6 +76,33 @@ struct RecipeSearchResponse: Codable {
     }
 }
 
+//struct RecipeDetails: Codable, Identifiable {
+//    let id: Int
+//    let title: String
+//    let image: String?
+//    var servings: Int
+//    let readyInMinutes: Int
+//    let sourceUrl: String?
+//    let summary: String?
+//    let cuisines: [String]
+//    let dishTypes: [String]
+//    let diets: [String]
+//    let instructions: String?
+//    var extendedIngredients: [DetailIngredient]
+//    let analyzedInstructions: [AnalyzedInstruction]?
+//    var isFavorite: Bool?  // 添加这个属性来标记是否被收藏
+//    
+//    mutating func adjustIngredientAmounts(forNewServings newServings: Int) {
+//        let ratio = Double(newServings) / Double(servings)
+//        extendedIngredients = extendedIngredients.map { ingredient in
+//            var newIngredient = ingredient
+//            newIngredient.amount *= ratio
+//            return newIngredient
+//        }
+//        servings = newServings
+//    }
+//}
+
 struct RecipeDetails: Codable, Identifiable {
     let id: Int
     let title: String
@@ -108,7 +117,29 @@ struct RecipeDetails: Codable, Identifiable {
     let instructions: String?
     var extendedIngredients: [DetailIngredient]
     let analyzedInstructions: [AnalyzedInstruction]?
-    var isFavorite: Bool?  // 添加这个属性来标记是否被收藏
+    var isFavorite: Bool = false  // 修改為非可選型別，默認為 false
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, image, servings, readyInMinutes, sourceUrl, summary, cuisines, dishTypes, diets, instructions, extendedIngredients, analyzedInstructions
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        image = try container.decodeIfPresent(String.self, forKey: .image)
+        servings = try container.decode(Int.self, forKey: .servings)
+        readyInMinutes = try container.decode(Int.self, forKey: .readyInMinutes)
+        sourceUrl = try container.decodeIfPresent(String.self, forKey: .sourceUrl)
+        summary = try container.decodeIfPresent(String.self, forKey: .summary)
+        cuisines = try container.decode([String].self, forKey: .cuisines)
+        dishTypes = try container.decode([String].self, forKey: .dishTypes)
+        diets = try container.decode([String].self, forKey: .diets)
+        instructions = try container.decodeIfPresent(String.self, forKey: .instructions)
+        extendedIngredients = try container.decode([DetailIngredient].self, forKey: .extendedIngredients)
+        analyzedInstructions = try container.decodeIfPresent([AnalyzedInstruction].self, forKey: .analyzedInstructions)
+        isFavorite = false  // 默認為 false，後續由 ViewModel 設置
+    }
     
     mutating func adjustIngredientAmounts(forNewServings newServings: Int) {
         let ratio = Double(newServings) / Double(servings)

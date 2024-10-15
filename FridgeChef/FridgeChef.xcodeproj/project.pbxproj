@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C0F699D2CB8D566004D481F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CD4F7B22C98032300F4417D /* GoogleService-Info.plist */; };
+		1C0F699F2CB8FFE0004D481F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F699E2CB8FFE0004D481F /* FirebaseAnalytics */; };
+		1C0F69A12CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69A02CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion */; };
+		1C0F69A32CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69A22CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		1C0F69A52CB8FFE0004D481F /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69A42CB8FFE0004D481F /* FirebaseAppCheck */; };
+		1C0F69A72CB8FFE0004D481F /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69A62CB8FFE0004D481F /* FirebaseAppDistribution-Beta */; };
+		1C0F69AC2CBA44C5004D481F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69AB2CBA44C5004D481F /* SDWebImageSwiftUI */; };
+		1C0F69AE2CBA454B004D481F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69AD2CBA454B004D481F /* SDWebImageSwiftUI */; };
 		1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */; };
 		1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19F1A22C94372A0094FBEA /* FridgePageView.swift */; };
 		1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C19F1A72C94372B0094FBEA /* Preview Assets.xcassets */; };
@@ -64,7 +72,6 @@
 		1C7F45F22C9B146100846B44 /* CornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F12C9B146100846B44 /* CornerRadius.swift */; };
 		1C7F45F42C9BD96300846B44 /* FridgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F32C9BD96300846B44 /* FridgeView.swift */; };
 		1C7F45F62C9C17AE00846B44 /* DatePickerTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45F52C9C17AE00846B44 /* DatePickerTextField.swift */; };
-		1C8A74012C9FFC6C0005E54D /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1C8A74002C9FFC6C0005E54D /* MessageKit */; };
 		1C8A74092CA000980005E54D /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A74082CA000980005E54D /* ChatView.swift */; };
 		1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1C8DC5392C99C5210041A2A2 /* Kingfisher */; };
 		1C8DC55A2C99E0470041A2A2 /* MLIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8DC5592C99E0470041A2A2 /* MLIngredientView.swift */; };
@@ -95,6 +102,7 @@
 		1CAF43042CACBFA90022D393 /* RecipeClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43012CACBFA90022D393 /* RecipeClass.swift */; };
 		1CAF43082CAD3B650022D393 /* BulletPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43072CAD3B650022D393 /* BulletPointView.swift */; };
 		1CAF430A2CAD52EE0022D393 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF43092CAD52EE0022D393 /* String+Extensions.swift */; };
+		1CB019142CBCE56F00156C81 /* GroceryListStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB019132CBCE56F00156C81 /* GroceryListStore.swift */; };
 		1CB14A0D2CAC096400399AAF /* TranslationAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */; };
 		1CB5BC892C943D36006C66E5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC882C943D36006C66E5 /* User.swift */; };
 		1CB5BC8C2C943D74006C66E5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8B2C943D74006C66E5 /* FirebaseFirestore */; };
@@ -114,8 +122,41 @@
 		1CD4F7C32C981DDE00F4417D /* RecipeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */; };
 		1CDF1DCC2CA161B0005BD251 /* ChatGPTAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */; };
 		1CF493AC2CB4CC9D00BEAFB5 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493AB2CB4CC9D00BEAFB5 /* TutorialView.swift */; };
+		1CF493B52CB538D300BEAFB5 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF493B42CB538D300BEAFB5 /* WidgetKit.framework */; };
+		1CF493B72CB538D300BEAFB5 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CF493B62CB538D300BEAFB5 /* SwiftUI.framework */; };
+		1CF493BA2CB538D300BEAFB5 /* FridgeChefWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493B92CB538D300BEAFB5 /* FridgeChefWidgetBundle.swift */; };
+		1CF493BC2CB538D300BEAFB5 /* FridgeChefWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493BB2CB538D300BEAFB5 /* FridgeChefWidgetLiveActivity.swift */; };
+		1CF493BE2CB538D300BEAFB5 /* FridgeChefWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493BD2CB538D300BEAFB5 /* FridgeChefWidget.swift */; };
+		1CF493C02CB538D500BEAFB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CF493BF2CB538D500BEAFB5 /* Assets.xcassets */; };
+		1CF493C42CB538D500BEAFB5 /* FridgeChefWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1CF493B32CB538D300BEAFB5 /* FridgeChefWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1CF493CC2CB539C400BEAFB5 /* FridgeChefEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CF493CB2CB539C400BEAFB5 /* FridgeChefEntry.swift */; };
+		1CFD16962CBE14920055AEB5 /* RecipeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFD16952CBE14920055AEB5 /* RecipeListView.swift */; };
 		1CFFB0A82CB0E1A1007AF8FC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CFFB0A72CB0E1A1007AF8FC /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1CF493C22CB538D500BEAFB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1C19F1952C94372A0094FBEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1CF493B22CB538D300BEAFB5;
+			remoteInfo = FridgeChefWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1CF493C82CB538D500BEAFB5 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				1CF493C42CB538D500BEAFB5 /* FridgeChefWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1C19F19D2C94372A0094FBEA /* FridgeChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FridgeChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -141,6 +182,7 @@
 		1C4AD14A2CAA3B5100C90905 /* FridgeChef.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FridgeChef.entitlements; sourceTree = "<group>"; };
 		1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionView.swift; sourceTree = "<group>"; };
 		1C59F54A2CB37589002451A8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1C5D43382CB65AF300A06927 /* FridgeChefWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FridgeChefWidgetExtension.entitlements; sourceTree = "<group>"; };
 		1C6CC3872C984C89001C4643 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = LoginVideo.mp4; sourceTree = "<group>"; };
 		1C6CC38E2C985227001C4643 /* LoginDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDetailView.swift; sourceTree = "<group>"; };
@@ -201,6 +243,7 @@
 		1CAF43012CACBFA90022D393 /* RecipeClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeClass.swift; sourceTree = "<group>"; };
 		1CAF43072CAD3B650022D393 /* BulletPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletPointView.swift; sourceTree = "<group>"; };
 		1CAF43092CAD52EE0022D393 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		1CB019132CBCE56F00156C81 /* GroceryListStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListStore.swift; sourceTree = "<group>"; };
 		1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationAPI.swift; sourceTree = "<group>"; };
 		1CB5BC882C943D36006C66E5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1CB5BC912C943DE4006C66E5 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
@@ -214,6 +257,16 @@
 		1CD4F7C22C981DDE00F4417D /* RecipeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViewModel.swift; sourceTree = "<group>"; };
 		1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatGPTAPI.swift; sourceTree = "<group>"; };
 		1CF493AB2CB4CC9D00BEAFB5 /* TutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
+		1CF493B32CB538D300BEAFB5 /* FridgeChefWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FridgeChefWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1CF493B42CB538D300BEAFB5 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		1CF493B62CB538D300BEAFB5 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		1CF493B92CB538D300BEAFB5 /* FridgeChefWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeChefWidgetBundle.swift; sourceTree = "<group>"; };
+		1CF493BB2CB538D300BEAFB5 /* FridgeChefWidgetLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeChefWidgetLiveActivity.swift; sourceTree = "<group>"; };
+		1CF493BD2CB538D300BEAFB5 /* FridgeChefWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeChefWidget.swift; sourceTree = "<group>"; };
+		1CF493BF2CB538D500BEAFB5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1CF493C12CB538D500BEAFB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1CF493CB2CB539C400BEAFB5 /* FridgeChefEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeChefEntry.swift; sourceTree = "<group>"; };
+		1CFD16952CBE14920055AEB5 /* RecipeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeListView.swift; sourceTree = "<group>"; };
 		1CFFB0A72CB0E1A1007AF8FC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -222,10 +275,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C0F69AE2CBA454B004D481F /* SDWebImageSwiftUI in Frameworks */,
 				1CA8CE912C9E854400C9CADD /* CoreLocation.framework in Frameworks */,
 				1C8DC53A2C99C5210041A2A2 /* Kingfisher in Frameworks */,
 				1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */,
-				1C8A74012C9FFC6C0005E54D /* MessageKit in Frameworks */,
 				1C19F1B62C943B290094FBEA /* FirebaseAppCheck in Frameworks */,
 				1C75CCAB2CA2E1690072D55C /* IQKeyboardManagerSwift in Frameworks */,
 				1CB5BCA62C94441D006C66E5 /* FirebaseAuthCombine-Community in Frameworks */,
@@ -240,14 +293,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1CF493B02CB538D300BEAFB5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1C0F69A72CB8FFE0004D481F /* FirebaseAppDistribution-Beta in Frameworks */,
+				1CF493B72CB538D300BEAFB5 /* SwiftUI.framework in Frameworks */,
+				1C0F69A32CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				1CF493B52CB538D300BEAFB5 /* WidgetKit.framework in Frameworks */,
+				1C0F69AC2CBA44C5004D481F /* SDWebImageSwiftUI in Frameworks */,
+				1C0F699F2CB8FFE0004D481F /* FirebaseAnalytics in Frameworks */,
+				1C0F69A52CB8FFE0004D481F /* FirebaseAppCheck in Frameworks */,
+				1C0F69A12CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		1C19F1942C94372A0094FBEA = {
 			isa = PBXGroup;
 			children = (
+				1C5D43382CB65AF300A06927 /* FridgeChefWidgetExtension.entitlements */,
 				1CD4F7A22C97EDA100F4417D /* APIKey */,
 				1C19F19F2C94372A0094FBEA /* FridgeChef */,
+				1CF493B82CB538D300BEAFB5 /* FridgeChefWidget */,
 				1C19F19E2C94372A0094FBEA /* Products */,
 				1CB5BC8A2C943D74006C66E5 /* Frameworks */,
 			);
@@ -257,6 +327,7 @@
 			isa = PBXGroup;
 			children = (
 				1C19F19D2C94372A0094FBEA /* FridgeChef.app */,
+				1CF493B32CB538D300BEAFB5 /* FridgeChefWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -295,6 +366,7 @@
 			isa = PBXGroup;
 			children = (
 				1C2DD57E2C9D68D6000173F6 /* RecipeMainView.swift */,
+				1CFD16952CBE14920055AEB5 /* RecipeListView.swift */,
 				1C9568C42CA8290B006181F9 /* RecipeSearchViewModel.swift */,
 				1C9568C72CA82944006181F9 /* RecipeDetailView.swift */,
 				1C9568C62CA82944006181F9 /* RecipeRowView.swift */,
@@ -442,6 +514,8 @@
 				1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */,
 				1CB5BC912C943DE4006C66E5 /* Ingredient.swift */,
 				1CB5BC952C943E19006C66E5 /* FoodItem.swift */,
+				1CB019132CBCE56F00156C81 /* GroceryListStore.swift */,
+				1CF493CB2CB539C400BEAFB5 /* FridgeChefEntry.swift */,
 				1C7F45CB2C9A787A00846B44 /* RecommendRecipe.swift */,
 				1C1E9A0A2CA7AF8C002A15C8 /* Recipe.swift */,
 			);
@@ -452,6 +526,8 @@
 			isa = PBXGroup;
 			children = (
 				1CA8CE902C9E854300C9CADD /* CoreLocation.framework */,
+				1CF493B42CB538D300BEAFB5 /* WidgetKit.framework */,
+				1CF493B62CB538D300BEAFB5 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -530,6 +606,18 @@
 			path = APIKey;
 			sourceTree = "<group>";
 		};
+		1CF493B82CB538D300BEAFB5 /* FridgeChefWidget */ = {
+			isa = PBXGroup;
+			children = (
+				1CF493B92CB538D300BEAFB5 /* FridgeChefWidgetBundle.swift */,
+				1CF493BB2CB538D300BEAFB5 /* FridgeChefWidgetLiveActivity.swift */,
+				1CF493BD2CB538D300BEAFB5 /* FridgeChefWidget.swift */,
+				1CF493BF2CB538D500BEAFB5 /* Assets.xcassets */,
+				1CF493C12CB538D500BEAFB5 /* Info.plist */,
+			);
+			path = FridgeChefWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -542,10 +630,12 @@
 				1C19F1992C94372A0094FBEA /* Sources */,
 				1C19F19A2C94372A0094FBEA /* Frameworks */,
 				1C19F19B2C94372A0094FBEA /* Resources */,
+				1CF493C82CB538D500BEAFB5 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1CF493C32CB538D500BEAFB5 /* PBXTargetDependency */,
 			);
 			name = FridgeChef;
 			packageProductDependencies = (
@@ -561,12 +651,37 @@
 				1CB5BCA72C944441006C66E5 /* FirebaseStorage */,
 				1CB5BCA92C944441006C66E5 /* FirebaseStorageCombine-Community */,
 				1C8DC5392C99C5210041A2A2 /* Kingfisher */,
-				1C8A74002C9FFC6C0005E54D /* MessageKit */,
 				1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */,
+				1C0F69AD2CBA454B004D481F /* SDWebImageSwiftUI */,
 			);
 			productName = FridgeChef;
 			productReference = 1C19F19D2C94372A0094FBEA /* FridgeChef.app */;
 			productType = "com.apple.product-type.application";
+		};
+		1CF493B22CB538D300BEAFB5 /* FridgeChefWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CF493C52CB538D500BEAFB5 /* Build configuration list for PBXNativeTarget "FridgeChefWidgetExtension" */;
+			buildPhases = (
+				1CF493AF2CB538D300BEAFB5 /* Sources */,
+				1CF493B02CB538D300BEAFB5 /* Frameworks */,
+				1CF493B12CB538D300BEAFB5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FridgeChefWidgetExtension;
+			packageProductDependencies = (
+				1C0F699E2CB8FFE0004D481F /* FirebaseAnalytics */,
+				1C0F69A02CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion */,
+				1C0F69A22CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport */,
+				1C0F69A42CB8FFE0004D481F /* FirebaseAppCheck */,
+				1C0F69A62CB8FFE0004D481F /* FirebaseAppDistribution-Beta */,
+				1C0F69AB2CBA44C5004D481F /* SDWebImageSwiftUI */,
+			);
+			productName = FridgeChefWidgetExtension;
+			productReference = 1CF493B32CB538D300BEAFB5 /* FridgeChefWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -579,6 +694,9 @@
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					1C19F19C2C94372A0094FBEA = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					1CF493B22CB538D300BEAFB5 = {
 						CreatedOnToolsVersion = 15.4;
 					};
 				};
@@ -597,12 +715,14 @@
 				1C8DC5382C99C5210041A2A2 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */,
 				1C75CCA92CA2E1690072D55C /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
+				1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			productRefGroup = 1C19F19E2C94372A0094FBEA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				1C19F19C2C94372A0094FBEA /* FridgeChef */,
+				1CF493B22CB538D300BEAFB5 /* FridgeChefWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -622,6 +742,15 @@
 				1CD4F7B32C98032300F4417D /* GoogleService-Info.plist in Resources */,
 				1C4490A62CB24DC200675765 /* ZenLoop-Regular.ttf in Resources */,
 				1C2DD57B2C9D68C8000173F6 /* Hellix-Bold.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1CF493B12CB538D300BEAFB5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CF493C02CB538D500BEAFB5 /* Assets.xcassets in Resources */,
+				1C0F699D2CB8D566004D481F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -685,6 +814,7 @@
 				1CAF42FF2CACBF9C0022D393 /* DefaultRecipeCard.swift in Sources */,
 				1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */,
 				1C7F45B52C9A4BC000846B44 /* UIColor+Ext.swift in Sources */,
+				1CFD16962CBE14920055AEB5 /* RecipeListView.swift in Sources */,
 				1CAF42FE2CACBF9C0022D393 /* DefaultHorizontalScrolling.swift in Sources */,
 				1C92AA652C9C7CBA00194542 /* MicButtonView.swift in Sources */,
 				1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */,
@@ -746,6 +876,7 @@
 				1C6CC39B2C993698001C4643 /* ImagePicker.swift in Sources */,
 				1C6D2D872CB00B65000C49DC /* HomeNavBarView.swift in Sources */,
 				1C6CC3882C984C89001C4643 /* LoginView.swift in Sources */,
+				1CB019142CBCE56F00156C81 /* GroceryListStore.swift in Sources */,
 				1C6D2D892CB00B65000C49DC /* RecipeCollectionView.swift in Sources */,
 				1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */,
 				1C6D2D8B2CB00B65000C49DC /* SectionTitleView.swift in Sources */,
@@ -759,7 +890,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1CF493AF2CB538D300BEAFB5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CF493BE2CB538D300BEAFB5 /* FridgeChefWidget.swift in Sources */,
+				1CF493BA2CB538D300BEAFB5 /* FridgeChefWidgetBundle.swift in Sources */,
+				1CF493BC2CB538D300BEAFB5 /* FridgeChefWidgetLiveActivity.swift in Sources */,
+				1CF493CC2CB539C400BEAFB5 /* FridgeChefEntry.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1CF493C32CB538D500BEAFB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1CF493B22CB538D300BEAFB5 /* FridgeChefWidgetExtension */;
+			targetProxy = 1CF493C22CB538D500BEAFB5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1C19F1A92C94372B0094FBEA /* Debug */ = {
@@ -884,9 +1034,11 @@
 		1C19F1AC2C94372B0094FBEA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = FridgeChef/FridgeChef.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FridgeChef/Preview Content\"";
@@ -895,11 +1047,11 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FridgeChef/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "此應用需要使用相機來進行掃描識別。";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "我們需要在後台訪問您的位置來為您持續提供服務。";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "我們需要訪問您的位置來提供附近的服務和功能。";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "此應用需要使用麥克風來進行語音識別。";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "此應用需要使用麥克風來進行語音識別。";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need to use the camera to perform image recognition.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need to use your location to provide weather and related services.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to use your approximate location to provide services and products.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need to use the microphone to perform speech recognition.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need to use your microphone to perform speech recognition.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -913,18 +1065,23 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vickyoyaya.FridgeChef;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		1C19F1AD2C94372B0094FBEA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = FridgeChef/FridgeChef.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FridgeChef/Preview Content\"";
@@ -933,11 +1090,11 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FridgeChef/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "此應用需要使用相機來進行掃描識別。";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "我們需要在後台訪問您的位置來為您持續提供服務。";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "我們需要訪問您的位置來提供附近的服務和功能。";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "此應用需要使用麥克風來進行語音識別。";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "此應用需要使用麥克風來進行語音識別。";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need to use the camera to perform image recognition.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need to use your location to provide weather and related services.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need to use your approximate location to provide services and products.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need to use the microphone to perform speech recognition.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need to use your microphone to perform speech recognition.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -951,6 +1108,65 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vickyoyaya.FridgeChef;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		1CF493C62CB538D500BEAFB5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FridgeChefWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8GZQ47DW9W;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FridgeChefWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FridgeChefWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vickyoyaya.FridgeChef.FridgeChefWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1CF493C72CB538D500BEAFB5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FridgeChefWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8GZQ47DW9W;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FridgeChefWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FridgeChefWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vickyoyaya.FridgeChef.FridgeChefWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -978,9 +1194,26 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		1CF493C52CB538D500BEAFB5 /* Build configuration list for PBXNativeTarget "FridgeChefWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1CF493C62CB538D500BEAFB5 /* Debug */,
+				1CF493C72CB538D500BEAFB5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.2;
+			};
+		};
 		1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -1016,6 +1249,41 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1C0F699E2CB8FFE0004D481F /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		1C0F69A02CB8FFE0004D481F /* FirebaseAnalyticsOnDeviceConversion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsOnDeviceConversion;
+		};
+		1C0F69A22CB8FFE0004D481F /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+		1C0F69A42CB8FFE0004D481F /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
+		1C0F69A62CB8FFE0004D481F /* FirebaseAppDistribution-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseAppDistribution-Beta";
+		};
+		1C0F69AB2CBA44C5004D481F /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+		1C0F69AD2CBA454B004D481F /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
 		1C19F1AF2C943B290094FBEA /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -1045,11 +1313,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1C75CCA92CA2E1690072D55C /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
 			productName = IQKeyboardManagerSwift;
-		};
-		1C8A74002C9FFC6C0005E54D /* MessageKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1C8A73FF2C9FFC6C0005E54D /* XCRemoteSwiftPackageReference "MessageKit" */;
-			productName = MessageKit;
 		};
 		1C8DC5392C99C5210041A2A2 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;

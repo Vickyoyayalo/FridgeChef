@@ -50,7 +50,7 @@ class RecognitionService: ObservableObject {
             DispatchQueue.main.async {
                 // 取得辨識結果並返回
                 let label = topResult.identifier
-                let translatedLabel = TranslationDictionary.foodNames[label] ?? "未知食物"
+                let translatedLabel = TranslationDictionary.foodNames[label] ?? "Unknown Food"
                 completion(translatedLabel)
             }
         }

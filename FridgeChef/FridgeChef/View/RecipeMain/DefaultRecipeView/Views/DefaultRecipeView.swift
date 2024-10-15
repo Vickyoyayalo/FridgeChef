@@ -62,6 +62,7 @@ struct DefaultRecipeView: View {
 
                 }
             }
+        .scrollIndicators(.hidden)
 //            .background(.ultraThinMaterial)
 //            .navigationTitle("Recipes")
         }

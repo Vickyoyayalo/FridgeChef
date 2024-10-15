@@ -24,7 +24,7 @@ class UserViewModel: ObservableObject {
 
     private var alertService = AlertService()
     private var firestoreService = FirestoreService()
-
+    
     func signUpUser() {
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] result, error in
             guard let self = self else { return }

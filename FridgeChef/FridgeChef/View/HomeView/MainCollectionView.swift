@@ -4,31 +4,7 @@
 //
 //  Created by Vickyhereiam on 2024/9/30.
 //
-import SwiftUI
 
-struct RecipeListView: View {
-    @EnvironmentObject var viewModel: RecipeSearchViewModel
-    @Binding var selectedRecipe: Recipe?
-    @Binding var searchText: String  // 接收搜索文字
-    
-    var body: some View {
-        // 過濾 Favorite 並根據 searchText 進行篩選
-        let filteredRecipes = viewModel.recipes.filter { $0.isFavorite && (searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText)) }
-        let displayedRecipes = filteredRecipes.isEmpty ? [RecipeCollectionView_Previews.sampleRecipe] : filteredRecipes
-        
-        ForEach(displayedRecipes) { recipe in
-            Button(action: {
-                selectedRecipe = recipe
-            }) {
-                RecipeCollectionView(recipe: recipe, toggleFavorite: {
-                    viewModel.toggleFavorite(for: recipe.id)
-                })
-                .padding(.horizontal)
-                .padding(.vertical, 4)
-            }
-        }
-    }
-}
 
 import SwiftUI
 import FirebaseAuth
@@ -46,7 +22,6 @@ struct MainCollectionView: View {
     @State private var selectedRecipe: Recipe?
     @State private var offsetX: CGFloat = -20
     @State private var isScaledUp = false
-    @State private var showClickMe = true // 控制 "Click me" 的動畫狀態
     
     var body: some View {
         NavigationStack {
@@ -56,27 +31,12 @@ struct MainCollectionView: View {
 
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 16) {
-                        // 標題文字
-                        Text("What would you like to cook today?")
-                            .padding(.horizontal)
-//                            .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                            .foregroundColor(.orange)
-                            .font(.custom("Menlo-BoldItalic", size: 25))
-                            
-//                            .offset(x: offsetX) // 使用 offset 根據 x 軸偏移
-//                            .onAppear {
-//                                // 當視圖顯示時開始動畫
-//                                withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
-//                                    offsetX = 20 // 移動到右側
-//                                }
-//                            }
 
                         // 新鮮食譜視圖
                         SectionTitleView(title: "⏰ Fridge Updates")
                             .padding(.horizontal)
 
                         FridgeReminderView(editingItem: $editingItem)
-//                            .padding(.horizontal)
 
                         // Favorite Recipe 顯示區域
                         SectionTitleView(title: "📚 Favorite Recipe")
@@ -85,7 +45,7 @@ struct MainCollectionView: View {
                         // 搜索與篩選區域
                         SearchAndFilterView(searchText: $searchText)
                             .padding(.horizontal)
-
+                        
                         // 使用子視圖 RecipeListView 來顯示篩選後的食譜列表
                         RecipeListView(selectedRecipe: $selectedRecipe, searchText: $searchText)
                             .sheet(item: $selectedRecipe, onDismiss: {
@@ -99,13 +59,17 @@ struct MainCollectionView: View {
                             }
                             .animation(nil) // 取消不必要的动画
                     }
+                    .onAppear {
+                        viewModel.loadFavorites()
+                    }
                     .padding(.top)
                 }
                 .scrollIndicators(.hidden)
-                .navigationBarTitleDisplayMode(.automatic)
-//                .navigationTitle("Bonjour, Vicky🍻")
+                .padding(.top, 20)
+                .scrollIndicators(.hidden)
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItem(placement: .navigationBarTrailing) {
                         menuButton
                     }
 
@@ -117,13 +81,17 @@ struct MainCollectionView: View {
                             .padding(.top)
                     }
 
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        notificationButton
-                    }
+//                    ToolbarItem(placement: .navigationBarLeading) {
+//                        notificationButton
+//                    }
                 }
                 .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
-
+                
                 floatingButton
+            }
+            .onAppear {
+                // Call loadFavorites() to load the user's favorite recipes from Firestore
+                viewModel.loadFavorites()
             }
             .sheet(isPresented: $showingLogoutSheet) {
                 LogoutSheetView()
@@ -184,35 +152,20 @@ struct MainCollectionView: View {
             Button(action: {
                    isShowingGameView = true
                }) {
-                   Image("himonster")
+                   Image("clickmemonster")
                        .resizable()
                        .scaledToFit()
-                       .frame(width: 120, height: 120)
+                       .frame(width: 130, height: 130)
                        .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
                }
                .padding(.trailing, -10)
-               .padding(.top, 50)
+               .padding(.top, 320)
                .scaleEffect(isScaledUp ? 1.0 : 0.8) // 根據狀態縮放
                .onAppear {
-                   withAnimation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                   withAnimation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
                        isScaledUp.toggle() // 切換縮放狀態
                    }
             }
-//             "Click me" Text
-            Text("Click me")
-                .font(.custom("Menlo-BoldItalic", size: 10))
-                .fontWeight(.bold)
-                .foregroundColor(.red)
-                .opacity(showClickMe ? 1 : 0) // 根據動畫狀態控制透明度
-                .scaleEffect(showClickMe ? 1.2 : 1.0) // 放大縮小效果
-                .shadow(radius: /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
-                .offset(x: 0, y: -30) // 調整 "Click me" 的位置
-                .onAppear {
-                    withAnimation(
-                        Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
-                            showClickMe.toggle() // 閃爍動畫
-                        }
-                }
         }
     }
 

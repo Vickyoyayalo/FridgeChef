@@ -86,7 +86,7 @@ struct LoginDetailView: View {
                     
                     // 分隔线
                     Text("Or sign up with")
-                        .font(.subheadline)
+                        .font(.custom("ArialRoundedMTBold", size: 15))
                         .foregroundColor(.gray)
                     
                     // Apple Sign In
@@ -180,13 +180,36 @@ struct LoginDetailView: View {
                     showError(error.localizedDescription)
                     return
                 }
-                // Apple 登录成功
+                // Apple 登录成功，更新 logStatus
                 logStatus = true
                 isLoggedIn = false
                 navigateToHome = true
+                
+                // 確保用戶已登入並打印 UID
+                if let user = Auth.auth().currentUser {
+                    print("User is logged in with UID: \(user.uid)")
+                    
+                    // 將用戶資料保存到 Firestore
+                    let userData: [String: Any] = [
+                        "email": user.email ?? "No Email",
+                        "name": appleIDCredential.fullName?.givenName ?? "Anonymous"
+                    ]
+                    
+                    FirestoreService().saveUser(userData, uid: user.uid) { result in
+                        switch result {
+                        case .success():
+                            print("User data successfully saved to Firestore.")
+                        case .failure(let error):
+                            print("Failed to save user data: \(error.localizedDescription)")
+                        }
+                    }
+                } else {
+                    print("No user is currently logged in.")
+                }
             }
         }
     }
+
     
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)

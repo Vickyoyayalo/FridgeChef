@@ -32,7 +32,7 @@ class ChatGPTAPI {
     
     init(
         apiKey: String,
-        model: String = "gpt-4", // 使用 GPT-4 模型
+        model: String = "gpt-4", // 使用 gpt-4 模型gpt-3.5-turbo
         systemPrompt: String,
         temperature: Double = 0.5,
         top_p: Double = 0.9

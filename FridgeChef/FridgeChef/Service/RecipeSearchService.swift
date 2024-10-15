@@ -16,7 +16,7 @@ struct APIErrorResponse: Codable {
 
 // MARK: - RecipeSearchService
 class RecipeSearchService {
-    private let apiKey = "d9a7b48aefd9469c89381e5304712805"
+    private let apiKey = "4a29e9b60b6c49fe9eb3d0f869af70c8"
 //   Hannah 148f05700ea74f11ba0ec784cfbbd18f
 //   mine   d9a7b48aefd9469c89381e5304712805
 //   Arvin  4a29e9b60b6c49fe9eb3d0f869af70c8

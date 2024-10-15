@@ -92,14 +92,15 @@ struct DatePickerTextField: View {
                 .font(.custom("ArialRoundedMTBold", size: 18))
                 .environment(\.locale, Locale(identifier: "en-US"))  // 设置为繁体中文
             
-            Button(action: {
-                self.showingDatePicker = true
-            }) {
-                Image(systemName: "calendar.badge.plus")
-                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-            }
+//            Button(action: {
+//                self.showingDatePicker = true
+//            }) {
+//                Image(systemName: "calendar.badge.plus")
+//                    .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+//            }
         }
         .padding()
+        .contentShape(Rectangle())
         .background(Color.clear)  // 设置背景为透明
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingDatePicker) {
@@ -115,7 +116,8 @@ struct DatePickerTextField: View {
                     }
                 }
                 .padding()
-                .frame(maxWidth: 300)
+                .frame(width: 100, height: 50)
+                .contentShape(Rectangle())
                 .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 .foregroundColor(.white)
                 .font(.custom("ArialRoundedMTBold", size: 18))

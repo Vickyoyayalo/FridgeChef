@@ -19,7 +19,7 @@ struct MicButtonView: View {
             }
         }) {
             Image(systemName: recognitionService.isRecording ? "mic.fill" : "mic")
-                .font(.title)
+                .font(.custom("ArialRoundedMTBold", size: 16))
                 .foregroundColor(recognitionService.isRecording ? .red : .blue)
         }
     }

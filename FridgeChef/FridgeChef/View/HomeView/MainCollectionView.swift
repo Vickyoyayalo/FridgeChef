@@ -95,7 +95,7 @@ struct MainCollectionView: View {
             }
             .sheet(isPresented: $showingLogoutSheet) {
                 LogoutSheetView()
-                    .presentationDetents([.fraction(0.48)])
+                    .presentationDetents([.fraction(0.55)])
                     .edgesIgnoringSafeArea(.all)
             }
             .sheet(isPresented: $showingNotificationSheet) {
@@ -105,7 +105,7 @@ struct MainCollectionView: View {
 
                     notificationSheetContent
                 }
-                .presentationDetents([.fraction(0.48)])
+                .presentationDetents([.fraction(0.55)])
             }
             .sheet(isPresented: $isShowingGameView) {
                 WhatToEatGameView()

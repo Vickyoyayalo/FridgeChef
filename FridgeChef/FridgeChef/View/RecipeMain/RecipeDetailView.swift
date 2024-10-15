@@ -401,6 +401,7 @@ struct RecipeDetailView: View {
     @State private var ratingScore: Int = 5
     @State private var commentUser: String = ""
     @State private var commentText: String = ""
+    @State private var isLoading = false
     
     // 定義主要色調
     let primaryColor = Color(UIColor(named: "NavigationBarTitle") ?? .orange)
@@ -650,8 +651,25 @@ struct RecipeDetailView: View {
                         )
                     }
                 }
+                if isLoading {
+                    ProgressView()
+                        .scaleEffect(1.5) // 調整進度條大小
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black.opacity(0.4)) // 背景遮罩
+                        .edgesIgnoringSafeArea(.all)
+                }
             }
             .scrollIndicators(.hidden)
+        }
+    }
+    
+    private func toggleFavorite() {
+        isLoading = true  // 開始顯示進度條
+
+        viewModel.toggleFavorite(for: recipeId)
+        
+        DispatchQueue.main.async {
+            isLoading = false  // 完成後隱藏進度條
         }
     }
     

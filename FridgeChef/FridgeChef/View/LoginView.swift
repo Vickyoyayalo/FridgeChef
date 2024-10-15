@@ -88,7 +88,7 @@ struct LoginView: View {
                                 .opacity(0.8)  // 50%透明度
                             )
                             .cornerRadius(25)
-                            .shadow(radius: 10)
+                            .shadow(radius: 5)
                             .padding(.horizontal)
                             .contentShape(Rectangle())
                     }
@@ -106,7 +106,7 @@ struct LoginView: View {
                                 Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange)
                             )
                             .cornerRadius(25)
-                            .shadow(radius: 10)
+                            .shadow(radius: 5)
                             .padding(.horizontal)
                             .contentShape(Rectangle())
                     }

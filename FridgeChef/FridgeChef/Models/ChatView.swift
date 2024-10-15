@@ -1315,22 +1315,26 @@ struct MonsterAnimationView: View {
             Image("runmonster")
                 .resizable()
                 .frame(width: 100, height: 100)
-                .offset(x: moveRight ? 180 : -150) // runmonster 在 CHICKEN 後面追逐
+                .offset(x: moveRight ? 180 : -150) // runmonster 在 chicken 後面追逐
                 .animation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: moveRight)
             
             Image("RUNchicken")
                 .resizable()
                 .frame(width: 60, height: 60)
-                .offset(x: moveRight ? 120 : -280) // CHICKEN 從左到右移動
+                .offset(x: moveRight ? 120 : -280) // chicken 從左到右移動
                 .animation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: moveRight)
         }
         .onAppear {
-            moveRight = true
+            moveRight = true // 開始動畫
             print("Animation started")
         }
+        // 加入 onDisappear 或 onRemove 來保證動畫狀態保持
         .onDisappear {
+            moveRight = false // 停止動畫
             print("Animation stopped")
         }
+        // 取消不必要的動畫觸發
+        .animation(nil)
     }
 }
 

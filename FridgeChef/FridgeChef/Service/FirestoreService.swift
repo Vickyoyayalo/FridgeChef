@@ -101,7 +101,7 @@ class FirestoreService {
     // MARK: - FoodItem CRUD Operations
     
     func addFoodItem(forUser userId: String, foodItem: FoodItem, image: UIImage?, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Prepare data as dictionary
+        var hasCompleted = false // 添加标志位
         var data = [
             "id": foodItem.id,
             "name": foodItem.name,
@@ -111,48 +111,44 @@ class FirestoreService {
             "daysRemaining": foodItem.daysRemaining
         ] as [String: Any]
         
-        // Handle optional expirationDate
         if let expirationDate = foodItem.expirationDate {
             data["expirationDate"] = Timestamp(date: expirationDate)
         }
-        
+
         let foodItemRef = db.collection("users").document(userId).collection("foodItems").document(foodItem.id)
-        
-        // Upload image if available
+
         if let image = image {
             let imagePath = "users/\(userId)/foodItems/\(foodItem.id)/image.jpg"
             uploadImage(image, path: imagePath) { result in
+                guard !hasCompleted else { return } // 检查标志位，避免重复触发
                 switch result {
                 case .success(let url):
                     data["imageURL"] = url
-                    // Save data to Firestore after image upload
                     foodItemRef.setData(data) { error in
                         if let error = error {
-                            print("Failed to add food item: \(error.localizedDescription)")
                             completion(.failure(error))
                         } else {
-                            print("Food item successfully added with ID: \(foodItem.id)")
                             completion(.success(()))
                         }
                     }
                 case .failure(let error):
-                    print("Failed to upload image: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
+                hasCompleted = true // 设置标志位
             }
         } else {
-            // Save data without imageURL
             foodItemRef.setData(data) { error in
+                guard !hasCompleted else { return } // 检查标志位
                 if let error = error {
-                    print("Failed to add food item: \(error.localizedDescription)")
                     completion(.failure(error))
                 } else {
-                    print("Food item successfully added with ID: \(foodItem.id)")
                     completion(.success(()))
                 }
+                hasCompleted = true // 设置标志位
             }
         }
     }
+
 
     func fetchFoodItems(forUser userId: String, completion: @escaping (Result<[FoodItem], Error>) -> Void) {
         db.collection("users").document(userId).collection("foodItems")
@@ -503,4 +499,41 @@ class FirestoreService {
             completion(.success(messages))
         }
     }
+    
+    //MARK: -take data from Firebase
+    func fetchFavoriteRecipes(completion: @escaping ([Int]) -> Void) {
+            guard let userId = Auth.auth().currentUser?.uid else {
+                print("User not logged in")
+                completion([])
+                return
+            }
+            
+            let favoritesRef = db.collection("users").document(userId).collection("favorites")
+            
+            favoritesRef.getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching favorites: \(error.localizedDescription)")
+                    completion([])
+                    return
+                }
+                
+                let favoriteIDs = snapshot?.documents.compactMap { $0["recipeId"] as? Int } ?? []
+                completion(favoriteIDs)
+            }
+        }
+    
+    func addFavorite(recipeId: Int) {
+            guard let userId = Auth.auth().currentUser?.uid else { return }
+            let favoritesRef = db.collection("users").document(userId).collection("favorites")
+            
+            favoritesRef.document(String(recipeId)).setData(["recipeId": recipeId])
+        }
+
+        func removeFavorite(recipeId: Int) {
+            guard let userId = Auth.auth().currentUser?.uid else { return }
+            let favoritesRef = db.collection("users").document(userId).collection("favorites")
+            
+            favoritesRef.document(String(recipeId)).delete()
+        }
+
 }

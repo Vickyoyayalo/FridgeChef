@@ -4,31 +4,7 @@
 //
 //  Created by Vickyhereiam on 2024/9/30.
 //
-import SwiftUI
 
-struct RecipeListView: View {
-    @EnvironmentObject var viewModel: RecipeSearchViewModel
-    @Binding var selectedRecipe: Recipe?
-    @Binding var searchText: String  // 接收搜索文字
-    
-    var body: some View {
-        // 過濾 Favorite 並根據 searchText 進行篩選
-        let filteredRecipes = viewModel.recipes.filter { $0.isFavorite && (searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText)) }
-        let displayedRecipes = filteredRecipes.isEmpty ? [RecipeCollectionView_Previews.sampleRecipe] : filteredRecipes
-        
-        ForEach(displayedRecipes) { recipe in
-            Button(action: {
-                selectedRecipe = recipe
-            }) {
-                RecipeCollectionView(recipe: recipe, toggleFavorite: {
-                    viewModel.toggleFavorite(for: recipe.id)
-                })
-                .padding(.horizontal)
-                .padding(.vertical, 4)
-            }
-        }
-    }
-}
 
 import SwiftUI
 import FirebaseAuth
@@ -46,7 +22,6 @@ struct MainCollectionView: View {
     @State private var selectedRecipe: Recipe?
     @State private var offsetX: CGFloat = -20
     @State private var isScaledUp = false
-    @State private var showClickMe = true // 控制 "Click me" 的動畫狀態
     
     var body: some View {
         NavigationStack {
@@ -70,7 +45,7 @@ struct MainCollectionView: View {
                         // 搜索與篩選區域
                         SearchAndFilterView(searchText: $searchText)
                             .padding(.horizontal)
-
+                        
                         // 使用子視圖 RecipeListView 來顯示篩選後的食譜列表
                         RecipeListView(selectedRecipe: $selectedRecipe, searchText: $searchText)
                             .sheet(item: $selectedRecipe, onDismiss: {
@@ -83,6 +58,9 @@ struct MainCollectionView: View {
                                 }
                             }
                             .animation(nil) // 取消不必要的动画
+                    }
+                    .onAppear {
+                        viewModel.loadFavorites()
                     }
                     .padding(.top)
                 }
@@ -107,8 +85,12 @@ struct MainCollectionView: View {
 //                    }
                 }
                 .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
-
+                
                 floatingButton
+            }
+            .onAppear {
+                // Call loadFavorites() to load the user's favorite recipes from Firestore
+                viewModel.loadFavorites()
             }
             .sheet(isPresented: $showingLogoutSheet) {
                 LogoutSheetView()

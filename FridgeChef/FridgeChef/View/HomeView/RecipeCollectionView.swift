@@ -66,7 +66,7 @@ struct RecipeCollectionView: View {
                         .foregroundColor(Color("GrayColor"))
                     
                     Text("\(recipe.servings) Serving")
-                        .font(.custom("ArialRoundedMTBold", size: 15))
+                        .font(.custom("ArialRoundedMTBold", size: 13))
                         .foregroundColor(Color("GrayColor"))
                     
                     Image(systemName: "clock")
@@ -76,7 +76,7 @@ struct RecipeCollectionView: View {
                         .padding(.leading, 5)
                     
                     Text("\(recipe.readyInMinutes) mins")
-                        .font(.custom("ArialRoundedMTBold", size: 15))
+                        .font(.custom("ArialRoundedMTBold", size: 13))
                         .foregroundColor(Color("GrayColor"))
                 }
             }

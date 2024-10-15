@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
 
 struct LogoutSheetView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -120,14 +121,14 @@ struct LogoutSheetView: View {
             }
             .padding()
         }
-//        .background(
-//            RoundedRectangle(cornerRadius: 20)
-//                .fill(LinearGradient(
-//                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
-//                    startPoint: .top,
-//                    endPoint: .bottom))
-//                .opacity(0.4)
-//        )
+        //        .background(
+        //            RoundedRectangle(cornerRadius: 20)
+        //                .fill(LinearGradient(
+        //                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
+        //                    startPoint: .top,
+        //                    endPoint: .bottom))
+        //                .opacity(0.4)
+        //        )
         .shadow(radius: 10)
         .onAppear {
             loadUserInfo()
@@ -162,18 +163,149 @@ struct LogoutSheetView: View {
         }
     }
     
-    // 刪除帳戶函數
-    private func deleteAccount() {
-        Auth.auth().currentUser?.delete { error in
+    // 先標記帳戶為已刪除，然後再刪除 Firebase Authentication 帳戶
+    func deleteAccount() {
+        if let user = Auth.auth().currentUser {
+            let uid = user.uid
+            
+            // 1. 標記 Firestore 中的帳戶為已刪除
+            let db = Firestore.firestore()
+            db.collection("users").document(uid).updateData(["isDeleted": true]) { error in
+                if let error = error {
+                    print("Error marking account as deleted: \(error.localizedDescription)")
+                } else {
+                    // 2. 完成 Firestore 操作後再刪除 Firebase Authentication 中的帳戶
+                    user.delete { error in
+                        if let error = error {
+                            print("Failed to delete account: \(error.localizedDescription)")
+                        } else {
+                            print("Account successfully deleted")
+                            UserDefaults.standard.set(false, forKey: "log_Status")
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    // 標記帳戶為已刪除
+    func markAccountAsDeleted(email: String, completion: @escaping () -> Void) {
+        let db = Firestore.firestore()
+        
+        db.collection("users").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
             if let error = error {
-                print("Failed to delete account: \(error.localizedDescription)")
-                // 可以在這裡顯示錯誤提示給用戶
+                print("Error getting documents: \(error)")
+            } else if let document = querySnapshot?.documents.first {
+                let documentID = document.documentID
+                db.collection("users").document(documentID).updateData(["isDeleted": true]) { error in
+                    if let error = error {
+                        print("Error marking account as deleted: \(error)")
+                    } else {
+                        print("Account marked as deleted.")
+                        completion()
+                    }
+                }
+            }
+        }
+    }
+    
+    // Email 註冊登入
+    func registerWithEmail(email: String, password: String) {
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                print("Error creating user: \(error.localizedDescription)")
+            } else if let user = authResult?.user {
+                let newUID = user.uid
+                // 使用 email 查找舊數據並關聯新的 UID
+                linkNewUIDToOldData(newUID: newUID, email: email)
+            }
+        }
+    }
+
+    // Sign In with Apple
+    func signInWithApple(email: String) {
+        // 當成功登入後，會獲得新的 UID
+        if let user = Auth.auth().currentUser {
+            let newUID = user.uid
+            // 使用 email 查找舊數據並關聯新的 UID
+            linkNewUIDToOldData(newUID: newUID, email: email)
+        }
+    }
+    
+    // 檢查帳戶是否已存在
+    func checkIfEmailExists(email: String, completion: @escaping (Bool) -> Void) {
+        let db = Firestore.firestore()
+        
+        db.collection("users").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error checking email: \(error)")
+                completion(false)
             } else {
-                print("Account successfully deleted")
-                UserDefaults.standard.set(false, forKey: "log_Status")
-                // 可以在這裡導航到登錄頁面或其他適當的操作
+                if let document = querySnapshot?.documents.first {
+                    let isDeleted = document.get("isDeleted") as? Bool ?? false
+                    if isDeleted {
+                        completion(true) // 帳戶存在且已刪除
+                    } else {
+                        completion(false) // 帳戶存在且未刪除
+                    }
+                } else {
+                    completion(false) // 帳戶不存在
+                }
+            }
+        }
+    }
+    
+    // 關聯新 UID 到舊數據
+    func linkNewUIDToOldData(newUID: String, email: String) {
+        let db = Firestore.firestore()
+        
+        db.collection("users").whereField("email", isEqualTo: email).getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error getting documents: \(error)")
+            } else if let document = querySnapshot?.documents.first {
+                let oldDocumentID = document.documentID
+                let isDeleted = document.get("isDeleted") as? Bool ?? false
+                
+                if isDeleted {
+                    // 將新的 UID 更新回舊數據，並取消刪除標記
+                    db.collection("users").document(oldDocumentID).updateData(["uid": newUID, "isDeleted": false]) { error in
+                        if let error = error {
+                            print("Error updating UID: \(error)")
+                        } else {
+                            print("UID successfully updated, and account restored.")
+                        }
+                    }
+                } else {
+                    print("No deleted account found.")
+                }
+            }
+        }
+    }
+
+    func markAccountAsDeleted() {
+        guard let userEmail = Auth.auth().currentUser?.email else { return }
+        let db = Firestore.firestore()
+        
+        db.collection("users").whereField("email", isEqualTo: userEmail).getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error getting documents: \(error)")
+            } else {
+                if let document = querySnapshot?.documents.first {
+                    let documentID = document.documentID
+                    db.collection("users").document(documentID).updateData(["isDeleted": true]) { error in
+                        if let error = error {
+                            print("Error marking account as deleted: \(error)")
+                        } else {
+                            print("Account marked as deleted.")
+                        }
+                    }
+                }
             }
         }
     }
 }
+
 

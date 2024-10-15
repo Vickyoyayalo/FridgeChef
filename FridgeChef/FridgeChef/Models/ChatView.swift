@@ -15,15 +15,6 @@ import FirebaseAuth
 import FirebaseFirestore
 import SDWebImageSwiftUI
 
-struct ViewOffsetKey: PreferenceKey {
-    typealias Value = CGFloat
-    static var defaultValue: CGFloat = 0
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
-}
-
 struct Message: Identifiable, Codable {
     @DocumentID var id: String?
     let role: ChatGPTRole
@@ -101,6 +92,7 @@ struct PlaceholderTextEditor: View {
 
 struct ChatView: View {
     let firestoreService = FirestoreService()
+    @State private var chatViewOpenedAt = Date()
     @State private var alertTitle = ""
     @State private var alertMessage = ""
     @State private var searchText = ""
@@ -133,11 +125,11 @@ struct ChatView: View {
         • 1 cup milk
         • ...
         
-        🍳【Cooking Steps】 (Detailed description of each step, starting with a number and a period, direct description without adding extra titles, bold text, colons, or other symbols)
+        🍳【Cooking Steps】 (Please provide fully detailed description of each step, starting with a number and a period, direct description without adding extra titles, bold text, colons, or other symbols)
         1. Step one
         2. Step two
         3. Step three
-        ...
+        4. ...
         
         🔗【Recipe Link】
         (Please provide a valid URL related to the recipe the user asked for.)
@@ -290,8 +282,10 @@ struct ChatView: View {
                                     .onChange(of: messages.count) { _ in
                                         // 滾動到最新的訊息
                                         if let lastMessage = messages.last, let id = lastMessage.id {
-                                            withAnimation {
-                                                proxy.scrollTo(id, anchor: .top)
+                                            DispatchQueue.main.async {
+                                                withAnimation {
+                                                    proxy.scrollTo(id, anchor: .bottom)
+                                                }
                                             }
                                         }
                                     }
@@ -362,8 +356,9 @@ struct ChatView: View {
                         
                     }
                     .onAppear {
+                        chatViewOpenedAt = Date()
                         fetchMessages()
-                                        }
+                    }
                     .onDisappear {
                         listener?.remove()
                     }
@@ -408,12 +403,13 @@ struct ChatView: View {
             return
         }
         
-        listener = firestoreService.listenForMessages(forUser: currentUser.uid) { result in
+        listener = firestoreService.listenForMessages(forUser: currentUser.uid, after: chatViewOpenedAt) { result in
             switch result {
             case .success(let fetchedMessages):
                 DispatchQueue.main.async {
                     // 比較現有的 messages 與 fetchedMessages，僅添加新的訊息
                     let newMessages = fetchedMessages.filter { fetchedMessage in
+                        fetchedMessage.timestamp > self.chatViewOpenedAt &&
                         !self.messages.contains(where: { $0.id == fetchedMessage.id })
                     }
                     
@@ -513,27 +509,21 @@ struct ChatView: View {
                 timestamp: timestamp,
                 parsedRecipe: nil
             )
-            // 保存到 Firestore，實時監聽器會自動更新 messages
-            self.saveMessageToFirestore(userMessage)
-            self.checkCachedResponseAndRespond(message: messageText)
+            saveMessageToFirestore(userMessage)
+            checkCachedResponseAndRespond(message: messageText)
         }
     }
     
     func checkCachedResponseAndRespond(message: String) {
-        guard let currentUser = Auth.auth().currentUser else {
-            print("No user is currently logged in.")
-            self.isWaitingForResponse = false
-            return
-        }
+        let standardizedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        firestoreService.getCachedResponse(forUser: currentUser.uid, message: message) { result in
+        firestoreService.getCachedResponse(message: standardizedMessage) { result in
             switch result {
             case .success(let cachedResponse):
                 if let cachedResponse = cachedResponse {
-                    print("🔍 使用緩存回應: \(cachedResponse.response)") // 新增日誌
-                    // 使用緩存的回應
+                    print("使用緩存回應: \(cachedResponse.response)")
                     let assistantMessage = Message(
-                        id: nil, // 讓 Firestore 自動生成 ID
+                        id: nil,
                         role: .assistant,
                         content: cachedResponse.response,
                         imageURL: nil,
@@ -541,43 +531,44 @@ struct ChatView: View {
                         parsedRecipe: self.parseRecipe(from: cachedResponse.response)
                     )
                     
-                    // 保存到 Firestore，實時監聽器會自動更新 messages
                     self.saveMessageToFirestore(assistantMessage)
+                    // 回應完成，停止動畫
                     self.isWaitingForResponse = false
                 } else {
-                    print("🔄 沒有找到緩存回應，呼叫 API...") // 新增日誌
-                    // 沒有緩存，調用API
-                    self.sendMessageToAssistant(message)
+                    print("沒有緩存，呼叫 API")
+                    self.sendMessageToAssistant(standardizedMessage)
                 }
             case .failure(let error):
-                print("❌ 獲取緩存回應時出錯: \(error)") // 新增日誌
-                // 如果出錯，仍然調用API
-                self.sendMessageToAssistant(message)
+                print("檢查緩存回應失敗: \(error)")
+                self.sendMessageToAssistant(standardizedMessage)
             }
         }
     }
 
     // MARK: - Send Message to Assistant
     func sendMessageToAssistant(_ messageText: String) {
-        guard !messageText.isEmpty else { return }
+        guard !messageText.isEmpty else {
+            self.isWaitingForResponse = false
+            return
+        }
+        
         let messageToSend = messageText
-
+        
         Task {
             do {
-                print("📤 正在呼叫 API 並發送訊息: \(messageToSend)") // 新增日誌
+                print("📤 正在呼叫 API 並發送訊息: \(messageToSend)")
                 let responseText = try await api.sendMessage(messageToSend)
-                print("📥 收到 API 回應: \(responseText)") // 新增日誌
+                print("📥 收到 API 回應: \(responseText)")
 
-                let parsedRecipe = parseRecipe(from: responseText) // 解析食譜
+                let parsedRecipe = parseRecipe(from: responseText)
 
-                // 保存到緩存
                 guard let currentUser = Auth.auth().currentUser else {
                     print("🔒 沒有用戶登錄。")
                     self.isWaitingForResponse = false
                     return
                 }
 
-                firestoreService.saveCachedResponse(forUser: currentUser.uid, message: messageText, response: responseText) { result in
+                firestoreService.saveCachedResponse(message: messageText, response: responseText) { result in
                     switch result {
                     case .success():
                         print("✅ 緩存回應已保存。")
@@ -586,9 +577,8 @@ struct ChatView: View {
                     }
                 }
 
-                // 保存到 chats 集合，讓實時監聽器更新 messages
                 let responseMessage = Message(
-                    id: nil, // 讓 Firestore 自動生成 ID
+                    id: nil,
                     role: .assistant,
                     content: responseText,
                     imageURL: nil,
@@ -598,6 +588,7 @@ struct ChatView: View {
 
                 self.saveMessageToFirestore(responseMessage)
                 self.errorMessage = nil
+                // API 回應完成，停止動畫
                 self.isWaitingForResponse = false
 
             } catch {
@@ -609,6 +600,7 @@ struct ChatView: View {
             }
         }
     }
+
 
     // MARK: - Message View
     private func messageView(for message: Message) -> some View {
@@ -638,7 +630,7 @@ struct ChatView: View {
                         // 顯示食譜名稱
                         if let title = recipe.title {
                             Text("\(title) 🥙")
-                                .font(.title3)
+                                .font(.custom("ArialRoundedMTBold", size: 20))
                                 .bold()
                                 .padding(.bottom, 5)
                         }
@@ -647,7 +639,7 @@ struct ChatView: View {
                         if !recipe.ingredients.isEmpty {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("🥬【Ingredients】")
-                                    .font(.headline)
+                                    .font(.custom("ArialRoundedMTBold", size: 18))
                                 ForEach(recipe.ingredients) { ingredient in
                                     IngredientRow(ingredient: ingredient, addAction: addIngredientToShoppingList)
                                 }
@@ -687,7 +679,7 @@ struct ChatView: View {
                         if !recipe.steps.isEmpty {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("🍳【Cooking Steps】")
-                                    .font(.headline)
+                                    .font(.custom("ArialRoundedMTBold", size: 18))
                                 ForEach(Array(recipe.steps.enumerated()), id: \.offset) { index, step in
                                     HStack(alignment: .top) {
                                         Text("\(index + 1).")
@@ -707,7 +699,7 @@ struct ChatView: View {
                             Link(destination: url) {
                                 HStack {
                                     Text("🔗 View Full Recipe")
-                                        .font(.headline)
+                                        .font(.custom("ArialRoundedMTBold", size: 18))
                                         .foregroundColor(.blue)
                                 }
                                 .padding()
@@ -725,7 +717,7 @@ struct ChatView: View {
                         if let tips = recipe.tips {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("👩🏻‍🍳【Friendly Reminder】")
-                                    .font(.headline)
+                                    .font(.custom("ArialRoundedMTBold", size: 18))
                                 Text(tips)
                             }
                             .padding()
@@ -887,23 +879,50 @@ struct ChatView: View {
             if let urlRange = line.range(of: #"https?://[^\s]+"#, options: .regularExpression) {
                 link = String(line[urlRange])
                 print("Parsed Link: \(link!)") // 調試日誌
+            } else if let urlRange = line.range(of: #"www\.[^\s]+"#, options: .regularExpression) {
+                // 如果是以 www 開頭，但沒有完整的 http(s)，自動補全
+                link = "https://" + String(line[urlRange])
+                print("Auto-corrected and Parsed Link: \(link!)") // 調試日誌
             } else {
-                // 如果无法提取链接，检查是否有提示无法提供链接的文本
-                if line.contains("Cannot provide") || line.contains("Sorry") {
-                    link = nil
-                    print("No link provided by assistant.") // 調試日誌
-                } else {
-                    // 如果有其他文本，可能是一个 URL，但没有以 http 开头，尝试补全
-                    let potentialLink = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                    if !potentialLink.isEmpty {
-                        link = "https://" + potentialLink
-                        print("Parsed Potential Link: \(link!)") // 調試日誌
-                    } else {
-                        link = nil
-                    }
-                }
+                // 如果無法提取鏈接，嘗試處理
+                print("Failed to parse a valid link.")
+                link = nil
             }
         }
+        
+        func autoCorrectMessageFormat(_ message: String) -> String {
+            var correctedMessage = message
+            
+            // 自動補充一些常見的格式錯誤，例如換行符
+            if !correctedMessage.contains("\n【Recipe Link】") {
+                correctedMessage = correctedMessage.replacingOccurrences(of: "【Recipe Link】", with: "\n【Recipe Link】")
+            }
+            
+            return correctedMessage
+        }
+
+
+//        func processLinkLine(_ line: String) {
+//            if let urlRange = line.range(of: #"https?://[^\s]+"#, options: .regularExpression) {
+//                link = String(line[urlRange])
+//                print("Parsed Link: \(link!)") // 調試日誌
+//            } else {
+//                // 如果无法提取链接，检查是否有提示无法提供链接的文本
+//                if line.contains("Cannot provide") || line.contains("Sorry") {
+//                    link = nil
+//                    print("No link provided by assistant.") // 調試日誌
+//                } else {
+//                    // 如果有其他文本，可能是一个 URL，但没有以 http 开头，尝试补全
+//                    let potentialLink = line.trimmingCharacters(in: .whitespacesAndNewlines)
+//                    if !potentialLink.isEmpty {
+//                        link = "https://" + potentialLink
+//                        print("Parsed Potential Link: \(link!)") // 調試日誌
+//                    } else {
+//                        link = nil
+//                    }
+//                }
+//            }
+//        }
         
         func processTipsLine(_ line: String) {
             tips = (tips ?? "") + line + "\n"
@@ -1229,26 +1248,6 @@ struct ChatView: View {
         }
         return newLines.joined(separator: "\n")
     }
-    
-    // MARK: - Send Message to API
-//    func sendMessageToAPI(message: String) {
-//        Task {
-//            do {
-//                let responseText = try await api.sendMessage(message)
-//                let responseMessage = Message(id: UUID().uuidString, role: .assistant, content: responseText, imageURL: nil, timestamp: Date())
-//                DispatchQueue.main.async {
-//                    self.messages.append(responseMessage)
-//                    self.saveMessageToFirestore(responseMessage)
-//                    self.isWaitingForResponse = false
-//                }
-//            } catch {
-//                DispatchQueue.main.async {
-//                    self.errorMessage = "Message sending error: \(error.localizedDescription)"
-//                    self.isWaitingForResponse = false
-//                }
-//            }
-//        }
-//    }
 }
 
 
@@ -1282,7 +1281,7 @@ struct IngredientRow: View {
                         .fixedSize(horizontal: false, vertical: true)
                     if ingredient.quantity > 0 { // 改為檢查 quantity > 0
                         Text("Qty：\(ingredient.quantity, specifier: "%.2f") \(ingredient.unit)") // 格式化為兩位小數
-                            .font(.subheadline)
+                            .font(.custom("ArialRoundedMTBold", size: 13))
                             .foregroundColor(.gray)
                     }
                 }

@@ -157,26 +157,25 @@ struct FridgeRecipeCard: View {
 
                 // Food quantity and unit
                 Text("\(foodItem.quantity, specifier: "%.2f") \(foodItem.unit)")
-                    .font(.caption)
+                    .font(.custom("ArialRoundedMTBold", size: 13))
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
 
                 // Days remaining or expired days
-                // Days remaining or expired days
                 if isExpired {
-                    Text("Expired \(abs(foodItem.daysRemaining)) days ago‼️")
-                        .font(.caption)
+                    Text("Expired \n\(abs(foodItem.daysRemaining)) days ago‼️")
+                        .font(.custom("ArialRoundedMTBold", size: 13))
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
                 } else if foodItem.daysRemaining == 0 {
                     Text("It's TODAY 🍳")
-                        .font(.caption)
+                        .font(.custom("ArialRoundedMTBold", size: 13))
                         .foregroundColor(.purple) // 用不同顏色顯示當天到期
                         .multilineTextAlignment(.center)
                         .fontWeight(.bold)
                 } else {
-                    Text("⚠️ \(foodItem.daysRemaining) days remaining")
-                        .font(.caption)
+                    Text("⚠️ \(foodItem.daysRemaining) days \nRemaining")
+                        .font(.custom("ArialRoundedMTBold", size: 13))
                         .foregroundColor(.blue)
                         .multilineTextAlignment(.center)
                 }

@@ -182,11 +182,12 @@ struct FoodItemRow: View {
             // 食材詳細信息
             VStack(alignment: .leading) {
                 Text(item.name)
-                    .font(.headline)
+                    .font(.custom("ArialRoundedMTBold", size: 16))
                 Text("\(item.quantity, specifier: "%.2f") \(item.unit)")
-                    .font(.subheadline)
+                    .font(.custom("ArialRoundedMTBold", size: 14))
+                    .foregroundColor(.gray)
                 Text(item.daysRemainingText)
-                    .font(.caption)
+                    .font(.custom("ArialRoundedMTBold", size: 14))
                     .foregroundColor(item.daysRemainingColor)
                     .fontWeight(item.daysRemainingFontWeight)
             }

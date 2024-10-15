@@ -18,7 +18,7 @@ struct ProgressOverlay: View {
                 VStack {
                     ProgressView()
                     Text(message)
-                        .font(.caption)
+                        .font(.custom("ArialRoundedMTBold", size: 15))
                         .padding(.top, 5)
                 }
                 .padding()

@@ -201,16 +201,19 @@ struct FridgeChefApp: App {
                     .environmentObject(viewModel)
                     .environmentObject(foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
+                    .preferredColorScheme(.light)
             } else if isLoggedIn {
                 MainTabView()
                     .environmentObject(viewModel)
                     .environmentObject(foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
+                    .preferredColorScheme(.light)
             } else {
                 LoginView()
                     .environmentObject(viewModel)
                     .environmentObject(foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
+                    .preferredColorScheme(.light)
             }
         }
     }

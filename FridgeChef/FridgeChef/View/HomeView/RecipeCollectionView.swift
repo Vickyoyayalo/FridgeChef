@@ -45,11 +45,11 @@ struct RecipeCollectionView: View {
                 // 食譜類型
                 if let dishType = recipe.dishTypes.first {
                     Text(dishType.capitalized)
-                        .font(.caption2)
+                        .font(.custom("ArialRoundedMTBold", size: 15))
                         .foregroundColor(Color(#colorLiteral(red: 0, green: 0.6272217631, blue: 0.7377799153, alpha: 1)))
                 } else {
                     Text("Unknown Type")
-                        .font(.caption2)
+                        .font(.custom("ArialRoundedMTBold", size: 15))
                         .foregroundColor(Color.gray)
                 }
                 
@@ -66,7 +66,7 @@ struct RecipeCollectionView: View {
                         .foregroundColor(Color("GrayColor"))
                     
                     Text("\(recipe.servings) Serving")
-                        .font(.caption2)
+                        .font(.custom("ArialRoundedMTBold", size: 15))
                         .foregroundColor(Color("GrayColor"))
                     
                     Image(systemName: "clock")
@@ -76,7 +76,7 @@ struct RecipeCollectionView: View {
                         .padding(.leading, 5)
                     
                     Text("\(recipe.readyInMinutes) mins")
-                        .font(.caption2)
+                        .font(.custom("ArialRoundedMTBold", size: 15))
                         .foregroundColor(Color("GrayColor"))
                 }
             }

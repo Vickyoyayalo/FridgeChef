@@ -125,7 +125,7 @@ struct MapViewWithUserLocation: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 20)  // 添加左侧内边距为20
                 Text("\(supermarket.address) - \(supermarket.distanceToUser(location: locationManager.lastKnownLocation?.coordinate) ?? 0, specifier: "%.2f") km")
-                    .font(.subheadline)
+                    .font(.custom("ArialRoundedMTBold", size: 13))
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 20)  // 同样添加左侧内边距为20

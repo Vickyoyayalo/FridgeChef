@@ -398,41 +398,58 @@ class FirestoreService {
     // MARK: - Message CRUD Operations
     
     // 獲取緩存的回應
-        func getCachedResponse(forUser userId: String, message: String, completion: @escaping (Result<CachedResponse?, Error>) -> Void) {
-            db.collection("cachedResponses")
-                .whereField("userId", isEqualTo: userId)
-                .whereField("message", isEqualTo: message)
-                .order(by: "timestamp", descending: true)
-                .limit(to: 1)
-                .getDocuments { snapshot, error in
-                    if let error = error {
-                        completion(.failure(error))
-                        return
-                    }
-                    if let document = snapshot?.documents.first {
-                        do {
-                            let cachedResponse = try document.data(as: CachedResponse.self)
-                            completion(.success(cachedResponse))
-                        } catch {
-                            completion(.failure(error))
-                        }
-                    } else {
-                        completion(.success(nil))
-                    }
-                }
-        }
+    func getCachedResponse(message: String, completion: @escaping (Result<CachedResponse?, Error>) -> Void) {
+           db.collection("cachedResponses")
+               .whereField("message", isEqualTo: message)
+               .order(by: "timestamp", descending: true)
+               .limit(to: 1)
+               .getDocuments { snapshot, error in
+                   if let error = error {
+                       completion(.failure(error))
+                       return
+                   }
+                   if let document = snapshot?.documents.first {
+                       do {
+                           let cachedResponse = try document.data(as: CachedResponse.self)
+                           completion(.success(cachedResponse))
+                       } catch {
+                           completion(.failure(error))
+                       }
+                   } else {
+                       completion(.success(nil))
+                   }
+               }
+       }
        
     // 保存新的緩存回應
-        func saveCachedResponse(forUser userId: String, message: String, response: String, completion: @escaping (Result<Void, Error>) -> Void) {
-            let cachedResponse = CachedResponse(userId: userId, message: message, response: response, timestamp: Date())
-            do {
-                _ = try db.collection("cachedResponses").addDocument(from: cachedResponse)
-                completion(.success(()))
-            } catch {
-                completion(.failure(error))
-            }
-        }
+    func saveCachedResponse(message: String, response: String, completion: @escaping (Result<Void, Error>) -> Void) {
+           guard let currentUser = Auth.auth().currentUser else {
+               print("No user is currently logged in.")
+               completion(.failure(NSError(domain: "NoUser", code: 401, userInfo: nil)))
+               return
+           }
+
+           let standardizedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
+
+           // 創建緩存回應
+           let cachedResponse = CachedResponse(
+               id: nil,
+               userId: currentUser.uid, // 當前用戶ID
+               message: standardizedMessage, // 儲存訊息
+               response: response, // 回應
+               timestamp: Date()
+           )
+
+           // 保存到 Firestore
+           do {
+               _ = try db.collection("cachedResponses").addDocument(from: cachedResponse)
+               completion(.success(()))
+           } catch {
+               completion(.failure(error))
+           }
+       }
     
+
     func saveMessage(_ message: Message, forUser userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             _ = try db.collection("users").document(userId).collection("chats").addDocument(from: message)
@@ -442,25 +459,28 @@ class FirestoreService {
         }
     }
     
-    func listenForMessages(forUser userId: String, completion: @escaping (Result<[Message], Error>) -> Void) -> ListenerRegistration {
-            return db.collection("users").document(userId).collection("chats").order(by: "timestamp", descending: false).addSnapshotListener { snapshot, error in
-                if let error = error {
-                    completion(.failure(error))
-                    return
-                }
-                guard let documents = snapshot?.documents else {
-                    completion(.success([]))
-                    return
-                }
-                do {
-                    let messages = try documents.compactMap { try $0.data(as: Message.self) }
-                    completion(.success(messages))
-                } catch {
-                    completion(.failure(error))
-                }
+    func listenForMessages(forUser userId: String, after date: Date, completion: @escaping (Result<[Message], Error>) -> Void) -> ListenerRegistration? {
+        let query = db.collection("users").document(userId).collection("chats")
+                        .whereField("timestamp", isGreaterThan: date)
+                        .order(by: "timestamp", descending: false)
+        
+        let listener = query.addSnapshotListener { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
             }
+            
+            guard let documents = snapshot?.documents else {
+                completion(.success([]))
+                return
+            }
+            
+            let messages = documents.compactMap { try? $0.data(as: Message.self) }
+            completion(.success(messages))
         }
-
+        
+        return listener
+    }
     
     func fetchMessages(forUser userId: String, completion: @escaping (Result<[Message], Error>) -> Void) {
         db.collection("users").document(userId).collection("chats").order(by: "timestamp").addSnapshotListener { snapshot, error in

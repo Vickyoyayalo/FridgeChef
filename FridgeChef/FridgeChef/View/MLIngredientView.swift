@@ -256,6 +256,7 @@ struct MLIngredientView: View {
                         viewModel.requestSpeechRecognitionAuthorization()
                     }
                 }
+                .scrollIndicators(.hidden)
                 .navigationTitle("Add Ingredient")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {

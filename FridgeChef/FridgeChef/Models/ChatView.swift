@@ -290,6 +290,7 @@ struct ChatView: View {
                                         }
                                     }
                                 }
+                                .scrollIndicators(.hidden)
                             }
                             
                             if isWaitingForResponse {

@@ -651,6 +651,7 @@ struct RecipeDetailView: View {
                     }
                 }
             }
+            .scrollIndicators(.hidden)
         }
     }
     

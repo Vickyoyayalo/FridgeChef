@@ -64,6 +64,7 @@ struct MainCollectionView: View {
                     }
                     .padding(.top)
                 }
+                .scrollIndicators(.hidden)
                 .padding(.top, 20)
                 .scrollIndicators(.hidden)
                 .navigationBarTitleDisplayMode(.inline)

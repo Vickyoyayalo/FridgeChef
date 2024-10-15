@@ -54,8 +54,7 @@ class MLIngredientViewModel: ObservableObject {
     // Editing food item
     var editingFoodItem: Ingredient?
     var ingredient: Ingredient?
-    // Initialization
-    // In MLIngredientViewModel
+   
     init(editingFoodItem: Ingredient? = nil, onSave: ((Ingredient) -> Void)? = nil) {
             self.onSave = onSave
             self.ingredient = editingFoodItem
@@ -250,10 +249,10 @@ class MLIngredientViewModel: ObservableObject {
             DispatchQueue.main.async {
                 let label = topResult.identifier
                 // Translate the label from the dictionary
-//                let translatedLabel = TranslationDictionary.foodNames[label] ?? "未知"
+                let translatedLabel = TranslationDictionary.foodNames[label] ?? "Unknown"
                 // Update UI with the translated label
-//                self?.recognizedText = translatedLabel
-                self?.recognizedText = label.isEmpty ? "Unknown" : label
+                self?.recognizedText = translatedLabel
+//                self?.recognizedText = label.isEmpty ? "Unknown" : label
             }
         }
         

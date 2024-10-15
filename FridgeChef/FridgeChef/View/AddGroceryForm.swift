@@ -65,6 +65,7 @@ struct AddGroceryForm: View {
                     }
                     .padding()
                 }
+                .scrollIndicators(.hidden)
 //                Button(action: saveIngredient) {
 //                    Text("Save")
 //                        .font(.headline)

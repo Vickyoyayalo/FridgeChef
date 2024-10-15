@@ -57,6 +57,7 @@ struct FridgeReminderView: View {
                 }
                 .padding(.horizontal, 16)
             }
+            .scrollIndicators(.hidden)
             .padding(.horizontal, -16) // 去除邊界
         }
         .padding(.horizontal)

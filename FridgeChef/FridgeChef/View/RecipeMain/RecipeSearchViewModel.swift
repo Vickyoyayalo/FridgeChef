@@ -26,6 +26,7 @@ class RecipeSearchViewModel: ObservableObject {
     @Published var errorMessage: ErrorMessage?  // 修改為 ErrorMessage?
     
     private let recipeService = RecipeSearchService()
+
     
     // 提取收藏食譜的ID
     private func getSavedFavoriteIDs() -> Set<Int> {

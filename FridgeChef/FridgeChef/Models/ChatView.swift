@@ -1280,9 +1280,12 @@ struct IngredientRow: View {
                         .bold()
                         .lineLimit(nil)
                         .fixedSize(horizontal: false, vertical: true)
+                    
+                    Spacer(minLength: 5)
+                    
                     if ingredient.quantity > 0 { // 改為檢查 quantity > 0
                         Text("Qty：\(ingredient.quantity, specifier: "%.2f") \(ingredient.unit)") // 格式化為兩位小數
-                            .font(.custom("ArialRoundedMTBold", size: 13))
+                            .font(.custom("ArialRoundedMTBold", size: 15))
                             .foregroundColor(.gray)
                     }
                 }

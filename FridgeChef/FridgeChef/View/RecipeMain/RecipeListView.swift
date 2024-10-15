@@ -21,6 +21,7 @@ struct RecipeListView: View {
         // 顯示篩選後的食譜，若無資料則顯示範例食譜
         let displayedRecipes = filteredRecipes.isEmpty ? [RecipeCollectionView_Previews.sampleRecipe] : filteredRecipes
 
+
         ForEach(displayedRecipes.indices, id: \.self) { index in
             if displayedRecipes[index].id == RecipeCollectionView_Previews.sampleRecipe.id {
                 // Add navigation for sampleRecipe

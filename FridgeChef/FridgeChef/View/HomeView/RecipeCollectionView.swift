@@ -73,7 +73,7 @@ struct RecipeCollectionView: View {
                         .resizable()
                         .frame(width: 15, height: 15)
                         .foregroundColor(Color("GrayColor"))
-                        .padding(.leading, 5)
+                        .padding(.leading, 10)
                     
                     Text("\(recipe.readyInMinutes) mins")
                         .font(.custom("ArialRoundedMTBold", size: 13))

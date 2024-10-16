@@ -27,7 +27,7 @@ struct LoginDetailView: View {
         CustomNavigationBarView(title: "") {
             ZStack(alignment: .topLeading) {
                 VStack(spacing: 15) {
-                    Image("LogoFridgeChef")
+                    Image("FridgeChefLogo")
                         .resizable()
                         .scaledToFit()
                         .padding(.vertical, -100)

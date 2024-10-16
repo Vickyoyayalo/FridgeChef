@@ -16,7 +16,6 @@
 		1C0F69AC2CBA44C5004D481F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69AB2CBA44C5004D481F /* SDWebImageSwiftUI */; };
 		1C0F69AE2CBA454B004D481F /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1C0F69AD2CBA454B004D481F /* SDWebImageSwiftUI */; };
 		1C19F1A12C94372A0094FBEA /* FridgeChefApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */; };
-		1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C19F1A22C94372A0094FBEA /* FridgePageView.swift */; };
 		1C19F1A82C94372B0094FBEA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1C19F1A72C94372B0094FBEA /* Preview Assets.xcassets */; };
 		1C19F1B02C943B290094FBEA /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1AF2C943B290094FBEA /* FirebaseAnalytics */; };
 		1C19F1B22C943B290094FBEA /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 1C19F1B12C943B290094FBEA /* FirebaseAnalyticsOnDeviceConversion */; };
@@ -161,7 +160,6 @@
 /* Begin PBXFileReference section */
 		1C19F19D2C94372A0094FBEA /* FridgeChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FridgeChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeChefApp.swift; sourceTree = "<group>"; };
-		1C19F1A22C94372A0094FBEA /* FridgePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgePageView.swift; sourceTree = "<group>"; };
 		1C19F1A72C94372B0094FBEA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1C1E9A0A2CA7AF8C002A15C8 /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
 		1C1E9A0C2CA7B072002A15C8 /* RecipeSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeSearchService.swift; sourceTree = "<group>"; };
@@ -219,7 +217,7 @@
 		1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
 		1C8DC5612C99E0FD0041A2A2 /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		1C8DC5632C99E1DA0041A2A2 /* Food.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Food.mlmodel; sourceTree = "<group>"; };
-		1C8DC5672C99E4760041A2A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		1C8DC5672C99E4760041A2A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C8DC5682C99E6F70041A2A2 /* CustomBackButtonModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBackButtonModifier.swift; sourceTree = "<group>"; };
 		1C8DC56A2C99EDCB0041A2A2 /* TranslationDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationDictionary.swift; sourceTree = "<group>"; };
 		1C8DC56C2C99F0A10041A2A2 /* MLIngredientViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLIngredientViewModel.swift; sourceTree = "<group>"; };
@@ -335,13 +333,12 @@
 		1C19F19F2C94372A0094FBEA /* FridgeChef */ = {
 			isa = PBXGroup;
 			children = (
+				1C8DC5672C99E4760041A2A2 /* Info.plist */,
 				1C4AD14A2CAA3B5100C90905 /* FridgeChef.entitlements */,
-				1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */,
-				1C19F1A22C94372A0094FBEA /* FridgePageView.swift */,
 				1CFFB0A72CB0E1A1007AF8FC /* Launch Screen.storyboard */,
+				1C19F1A02C94372A0094FBEA /* FridgeChefApp.swift */,
 				1C7F45C52C9A750700846B44 /* Resource */,
 				1C7F45B32C9A4BA900846B44 /* Extension */,
-				1C8DC5672C99E4760041A2A2 /* Info.plist */,
 				1C7F45EC2C9B13D000846B44 /* Components */,
 				1CB5BCA02C9443FC006C66E5 /* Manager */,
 				1CB5BC872C943CFE006C66E5 /* Models */,
@@ -411,14 +408,6 @@
 				1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */,
 			);
 			path = Map;
-			sourceTree = "<group>";
-		};
-		1C75CCAF2CA3B7E00072D55C /* ChatGPT */ = {
-			isa = PBXGroup;
-			children = (
-				1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */,
-			);
-			path = ChatGPT;
 			sourceTree = "<group>";
 		};
 		1C7F45B32C9A4BA900846B44 /* Extension */ = {
@@ -507,7 +496,7 @@
 		1CB5BC872C943CFE006C66E5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1C75CCAF2CA3B7E00072D55C /* ChatGPT */,
+				1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */,
 				1C8A74082CA000980005E54D /* ChatView.swift */,
 				1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */,
 				1CB5BC882C943D36006C66E5 /* User.swift */,
@@ -807,7 +796,6 @@
 				1C7F45D62C9A7AB600846B44 /* ReviewView.swift in Sources */,
 				1C9568C82CA82944006181F9 /* RecipeRowView.swift in Sources */,
 				1C8DC56D2C99F0A10041A2A2 /* MLIngredientViewModel.swift in Sources */,
-				1C19F1A32C94372A0094FBEA /* FridgePageView.swift in Sources */,
 				1CA8CE8F2C9E720900C9CADD /* PlacesFetcher.swift in Sources */,
 				1C7F45F22C9B146100846B44 /* CornerRadius.swift in Sources */,
 				1C75CCD52CA461920072D55C /* WhatToEatGame.swift in Sources */,

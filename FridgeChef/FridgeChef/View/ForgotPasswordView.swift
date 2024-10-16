@@ -17,18 +17,17 @@ struct ForgotPasswordView: View {
     var body: some View {
         CustomNavigationBarView(title: "") {
             
-            VStack(spacing: 30) { // 垂直堆疊元素，並設置間距
-                Image("LogoFridgeChef")
+            VStack(spacing: 25) { // 垂直堆疊元素，並設置間距
+                Image("FridgeChefLogo")
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 300, height: 100) // 調整 Logo 大小
-                    .padding(.top, 20)
-                    .padding(.bottom, 5)
+                    .frame(width: 200, height: 200) // 調整 Logo 大小
+                    .padding(.top, 5)
+                    .padding(.bottom)
                 
                 // 標題
                 Text("Reset Password 🗝️")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                    .font(.custom("ArialRoundedMTBold", size: 30))
                     .foregroundColor(
                         Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 
@@ -40,8 +39,8 @@ struct ForgotPasswordView: View {
                     .shadow(radius: 5)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
+                    .frame(maxWidth: .infinity)
                     .padding(.horizontal, 20)
-                
                 // 密碼重設按鈕
                 Button(action: {
                     if email.isEmpty {
@@ -54,7 +53,7 @@ struct ForgotPasswordView: View {
                     }
                 }) {
                     Text("Send reset Email link")
-                        .font(.headline)
+                        .font(.custom("ArialRoundedMTBold", size: 20))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -82,7 +81,7 @@ struct ForgotPasswordView: View {
                         )
                     }
             }
-            .padding(.top, 200) // 將堆疊的元素下移
+            .padding(.top, 100) // 將堆疊的元素下移
         }
     }
 }

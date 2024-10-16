@@ -26,7 +26,7 @@ struct FridgeChefWidgetProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<FridgeChefWidgetEntry>) -> ()) {
         var entries: [FridgeChefWidgetEntry] = []
         let currentDate = Date()
-        // 每小時更新一次 widget
+        
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
             let entry = FridgeChefWidgetEntry(date: entryDate, ingredientName: "Carrots expiring in 2 days")

@@ -4,6 +4,7 @@
 //
 //  Created by Vickyhereiam on 2024/9/18.
 //
+
 import Foundation
 
 struct TranslationDictionary {

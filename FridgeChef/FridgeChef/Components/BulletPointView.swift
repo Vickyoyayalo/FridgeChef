@@ -10,12 +10,12 @@ import SwiftUI
 
 struct BulletPointView: View {
     let text: String
-    let primaryColor: Color // 傳入主題色調
+    let primaryColor: Color
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) { // 使用 firstTextBaseline 並增加間距
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text("•")
-                .font(.custom("ArialRoundedMTBold", size: 18)) // 與內容文字統一字體大小
+                .font(.custom("ArialRoundedMTBold", size: 18)) 
                 .foregroundColor(primaryColor)
             Text(text)
                 .foregroundColor(.gray)

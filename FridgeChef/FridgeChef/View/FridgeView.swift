@@ -117,8 +117,13 @@ struct FridgeView: View {
         content.body = "\(item.name) is about to expire in \(item.daysRemaining) days!"
         content.sound = UNNotificationSound.default
         
-        // Set a trigger for the notification based on the item's remaining days
-        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60) // Days to seconds
+        // 計算通知的觸發時間
+        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60) // 將天數轉換為秒
+        if timeInterval <= 0 {
+            print("Invalid timeInterval: \(timeInterval) for item \(item.name)")
+            return  // 如果時間間隔無效，退出並不排程通知
+        }
+
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         
         // Create a request

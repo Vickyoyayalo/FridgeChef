@@ -9,9 +9,10 @@ import UIKit
 import SwiftUI
 import FirebaseAuth
 import Firebase
+import UserNotifications
 import IQKeyboardManagerSwift
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // 初始化 Firebase
         if FirebaseApp.app() == nil {
@@ -19,7 +20,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             print("Firebase has been configured successfully.")
             
             let settings = Firestore.firestore().settings
-            settings.isPersistenceEnabled = true // Optional, as it's enabled by default
+            settings.isPersistenceEnabled = true
             Firestore.firestore().settings = settings
         }
         
@@ -31,6 +32,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 print("No user is currently logged in.")
             }
         }
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+                if granted {
+                    print("User notifications are allowed.")
+                } else {
+                    print("User notifications are not allowed.")
+        } }
 
        
         let navBarAppearance = UINavigationBarAppearance()
@@ -58,8 +66,28 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         IQKeyboardManager.shared.enableAutoToolbar = false
         IQKeyboardManager.shared.resignOnTouchOutside = true
         
+        UNUserNotificationCenter.current().delegate = self
+        
         return true
     }
+}
+
+func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    
+    if response.actionIdentifier == "foodpin.makeReservation" {
+        print("Make reservation...")
+        if let phone = response.notification.request.content.userInfo["phone"] {
+            let telURL = "tel://\(phone)"
+            if let url = URL(string: telURL) {
+                if UIApplication.shared.canOpenURL(url) {
+                    print("calling \(telURL)")
+                    UIApplication.shared.open(url)
+                }
+            }
+        }
+    }
+    
+    completionHandler()
 }
 
 func createGradientImage(colors: [UIColor], size: CGSize, opacity: CGFloat) -> UIImage? {

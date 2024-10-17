@@ -7,7 +7,7 @@
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
-
+import WidgetKit
 
 class FoodItemStore: ObservableObject {
     @Published var foodItems: [FoodItem] = []
@@ -16,7 +16,28 @@ class FoodItemStore: ObservableObject {
     init() {
         fetchFoodItems()
     }
+    
+    // 當資料更新時，通知 Widget
+    func updateWidget() {
+        WidgetCenter.shared.reloadTimelines(ofKind: "FridgeChefWidget")
+    }
+    // 在主應用中保存 SimpleFoodItem 數據
+    func saveFoodItemsToUserDefaults(_ foodItems: [FoodItem]) {
+        let sharedDefaults = UserDefaults(suiteName: "group.com.vickyoyaya.FridgeChef")
+        
+        // 將 FoodItem 轉換為 SimpleFoodItem
+        let simpleItems = foodItems.map { item in
+            SimpleFoodItem(id: item.id, name: item.name, quantity: item.quantity, unit: item.unit, daysRemaining: item.daysRemaining, status: item.status)
+        }
 
+        if let encodedData = try? JSONEncoder().encode(simpleItems) {
+            sharedDefaults?.set(encodedData, forKey: "foodItems")
+            
+            updateWidget()
+        }
+    }
+
+    // 從 Firebase 獲取 FoodItem 並保存到 App Group
     func fetchFoodItems() {
         guard let currentUser = Auth.auth().currentUser else {
             print("No user is currently logged in.")
@@ -27,7 +48,12 @@ class FoodItemStore: ObservableObject {
             switch result {
             case .success(let items):
                 DispatchQueue.main.async {
-                    self?.foodItems = items  // 正確設置
+                    // 將獲取到的 items 設置到 foodItems 中
+                    self?.foodItems = items
+                    
+                    // 將 items 保存到 UserDefaults 中，以便 Widget 使用
+                    self?.saveFoodItemsToUserDefaults(items)
+                    
                     print("Fetched \(items.count) food items from Firebase.")
                 }
             case .failure(let error):
@@ -41,6 +67,14 @@ class FoodItemStore: ObservableObject {
     }
 }
 
+struct SimpleFoodItem: Identifiable, Codable {
+    var id: String
+    var name: String
+    var quantity: Double
+    var unit: String
+    var daysRemaining: Int
+    var status: Status // 新增 status 屬性
+}
 
 import SwiftUI
 // 食材結構

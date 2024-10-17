@@ -107,13 +107,13 @@
 		1CB5BC8C2C943D74006C66E5 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8B2C943D74006C66E5 /* FirebaseFirestore */; };
 		1CB5BC8E2C943DA3006C66E5 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BC8D2C943DA3006C66E5 /* FirebaseFirestoreCombine-Community */; };
 		1CB5BC922C943DE4006C66E5 /* Ingredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC912C943DE4006C66E5 /* Ingredient.swift */; };
-		1CB5BC962C943E19006C66E5 /* FoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC952C943E19006C66E5 /* FoodItem.swift */; };
 		1CB5BC9C2C94400B006C66E5 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC9B2C94400B006C66E5 /* FirestoreService.swift */; };
 		1CB5BCA22C944408006C66E5 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */; };
 		1CB5BCA42C94441D006C66E5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA32C94441D006C66E5 /* FirebaseAuth */; };
 		1CB5BCA62C94441D006C66E5 /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA52C94441D006C66E5 /* FirebaseAuthCombine-Community */; };
 		1CB5BCA82C944441006C66E5 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA72C944441006C66E5 /* FirebaseStorage */; };
 		1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 1CB5BCA92C944441006C66E5 /* FirebaseStorageCombine-Community */; };
+		1CCE0CB22CC0E1A70059613C /* FoodItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5BC952C943E19006C66E5 /* FoodItem.swift */; };
 		1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7A62C97F1BC00F4417D /* GoogleServiceInfo.swift */; };
 		1CD4F7B32C98032300F4417D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1CD4F7B22C98032300F4417D /* GoogleService-Info.plist */; };
 		1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD4F7BA2C981D5B00F4417D /* UserViewModel.swift */; };
@@ -820,12 +820,12 @@
 				1C1E9A0F2CA7B107002A15C8 /* SectionView.swift in Sources */,
 				1C7F45CC2C9A787A00846B44 /* RecommendRecipe.swift in Sources */,
 				1C7F45F62C9C17AE00846B44 /* DatePickerTextField.swift in Sources */,
-				1CB5BC962C943E19006C66E5 /* FoodItem.swift in Sources */,
 				1C6CC38F2C985227001C4643 /* LoginDetailView.swift in Sources */,
 				1C9568C52CA8290B006181F9 /* RecipeSearchViewModel.swift in Sources */,
 				1CB5BCA22C944408006C66E5 /* FirebaseManager.swift in Sources */,
 				1C8DC5692C99E6F70041A2A2 /* CustomBackButtonModifier.swift in Sources */,
 				1CB14A0D2CAC096400399AAF /* TranslationAPI.swift in Sources */,
+				1CCE0CB22CC0E1A70059613C /* FoodItem.swift in Sources */,
 				1C7F45E72C9AC9DB00846B44 /* AddGroceryFormViewModel.swift in Sources */,
 				1CB5BC922C943DE4006C66E5 /* Ingredient.swift in Sources */,
 				1C8DC5642C99E1DA0041A2A2 /* Food.mlmodel in Sources */,

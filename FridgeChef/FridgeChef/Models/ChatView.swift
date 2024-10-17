@@ -1005,7 +1005,7 @@ struct ChatView: View {
         // 如果未成功解析，將整個消息內容作為未解析內容
         if !isParsed {
             unparsedContent = message
-            print("Parsed Recipe with Unparsed Content: \(ParsedRecipe.self)") // 調試日誌
+            print("Parsed Recipe with Unparsed Content: \(String(describing: unparsedContent))")
         }
         
         let parsedRecipe = ParsedRecipe(
@@ -1017,14 +1017,14 @@ struct ChatView: View {
                unparsedContent: unparsedContent
            )
         
-        print("Final Parsed Recipe: \(parsedRecipe)") // 調試日誌
+        print("Final Parsed Recipe: \(parsedRecipe)")
         
         return parsedRecipe
     }
     
     // MARK: - Remove Leading Number
     func removeLeadingNumber(from string: String) -> String {
-        let pattern = #"^\s*\d+[\.\、]?\s*"#  // 匹配数字后跟 "."、"、" 或空格
+        let pattern = #"^\s*\d+[\.\、]?\s*"#
         if let regex = try? NSRegularExpression(pattern: pattern, options: []) {
             let range = NSRange(string.startIndex..., in: string)
             return regex.stringByReplacingMatches(in: string, options: [], range: range, withTemplate: "")

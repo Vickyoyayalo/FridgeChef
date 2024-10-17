@@ -62,7 +62,7 @@ struct RecipeCollectionView: View {
                 HStack {
                     Image(systemName: "person.2")
                         .resizable()
-                        .frame(width: 17, height: 15)
+                        .frame(width: 15, height: 15)
                         .foregroundColor(Color("GrayColor"))
                     
                     Text("\(recipe.servings) Serving")
@@ -73,7 +73,7 @@ struct RecipeCollectionView: View {
                         .resizable()
                         .frame(width: 15, height: 15)
                         .foregroundColor(Color("GrayColor"))
-                        .padding(.leading, 10)
+                        .padding(.leading, 8)
                     
                     Text("\(recipe.readyInMinutes) mins")
                         .font(.custom("ArialRoundedMTBold", size: 13))

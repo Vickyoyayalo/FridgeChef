@@ -29,15 +29,15 @@ struct LogoutSheetView: View {
             .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 20) {
-                // 用戶信息
                 HStack {
                     userImage
                         .resizable()
-                        .frame(width: 60, height: 60)
-                        .clipShape(Circle())
-//                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
-                        .shadow(radius: 5)
+                        .scaledToFit() // 保持圖片比例適配
+                        .frame(width: 100, height: 100) // 固定圖片的寬高
+                        .clipShape(Circle()) // 將圖片裁剪成圓形
+                        .shadow(radius: 5) // 添加陰影
                         .padding()
+                        
                     Text(userName)
                         .font(.custom("ArialRoundedMTBold", size: 30))
                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))

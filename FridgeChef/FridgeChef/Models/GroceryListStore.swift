@@ -13,7 +13,7 @@ class GroceryListStore: ObservableObject {
     @Published var groceryItems: [FoodItem] = []
     private var listener: ListenerRegistration?
     private let firestoreService = FirestoreService()
-    let listName: String  // 可以設置默認的購物清單名稱，或動態指定
+    let listName: String 
     
     init(listName: String = "default") {
         self.listName = listName

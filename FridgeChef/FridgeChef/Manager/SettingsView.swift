@@ -5,10 +5,11 @@
 //  Created by Vickyhereiam on 2024/10/7.
 //
 
+//TODO: make button to change language
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("selectedLanguage") var selectedLanguage: String = "zh" // Default is Chinese ("zh")
+    @AppStorage("selectedLanguage") var selectedLanguage: String = "zh"
 
     var body: some View {
         VStack {

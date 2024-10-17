@@ -47,10 +47,9 @@ struct ParentView: View {
     var body: some View {
         NavigationView {
             CustomNavigationBarView(title: "FridgeChef") {
-                // 內容
                 Text("Your content here")
             }
-            .navigationBarHidden(true)  // 隱藏預設導航欄
+            .navigationBarHidden(true)
         }
     }
 }

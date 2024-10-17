@@ -15,7 +15,7 @@ struct SignUpView: View {
         CustomNavigationBarView(title: "") {
             VStack(spacing: 10) {
                 // App Logo
-                Image("LogoFridgeChef")
+                Image("FridgeChefLogo")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 300, height: 100)

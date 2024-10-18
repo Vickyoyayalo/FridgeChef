@@ -21,11 +21,10 @@ class FoodItemStore: ObservableObject {
     func updateWidget() {
         WidgetCenter.shared.reloadTimelines(ofKind: "FridgeChefWidget")
     }
-    // 在主應用中保存 SimpleFoodItem 數據
+    
     func saveFoodItemsToUserDefaults(_ foodItems: [FoodItem]) {
         let sharedDefaults = UserDefaults(suiteName: "group.com.vickyoyaya.FridgeChef")
         
-        // 將 FoodItem 轉換為 SimpleFoodItem
         let simpleItems = foodItems.map { item in
             SimpleFoodItem(id: item.id, name: item.name, quantity: item.quantity, unit: item.unit, daysRemaining: item.daysRemaining, status: item.status)
         }

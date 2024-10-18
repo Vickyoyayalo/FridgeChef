@@ -79,7 +79,7 @@ struct FridgeView: View {
                 alignment: .bottom
             )
             .onAppear {
-                listenToFoodItems() // 在視圖出現時啟動實時監聽
+                listenToFoodItems()
             }
         }
     }
@@ -117,11 +117,10 @@ struct FridgeView: View {
         content.body = "\(item.name) is about to expire in \(item.daysRemaining) days!"
         content.sound = UNNotificationSound.default
         
-        // 計算通知的觸發時間
-        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60) // 將天數轉換為秒
+        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60)
         if timeInterval <= 0 {
             print("Invalid timeInterval: \(timeInterval) for item \(item.name)")
-            return  // 如果時間間隔無效，退出並不排程通知
+            return
         }
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
@@ -139,7 +138,6 @@ struct FridgeView: View {
         }
     }
     
-    // 計算屬性，過濾食材
     var filteredFoodItems: [FoodItem] {
         let filtered = foodItemStore.foodItems.filter { $0.status == .fridge || $0.status == .freezer }
             .filter { item in
@@ -152,7 +150,6 @@ struct FridgeView: View {
         return filtered
     }
     
-    // 添加按鈕
     var addButton: some View {
         Button(action: {
             // Present MLIngredientView without an editing item

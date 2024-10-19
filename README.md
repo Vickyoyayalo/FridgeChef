@@ -76,14 +76,13 @@ Explore all our cute function.
 - **Applied `MVVM Design Pattern`**: Built a scalable code structure with clear separation between business logic and UI components for better maintainability and testability.
 - **Implemented SwiftUI for Declarative UI**: Designed and built user interfaces with SwiftUI, creating a more interactive and dynamic experience across the app.
 - **Firestore Integration**: Integrated Firebase Firestore to manage users' fridge contents, recipes, and grocery lists, ensuring `real-time data synchronization across devices`.
-- **Push Notifications**: Implemented push notifications using Firebase Cloud Messaging to alert users when items in their fridge are about to expire.
-- **Image Recognition**: Built an image recognition feature to allow users to take photos of ingredients, automatically identifying and adding them to their fridge or grocery list using CoreML.
-- **Optimized for Performance**: Built a custom data fetching mechanism to minimize network requests, reduce memory footprint, and enhance app performance, especially when working with large recipe databases.
-- **Widget Functionality**: Implemented iOS widgets to provide users with a glanceable view of their fridge contents and recipes.
-- **Sign-in with Apple and Firebase Authentication**: Ensured a seamless and privacy-friendly authentication flow, allowing users to log in securely via Apple ID and Firebase Authentication.
-- **Reusable UI Components**: Created reusable SwiftUI components such as recipe cards, fridge item rows, and alert modals for consistency across the app.
-- **Custom Haptic Feedback and Animations**: Added haptic feedback and smooth animations to enhance the user experience when interacting with fridge items and grocery lists.
-- **User-defined Notifications**: Allowed users to customize alert settings for item expiration reminders, ensuring they can take timely action to reduce food waste.
+- **Push Notifications**: Implemented push notifications using `Firebase Cloud Messaging` to alert users when items in their fridge are about to expire.
+- **Image Recognition**: Built an image recognition feature to allow users to take photos of ingredients, automatically identifying and adding them to their fridge or grocery list using `CoreML`.
+- **Optimized for Performance**: Built a custom data fetching mechanism to minimize network requests, `reduce memory footprint`, and enhance app performance, especially when working with large recipe databases.
+- **Widget Functionality**: `Implemented iOS widgets` to provide users with a glanceable view of their fridge contents and recipes.
+- **Sign-in with Apple and Firebase Authentication**: Ensured a seamless and `privacy-friendly authentication flow`, allowing users to log in securely via Apple ID and Firebase Authentication.
+- **Reusable UI Components**: Created `reusable SwiftUI components` such as recipe cards, fridge item rows, and alert modals for consistency across the app.
+- **User-defined Notifications**: Allowed users to `customize alert settings` for item expiration reminders, ensuring they can take timely action to reduce food waste.
 - **What to Eat Game**: Developed an interactive game feature where users spin a wheel to randomly select a meal type, making cooking decisions more fun and engaging.
 
 ![videogit](https://github.com/user-attachments/assets/464be755-df5d-4378-bc7c-0c5651836c09)

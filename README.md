@@ -73,9 +73,9 @@ Explore all our cute function.
 
 ## Techniques
 
-- **Applied MVVM Design Pattern**: Built a scalable code structure with clear separation between business logic and UI components for better maintainability and testability.
+- **Applied `MVVM Design Pattern`**: Built a scalable code structure with clear separation between business logic and UI components for better maintainability and testability.
 - **Implemented SwiftUI for Declarative UI**: Designed and built user interfaces with SwiftUI, creating a more interactive and dynamic experience across the app.
-- **Firestore Integration**: Integrated Firebase Firestore to manage users' fridge contents, recipes, and grocery lists, ensuring real-time data synchronization across devices.
+- **Firestore Integration**: Integrated Firebase Firestore to manage users' fridge contents, recipes, and grocery lists, ensuring `real-time data synchronization across devices`.
 - **Push Notifications**: Implemented push notifications using Firebase Cloud Messaging to alert users when items in their fridge are about to expire.
 - **Image Recognition**: Built an image recognition feature to allow users to take photos of ingredients, automatically identifying and adding them to their fridge or grocery list using CoreML.
 - **Optimized for Performance**: Built a custom data fetching mechanism to minimize network requests, reduce memory footprint, and enhance app performance, especially when working with large recipe databases.

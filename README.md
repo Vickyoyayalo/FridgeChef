@@ -14,14 +14,13 @@ FridgeChef is your smart kitchen companion that helps you manage your fridge's c
 
  [![](https://i.imgur.com/NKyvGNy.png)](https://apps.apple.com/tw/app/fridgechef/id6695727520?l=en-GB)
  
-## Table of Contents
+ ## Table of Contents
 * [Features](#Features)
 * [UI/UX Highlights](#UI/UX-Highlights)
-* [Explore all our cute functions](#Explore all our cute functions)
+* [Tech Stack](#TechStack)
+* [Screenshots](#Screenshots)
 * [Techniques](#Techniques)
-* [Libraries](#Libraries)
-* [Requirement](#Requirement)
-* [Release Notes](#Release-Notes)
+* [Future Improvements](#FutureImprovements)
 * [Author](#Author)
 
 Take control of your kitchen and reduce food waste today with FridgeChef 🍽️
@@ -53,9 +52,18 @@ FridgeChef offers a seamless and delightful user experience with intuitive navig
 <img src="https://github.com/user-attachments/assets/8016ef75-7a01-4fa1-bbc8-579d7f90bed3" width="250" />
 <img src="https://github.com/user-attachments/assets/ea90db09-73a8-4920-be85-3c1c21981062" width="250" />
 
-<br>
+<p align="left">
 
-## Explore all our cute functions
+## Tech Stack
+
+* Languages: Swift, SwiftUI
+* Backend: Firebase (Authentication, Firestore, Storage)
+* APIs: Spoonacular API for recipe data, Google Place API, 
+* Tools: Xcode, Firebase, GitHub, Vision API (for image recognition),CreateML and CoreML
+
+## Screenshots
+Explore all our cute function.
+
 <img src="https://github.com/user-attachments/assets/582a5b3c-0e3f-42c3-a84f-8bfb896457a4" width="250" />
 <img src="https://github.com/user-attachments/assets/3d99ea36-6a05-41aa-8ad2-dc3a1a25ff76" width="250" />
 <img src="https://github.com/user-attachments/assets/e176a508-ec9f-4af3-96bd-82ac56a662fd" width="250" />
@@ -63,20 +71,38 @@ FridgeChef offers a seamless and delightful user experience with intuitive navig
 <img src="https://github.com/user-attachments/assets/3e50dcff-61ff-4de8-970c-7a4fcfc7bad4" width="250" />
 <img src="https://github.com/user-attachments/assets/0c239657-9c95-40c1-864a-af311d42f03a" width="250" />
 
-<p align="left">
+## Techniques
 
-## Tech Stack**
+- **Applied MVVM Design Pattern**: Built a scalable code structure with clear separation between business logic and UI components for better maintainability and testability.
+- **Implemented SwiftUI for Declarative UI**: Designed and built user interfaces with SwiftUI, creating a more interactive and dynamic experience across the app.
+- **Firestore Integration**: Integrated Firebase Firestore to manage users' fridge contents, recipes, and grocery lists, ensuring real-time data synchronization across devices.
+- **Push Notifications**: Implemented push notifications using Firebase Cloud Messaging to alert users when items in their fridge are about to expire.
+- **Image Recognition**: Built an image recognition feature to allow users to take photos of ingredients, automatically identifying and adding them to their fridge or grocery list using CoreML.
+- **Optimized for Performance**: Built a custom data fetching mechanism to minimize network requests, reduce memory footprint, and enhance app performance, especially when working with large recipe databases.
+- **Widget Functionality**: Implemented iOS widgets to provide users with a glanceable view of their fridge contents and recipes.
+- **Sign-in with Apple and Firebase Authentication**: Ensured a seamless and privacy-friendly authentication flow, allowing users to log in securely via Apple ID and Firebase Authentication.
+- **Reusable UI Components**: Created reusable SwiftUI components such as recipe cards, fridge item rows, and alert modals for consistency across the app.
+- **Custom Haptic Feedback and Animations**: Added haptic feedback and smooth animations to enhance the user experience when interacting with fridge items and grocery lists.
+- **User-defined Notifications**: Allowed users to customize alert settings for item expiration reminders, ensuring they can take timely action to reduce food waste.
+- **What to Eat Game**: Developed an interactive game feature where users spin a wheel to randomly select a meal type, making cooking decisions more fun and engaging.
 
-* Languages: Swift, SwiftUI
-* Backend: Firebase (Authentication, Firestore, Storage)
-* APIs: Spoonacular API for recipe data, Google Place API, 
-* Tools: Xcode, Firebase, GitHub, Vision API (for image recognition),CreateML and CoreML
+![videogit](https://github.com/user-attachments/assets/464be755-df5d-4378-bc7c-0c5651836c09)
+
+## Future Improvements
+
+- **Meal Planning**: Add weekly meal plans based on ingredients.
+- **Nutritional Information**: Just scan and provide detailed nutrition facts for each recipe.
+- **Multi-language Support**: Expand to support more languages.
 
 
+## Author
 
+If you'd like to learn more about this project or discuss potential improvements, feel free to reach out:
 
+- **Name**: Wei-Chi Liu
+- **Email**: [vickyoyaya@gmail.com](mailto:vickyoyaya@gmail.com)
+- **LinkedIn**: [Vicky's LinkedIn](https://www.linkedin.com/in/vickyishere/)
 
-
-
+---
 
 

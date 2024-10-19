@@ -19,7 +19,7 @@ FridgeChef is your smart kitchen companion that helps you manage your fridge's c
 * [UI/UX Highlights](#UI/UX-Highlights)
 * [Tech Stack](#Tech-Stack)
 * [Screenshots](#Screenshots)
-* [Techniques](#Techniques)
+* [Core Techniques](#Core-Techniques)
 * [Future Improvements](#Future-Improvements)
 * [Author](#Author)
 
@@ -58,7 +58,7 @@ FridgeChef offers a seamless and delightful user experience with intuitive navig
 
 - **Languages**: Swift, SwiftUI
 - **Backend**: Firebase (Authentication, Firestore, Storage)
-- **APIs**: Spoonacular API for recipe data, Google Place API, 
+- **APIs**: Spoonacular API for recipe data, Google Place API, OpenAPI
 - **Tools**: Xcode, Firebase, GitHub, Vision API (for image recognition),CreateML and CoreML
 
 ## Screenshots
@@ -71,7 +71,7 @@ Explore all our cute function.
 <img src="https://github.com/user-attachments/assets/3e50dcff-61ff-4de8-970c-7a4fcfc7bad4" width="250" />
 <img src="https://github.com/user-attachments/assets/0c239657-9c95-40c1-864a-af311d42f03a" width="250" />
 
-## Techniques
+## Core Techniques
 
 - **Applied `MVVM Design Pattern`**: Built a scalable code structure with clear separation between business logic and UI components for better maintainability and testability.
 - **Implemented SwiftUI for Declarative UI**: Designed and built user interfaces with SwiftUI, creating a more interactive and dynamic experience across the app.
@@ -84,6 +84,7 @@ Explore all our cute function.
 - **Reusable UI Components**: Created `reusable SwiftUI components` such as recipe cards, fridge item rows, and alert modals for consistency across the app.
 - **User-defined Notifications**: Allowed users to `customize alert settings` for item expiration reminders, ensuring they can take timely action to reduce food waste.
 - **What to Eat Game**: Developed an interactive game feature where users spin a wheel to randomly select a meal type, making cooking decisions more fun and engaging.
+-  **Trained and integrated OpenAPI responses** to enhance the app’s interactivity by fetching real-time data from external sources, improving recipe suggestions and user experience.
 
 ![videogit](https://github.com/user-attachments/assets/464be755-df5d-4378-bc7c-0c5651836c09)
 

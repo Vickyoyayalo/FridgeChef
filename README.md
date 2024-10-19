@@ -56,10 +56,10 @@ FridgeChef offers a seamless and delightful user experience with intuitive navig
 
 ## Tech Stack
 
-* Languages: Swift, SwiftUI
-* Backend: Firebase (Authentication, Firestore, Storage)
-* APIs: Spoonacular API for recipe data, Google Place API, 
-* Tools: Xcode, Firebase, GitHub, Vision API (for image recognition),CreateML and CoreML
+- **Languages**: Swift, SwiftUI
+- **Backend**: Firebase (Authentication, Firestore, Storage)
+- **APIs**: Spoonacular API for recipe data, Google Place API, 
+- **Tools**: Xcode, Firebase, GitHub, Vision API (for image recognition),CreateML and CoreML
 
 ## Screenshots
 Explore all our cute function.

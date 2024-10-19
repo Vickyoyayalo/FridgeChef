@@ -17,10 +17,10 @@ FridgeChef is your smart kitchen companion that helps you manage your fridge's c
  ## Table of Contents
 * [Features](#Features)
 * [UI/UX Highlights](#UI/UX-Highlights)
-* [Tech Stack](#TechStack)
+* [Tech Stack](#Tech-Stack)
 * [Screenshots](#Screenshots)
 * [Techniques](#Techniques)
-* [Future Improvements](#FutureImprovements)
+* [Future Improvements](#Future-Improvements)
 * [Author](#Author)
 
 Take control of your kitchen and reduce food waste today with FridgeChef 🍽️

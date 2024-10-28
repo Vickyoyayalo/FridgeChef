@@ -51,7 +51,7 @@ class UserViewModel: ObservableObject {
                         self.firestoreService.saveUser(userData, uid: uid) { result in
                             switch result {
                             case .success():
-                                self.isSignUpSuccessful = true // 註冊成功
+                                self.isSignUpSuccessful = true
                                 self.alert = Alert(title: Text("Sign Up Successful"), message: Text("Sign Up Successful!"))
                             case .failure(let error):
                                 self.alert = Alert(title: Text("Failed to Sign Up"), message: Text("Cannot save the avatar: \(error.localizedDescription)"))
@@ -71,7 +71,7 @@ class UserViewModel: ObservableObject {
 
         let storageRef = Storage.storage().reference().child("avatars/\(uid).jpg")
         storageRef.putData(imageData, metadata: nil) { metadata, error in
-            if let error = error {
+            if error != nil {
                 completion(false, nil)
                 return
             }

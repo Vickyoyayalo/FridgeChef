@@ -218,7 +218,6 @@ struct FridgeView: View {
         }
     }
     
-    // 保存食材
     func handleSave(_ ingredient: Ingredient) {
         guard let currentUser = Auth.auth().currentUser else {
             print("No user is currently logged in.")
@@ -250,7 +249,6 @@ struct FridgeView: View {
                 "expirationDate": Timestamp(date: foodItem.expirationDate ?? Date())
             ]
             
-            // Handle image upload
             if let image = ingredient.image {
                 let imagePath = "users/\(currentUser.uid)/foodItems/\(foodItem.id)/image.jpg"
                 firestoreService.uploadImage(image, path: imagePath) { result in
@@ -258,7 +256,6 @@ struct FridgeView: View {
                     case .success(let url):
                         updatedFields["imageURL"] = url
                         firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
-                            // Handle result
                         }
                     case .failure(let error):
                         print("Failed to upload image: \(error.localizedDescription)")
@@ -296,9 +293,7 @@ struct FridgeView: View {
     
     func moveToGrocery(item: FoodItem) {
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
-            // Update status and daysRemaining
             foodItemStore.foodItems[index].status = .toBuy
-            // Set new expiration date, e.g., 1 day later
             let newExpirationDate = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
             let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 1
             foodItemStore.foodItems[index].daysRemaining = daysRemaining
@@ -351,7 +346,6 @@ struct FridgeView: View {
             let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 0
             foodItemStore.foodItems[index].daysRemaining = daysRemaining
             
-            // 更新 Firebase
             guard let currentUser = Auth.auth().currentUser else {
                 print("No user is currently logged in.")
                 return
@@ -412,7 +406,6 @@ struct FridgeListView: View {
     
     var body: some View {
         List {
-            // Fridge Section
             if !filteredFoodItems.filter { $0.status == .fridge }.isEmpty {
                 Section(header:  HStack {
                     Image(uiImage: UIImage(named: "fridge") ?? UIImage(systemName: "refrigerator.fill")!)
@@ -442,13 +435,12 @@ struct FridgeListView: View {
                 }
             }
             
-            // Freezer Section
             if !filteredFoodItems.filter({ $0.status == .freezer }).isEmpty {
                 Section(header:
                             HStack {
                     Image(uiImage: UIImage(named: "freezer") ?? UIImage(systemName: "snowflake")!)
                         .resizable()
-                        .frame(width: 24, height: 24) // 調整圖片大小
+                        .frame(width: 24, height: 24)
                     Text("Freezer")
                         .foregroundColor(.blue)
                 }) {

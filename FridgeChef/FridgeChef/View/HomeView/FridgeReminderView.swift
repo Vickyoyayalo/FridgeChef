@@ -142,20 +142,17 @@ struct FridgeRecipeCard: View {
                         .frame(maxWidth: .infinity)
                 }
 
-                // Food name
                 Text(foodItem.name)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
 
-                // Food quantity and unit
                 Text("\(foodItem.quantity, specifier: "%.2f") \(foodItem.unit)")
                     .font(.custom("ArialRoundedMTBold", size: 13))
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
 
-                // Days remaining or expired days
                 if isExpired {
                     Text("Expired \n\(abs(foodItem.daysRemaining)) days ago‼️")
                         .font(.custom("ArialRoundedMTBold", size: 13))
@@ -164,7 +161,7 @@ struct FridgeRecipeCard: View {
                 } else if foodItem.daysRemaining == 0 {
                     Text("It's TODAY 🍳")
                         .font(.custom("ArialRoundedMTBold", size: 13))
-                        .foregroundColor(.purple) // 用不同顏色顯示當天到期
+                        .foregroundColor(.purple)
                         .multilineTextAlignment(.center)
                         .fontWeight(.bold)
                 } else {
@@ -192,4 +189,3 @@ struct FridgeReminderView_Preview: PreviewProvider {
             .environmentObject(FoodItemStore())
     }
 }
-

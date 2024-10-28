@@ -58,7 +58,7 @@ class FirestoreService {
                     if let error = error {
                         print("Login failed: \(error.localizedDescription)")
                     } else if let authResult = authResult {
-                     
+                        
                         let uid = authResult.user.uid
                         let email = authResult.user.email ?? "No Email"
                         let displayName = authResult.user.displayName ?? "Anonymous"
@@ -107,9 +107,9 @@ class FirestoreService {
         if let expirationDate = foodItem.expirationDate {
             data["expirationDate"] = Timestamp(date: expirationDate)
         }
-
+        
         let foodItemRef = db.collection("users").document(userId).collection("foodItems").document(foodItem.id)
-
+        
         if let image = image {
             let imagePath = "users/\(userId)/foodItems/\(foodItem.id)/image.jpg"
             uploadImage(image, path: imagePath) { result in
@@ -141,8 +141,8 @@ class FirestoreService {
             }
         }
     }
-
-
+    
+    
     func fetchFoodItems(forUser userId: String, completion: @escaping (Result<[FoodItem], Error>) -> Void) {
         db.collection("users").document(userId).collection("foodItems")
             .getDocuments(source: .cache) { (snapshot, error) in
@@ -300,32 +300,32 @@ class FirestoreService {
     }
     
     // MARK: - Listen to Grocery Items
-        func listenToGroceryItems(forUser userId: String, listName: String, onUpdate: @escaping (Result<[FoodItem], Error>) -> Void) -> ListenerRegistration {
-            return db.collection("users").document(userId).collection("groceryLists").document(listName).collection("items")
-                .addSnapshotListener { (snapshot, error) in
-                    if let error = error {
-                        onUpdate(.failure(error))
-                    } else {
-                        var groceryItems: [FoodItem] = []
-                        snapshot?.documents.forEach { document in
-                            do {
-                                var foodItem = try document.data(as: FoodItem.self)
-                                foodItem.id = document.documentID  // 手動設置 id
-                                if let expirationTimestamp = document.get("expirationDate") as? Timestamp {
-                                    foodItem.expirationDate = expirationTimestamp.dateValue()
-                                }
-                                if let imageURL = document.get("imageURL") as? String {
-                                    foodItem.imageURL = imageURL
-                                }
-                                groceryItems.append(foodItem)
-                            } catch {
-                                print("Failed to decode FoodItem: \(error.localizedDescription)")
+    func listenToGroceryItems(forUser userId: String, listName: String, onUpdate: @escaping (Result<[FoodItem], Error>) -> Void) -> ListenerRegistration {
+        return db.collection("users").document(userId).collection("groceryLists").document(listName).collection("items")
+            .addSnapshotListener { (snapshot, error) in
+                if let error = error {
+                    onUpdate(.failure(error))
+                } else {
+                    var groceryItems: [FoodItem] = []
+                    snapshot?.documents.forEach { document in
+                        do {
+                            var foodItem = try document.data(as: FoodItem.self)
+                            foodItem.id = document.documentID  // 手動設置 id
+                            if let expirationTimestamp = document.get("expirationDate") as? Timestamp {
+                                foodItem.expirationDate = expirationTimestamp.dateValue()
                             }
+                            if let imageURL = document.get("imageURL") as? String {
+                                foodItem.imageURL = imageURL
+                            }
+                            groceryItems.append(foodItem)
+                        } catch {
+                            print("Failed to decode FoodItem: \(error.localizedDescription)")
                         }
-                        onUpdate(.success(groceryItems))
                     }
+                    onUpdate(.success(groceryItems))
                 }
-        }
+            }
+    }
     
     // MARK: - Image Upload
     
@@ -385,54 +385,54 @@ class FirestoreService {
     
     // MARK: - Message CRUD Operations
     func getCachedResponse(message: String, completion: @escaping (Result<CachedResponse?, Error>) -> Void) {
-           db.collection("cachedResponses")
-               .whereField("message", isEqualTo: message)
-               .order(by: "timestamp", descending: true)
-               .limit(to: 1)
-               .getDocuments { snapshot, error in
-                   if let error = error {
-                       completion(.failure(error))
-                       return
-                   }
-                   if let document = snapshot?.documents.first {
-                       do {
-                           let cachedResponse = try document.data(as: CachedResponse.self)
-                           completion(.success(cachedResponse))
-                       } catch {
-                           completion(.failure(error))
-                       }
-                   } else {
-                       completion(.success(nil))
-                   }
-               }
-       }
-       
-    func saveCachedResponse(message: String, response: String, completion: @escaping (Result<Void, Error>) -> Void) {
-           guard let currentUser = Auth.auth().currentUser else {
-               print("No user is currently logged in.")
-               completion(.failure(NSError(domain: "NoUser", code: 401, userInfo: nil)))
-               return
-           }
-
-           let standardizedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
-
-           let cachedResponse = CachedResponse(
-               id: nil,
-               userId: currentUser.uid,
-               message: standardizedMessage,
-               response: response,
-               timestamp: Date()
-           )
-
-           do {
-               _ = try db.collection("cachedResponses").addDocument(from: cachedResponse)
-               completion(.success(()))
-           } catch {
-               completion(.failure(error))
-           }
-       }
+        db.collection("cachedResponses")
+            .whereField("message", isEqualTo: message)
+            .order(by: "timestamp", descending: true)
+            .limit(to: 1)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                if let document = snapshot?.documents.first {
+                    do {
+                        let cachedResponse = try document.data(as: CachedResponse.self)
+                        completion(.success(cachedResponse))
+                    } catch {
+                        completion(.failure(error))
+                    }
+                } else {
+                    completion(.success(nil))
+                }
+            }
+    }
     
-
+    func saveCachedResponse(message: String, response: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let currentUser = Auth.auth().currentUser else {
+            print("No user is currently logged in.")
+            completion(.failure(NSError(domain: "NoUser", code: 401, userInfo: nil)))
+            return
+        }
+        
+        let standardizedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        let cachedResponse = CachedResponse(
+            id: nil,
+            userId: currentUser.uid,
+            message: standardizedMessage,
+            response: response,
+            timestamp: Date()
+        )
+        
+        do {
+            _ = try db.collection("cachedResponses").addDocument(from: cachedResponse)
+            completion(.success(()))
+        } catch {
+            completion(.failure(error))
+        }
+    }
+    
+    
     func saveMessage(_ message: Message, forUser userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             _ = try db.collection("users").document(userId).collection("chats").addDocument(from: message)
@@ -444,8 +444,8 @@ class FirestoreService {
     
     func listenForMessages(forUser userId: String, after date: Date, completion: @escaping (Result<[Message], Error>) -> Void) -> ListenerRegistration? {
         let query = db.collection("users").document(userId).collection("chats")
-                        .whereField("timestamp", isGreaterThan: date)
-                        .order(by: "timestamp", descending: false)
+            .whereField("timestamp", isGreaterThan: date)
+            .order(by: "timestamp", descending: false)
         
         let listener = query.addSnapshotListener { snapshot, error in
             if let error = error {
@@ -489,38 +489,38 @@ class FirestoreService {
     
     //MARK: -take data from Firebase
     func fetchFavoriteRecipes(completion: @escaping ([Int]) -> Void) {
-            guard let userId = Auth.auth().currentUser?.uid else {
-                print("User not logged in")
+        guard let userId = Auth.auth().currentUser?.uid else {
+            print("User not logged in")
+            completion([])
+            return
+        }
+        
+        let favoritesRef = db.collection("users").document(userId).collection("favorites")
+        
+        favoritesRef.getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching favorites: \(error.localizedDescription)")
                 completion([])
                 return
             }
             
-            let favoritesRef = db.collection("users").document(userId).collection("favorites")
-            
-            favoritesRef.getDocuments { snapshot, error in
-                if let error = error {
-                    print("Error fetching favorites: \(error.localizedDescription)")
-                    completion([])
-                    return
-                }
-                
-                let favoriteIDs = snapshot?.documents.compactMap { $0["recipeId"] as? Int } ?? []
-                completion(favoriteIDs)
-            }
+            let favoriteIDs = snapshot?.documents.compactMap { $0["recipeId"] as? Int } ?? []
+            completion(favoriteIDs)
         }
+    }
     
     func addFavorite(recipeId: Int) {
-            guard let userId = Auth.auth().currentUser?.uid else { return }
-            let favoritesRef = db.collection("users").document(userId).collection("favorites")
-            
-            favoritesRef.document(String(recipeId)).setData(["recipeId": recipeId])
-        }
-
-        func removeFavorite(recipeId: Int) {
-            guard let userId = Auth.auth().currentUser?.uid else { return }
-            let favoritesRef = db.collection("users").document(userId).collection("favorites")
-            
-            favoritesRef.document(String(recipeId)).delete()
-        }
-
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        let favoritesRef = db.collection("users").document(userId).collection("favorites")
+        
+        favoritesRef.document(String(recipeId)).setData(["recipeId": recipeId])
+    }
+    
+    func removeFavorite(recipeId: Int) {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        let favoritesRef = db.collection("users").document(userId).collection("favorites")
+        
+        favoritesRef.document(String(recipeId)).delete()
+    }
+    
 }

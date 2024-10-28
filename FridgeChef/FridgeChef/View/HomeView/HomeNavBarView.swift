@@ -21,7 +21,6 @@ struct HomeNavBarView: View {
                 .onTapGesture {
                     
                 }
-            
         }
     }
 }

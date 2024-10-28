@@ -125,8 +125,6 @@ struct FormTextField: View {
     }
 }
 
-
-
 #Preview("FormTextField", traits: .fixedLayout(width: 300, height: 200)) {
     FormTextField(label: "NAME", placeholder: "Fill in the restaurant name", value: .constant(""))
 }

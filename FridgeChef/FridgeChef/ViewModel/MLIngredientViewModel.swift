@@ -111,14 +111,13 @@ class MLIngredientViewModel: ObservableObject {
             }
         }
     }
-
     
     // MARK: - PhotoLibrary Permission
     func checkPhotoLibraryPermission() {
             let status = PHPhotoLibrary.authorizationStatus()
             switch status {
             case .notDetermined:
-               
+                
                 DispatchQueue.main.async {
                     self.showPhotoPermissionAlert = true
                 }
@@ -345,4 +344,3 @@ class MLIngredientViewModel: ObservableObject {
         storageMethod = "Fridge"
     }
 }
-

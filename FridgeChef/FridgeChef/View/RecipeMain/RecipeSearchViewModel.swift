@@ -16,7 +16,6 @@ struct ErrorMessage: Identifiable {
     let id = UUID()
     let message: String
 }
-
 // MARK: - ViewModel
 class RecipeSearchViewModel: ObservableObject {
     private let db = Firestore.firestore()

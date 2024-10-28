@@ -3,7 +3,7 @@
 //  WhatToEat
 //
 //  Created by Vickyhereiam on 2024/9/27.
-//
+ 
 import SwiftUI
 import IQKeyboardManagerSwift
 import FirebaseAuth
@@ -165,7 +165,6 @@ struct RecipeDetailView: View {
                                 )
                             }
                             
-                            // 食材區域
                             SectionView(title: "Ingredients") {
                                 VStack(alignment: .leading, spacing: 10) {
                                     ForEach(parsedIngredients, id: \.name) { ingredient in

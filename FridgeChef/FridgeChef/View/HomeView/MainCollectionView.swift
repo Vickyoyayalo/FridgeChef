@@ -13,7 +13,7 @@ struct MainCollectionView: View {
     @EnvironmentObject var foodItemStore: FoodItemStore
     @State private var showingLogoutSheet = false
     @State private var showingNotificationSheet = false
-    @State private var isEditing = false // 控制編輯模式狀態
+    @State private var isEditing = false
     @State private var searchText = ""
     @State private var isShowingGameView = false
     @State private var showingRecipeSheet = false
@@ -31,21 +31,17 @@ struct MainCollectionView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 16) {
 
-                        // 新鮮食譜視圖
                         SectionTitleView(title: "⏰ Fridge Updates")
                             .padding(.horizontal)
 
                         FridgeReminderView(editingItem: $editingItem)
 
-                        // Favorite Recipe 顯示區域
                         SectionTitleView(title: "📚 Favorite Recipe")
                             .padding(.horizontal)
 
-                        // 搜索與篩選區域
                         SearchAndFilterView(searchText: $searchText)
                             .padding(.horizontal)
                         
-                        // 使用子視圖 RecipeListView 來顯示篩選後的食譜列表
                         RecipeListView(selectedRecipe: $selectedRecipe, searchText: $searchText)
                             .sheet(item: $selectedRecipe, onDismiss: {
                                 selectedRecipe = nil
@@ -56,7 +52,7 @@ struct MainCollectionView: View {
                                     RecipeDetailView(recipeId: recipe.id)
                                 }
                             }
-                            .animation(nil) // 取消不必要的动画
+                            .animation(nil) 
                     }
                     .onAppear {
                         viewModel.loadFavorites()

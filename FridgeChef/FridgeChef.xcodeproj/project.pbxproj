@@ -529,7 +529,6 @@
 			isa = PBXGroup;
 			children = (
 				1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */,
-				1C8A74082CA000980005E54D /* ChatView.swift */,
 				1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */,
 				1CB5BC882C943D36006C66E5 /* User.swift */,
 				1C8DC55F2C99E0C50041A2A2 /* TextRecognition.swift */,
@@ -580,6 +579,7 @@
 		1CB5BC9F2C9441BF006C66E5 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1C8A74082CA000980005E54D /* ChatView.swift */,
 				1C7F45E02C9AA40600846B44 /* MainTabView.swift */,
 				1CF493AB2CB4CC9D00BEAFB5 /* TutorialView.swift */,
 				1C6D2D812CB00B43000C49DC /* HomeView */,

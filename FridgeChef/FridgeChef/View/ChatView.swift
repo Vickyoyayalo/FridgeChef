@@ -4,7 +4,7 @@
 //
 //  Created by Vickyhereiam on 2024/9/10.
 //
-//MARK: -會辨識語言來做回答，但以英文為主
+
 import SwiftUI
 import PhotosUI
 import Vision
@@ -51,12 +51,12 @@ struct PlaceholderTextEditor: View {
     @Binding var text: String
     var placeholder: String
     
-    @State private var dynamicHeight: CGFloat = 44  // 设置初始高度
+    @State private var dynamicHeight: CGFloat = 44
     
     var body: some View {
         ZStack(alignment: .leading) {
             TextEditor(text: $text)
-                .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight < 100 ? dynamicHeight : 100)  // 控制高度变化和滚动
+                .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight < 100 ? dynamicHeight : 100)
                 .padding(8)
                 .background(Color.white)
                 .cornerRadius(10)
@@ -157,7 +157,6 @@ struct ChatView: View {
         NavigationView {
             if Auth.auth().currentUser != nil {
                 ZStack {
-                    // 漸層背景
                     LinearGradient(
                         gradient: Gradient(colors: [Color.yellow, Color.orange]),
                         startPoint: .top,
@@ -165,11 +164,9 @@ struct ChatView: View {
                     )
                     .opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
-                    
-                    // 使用 GeometryReader 來實現背景的可點擊
+                
                     GeometryReader { geometry in
                         VStack {
-                            // 顯示背景圖片和文字
                             if messages.isEmpty {
                                 VStack {
                                     Image("Chatmonster")
@@ -213,12 +210,11 @@ struct ChatView: View {
                                     .padding(.top)
                             }
 
-                            // 自定義搜尋框（從右邊滑入的動畫）
                             if isSearchVisible {
-                                HStack(spacing: 10) { // 設置內部元素的間距
+                                HStack(spacing: 10) {
                                     Image(systemName: "magnifyingglass")
                                         .foregroundColor(.orange)
-                                        .padding(.leading, 8) // 左側內邊距
+                                        .padding(.leading, 8)
 
                                     TextField("Search messages...", text: $searchText, onCommit: {
                                         performSearch()
@@ -243,29 +239,6 @@ struct ChatView: View {
                                 .transition(.move(edge: .trailing))
                             }
 
-//                            ScrollViewReader { proxy in
-//                                ScrollView {
-//                                    VStack(alignment: .leading, spacing: 10) {
-//                                        ForEach(filteredMessages) { message in
-//                                            messageView(for: message)
-//                                                .id(message.id) // 確保每個訊息有唯一的 ID
-//                                        }
-//                                    }
-//                                    .onChange(of: messages.count) { _ in
-//                                        if let lastMessage = messages.last {
-//                                            // 這裡可以選擇是否保留滾動到最後一個訊息的行為
-//                                             proxy.scrollTo(lastMessage.id, anchor: .bottom)
-//                                        }
-//                                    }
-//                                    .onChange(of: selectedMessageID) { id in
-//                                        if let id = id {
-//                                            withAnimation {
-//                                                proxy.scrollTo(id, anchor: .top) // 使用 .top 錨點滾動到訊息的開頭
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
                             ScrollViewReader { proxy in
                                 ScrollView {
                                     VStack(alignment: .leading, spacing: 10) {
@@ -278,7 +251,6 @@ struct ChatView: View {
                                         .frame(maxWidth: .infinity)
                                     }
                                     .onChange(of: messages.count) { _ in
-                                        // 滾動到最新的訊息
                                         if let lastMessage = messages.last, let id = lastMessage.id {
                                             DispatchQueue.main.async {
                                                 withAnimation {
@@ -407,7 +379,6 @@ struct ChatView: View {
             switch result {
             case .success(let fetchedMessages):
                 DispatchQueue.main.async {
-                    // 比較現有的 messages 與 fetchedMessages，僅添加新的訊息
                     let newMessages = fetchedMessages.filter { fetchedMessage in
                         fetchedMessage.timestamp > self.chatViewOpenedAt &&
                         !self.messages.contains(where: { $0.id == fetchedMessage.id })
@@ -516,7 +487,7 @@ struct ChatView: View {
             switch result {
             case .success(let cachedResponse):
                 if let cachedResponse = cachedResponse {
-                    print("使用緩存回應: \(cachedResponse.response)")
+                    print("Use Cache Response: \(cachedResponse.response)")
                     let assistantMessage = Message(
                         id: nil,
                         role: .assistant,
@@ -529,11 +500,11 @@ struct ChatView: View {
                     self.saveMessageToFirestore(assistantMessage)
                     self.isWaitingForResponse = false
                 } else {
-                    print("沒有緩存，呼叫 API")
+                    print("No Cache, calling API")
                     self.sendMessageToAssistant(standardizedMessage)
                 }
             case .failure(let error):
-                print("檢查緩存回應失敗: \(error)")
+                print("Cache Response failure: \(error)")
                 self.sendMessageToAssistant(standardizedMessage)
             }
         }
@@ -550,14 +521,14 @@ struct ChatView: View {
         
         Task {
             do {
-                print("📤 正在呼叫 API 並發送訊息: \(messageToSend)")
+                print("📤 Calling API and sending messages: \(messageToSend)")
                 let responseText = try await api.sendMessage(messageToSend)
-                print("📥 收到 API 回應: \(responseText)")
+                print("📥 Taking API response: \(responseText)")
 
                 let parsedRecipe = parseRecipe(from: responseText)
 
                 guard let currentUser = Auth.auth().currentUser else {
-                    print("🔒 沒有用戶登錄。")
+                    print("🔒 No user log in.")
                     self.isWaitingForResponse = false
                     return
                 }
@@ -565,9 +536,9 @@ struct ChatView: View {
                 firestoreService.saveCachedResponse(message: messageText, response: responseText) { result in
                     switch result {
                     case .success():
-                        print("✅ 緩存回應已保存。")
+                        print("✅ Saving Cache Response.")
                     case .failure(let error):
-                        print("❌ 無法保存緩存回應: \(error)")
+                        print("❌ Cannot saving Cache Response: \(error)")
                     }
                 }
 
@@ -585,9 +556,9 @@ struct ChatView: View {
                 self.isWaitingForResponse = false
 
             } catch {
-                print("❌ 發送訊息時出錯: \(error)")
+                print("❌ Sending message error: \(error)")
                 DispatchQueue.main.async {
-                    self.errorMessage = "發送訊息時出錯: \(error.localizedDescription)"
+                    self.errorMessage = "Sending message error: \(error.localizedDescription)"
                     self.isWaitingForResponse = false
                 }
             }
@@ -832,7 +803,7 @@ struct ChatView: View {
                     let ingredient = ParsedIngredient(name: name, quantity: quantityDouble, unit: unit, expirationDate: expirationDate)
                     ingredients.append(ingredient)
                     
-                    print("Parsed Ingredient: \(ingredient)") // 調試日誌
+                    print("Parsed Ingredient: \(ingredient)")
                 } else {
                     let ingredient = ParsedIngredient(name: trimmedLine, quantity: 1.0, unit: "unit", expirationDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()) ?? Date())
                     ingredients.append(ingredient)
@@ -1133,10 +1104,10 @@ struct ChatView: View {
         var isIngredientSection = false
         
         for line in lines {
-            if line.contains("【食材】") {
+            if line.contains("【Ingredient】") {
                 isIngredientSection = true
                 continue
-            } else if line.contains("【烹飪步驟】") || line.contains("🍳") {
+            } else if line.contains("【Cooking Instructions】") || line.contains("🍳") {
                 break
             }
             
@@ -1187,10 +1158,10 @@ struct ChatView: View {
         var isIngredientSection = false
         
         for line in lines {
-            if line.contains("【食材】") {
+            if line.contains("【Ingredient】") {
                 isIngredientSection = true
                 continue
-            } else if line.contains("【烹飪步驟】") || line.contains("🍳") {
+            } else if line.contains("【Cooking Instructions】") || line.contains("🍳") {
                 isIngredientSection = false
             }
             
@@ -1277,7 +1248,7 @@ struct MonsterAnimationView: View {
             print("Animation started")
         }
         .onDisappear {
-            moveRight = false // 停止動畫
+            moveRight = false
             print("Animation stopped")
         }
         .onAppear {
@@ -1288,7 +1259,7 @@ struct MonsterAnimationView: View {
         }
         .onDisappear {
             withAnimation(nil) {
-                moveRight = false // Stop animation
+                moveRight = false 
             }
             print("Animation stopped")
         }

@@ -19,7 +19,6 @@ struct LogoutSheetView: View {
     
     var body: some View {
         ZStack {
-            // 漸層背景
             LinearGradient(
                 gradient: Gradient(colors: [Color.yellow, Color.orange]),
                 startPoint: .top,
@@ -32,10 +31,10 @@ struct LogoutSheetView: View {
                 HStack {
                     userImage
                         .resizable()
-                        .scaledToFit() // 保持圖片比例適配
-                        .frame(width: 100, height: 100) // 固定圖片的寬高
-                        .clipShape(Circle()) // 將圖片裁剪成圓形
-                        .shadow(radius: 5) // 添加陰影
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                        .shadow(radius: 5)
                         .padding()
                         
                     Text(userName)
@@ -46,7 +45,6 @@ struct LogoutSheetView: View {
                 
                 Divider()
                 
-                // Log Out 按鈕
                 Button(action: {
                     showLogoutAlert = true
                 }) {
@@ -76,7 +74,6 @@ struct LogoutSheetView: View {
                     )
                 }
                 
-                // Delete Account 按鈕
                 Button(action: {
                     showDeleteAccountAlert = true
                 }) {
@@ -105,8 +102,7 @@ struct LogoutSheetView: View {
                         secondaryButton: .cancel()
                     )
                 }
-                
-                // Cancel 按鈕
+               
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
@@ -128,31 +124,26 @@ struct LogoutSheetView: View {
             loadUserInfo()
         }
         .fullScreenCover(isPresented: $showLoginView) {
-            LoginView() // 删除帐户后展示 LoginView
+            LoginView()
         }
 
     }
        
     func resetAppPermissions() {
-        // 清除与权限相关的存储数据
         let domain = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: domain)
         UserDefaults.standard.synchronize()
-        // 可根据需求清理其他存储的权限数据
     }
 
-    // 加載用戶信息
     private func loadUserInfo() {
         if let user = Auth.auth().currentUser {
             let db = Firestore.firestore()
             db.collection("users").document(user.uid).getDocument { (document, error) in
                 if let document = document, document.exists {
                     if let isDeleted = document.data()?["isDeleted"] as? Bool, isDeleted {
-                        // If the account is marked as deleted, log out and show login view
                         logOut()
-                        showLoginView = true // Navigate to login
+                        showLoginView = true
                     } else {
-                        // Otherwise, load the user info
                         if let storedUserName = document.data()?["userName"] as? String {
                             self.userName = storedUserName
                         } else {
@@ -190,7 +181,6 @@ struct LogoutSheetView: View {
         }
     }
     
-    // 登出函數
     private func logOut() {
         do {
             try Auth.auth().signOut()
@@ -206,19 +196,19 @@ struct LogoutSheetView: View {
             let uid = user.uid
             let db = Firestore.firestore()
             
-            // 1. 标记 Firestore 中的帐户为已删除
+            // 標記帳號已删除
             db.collection("users").document(uid).updateData(["isDeleted": true]) { error in
                 if let error = error {
                     print("Error marking account as deleted: \(error.localizedDescription)")
                 } else {
-                    // 2. 完成 Firestore 操作后删除 Firebase Authentication 中的帐户
+                    // 2. 完成 Firestore 操作后删除 Firebase Authentication 帳戶
                     user.delete { error in
                         if let error = error {
                             print("Failed to delete account: \(error.localizedDescription)")
                         } else {
                             print("Account successfully deleted")
                             UserDefaults.standard.set(false, forKey: "log_Status")
-                            showLoginView = true // 删除成功后跳转到 LoginView
+                            showLoginView = true
                         }
                     }
                 }
@@ -226,7 +216,6 @@ struct LogoutSheetView: View {
         }
     }
 
-    // 標記帳戶為已刪除
     func markAccountAsDeleted(email: String, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
         
@@ -247,31 +236,27 @@ struct LogoutSheetView: View {
         }
     }
     
-    // Email 註冊登入
     func registerWithEmail(email: String, password: String) {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
                 print("Error creating user: \(error.localizedDescription)")
             } else if let user = authResult?.user {
                 let newUID = user.uid
-                // 使用 email 查找舊數據並關聯新的 UID
                 linkNewUIDToOldData(newUID: newUID, email: email)
             }
         }
     }
 
-    // Sign In with Apple
     func signInWithApple(email: String) {
-        // 当成功登入后，获取当前用户
+       
         if let user = Auth.auth().currentUser {
             let newUID = user.uid
-            // 使用 email 查找旧数据并关联新的 UID
+           
             linkNewUIDToOldData(newUID: newUID, email: email)
-            saveUserNameToFirestore()  // 确保用户名被保存到 Firestore
+            saveUserNameToFirestore()
         }
     }
     
-    // 檢查帳戶是否已存在
     func checkIfEmailExists(email: String, completion: @escaping (Bool) -> Void) {
         let db = Firestore.firestore()
         
@@ -283,18 +268,17 @@ struct LogoutSheetView: View {
                 if let document = querySnapshot?.documents.first {
                     let isDeleted = document.get("isDeleted") as? Bool ?? false
                     if isDeleted {
-                        completion(true) // 帳戶存在且已刪除
+                        completion(true)
                     } else {
-                        completion(false) // 帳戶存在且未刪除
+                        completion(false)
                     }
                 } else {
-                    completion(false) // 帳戶不存在
+                    completion(false)
                 }
             }
         }
     }
     
-    // 關聯新 UID 到舊數據
     func linkNewUIDToOldData(newUID: String, email: String) {
         let db = Firestore.firestore()
         
@@ -306,7 +290,7 @@ struct LogoutSheetView: View {
                 let isDeleted = document.get("isDeleted") as? Bool ?? false
                 
                 if isDeleted {
-                    // 將新的 UID 更新回舊數據，並取消刪除標記
+                  
                     db.collection("users").document(oldDocumentID).updateData(["uid": newUID, "isDeleted": false]) { error in
                         if let error = error {
                             print("Error updating UID: \(error)")

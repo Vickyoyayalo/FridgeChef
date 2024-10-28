@@ -28,7 +28,7 @@ struct SectionView<Content: View>: View {
             content
         }
         .frame(maxWidth: .infinity)
-        .cornerRadius(8) // 統一圓角大小
-        .padding(.horizontal, 5)// 確保與外部容器的間距一致
+        .cornerRadius(8)
+        .padding(.horizontal, 5)
     }
 }

@@ -32,7 +32,7 @@ class ChatGPTAPI {
     
     init(
         apiKey: String,
-        model: String = "gpt-4", // 使用 gpt-4 模型gpt-3.5-turbo
+        model: String = "gpt-4",
         systemPrompt: String,
         temperature: Double = 0.5,
         top_p: Double = 0.9
@@ -55,7 +55,7 @@ class ChatGPTAPI {
             messages.append(APIMessage(role: "user", content: text))
             
             for message in messages {
-                print("\(message.role): \(message.content ?? "")")
+                print("\(message.role): \(message.content)")
             }
             
             let requestBody = Request(
@@ -160,7 +160,6 @@ class ChatGPTAPI {
 extension String: LocalizedError {
     public var errorDescription: String? { return self }
 }
-
 
 struct APIMessage: Codable {
     let role: String

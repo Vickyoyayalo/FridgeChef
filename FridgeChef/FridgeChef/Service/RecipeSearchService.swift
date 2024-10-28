@@ -36,21 +36,17 @@ class RecipeSearchService {
                 return
             }
             
-            // 打印原始數據，便於調試
             if let rawString = String(data: data, encoding: .utf8) {
                 print("Raw Response Data: \(rawString)")
             }
             
             do {
                 let decoder = JSONDecoder()
-                // 進行解碼，使用 T 來解析
                 let decodedResponse = try decoder.decode(T.self, from: data)
                 completion(.success(decodedResponse))
             } catch {
-                // 嘗試解碼失敗時，進一步捕捉具體錯誤
                 print("Decoding Error: \(error)")
                 do {
-                    // 嘗試解碼 API 錯誤響應
                     let decoder = JSONDecoder()
                     let apiError = try decoder.decode(APIErrorResponse.self, from: data)
                     if let message = apiError.message {
@@ -58,10 +54,9 @@ class RecipeSearchService {
                         let apiErrorMsg = NSError(domain: "API Error", code: apiError.code ?? 0, userInfo: [NSLocalizedDescriptionKey: message])
                         completion(.failure(apiErrorMsg))
                     } else {
-                        completion(.failure(error)) // 若無法解碼為 API 錯誤，則回傳原始解碼錯誤
+                        completion(.failure(error))
                     }
                 } catch {
-                    // 如果兩次解碼都失敗，返回原始錯誤
                     print("Decoding or API Error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
@@ -91,14 +86,14 @@ class RecipeSearchService {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
         }
-        print("Fetching URL: \(url.absoluteString)") // 添加這一行
+        print("Fetching URL: \(url.absoluteString)")
         fetchData(url: url, completion: completion)
     }
     
     func getRecipeInformation(recipeId: Int, completion: @escaping (Result<RecipeDetails, Error>) -> Void) {
         let url = URL(string: "\(baseURL)/\(recipeId)/information?apiKey=\(apiKey)&includeNutrition=false")!
         
-        print("Fetching URL: \(url.absoluteString)") // 添加這一行
+        print("Fetching URL: \(url.absoluteString)") 
         
         fetchData(url: url, completion: completion)
     }

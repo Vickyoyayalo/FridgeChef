@@ -22,19 +22,17 @@ struct GroceryListView: View {
     
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottomTrailing) { // 設定對齊方式
-                // 背景漸變
+            ZStack(alignment: .bottomTrailing) {
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .opacity(0.4)
-                .ignoresSafeArea() // 使用 ignoresSafeArea 替代 edgesIgnoringSafeArea
+                .ignoresSafeArea()
                
                 GeometryReader { geometry in
                     VStack {
-                        // 顯示背景圖片和文字
                         if filteredFoodItems.isEmpty {
                             VStack {
                                 Image("Grocerymonster")
@@ -47,7 +45,6 @@ struct GroceryListView: View {
                         }
                     }
                 }
-                // 主內容
                 GroceryListContentView(
                     filteredFoodItems: filteredFoodItems,
                     moveToFridge: moveToFridge,
@@ -66,8 +63,6 @@ struct GroceryListView: View {
                         editingFoodItem: ingredient
                     )
                 }
-                
-                // 漂浮按鈕
                 FloatingMapButton(showingMapView: $showingMapView)
             }
             .navigationBarTitle("Grocery 🛒", displayMode: .automatic)
@@ -78,7 +73,7 @@ struct GroceryListView: View {
                 alignment: .bottom
             )
             .onAppear {
-                listenToFoodItems() // 在視圖出現時啟動實時監聽
+                listenToFoodItems()
             }
         }
     }
@@ -96,7 +91,6 @@ struct GroceryListView: View {
                     self.foodItemStore.foodItems = items
                     print("Fetched \(items.count) food items from Firebase.")
                     
-                    // Schedule notifications for "toBuy" items
                     let toBuyItems = items.filter { $0.status == .toBuy }
                     for item in toBuyItems {
                         self.scheduleToBuyNotification(for: item)
@@ -107,7 +101,6 @@ struct GroceryListView: View {
             }
         }
     }
-
     
     func scheduleToBuyNotification(for item: FoodItem) {
         let content = UNMutableNotificationContent()
@@ -115,7 +108,6 @@ struct GroceryListView: View {
         content.body = "Don't forget to buy \(item.name)!"
         content.sound = UNNotificationSound.default
         
-        // Create a trigger. You can set this to remind the user after a certain time, e.g., 1 hour (3600 seconds)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3600, repeats: false)
         
         let request = UNNotificationRequest(identifier: item.id, content: content, trigger: trigger)
@@ -129,7 +121,6 @@ struct GroceryListView: View {
         }
     }
     
-    // 計算屬性，過濾食材
     var filteredFoodItems: [FoodItem] {
         let filtered = foodItemStore.foodItems.filter { $0.status == .toBuy }
             .filter { item in
@@ -141,7 +132,7 @@ struct GroceryListView: View {
         }
         return filtered
     }
-    // 添加按鈕
+
     var addButton: some View {
         Button(action: {
             // Present MLIngredientView without an editing item
@@ -169,7 +160,7 @@ struct GroceryListView: View {
         let itemsToDelete = offsets.map { filteredFoodItems[$0] }
 
         for item in itemsToDelete {
-            // Delete from Firebase
+   
             firestoreService.deleteFoodItem(forUser: currentUser.uid, foodItemId: item.id) { result in
                 switch result {
                 case .success():
@@ -179,15 +170,12 @@ struct GroceryListView: View {
                 }
             }
 
-            // Delete from local data source
             if let indexInFoodItems = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
                 foodItemStore.foodItems.remove(at: indexInFoodItems)
             }
         }
     }
 
-
-    // 保存食材
     func handleSave(_ ingredient: Ingredient) {
         guard let currentUser = Auth.auth().currentUser else {
             print("No user is currently logged in.")
@@ -202,14 +190,13 @@ struct GroceryListView: View {
             status: Status(rawValue: ingredient.storageMethod) ?? .fridge,
             daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
             expirationDate: ingredient.expirationDate,
-            imageURL: nil // We'll set this after uploading
+            imageURL: nil
         )
         
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == ingredient.id }) {
-            // Update existing item in local array
+
             foodItemStore.foodItems[index] = foodItem
             
-            // Update in Firestore
             var updatedFields: [String: Any] = [
                 "name": foodItem.name,
                 "quantity": foodItem.quantity,
@@ -219,33 +206,31 @@ struct GroceryListView: View {
                 "expirationDate": Timestamp(date: foodItem.expirationDate ?? Date())
             ]
             
-            // Handle image upload
             if let image = ingredient.image {
                 let imagePath = "users/\(currentUser.uid)/foodItems/\(foodItem.id)/image.jpg"
                 firestoreService.uploadImage(image, path: imagePath) { result in
                     switch result {
                     case .success(let url):
                         updatedFields["imageURL"] = url
-                        // Update Firestore with imageURL
+                      
                         firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
-                            // Handle result
+                         
                         }
                     case .failure(let error):
                         print("Failed to upload image: \(error.localizedDescription)")
                     }
                 }
             } else {
-                // Update Firestore without imageURL
+              
                 firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
-                    // Handle result
+           
                 }
             }
             
         } else {
-            // Add new item
+           
             foodItemStore.foodItems.append(foodItem)
             
-            // Save to Firestore
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: foodItem, image: ingredient.image) { result in
                 switch result {
                 case .success():
@@ -256,15 +241,12 @@ struct GroceryListView: View {
             }
         }
         
-        // Clear editingItem
         editingItem = nil
-        
-        // Ensure SwiftUI detects data update
+       
         DispatchQueue.main.async {
             self.foodItemStore.objectWillChange.send()
         }
         
-        // Show ProgressView
         showingProgressView = true
         progressMessage = "Food item saved!"
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -272,7 +254,6 @@ struct GroceryListView: View {
         }
     }
 
-    // 將食材移動到 Fridge 或 Freezer
     func moveToFridge(item: FoodItem) {
         moveToStorage(item: item, storageMethod: "Fridge")
     }
@@ -281,7 +262,6 @@ struct GroceryListView: View {
         moveToStorage(item: item, storageMethod: "Freezer")
     }
 
-    // 通用的移動函數
     func moveToStorage(item: FoodItem, storageMethod: String) {
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
             // Update status and expiration date
@@ -290,7 +270,6 @@ struct GroceryListView: View {
             foodItemStore.foodItems[index].expirationDate = newExpirationDate
             foodItemStore.foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 0
 
-            // Update in Firebase
             guard let currentUser = Auth.auth().currentUser else {
                 print("No user is currently logged in.")
                 return
@@ -311,12 +290,10 @@ struct GroceryListView: View {
                 }
             }
 
-            // Notify SwiftUI of data change
             DispatchQueue.main.async {
                 self.foodItemStore.objectWillChange.send()
             }
 
-            // Show progress view
             showingProgressView = true
             progressMessage = "Food moved to \(storageMethod)!"
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -327,8 +304,6 @@ struct GroceryListView: View {
         }
     }
 
-
-    // 將 FoodItem 轉換為 Ingredient
     func convertToIngredient(item: FoodItem) -> Ingredient {
         // Fetch the image asynchronously if needed, but for now, you can set image to nil
         return Ingredient(
@@ -340,14 +315,13 @@ struct GroceryListView: View {
             expirationDate: item.expirationDate ?? Date(),
             storageMethod: item.status.rawValue,
             image: nil,
-            imageURL: item.imageURL// You may need to fetch the image from item.imageURL if necessary
+            imageURL: item.imageURL
         )
     }
-
-    // 將 Ingredient 轉換回 FoodItem（假設有此需求）
+    
     func convertToFoodItem(ingredient: Ingredient) -> FoodItem {
         return FoodItem(
-            id: ingredient.id, // 保持 id 一致
+            id: ingredient.id,
             name: ingredient.name,
             quantity: ingredient.quantity,
             unit: ingredient.unit,
@@ -389,8 +363,6 @@ struct GroceryListContentView: View {
         .listStyle(PlainListStyle())
     }
 }
-
-
 
 // MARK: - Preview
 

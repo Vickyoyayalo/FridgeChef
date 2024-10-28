@@ -11,7 +11,7 @@ import UIKit
 import Speech
 
 class RecognitionService: ObservableObject {
-    // 語音辨識相關
+
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
@@ -23,32 +23,29 @@ class RecognitionService: ObservableObject {
     @Published var alertMessage: String = ""
     @Published var isRecording: Bool = false
     
-    // 加入 AlertService
     private let alertService = AlertService()
     
-    // 食物分類辨識
     func recognizeFood(in image: UIImage, completion: @escaping (String) -> Void) {
         guard let model = try? VNCoreMLModel(for: Food().model) else {
-            print("無法加載 CoreML 模型")
-            completion("無法識別食物")
+            print("Failed to load CoreML model.")
+            completion("Unable to recognize food.")
             return
         }
         
         let request = VNCoreMLRequest(model: model) { request, error in
             if let error = error {
-                print("食物識別錯誤: \(error.localizedDescription)")
-                completion("無法識別食物")
+                print("Unable to recognize food: \(error.localizedDescription)")
+                completion("Unable to recognize food.")
                 return
             }
             
             guard let results = request.results as? [VNClassificationObservation], let topResult = results.first else {
-                print("無法識別結果")
-                completion("無法識別食物")
+                print("Unable to recognize food.")
+                completion("Unable to recognize food.")
                 return
             }
             
             DispatchQueue.main.async {
-                // 取得辨識結果並返回
                 let label = topResult.identifier
                 let translatedLabel = TranslationDictionary.foodNames[label] ?? "Unknown Food"
                 completion(translatedLabel)
@@ -56,7 +53,7 @@ class RecognitionService: ObservableObject {
         }
         
         guard let ciImage = CIImage(image: image) else {
-            print("無法將 \(image) 轉換為 CIImage")
+            print("Cannot \(image) transfer to CIImage")
             return
         }
         
@@ -65,7 +62,7 @@ class RecognitionService: ObservableObject {
             do {
                 try handler.perform([request])
             } catch {
-                print("食物分類識別失敗: \(error.localizedDescription)")
+                print("Food category identification failed: \(error.localizedDescription)")
             }
         }
     }
@@ -73,18 +70,18 @@ class RecognitionService: ObservableObject {
     // 文字辨識 (OCR)
     func performTextRecognition(on image: UIImage, completion: @escaping (String) -> Void) {
         guard let ciImage = CIImage(image: image) else {
-            completion("無法處理圖片")
+            completion("Unable to recognize photos.")
             return
         }
         
         let request = VNRecognizeTextRequest { (request, error) in
             if let error = error {
-                completion("文字識別錯誤: \(error.localizedDescription)")
+                completion("Unable to recognize text: \(error.localizedDescription)")
                 return
             }
             
             guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                completion("無法識別文字")
+                completion("Unable to recognize text.")
                 return
             }
             
@@ -104,13 +101,12 @@ class RecognitionService: ObservableObject {
                 try handler.perform([request])
             } catch {
                 DispatchQueue.main.async {
-                    completion("圖片處理失敗: \(error.localizedDescription)")
+                    completion("Photo identification failed: \(error.localizedDescription)")
                 }
             }
         }
     }
     
-    // 語音辨識相關邏輯，保持不變
     func requestSpeechRecognitionAuthorization(completion: @escaping (Bool) -> Void) {
         SFSpeechRecognizer.requestAuthorization { status in
             DispatchQueue.main.async {
@@ -124,7 +120,7 @@ class RecognitionService: ObservableObject {
                     self.showSpeechRecognitionUnavailableAlert()
                     completion(false)
                 @unknown default:
-                    fatalError("未知的語音識別授權狀態")
+                    fatalError("Unknown speech recognition authorization status.")
                 }
             }
         }
@@ -152,7 +148,7 @@ class RecognitionService: ObservableObject {
             try audioEngine.start()
             isRecording = true
         } catch {
-            print("無法開始錄音")
+            print("Unable to use speech recognition.")
         }
     }
     
@@ -162,17 +158,15 @@ class RecognitionService: ObservableObject {
         isRecording = false
     }
     
-    // 顯示語音識別被拒的警告
     private func showSpeechRecognitionDeniedAlert() {
-        alertTitle = "無法使用語音識別"
-        alertMessage = "語音識別功能已被拒絕。請前往設定中允許語音識別。"
+        alertTitle = "Unknown speech recognition authorization status."
+        alertMessage = "Speech recognition has been denied. Please go to settings and allow speech recognition."
         showAlert = true
     }
     
-    // 顯示語音識別無法使用的警告
     private func showSpeechRecognitionUnavailableAlert() {
-        alertTitle = "無法使用語音識別"
-        alertMessage = "語音識別功能無法使用，可能由於設備限制。"
+        alertTitle = "Unable to use speech recognition."
+        alertMessage = "Speech recognition has been denied. Please go to settings and allow speech recognition."
         showAlert = true
     }
 }

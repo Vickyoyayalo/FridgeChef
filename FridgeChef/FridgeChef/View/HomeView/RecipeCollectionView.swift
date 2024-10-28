@@ -14,7 +14,7 @@ struct RecipeCollectionView: View {
 
     var body: some View {
         HStack {
-            // 判斷是否有圖片 URL，否則顯示系統圖片
+            
             if let imageUrl = recipe.image, let url = URL(string: imageUrl) {
                 AsyncImage(url: url) { image in
                     image
@@ -25,11 +25,11 @@ struct RecipeCollectionView: View {
                         .shadow(radius: 5)
                         .padding(.trailing, 4)
                 } placeholder: {
-                    ProgressView() // 圖片加載時顯示進度條
+                    ProgressView()
                         .frame(width: 80, height: 80)
                 }
             } else {
-                // 使用系統圖片作為佔位符
+                
                 Image("RecipeFood")
                     .resizable()
                     .scaledToFill()
@@ -42,7 +42,7 @@ struct RecipeCollectionView: View {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                // 食譜類型
+           
                 if let dishType = recipe.dishTypes.first {
                     Text(dishType.capitalized)
                         .font(.custom("ArialRoundedMTBold", size: 15))
@@ -53,12 +53,10 @@ struct RecipeCollectionView: View {
                         .foregroundColor(Color.gray)
                 }
                 
-                // 食譜標題
                 Text(recipe.title)
                     .fontWeight(.medium)
                     .lineLimit(2)
                 
-                // 食譜詳細資訊
                 HStack {
                     Image(systemName: "person.2")
                         .resizable()
@@ -82,7 +80,6 @@ struct RecipeCollectionView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            // 收藏按鈕
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     toggleFavorite()

@@ -4,79 +4,8 @@
 //
 //  Created by Vickyhereiam on 2024/9/13.
 //
-import Foundation
-import FirebaseAuth
-import FirebaseFirestore
-import WidgetKit
-
-class FoodItemStore: ObservableObject {
-    @Published var foodItems: [FoodItem] = []
-    private var listener: ListenerRegistration?
-
-    init() {
-        fetchFoodItems()
-    }
-    
-    // 當資料更新時，通知 Widget
-    func updateWidget() {
-        WidgetCenter.shared.reloadTimelines(ofKind: "FridgeChefWidget")
-    }
-    
-    func saveFoodItemsToUserDefaults(_ foodItems: [FoodItem]) {
-        let sharedDefaults = UserDefaults(suiteName: "group.com.vickyoyaya.FridgeChef")
-        
-        let simpleItems = foodItems.map { item in
-            SimpleFoodItem(id: item.id, name: item.name, quantity: item.quantity, unit: item.unit, daysRemaining: item.daysRemaining, status: item.status)
-        }
-
-        if let encodedData = try? JSONEncoder().encode(simpleItems) {
-            sharedDefaults?.set(encodedData, forKey: "foodItems")
-            
-            updateWidget()
-        }
-    }
-
-    // 從 Firebase 獲取 FoodItem 並保存到 App Group
-    func fetchFoodItems() {
-        guard let currentUser = Auth.auth().currentUser else {
-            print("No user is currently logged in.")
-            return
-        }
-
-        listener = FirestoreService().listenToFoodItems(forUser: currentUser.uid) { [weak self] result in
-            switch result {
-            case .success(let items):
-                DispatchQueue.main.async {
-                    // 將獲取到的 items 設置到 foodItems 中
-                    self?.foodItems = items
-                    
-                    // 將 items 保存到 UserDefaults 中，以便 Widget 使用
-                    self?.saveFoodItemsToUserDefaults(items)
-                    
-                    print("Fetched \(items.count) food items from Firebase.")
-                }
-            case .failure(let error):
-                print("Failed to fetch food items: \(error.localizedDescription)")
-            }
-        }
-    }
-
-    deinit {
-        listener?.remove()
-    }
-}
-
-struct SimpleFoodItem: Identifiable, Codable {
-    var id: String
-    var name: String
-    var quantity: Double
-    var unit: String
-    var daysRemaining: Int
-    var status: Status // 新增 status 屬性
-}
-
 import SwiftUI
-// 食材結構
+
 struct FoodItem: Identifiable, Codable, Equatable {
     var id: String
     var name: String
@@ -85,7 +14,7 @@ struct FoodItem: Identifiable, Codable, Equatable {
     var status: Status
     var daysRemaining: Int
     var expirationDate: Date?
-    var imageURL: String?  // Replace imageBase64 with imageURL
+    var imageURL: String?
     
     var uiImage: UIImage? {
             get {
@@ -102,7 +31,6 @@ struct FoodItem: Identifiable, Codable, Equatable {
     }
 }
 
-// 狀態枚舉
 enum Status: String, Codable {
     case toBuy = "toBuy"
     case fridge = "Fridge"
@@ -110,7 +38,6 @@ enum Status: String, Codable {
 }
 
 extension FoodItem {
-    // 根據剩餘天數顯示不同的提示文字
     var daysRemainingText: String {
         switch status {
         case .toBuy:

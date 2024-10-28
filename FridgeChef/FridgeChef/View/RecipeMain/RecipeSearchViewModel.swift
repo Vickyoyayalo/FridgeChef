@@ -23,12 +23,10 @@ class RecipeSearchViewModel: ObservableObject {
     @Published var recipes: [Recipe] = []
     @Published var selectedRecipe: RecipeDetails?
     @Published var isLoading: Bool = false
-    @Published var errorMessage: ErrorMessage?  // 修改為 ErrorMessage?
+    @Published var errorMessage: ErrorMessage?
     
     private let recipeService = RecipeSearchService()
 
-    
-    // 提取收藏食譜的ID
     private func getSavedFavoriteIDs() -> Set<Int> {
         if let savedFavorites = UserDefaults.standard.data(forKey: "favorites"),
            let loadedFavorites = try? JSONDecoder().decode([Recipe].self, from: savedFavorites) {
@@ -77,14 +75,14 @@ class RecipeSearchViewModel: ObservableObject {
         let favoritesRef = db.collection("users").document(userId).collection("favorites")
 
         if recipes[index].isFavorite {
-            // 從 Firestore 移除收藏
+          
             favoritesRef.document("\(recipeId)").delete { error in
                 if let error = error {
                     print("Error removing favorite: \(error.localizedDescription)")
                 } else {
                     DispatchQueue.main.async {
                         self.recipes[index].isFavorite = false
-                        // 同步更新 selectedRecipe
+                      
                         if self.selectedRecipe?.id == recipeId {
                             self.selectedRecipe?.isFavorite = false
                         }
@@ -92,7 +90,7 @@ class RecipeSearchViewModel: ObservableObject {
                 }
             }
         } else {
-            // 添加到 Firestore 收藏，並包含 dishTypes
+          
             let favoriteData: [String: Any] = [
                 "id": recipeId,
                 "title": recipes[index].title,
@@ -108,7 +106,7 @@ class RecipeSearchViewModel: ObservableObject {
                 } else {
                     DispatchQueue.main.async {
                         self.recipes[index].isFavorite = true
-                        // 同步更新 selectedRecipe
+                      
                         if self.selectedRecipe?.id == recipeId {
                             self.selectedRecipe?.isFavorite = true
                         }
@@ -118,9 +116,8 @@ class RecipeSearchViewModel: ObservableObject {
         }
     }
 
-    // 方法：檢查該食譜是否已收藏
     func checkIfFavorite(recipeId: Int) {
-        // 確保已經有使用者登入
+       
         guard let userId = Auth.auth().currentUser?.uid else {
             print("Error: No user is currently logged in.")
             return
@@ -174,14 +171,14 @@ class RecipeSearchViewModel: ObservableObject {
                             readyInMinutes: readyInMinutes,
                             summary: "",
                             isFavorite: true,
-                            dishTypes: dishTypes // 設置 dishTypes
+                            dishTypes: dishTypes
                         )
                         favoriteRecipes.append(recipe)
                     }
                 }
                 DispatchQueue.main.async {
                     self.recipes = favoriteRecipes
-                    print("Loaded favorites: \(self.recipes)")  // 這裡加上 print
+                    print("Loaded favorites: \(self.recipes)")
                 }
             }
         }
@@ -196,18 +193,18 @@ private func saveFavorites() {
     func adjustServings(newServings: Int) {
         guard var recipe = selectedRecipe, newServings > 0, recipe.servings > 0 else {
             if let recipe = selectedRecipe, recipe.servings <= 0 {
-                errorMessage = ErrorMessage(message: "原始份量無效。")
+                errorMessage = ErrorMessage(message: "The original serving number is invalid.")
             } else {
-                errorMessage = ErrorMessage(message: "請輸入有效的份量。")
+                errorMessage = ErrorMessage(message: "Please enter the correct serving numbers.")
             }
             return
         }
         recipe.adjustIngredientAmounts(forNewServings: newServings)
-        selectedRecipe = recipe // 更新視圖
+        selectedRecipe = recipe
     }
     
     func getRecipeDetails(recipeId: Int) {
-        // 開始加載
+  
         isLoading = true
         errorMessage = nil
 
@@ -220,10 +217,9 @@ private func saveFavorites() {
                     if details.servings <= 0 {
                         details.servings = 1
                     }
-                    // 檢查是否已收藏
                     self?.checkIfFavorite(recipeId: recipeId)
                     details.isFavorite = self?.recipes.first(where: { $0.id == recipeId })?.isFavorite ?? false
-                    self?.selectedRecipe = details  // 觸發視圖更新
+                    self?.selectedRecipe = details
                 case .failure(let error):
                     self?.errorMessage = ErrorMessage(message: "Failed to fetch recipe details.")
                 }

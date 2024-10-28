@@ -11,13 +11,13 @@ struct RecipeMainView: View {
     @State private var showingAddGroceryForm = false
     @State private var searchQuery: String = ""
     @State private var isShowingDefaultPage = true
-    @State private var selectedRecipe: Recipe? = nil // Add this state for navigation
+    @State private var selectedRecipe: Recipe? = nil
     var showEditAndAddButtons: Bool = false
 
     var body: some View {
         NavigationView {
             ZStack {
-                // 背景渐变
+              
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
                     startPoint: .top,
@@ -28,7 +28,6 @@ struct RecipeMainView: View {
 
                 VStack {
                     if isShowingDefaultPage {
-                        // 显示默认 SampleRecipeView 页面
                         DefaultRecipeView(recipeManager: RecipeManager())
                     } else {
                         if viewModel.isLoading {
@@ -37,29 +36,29 @@ struct RecipeMainView: View {
                                 .scaleEffect(1.5)
                             Spacer()
                         } else if !viewModel.recipes.isEmpty {
-                            // 有食谱时显示食谱列表
+                           
                             List(viewModel.recipes, id: \.id) { recipe in
                                 RecipeRowView(recipe: recipe, toggleFavorite: {
                                     viewModel.toggleFavorite(for: recipe.id)
                                 }, viewModel: RecipeSearchViewModel())
                                 .onTapGesture {
-                                    selectedRecipe = recipe // Set selected recipe when tapped
+                                    selectedRecipe = recipe
                                 }
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
                             }
                             .listStyle(PlainListStyle())
                         } else if let errorMessage = viewModel.errorMessage {
-                            // 显示错误消息
+                            
                             Spacer()
                             Text("wrong：\(errorMessage.message)")
                                 .foregroundColor(.red)
                                 .padding()
                             Spacer()
                         } else {
-                            // 提示输入搜索关键字
+                         
                             Spacer()
-                            Text("Opps...Let's try again.. \nSearch by keywords🕵🏻‍♂️") //請輸入關鍵字搜尋食譜
+                            Text("Opps...Let's try again.. \nSearch by keywords🕵🏻‍♂️")
                                 .foregroundColor(.gray)
                             Spacer()
                         }
@@ -99,7 +98,7 @@ struct RecipeMainView: View {
                         get: { selectedRecipe != nil },
                         set: { if !$0 { selectedRecipe = nil } }
                     ),
-                    label: { EmptyView() } // Empty view for programmatic navigation
+                    label: { EmptyView() } 
                 )
             )
         }

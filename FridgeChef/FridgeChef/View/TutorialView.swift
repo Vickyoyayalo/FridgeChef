@@ -37,7 +37,7 @@ struct TutorialView: View {
     }
     
     var body: some View {
-        NavigationView {  // 添加 NavigationView
+        NavigationView {
             ZStack {
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
@@ -79,9 +79,8 @@ struct TutorialView: View {
                         
                         if currentPage < pageHeadings.count - 1 {
                             Button(action: {
-                                // 跳過教程，直接進入LoginView
                                 hasSeenTutorial = true
-                                navigateToLogin = true  // 跳轉標記為 true
+                                navigateToLogin = true
                             }) {
                                 Text("Skip")
                                     .font(.custom("Menlo-BoldItalic", size: 16))
@@ -90,7 +89,7 @@ struct TutorialView: View {
                         }
                     }
                     .padding(.bottom)
-                    // 跳轉到 LoginView
+             
                     NavigationLink(destination: LoginView(), isActive: $navigateToLogin) {
                         EmptyView()
                     }
@@ -99,8 +98,6 @@ struct TutorialView: View {
         }
     }
 }
-
-
 
 #Preview {
     TutorialView()

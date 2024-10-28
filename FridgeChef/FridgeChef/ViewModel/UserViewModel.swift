@@ -65,7 +65,7 @@ class UserViewModel: ObservableObject {
 
     private func uploadAvatar(uid: String, completion: @escaping (Bool, String?) -> Void) {
         guard let avatar = avatar, let imageData = avatar.jpegData(compressionQuality: 0.8) else {
-            completion(true, nil) // No avatar, proceed without uploading
+            completion(true, nil)
             return
         }
 
@@ -151,11 +151,8 @@ class UserViewModel: ObservableObject {
         do {
             try Auth.auth().signOut()
             self.user = nil
-//            self.name = ""
-//            self.email = ""
-//            self.avatar = nil
         } catch {
-            self.alert = Alert(title: Text("登出失敗"), message: Text(error.localizedDescription))
+            self.alert = Alert(title: Text("Log out failed"), message: Text(error.localizedDescription))
             self.showAlert = true
         }
     }

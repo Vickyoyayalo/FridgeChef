@@ -9,7 +9,6 @@ import WidgetKit
 import SwiftUI
 import Foundation
 
-// 這個 Entry 將會被用來顯示資料
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let expiringItems: [SimpleFoodItem]
@@ -22,7 +21,7 @@ struct SimpleFoodItem: Identifiable, Codable {
     var quantity: Double
     var unit: String
     var daysRemaining: Int
-    var status: Status // 新增 status 屬性
+    var status: Status
 }
 
 enum Status: String, Codable {
@@ -31,15 +30,15 @@ enum Status: String, Codable {
     case freezer = "Freezer"
 }
 
-// TimelineProvider：控制 Widget 的刷新頻率和內容
+
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        // 占位資料，用於展示在 Widget 加載之前
+  
         SimpleEntry(date: Date(), expiringItems: [], expiredItems: [])
     }
     
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) {
-        // 快照數據，用於預覽
+       
         let entry = SimpleEntry(date: Date(), expiringItems: mockExpiringItems(), expiredItems: mockExpiredItems())
         completion(entry)
     }
@@ -47,29 +46,24 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> Void) {
         let currentDate = Date()
         
-        // 讀取 UserDefaults 中的資料
         let sharedDefaults = UserDefaults(suiteName: "group.com.vickyoyaya.FridgeChef")
         var expiringItems: [SimpleFoodItem] = []
         var expiredItems: [SimpleFoodItem] = []
         
         if let foodItemsData = sharedDefaults?.data(forKey: "foodItems") {
             if let decodedFoodItems = try? JSONDecoder().decode([SimpleFoodItem].self, from: foodItemsData) {
-                // 過濾出即將過期或已過期，且狀態為 fridge 或 freezer 的項目
+              
                 expiringItems = decodedFoodItems.filter { $0.daysRemaining <= 3 && $0.daysRemaining >= 0 && ($0.status == .fridge || $0.status == .freezer) }
                 expiredItems = decodedFoodItems.filter { $0.daysRemaining < 0 && ($0.status == .fridge || $0.status == .freezer) }
             }
         }
 
-        // 創建時間軸條目
         let entry = SimpleEntry(date: currentDate, expiringItems: expiringItems, expiredItems: expiredItems)
-        
-        // 每小時更新
+       
         let timeline = Timeline(entries: [entry], policy: .after(Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!))
         completion(timeline)
     }
 
-    
-    // 模擬即將過期的項目
     func mockExpiringItems() -> [SimpleFoodItem] {
         return [
             SimpleFoodItem(id: UUID().uuidString, name: "Milk", quantity: 1.0, unit: "Liter", daysRemaining: 2, status: .fridge),
@@ -77,7 +71,6 @@ struct Provider: TimelineProvider {
         ]
     }
     
-    // 模擬已過期的項目
     func mockExpiredItems() -> [SimpleFoodItem] {
         return [
             SimpleFoodItem(id: UUID().uuidString, name: "Cheese", quantity: 0.5, unit: "Kg", daysRemaining: -2, status: .freezer),
@@ -86,7 +79,6 @@ struct Provider: TimelineProvider {
     }
 }
 
-// 主視圖，用於顯示過期和即將過期的食材
 struct FridgeChefWidgetEntryView: View {
     var entry: Provider.Entry
     @Environment(\.widgetFamily) var widgetFamily
@@ -94,13 +86,13 @@ struct FridgeChefWidgetEntryView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if entry.expiringItems.isEmpty && entry.expiredItems.isEmpty {
-                HStack {
-                    Image("Grocerymonster") // Icon for Expiring Soon
+                HStack(alignment: .center, spacing: 5) {
+                    Image("himonster")
                         .resizable()
-                        .frame(width: 60, height: 60)
-                    Text("No expiring or expired items!")
-                        .font(.custom("ArialRoundedMTBold", size: 15))
-                        .padding()
+                        .frame(width: 50, height: 50)
+                    Text("No Food \nExpired~")
+                        .font(.custom("ArialRoundedMTBold", size: 14))
+                        .foregroundColor(.orange)
                 }
             } else {
                 switch widgetFamily {
@@ -109,7 +101,7 @@ struct FridgeChefWidgetEntryView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         if let firstExpiring = entry.expiringItems.first {
                             HStack(alignment: .center, spacing: 5) {
-                                Image("runmonster") // Icon for Expiring Soon
+                                Image("runmonster")
                                     .resizable()
                                     .frame(width: 50, height: 50)
                                 Text("⚠️ Notice \n\(firstExpiring.name)")
@@ -120,7 +112,7 @@ struct FridgeChefWidgetEntryView: View {
                         
                         if let firstExpired = entry.expiredItems.first {
                             HStack(alignment: .center, spacing: 5) {
-                                Image("alertmonster") // Icon for Expired
+                                Image("alertmonster")
                                     .resizable()
                                     .frame(width: 50, height: 50)
                                 Text("Expired‼️ \n\(firstExpired.name)")
@@ -129,12 +121,12 @@ struct FridgeChefWidgetEntryView: View {
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading) // 確保 VStack 填充整個寬度並左對齊
-                    .padding(.leading, -5) // 移除 padding，讓它緊貼左側邊界
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, -5)
                     
                 case .systemMedium:
                     let monsterImages = ["mapmonster", "discomonster1", "discomonster2", "discomonster3", "discomonster4", "discomonster5"]
-                    let randomMonsterImage = monsterImages.randomElement() ?? "mapmonster" // 隨機選取一個圖片
+                    let randomMonsterImage = monsterImages.randomElement() ?? "mapmonster"
 
                     ZStack {
                         VStack(alignment: .leading, spacing: 5) {
@@ -179,18 +171,17 @@ struct FridgeChefWidgetEntryView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.leading, 0)
 
-                        // 在右下角放置隨機選取的圖片
                         VStack {
-                            Spacer() // 把圖片推到最下方
+                            Spacer()
                             HStack {
-                                Spacer() // 把圖片推到最右邊
-                                Image(randomMonsterImage) // 隨機圖片
+                                Spacer()
+                                Image(randomMonsterImage)
                                     .resizable()
-                                    .frame(width: 100, height: 100) // 調整尺寸
-                                    .cornerRadius(10) // 圓角設置
+                                    .frame(width: 100, height: 100)
+                                    .cornerRadius(10)
                             }
                         }
-                        .padding([.bottom], 20) // 在右下角留一些間距
+                        .padding([.bottom], 20)
                     }
 
                 default:
@@ -208,7 +199,6 @@ struct FridgeChefWidgetEntryView: View {
         }
     }
 }
-
 
 struct FridgeChefWidget: Widget {
     let kind: String = "FridgeChefWidget"

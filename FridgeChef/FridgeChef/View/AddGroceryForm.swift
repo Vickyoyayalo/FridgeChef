@@ -26,7 +26,6 @@ struct AddGroceryForm: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // 渐层背景
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
                     startPoint: .top,
@@ -47,9 +46,9 @@ struct AddGroceryForm: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 20.0))
                                 .padding(.bottom)
                         } else {
-                            Image("RecipeFood")  // Provide a placeholder
+                            Image("RecipeFood")
                                 .resizable()
-                                .scaledToFill()  // 保持比例並完整顯示圖片
+                                .scaledToFill()
                                 .frame(minWidth: 0, maxWidth: .infinity)
                                 .frame(height: 200)
                                 .background(Color.white.opacity(0.4))
@@ -66,19 +65,6 @@ struct AddGroceryForm: View {
                     .padding()
                 }
                 .scrollIndicators(.hidden)
-//                Button(action: saveIngredient) {
-//                    Text("Save")
-//                        .font(.headline)
-//                        .padding()
-//                        .frame(maxWidth: .infinity)
-//                        .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-//                        .foregroundColor(.white)
-//                        .cornerRadius(8)
-//                    
-//                }
-//                .padding()
-//                .alert(isPresented: $isSavedAlertPresented) {
-//                    Alert(title: Text("Success"), message: Text("Saved the ingredient!"), dismissButton: .default(Text("Sure")))
                 }
                 .navigationTitle("Add Recipe")
                 .toolbar {
@@ -104,33 +90,6 @@ struct AddGroceryForm: View {
         }
         .tint(.primary)
     }
-//    func saveIngredient() {
-//        let defaultAmount = 1.0  // 一個示例值
-//        let defaultUnit = "unit" // 一個示例單位
-//        
-//        // 將 quantity 從 String 轉換為 Double，並四捨五入到兩位小數
-//        let quantityValue = (Double(quantity) ?? 1.0).rounded(toPlaces: 2)
-//        print("Converted quantity: \(quantityValue)") // 調試輸出
-//        
-//        // 創建 Ingredient 實例，並將 quantity 設置為 Double
-//        var newIngredient = Ingredient(
-//            id: editingFoodItem?.id ?? UUID(), // 如果是編輯，保持原有的 ID；否則生成新 ID
-//            name: recognizedText,
-//            quantity: quantityValue, // 正確設置為 Double，並已四捨五入
-//            amount: defaultAmount,
-//            unit: defaultUnit, // 使用實際的 unit
-//            expirationDate: expirationDate, // 設置 expirationDate
-//            storageMethod: storageMethod,
-//            imageBase64: image?.pngData()?.base64EncodedString()
-//        )
-//        print("New Ingredient: \(newIngredient.quantity)")
-//        savedIngredients.append(newIngredient)
-//        isSavedAlertPresented = true
-//        onSave?(newIngredient)
-//        clearForm()
-//        dismiss()
-//    }
-    
 }
 
 #Preview{
@@ -155,11 +114,11 @@ struct FormTextField: View {
                 .font(.system(.body, design: .rounded))
                 .textFieldStyle(PlainTextFieldStyle())
                 .padding(10)
-                .background(Color.white.opacity(0.3)) // 添加淡色背景
-                .cornerRadius(8) // 圓角設定
+                .background(Color.white.opacity(0.3))
+                .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.orange, lineWidth: 2) // 修改框線顏色和寬度
+                        .stroke(Color.orange, lineWidth: 2)
                 )
                 .padding(.vertical, 10)
         }

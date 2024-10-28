@@ -4,7 +4,6 @@
 //
 //  Created by Vickyhereiam on 2024/9/21.
 
-//MARK: 可行
 import MapKit
 import SwiftUI
 
@@ -24,24 +23,22 @@ struct CustomMapView: UIViewRepresentable {
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
         if !locationManager.isUserInteracting {
-            // 定义一个小的容差，避免浮点精度问题导致的频繁更新
+           
             let tolerance: CLLocationDegrees = 0.0001
             let centerDifference = abs(mapView.region.center.latitude - region.center.latitude) +
                                    abs(mapView.region.center.longitude - region.center.longitude)
             let spanDifference = abs(mapView.region.span.latitudeDelta - region.span.latitudeDelta) +
                                  abs(mapView.region.span.longitudeDelta - region.span.longitudeDelta)
 
-            // 仅当差异超过容差时才更新区域
+            // 如果差異超過榮差時才需要更新区域
             if centerDifference > tolerance || spanDifference > tolerance {
                 mapView.setRegion(region, animated: true)
             }
         }
 
-        // 更新标注
         let previouslySelectedID = context.coordinator.selectedSupermarketID
         updateAnnotations(mapView: mapView)
 
-        // 重新选中标注
         if let selectedID = previouslySelectedID,
            let annotation = mapView.annotations.compactMap({ $0 as? CustomAnnotation }).first(where: { $0.supermarket.id == selectedID }) {
             mapView.selectAnnotation(annotation, animated: true)
@@ -49,17 +46,15 @@ struct CustomMapView: UIViewRepresentable {
     }
 
     private func updateAnnotations(mapView: MKMapView) {
-        // 现有的 CustomAnnotation
+       
         let existingAnnotations = mapView.annotations.compactMap { $0 as? CustomAnnotation }
         let existingSupermarketIDs = Set(existingAnnotations.map { $0.supermarket.id })
         let newSupermarketIDs = Set(supermarkets.map { $0.id })
 
-        // 找出需要移除的超市
         let supermarketsToRemove = existingSupermarketIDs.subtracting(newSupermarketIDs)
         let annotationsToRemove = existingAnnotations.filter { supermarketsToRemove.contains($0.supermarket.id) }
         mapView.removeAnnotations(annotationsToRemove)
 
-        // 找出需要添加的超市
         let supermarketsToAdd = newSupermarketIDs.subtracting(existingSupermarketIDs)
         let supermarketsToAddList = supermarkets.filter { supermarketsToAdd.contains($0.id) }
         for supermarket in supermarketsToAddList {
@@ -104,14 +99,14 @@ struct CustomMapView: UIViewRepresentable {
         }
 
         func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-            print("calloutAccessoryControlTapped 被调用")
+            print("calloutAccessoryControlTapped has called")
             guard let annotation = view.annotation as? CustomAnnotation else {
-                print("未找到 CustomAnnotation")
+                print("cannot find the CustomAnnotation")
                 return
             }
 
             let selectedSupermarket = annotation.supermarket
-            print("找到选中的超市: \(selectedSupermarket.name)")
+            print("Find the market: \(selectedSupermarket.name)")
 
             DispatchQueue.main.async {
                 self.parent.selectedSupermarket = selectedSupermarket
@@ -119,14 +114,12 @@ struct CustomMapView: UIViewRepresentable {
             }
         }
 
-        // 选中标注时记录其 ID
         func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
             if let annotation = view.annotation as? CustomAnnotation {
                 selectedSupermarketID = annotation.supermarket.id
             }
         }
 
-        // 当标注被移除时清除选择
         func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
             if let annotation = view.annotation as? CustomAnnotation {
                 if annotation.supermarket.id == selectedSupermarketID {
@@ -135,22 +128,18 @@ struct CustomMapView: UIViewRepresentable {
             }
         }
 
-        // 用户开始交互时
         func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
             DispatchQueue.main.async {
                 self.parent.locationManager.isUserInteracting = true
-                // 取消之前的定时器
                 self.interactionTimer?.invalidate()
                 self.interactionTimer = nil
             }
         }
 
-        // 用户结束交互时
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
             DispatchQueue.main.async {
-                // 取消之前的定时器
+               
                 self.interactionTimer?.invalidate()
-                // 启动一个新的定时器，延迟将 isUserInteracting 设为 false
                 self.interactionTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                     self.parent.locationManager.isUserInteracting = false
                     self.interactionTimer = nil

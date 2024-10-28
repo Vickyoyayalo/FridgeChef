@@ -13,12 +13,10 @@ struct ImageSelectorView: View {
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
 
-    // 管理 Alert 的狀態
     @State private var showAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
 
-    // AlertService 實例
     private let alertService = AlertService()
 
     enum PhotoSource: Identifiable {
@@ -39,7 +37,7 @@ struct ImageSelectorView: View {
                         showPhotoOptions = true
                     }
             } else {
-                Text("選擇圖片")
+                Text("Choose your photos from")
                     .frame(height: 200)
                     .background(Color.gray.opacity(0.2))
                     .onTapGesture {
@@ -47,11 +45,11 @@ struct ImageSelectorView: View {
                     }
             }
         }
-        .confirmationDialog("選擇來源", isPresented: $showPhotoOptions) {
-            Button("相機") {
+        .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions) {
+            Button("Camera") {
                 checkCameraAuthorizationStatus()
             }
-            Button("相冊") {
+            Button("Photo Library") {
                 checkPhotoLibraryAuthorizationStatus()
             }
         }
@@ -63,13 +61,11 @@ struct ImageSelectorView: View {
                 ImagePicker(image: $image, sourceType: .photoLibrary)
             }
         }
-        // 顯示授權相關的 Alert
         .alert(isPresented: $showAlert) {
             alertService.showAlert(title: alertTitle, message: alertMessage)
         }
     }
     
-    // 檢查相機授權狀態
     private func checkCameraAuthorizationStatus() {
         let cameraAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         
@@ -90,8 +86,7 @@ struct ImageSelectorView: View {
             break
         }
     }
-    
-    // 檢查相冊授權狀態
+   
     private func checkPhotoLibraryAuthorizationStatus() {
         let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
         
@@ -113,17 +108,15 @@ struct ImageSelectorView: View {
         }
     }
 
-    // 相機訪問被拒時顯示的警告
     private func showCameraAccessDeniedAlert() {
-        alertTitle = "相機無法使用"
-        alertMessage = "請到設定中允許應用訪問相機。"
+        alertTitle = "Cannot use your camera."
+        alertMessage = "Please go to settings and allow the app to access your camera. "
         showAlert = true
     }
 
-    // 相冊訪問被拒時顯示的警告
     private func showPhotoLibraryAccessDeniedAlert() {
-        alertTitle = "相冊無法使用"
-        alertMessage = "請到設定中允許應用訪問相冊。"
+        alertTitle = "Cannot use your photo album."
+        alertMessage = "Please go to settings and allow the app to access your photo album."
         showAlert = true
     }
 }

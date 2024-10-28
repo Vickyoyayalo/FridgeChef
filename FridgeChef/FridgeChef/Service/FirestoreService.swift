@@ -15,10 +15,9 @@ class FirestoreService {
     private let db = FirebaseManager.shared.firestore
     private let storage = Storage.storage()
     
-    // Save user information to Firestore
     func saveUser(_ userData: [String: Any], uid: String, completion: @escaping (Result<Void, Error>) -> Void) {
         var dataWithID = userData
-        dataWithID["uid"] = uid  // 明確地加入 uid
+        dataWithID["uid"] = uid
         
         db.collection("users").document(uid).setData(dataWithID) { error in
             if let error = error {
@@ -31,7 +30,6 @@ class FirestoreService {
         }
     }
     
-    // Fetch user by UID
     func fetchUser(byUid uid: String, completion: @escaping (User?, Error?) -> Void) {
         db.collection("users").document(uid).getDocument { documentSnapshot, error in
             if let error = error {
@@ -47,7 +45,6 @@ class FirestoreService {
         }
     }
     
-    // Login with Apple
     func loginWithApple() {
         let provider = OAuthProvider(providerID: "apple.com")
         provider.getCredentialWith(nil) { credential, error in
@@ -61,18 +58,15 @@ class FirestoreService {
                     if let error = error {
                         print("Login failed: \(error.localizedDescription)")
                     } else if let authResult = authResult {
-                        // 獲取使用者資料
+                     
                         let uid = authResult.user.uid
                         let email = authResult.user.email ?? "No Email"
                         let displayName = authResult.user.displayName ?? "Anonymous"
-                        
-                        // 準備要儲存的使用者資料
                         let userData: [String: Any] = [
                             "email": email,
                             "name": displayName
                         ]
                         
-                        // 儲存到 Firestore
                         self.saveUser(userData, uid: uid) { result in
                             switch result {
                             case .success():
@@ -87,7 +81,6 @@ class FirestoreService {
         }
     }
     
-    // Send password reset
     func sendPasswordReset(email: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Auth.auth().sendPasswordReset(withEmail: email) { error in
             if let error = error {
@@ -101,7 +94,7 @@ class FirestoreService {
     // MARK: - FoodItem CRUD Operations
     
     func addFoodItem(forUser userId: String, foodItem: FoodItem, image: UIImage?, completion: @escaping (Result<Void, Error>) -> Void) {
-        var hasCompleted = false // 添加标志位
+        var hasCompleted = false
         var data = [
             "id": foodItem.id,
             "name": foodItem.name,
@@ -120,7 +113,7 @@ class FirestoreService {
         if let image = image {
             let imagePath = "users/\(userId)/foodItems/\(foodItem.id)/image.jpg"
             uploadImage(image, path: imagePath) { result in
-                guard !hasCompleted else { return } // 检查标志位，避免重复触发
+                guard !hasCompleted else { return }
                 switch result {
                 case .success(let url):
                     data["imageURL"] = url
@@ -134,17 +127,17 @@ class FirestoreService {
                 case .failure(let error):
                     completion(.failure(error))
                 }
-                hasCompleted = true // 设置标志位
+                hasCompleted = true
             }
         } else {
             foodItemRef.setData(data) { error in
-                guard !hasCompleted else { return } // 检查标志位
+                guard !hasCompleted else { return }
                 if let error = error {
                     completion(.failure(error))
                 } else {
                     completion(.success(()))
                 }
-                hasCompleted = true // 设置标志位
+                hasCompleted = true
             }
         }
     }
@@ -159,7 +152,6 @@ class FirestoreService {
                     var foodItems: [FoodItem] = []
                     snapshot?.documents.forEach { document in
                         let data = document.data()
-                        // Extract each field safely
                         let id = data["id"] as? String ?? document.documentID
                         let name = data["name"] as? String ?? "Unknown"
                         let quantity = data["quantity"] as? Double ?? 0.0
@@ -374,7 +366,7 @@ class FirestoreService {
                     snapshot?.documents.forEach { document in
                         do {
                             var foodItem = try document.data(as: FoodItem.self)
-                            foodItem.id = document.documentID  // 手動設置 id
+                            foodItem.id = document.documentID
                             if let expirationTimestamp = document.get("expirationDate") as? Timestamp {
                                 foodItem.expirationDate = expirationTimestamp.dateValue()
                             }
@@ -392,8 +384,6 @@ class FirestoreService {
     }
     
     // MARK: - Message CRUD Operations
-    
-    // 獲取緩存的回應
     func getCachedResponse(message: String, completion: @escaping (Result<CachedResponse?, Error>) -> Void) {
            db.collection("cachedResponses")
                .whereField("message", isEqualTo: message)
@@ -417,7 +407,6 @@ class FirestoreService {
                }
        }
        
-    // 保存新的緩存回應
     func saveCachedResponse(message: String, response: String, completion: @escaping (Result<Void, Error>) -> Void) {
            guard let currentUser = Auth.auth().currentUser else {
                print("No user is currently logged in.")
@@ -427,16 +416,14 @@ class FirestoreService {
 
            let standardizedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
 
-           // 創建緩存回應
            let cachedResponse = CachedResponse(
                id: nil,
-               userId: currentUser.uid, // 當前用戶ID
-               message: standardizedMessage, // 儲存訊息
-               response: response, // 回應
+               userId: currentUser.uid,
+               message: standardizedMessage,
+               response: response,
                timestamp: Date()
            )
 
-           // 保存到 Firestore
            do {
                _ = try db.collection("cachedResponses").addDocument(from: cachedResponse)
                completion(.success(()))

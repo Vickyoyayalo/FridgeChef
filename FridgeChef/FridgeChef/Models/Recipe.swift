@@ -124,7 +124,7 @@ struct RecipeDetails: Codable, Identifiable {
 }
 
 struct AnalyzedInstruction: Codable, Identifiable {
-    var id = UUID()
+    var id: UUID? = UUID()
     let name: String
     let steps: [Step]
 }

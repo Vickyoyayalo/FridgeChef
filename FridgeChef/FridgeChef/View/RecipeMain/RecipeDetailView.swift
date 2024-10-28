@@ -1,393 +1,9 @@
-////
-////  RecipeDetailView.swift
-////  WhatToEat
-////
-////  Created by Vickyhereiam on 2024/9/27.
-////
-//import SwiftUI
-//import IQKeyboardManagerSwift
-//import FirebaseAuth
 //
-//struct RecipeDetailView: View {
-//    let recipeId: Int
-//    @EnvironmentObject var viewModel: RecipeSearchViewModel
-//    @EnvironmentObject var foodItemStore: FoodItemStore
-//    @State private var inputServings: String = ""
-//    @State private var animate = false
-//    @State private var ratingScore: Int = 5
-//    @State private var commentUser: String = ""
-//    @State private var commentText: String = ""
+//  RecipeDetailView.swift
+//  WhatToEat
 //
-//    // 定義主要色調
-//    let primaryColor = Color(UIColor(named: "NavigationBarTitle") ?? .orange)
-//    let secondaryColor = Color.white
-//    let tagColor = Color(UIColor(named: "SecondaryColor") ?? .black)
-//
-//    // 新增的狀態變量來管理警告
-//    @State private var activeAlert: ActiveAlert?
-//    @State private var showAddedLabel = false
-//    @State private var isButtonDisabled = false
-//
-//    var body: some View {
-//        ZStack {
-//            // 渐变背景
-//            LinearGradient(
-//                gradient: Gradient(colors: [Color.yellow, Color.orange]),
-//                startPoint: .top,
-//                endPoint: .bottom
-//            )
-//            .opacity(0.3)
-//            .edgesIgnoringSafeArea(.all)
-//
-//            Color.clear
-//                .contentShape(Rectangle())
-//                .onTapGesture {
-//                    IQKeyboardManager.shared.resignFirstResponder()
-//                }
-//
-//            ScrollView {
-//                VStack(alignment: .leading, spacing: 20) {
-//                    if let recipe = viewModel.selectedRecipe {
-//                        ZStack(alignment: .topTrailing) {
-//                            if let imageUrl = recipe.image {
-//                                AsyncImage(url: URL(string: imageUrl)) { image in
-//                                    image
-//                                        .resizable()
-//                                        .scaledToFill()
-//                                        .frame(height: 250)
-//                                        .cornerRadius(15)
-//                                        .shadow(radius: 10)
-//                                        .padding([.leading, .trailing, .bottom], 15) // 添加左右和底部的 padding
-//                                        .padding(.top, 30) // 增加圖片與頂部的距離
-//                                } placeholder: {
-//                                    ProgressView()
-//                                        .frame(height: 250)
-//                                }
-//                            } else {
-//                                Image("RecipeFood")
-//                                    .resizable()
-//                                    .scaledToFill()
-//                                    .frame(height: 250)
-//                                    .cornerRadius(15)
-//                                    .shadow(radius: 5)
-//                                    .foregroundColor(.gray)
-//                                    .background(Color.white.opacity(0.6))
-//                                    .padding([.leading, .trailing, .bottom], 15)
-//                                    .padding(.top, 20)
-//                            }
-//
-//                            // 收藏按钮调整位置
-//                            Button(action: {
-//                                withAnimation(.easeInOut(duration: 0.3)) {
-//                                    viewModel.toggleFavorite(for: recipeId)
-//                                    animate = true
-//                                }
-//                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-//                                    animate = false
-//                                }
-//                            }) {
-//                                Image(systemName: (viewModel.selectedRecipe?.isFavorite ?? false) ? "heart.fill" : "heart")
-//                                    .foregroundColor((viewModel.selectedRecipe?.isFavorite ?? false) ? primaryColor : Color.gray)
-//                                    .padding(10)
-//                                    .background(Color.white.opacity(0.8))
-//                                    .clipShape(Circle())
-//                                    .shadow(radius: 5)
-//                                    .scaleEffect(animate ? 1.5 : 1.0)
-//                                    .opacity(animate ? 0.5 : 1.0)
-//                                    .animation(.easeInOut(duration: 0.3), value: animate)
-//                            }
-//                            .padding(.top, 40)
-//                            .padding(.trailing, 25)
-//                        }
-//                        .frame(height: 250)
-//
-//                        // 食谱标题
-//                        Text(recipe.title)
-//                            .font(.custom("ArialRoundedMTBold", size: 25))
-//                            .foregroundColor(primaryColor.opacity(0.9))
-//                            .padding(.horizontal)
-//                            .fixedSize(horizontal: false, vertical: true)
-//
-//                        // 基本資訊
-//                        HStack {
-//                            Label("\(recipe.servings) servings", systemImage: "person.2")
-//                            Spacer()
-//                            Label("\(recipe.readyInMinutes) Minutes", systemImage: "clock")
-//                        }
-//                        .font(.custom("ArialRoundedMTBold", size: 15))
-//                        .foregroundColor(.secondary)
-//                        .padding(.horizontal)
-//
-//                        // 調整份量
-//                        SectionView(title: "Decide your serving size") {
-//                            HStack {
-//                                TextField(" 🔍 Serving Size", text: $inputServings, onCommit: {
-//                                    updateServings()
-//                                })
-//                                .keyboardType(.numberPad)
-//                                .textFieldStyle(RoundedBorderTextFieldStyle())
-//                                .font(.custom("ArialRoundedMTBold", size: 18))
-//
-//                                Button(action: {
-//                                    updateServings()
-//                                }) {
-//                                    Text("Go")
-//                                        .bold()
-//                                        .foregroundColor(.white)
-//                                        .font(.custom("ArialRoundedMTBold", size: 18))
-//                                        .padding(5)
-//                                        .background(primaryColor)
-//                                        .cornerRadius(8)
-//                                }
-//                            }
-//                            .padding(.horizontal)
-//                        }
-//
-//                        VStack(alignment: .leading) {
-//                            if !recipe.cuisines.isEmpty || !recipe.dishTypes.isEmpty || !recipe.diets.isEmpty {
-//                                SectionView(title: "Category") {
-//                                    VStack(alignment: .leading, spacing: 10) { // 增加間距以容納 TagViews
-//                                        if !recipe.cuisines.isEmpty {
-//                                            CategoryItemView(title: "Cuisines", items: recipe.cuisines, primaryColor: primaryColor)
-//                                        }
-//                                        if !recipe.dishTypes.isEmpty {
-//                                            CategoryItemView(title: "Dish Types", items: recipe.dishTypes, primaryColor: primaryColor)
-//                                        }
-//                                        if !recipe.diets.isEmpty {
-//                                            CategoryItemView(title: "Diets", items: recipe.diets, primaryColor: primaryColor)
-//                                        }
-//                                    }
-//                                    .padding(.leading, 20)
-//                                }
-//                            }
-//
-//                            let parsedIngredients = recipe.extendedIngredients.map { extIngredient in
-//                                ParsedIngredient(
-//                                    name: extIngredient.name.capitalized,
-//                                    quantity: extIngredient.amount.rounded(toPlaces: 2), // 保留兩位小數
-//                                    unit: extIngredient.unit.isEmpty ? "unit" : extIngredient.unit,
-//                                    expirationDate: Calendar.current.date(byAdding: .day, value: 0, to: Date()) ?? Date() // 設置一個默認的 expirationDate
-//                                )
-//                            }
-//
-//                            // 食材區域
-//                            SectionView(title: "Ingredients") {
-//                                VStack(alignment: .leading, spacing: 10) {
-//                                    ForEach(parsedIngredients, id: \.name) { ingredient in
-//                                        IngredientRow(ingredient: ingredient) { selectedIngredient in
-//                                            // 直接调用 addIngredientToShoppingList 并处理 alert
-//                                            addIngredientToShoppingList(selectedIngredient)
-//                                        }
-//                                        .environmentObject(foodItemStore)
-//                                    }
-//
-//                                    // 添加一个按钮，用于将所有食材一次性加入购物车
-//                                    Button(action: {
-//                                        addAllIngredientsToCart(ingredients: parsedIngredients)
-//                                        isButtonDisabled = true // 按下後禁用按鈕
-//                                    }) {
-//                                        Text("Add All Ingredients to Cart")
-//                                            .bold()
-//                                            .foregroundColor(.white)
-//                                            .padding()
-//                                            .background(primaryColor)
-//                                            .cornerRadius(10)
-//                                    }
-//                                    .frame(maxWidth: .infinity) // 按钮居中
-//                                    .opacity(isButtonDisabled ? 0.7 : 1.0) // 按钮的透明度
-//                                    .disabled(isButtonDisabled) // 按钮的禁用状态
-//                                    .padding(.top, 10)
-//                                }
-//                                .padding(.horizontal)
-//                                .padding(.vertical, 1)
-//                                .padding(.leading, 5)
-//                            }
-//
-//                            // 步驟
-//                            SectionView(title: "Instructions") {
-//                                if let analyzedInstructions = recipe.analyzedInstructions, !analyzedInstructions.isEmpty {
-//                                    ForEach(analyzedInstructions) { instruction in
-//                                        VStack(alignment: .leading, spacing: 10) {
-//                                            if !instruction.name.isEmpty {
-//                                                Text(instruction.name)
-//                                                    .font(.custom("ArialRoundedMTBold", size: 18))
-//                                                    .foregroundColor(primaryColor)
-//                                            }
-//
-//                                            ForEach(instruction.steps, id: \.number) { step in
-//                                                StepView(step: step)
-//                                            }
-//                                        }
-//                                        .padding(.bottom, 10)
-//                                        .padding(.horizontal)
-//                                    }
-//                                } else if let instructions = recipe.instructions?.htmlDecoded(), !instructions.isEmpty {
-//                                    Text(instructions)
-//                                        .font(.custom("ArialRoundedMTBold", size: 18))
-//                                        .padding(.horizontal)
-//                                } else {
-//                                    Text("No Instructions")
-//                                        .foregroundColor(.gray)
-//                                        .padding(.horizontal)
-//                                }
-//                            }
-//                            if viewModel.isLoading {
-//                                ProgressView()
-//                                    .scaleEffect(1.5)
-//                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                                    .background(Color.orange.opacity(0.3))
-//                                    .edgesIgnoringSafeArea(.all)
-//                            }
-//                        }
-//                        .background(.white.opacity(0.6))
-//                        .cornerRadius(30, corners: [.topLeft, .topRight])
-//                    }
-//                }
-//                .onAppear {
-//                    viewModel.getRecipeDetails(recipeId: recipeId)
-//                }
-//                .navigationBarTitle("Recipe Details", displayMode: .inline)
-//                // 統一的 alert 修飾符
-//                .alert(item: $activeAlert) { activeAlert in
-//                    switch activeAlert {
-//                    case .error(let errorMessage):
-//                        return Alert(
-//                            title: Text("Error"),
-//                            message: Text(errorMessage.message),
-//                            dismissButton: .default(Text("Sure")) {
-//                                viewModel.errorMessage = nil
-//                            }
-//                        )
-//                    case .ingredient(let message):
-//                        return Alert(
-//                            title: Text("Added to your Grocery List!"),
-//                            message: Text(message),
-//                            dismissButton: .default(Text("Sure"))
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    // 將更新份量的邏輯提取出來
-//    private func updateServings() {
-//        if let newServings = Int(inputServings), newServings > 0 {
-//            viewModel.adjustServings(newServings: newServings)
-//        } else {
-//            activeAlert = .error(ErrorMessage(message: "Please insert a correct number."))
-//        }
-//    }
-//
-//    private func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
-//        let firestoreService = FirestoreService()
-//
-//        guard let userId = Auth.auth().currentUser?.uid else {
-//            activeAlert = .error(ErrorMessage(message: "User not logged in."))
-//            return false
-//        }
-//
-//        let foodItem = FoodItem(
-//            id: UUID().uuidString, // 確保每個食材有唯一的 ID
-//            name: ingredient.name.capitalized,
-//            quantity: ingredient.quantity,
-//            unit: ingredient.unit,
-//            status: .toBuy,
-//            daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
-//            expirationDate: ingredient.expirationDate,
-//            imageURL: nil // 如果您有食材圖片，也可以傳入
-//        )
-//
-//        firestoreService.addFoodItem(forUser: userId, foodItem: foodItem, image: nil) { result in
-//            switch result {
-//            case .success:
-//                activeAlert = .ingredient("\(ingredient.name) added to your Grocery List!")
-//            case .failure(let error):
-//                activeAlert = .error(ErrorMessage(message: "Failed to add \(ingredient.name): \(error.localizedDescription)"))
-//            }
-//        }
-//
-//        return true
-//    }
-//
-//
-//    private func addAllIngredientsToCart(ingredients: [ParsedIngredient]) {
-//            var alreadyInCart = [String]()
-//            var addedToCart = [String]()
-//
-//            for ingredient in ingredients {
-//                let success = addIngredientToShoppingList(ingredient)
-//                if success {
-//                    addedToCart.append(ingredient.name)
-//                } else {
-//                    alreadyInCart.append(ingredient.name)
-//                }
-//            }
-//
-//            // 根据结果显示不同的提示
-//            if !addedToCart.isEmpty {
-//                activeAlert = .ingredient("Added \(addedToCart.joined(separator: ", ")) to your Grocery List!")
-//            }
-//            if !alreadyInCart.isEmpty {
-//                activeAlert = .ingredient("Already in your Grocery List: \(alreadyInCart.joined(separator: ", "))")
-//            }
-//        }
-//}
-//
-//// 新增一個 CategoryItemView，用於顯示每個分類項目及其 TagViews
-//struct CategoryItemView: View {
-//    let title: String
-//    let items: [String]
-//    let primaryColor: Color
-//
-//    var body: some View {
-//        HStack(alignment: .top, spacing: 8) {
-//            Text("•")
-//                .font(.custom("ArialRoundedMTBold", size: 16))
-//                .foregroundColor(primaryColor)
-//
-//            VStack(alignment: .leading, spacing: 5) {
-//                Text("\(title):")
-//                    .font(.custom("ArialRoundedMTBold", size: 16))
-//                    .foregroundColor(.gray)
-//
-//                ScrollView(.horizontal, showsIndicators: false) {
-//                    HStack(spacing: 8) {
-//                        ForEach(items, id: \.self) { item in
-//                            TagView(text: item)
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//// 新增一個 TagView，用於顯示每個項目
-//struct TagView: View {
-//    let text: String
-//
-//    var body: some View {
-//        Text(text)
-//            .font(.custom("ArialRoundedMTBold", size: 15))
-//            .padding(.horizontal, 12)
-//            .padding(.vertical, 8)
-//            .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange).opacity(0.6))
-//            .foregroundColor(.white)
-//            .fontWeight(.medium)
-//            .cornerRadius(8)
-//    }
-//}
-//
-//// 預覽
-//struct RecipeDetailView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RecipeDetailView(recipeId: 1)
-//            .environmentObject(RecipeSearchViewModel())
-//            .environmentObject(FoodItemStore()) // 確保環境對象被傳遞
-//    }
-//}
-//
-// RecipeDetailView.swift
+//  Created by Vickyhereiam on 2024/9/27.
+ 
 import SwiftUI
 import IQKeyboardManagerSwift
 import FirebaseAuth
@@ -403,19 +19,17 @@ struct RecipeDetailView: View {
     @State private var commentText: String = ""
     @State private var isLoading = false
     
-    // 定義主要色調
     let primaryColor = Color(UIColor(named: "NavigationBarTitle") ?? .orange)
     let secondaryColor = Color.white
     let tagColor = Color(UIColor(named: "SecondaryColor") ?? .black)
     
-    // 新增的狀態變量來管理警告
     @State private var activeAlert: ActiveAlert?
     @State private var showAddedLabel = false
     @State private var isButtonDisabled = false
     
     var body: some View {
         ZStack {
-            // 渐变背景
+       
             LinearGradient(
                 gradient: Gradient(colors: [Color.yellow, Color.orange]),
                 startPoint: .top,
@@ -442,8 +56,8 @@ struct RecipeDetailView: View {
                                         .frame(height: 250)
                                         .cornerRadius(15)
                                         .shadow(radius: 10)
-                                        .padding([.leading, .trailing, .bottom], 15) // 添加左右和底部的 padding
-                                        .padding(.top, 30) // 增加圖片與頂部的距離
+                                        .padding([.leading, .trailing, .bottom], 15)
+                                        .padding(.top, 30)
                                 } placeholder: {
                                     ProgressView()
                                         .frame(height: 250)
@@ -461,7 +75,6 @@ struct RecipeDetailView: View {
                                     .padding(.top, 20)
                             }
                             
-                            // 收藏按钮调整位置
                             Button(action: {
                                 withAnimation(.easeInOut(duration: 0.3)) {
                                     viewModel.toggleFavorite(for: recipeId)
@@ -486,14 +99,12 @@ struct RecipeDetailView: View {
                         }
                         .frame(height: 250)
                         
-                        // 食譜標題
                         Text(recipe.title)
                             .font(.custom("ArialRoundedMTBold", size: 25))
                             .foregroundColor(primaryColor.opacity(0.9))
                             .padding(.horizontal)
                             .fixedSize(horizontal: false, vertical: true)
                         
-                        // 基本資訊
                         HStack {
                             Label("\(recipe.servings) servings", systemImage: "person.2")
                             Spacer()
@@ -503,7 +114,6 @@ struct RecipeDetailView: View {
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
                         
-                        // 調整份量
                         SectionView(title: "Decide your serving size") {
                             HStack {
                                 TextField(" 🔍 Serving Size", text: $inputServings, onCommit: {
@@ -531,7 +141,7 @@ struct RecipeDetailView: View {
                         VStack(alignment: .leading) {
                             if !recipe.cuisines.isEmpty || !recipe.dishTypes.isEmpty || !recipe.diets.isEmpty {
                                 SectionView(title: "Category") {
-                                    VStack(alignment: .leading, spacing: 10) { // 增加間距以容納 TagViews
+                                    VStack(alignment: .leading, spacing: 10) {
                                         if !recipe.cuisines.isEmpty {
                                             CategoryItemView(title: "Cuisines", items: recipe.cuisines, primaryColor: primaryColor)
                                         }
@@ -549,27 +159,25 @@ struct RecipeDetailView: View {
                             let parsedIngredients = recipe.extendedIngredients.map { extIngredient in
                                 ParsedIngredient(
                                     name: extIngredient.name.capitalized,
-                                    quantity: extIngredient.amount.rounded(toPlaces: 2), // 保留兩位小數
+                                    quantity: extIngredient.amount.rounded(toPlaces: 2),
                                     unit: extIngredient.unit.isEmpty ? "unit" : extIngredient.unit,
-                                    expirationDate: Calendar.current.date(byAdding: .day, value: 0, to: Date()) ?? Date() // 設置一個默認的 expirationDate
+                                    expirationDate: Calendar.current.date(byAdding: .day, value: 0, to: Date()) ?? Date()
                                 )
                             }
                             
-                            // 食材區域
                             SectionView(title: "Ingredients") {
                                 VStack(alignment: .leading, spacing: 10) {
                                     ForEach(parsedIngredients, id: \.name) { ingredient in
                                         IngredientRow(ingredient: ingredient) { selectedIngredient in
-                                            // 直接调用 addIngredientToShoppingList 并处理 alert
+                                          
                                             addIngredientToShoppingList(selectedIngredient)
                                         }
                                         .environmentObject(foodItemStore)
                                     }
-                                    
-                                    // 添加一个按钮，用于将所有食材一次性加入购物车
+                                   
                                     Button(action: {
                                         addAllIngredientsToCart(ingredients: parsedIngredients)
-                                        isButtonDisabled = true // 按下後禁用按鈕
+                                        isButtonDisabled = true
                                     }) {
                                         Text("Add All Ingredients to Cart")
                                             .bold()
@@ -578,9 +186,9 @@ struct RecipeDetailView: View {
                                             .background(primaryColor)
                                             .cornerRadius(10)
                                     }
-                                    .frame(maxWidth: .infinity) // 按钮居中
-                                    .opacity(isButtonDisabled ? 0.7 : 1.0) // 按钮的透明度
-                                    .disabled(isButtonDisabled) // 按钮的禁用状态
+                                    .frame(maxWidth: .infinity)
+                                    .opacity(isButtonDisabled ? 0.7 : 1.0)
+                                    .disabled(isButtonDisabled)
                                     .padding(.top, 10)
                                 }
                                 .padding(.horizontal)
@@ -588,7 +196,6 @@ struct RecipeDetailView: View {
                                 .padding(.leading, 5)
                             }
                             
-                            // 步驟
                             SectionView(title: "Instructions") {
                                 if let analyzedInstructions = recipe.analyzedInstructions, !analyzedInstructions.isEmpty {
                                     ForEach(analyzedInstructions) { instruction in
@@ -632,7 +239,6 @@ struct RecipeDetailView: View {
                     viewModel.getRecipeDetails(recipeId: recipeId)
                 }
                 .navigationBarTitle("Recipe Details", displayMode: .inline)
-                // 統一的 alert 修飾符
                 .alert(item: $activeAlert) { activeAlert in
                     switch activeAlert {
                     case .error(let errorMessage):
@@ -653,9 +259,9 @@ struct RecipeDetailView: View {
                 }
                 if isLoading {
                     ProgressView()
-                        .scaleEffect(1.5) // 調整進度條大小
+                        .scaleEffect(1.5)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black.opacity(0.4)) // 背景遮罩
+                        .background(Color.black.opacity(0.4))
                         .edgesIgnoringSafeArea(.all)
                 }
             }
@@ -664,18 +270,17 @@ struct RecipeDetailView: View {
     }
     
     private func toggleFavorite() {
-        isLoading = true  // 開始顯示進度條
+        isLoading = true
 
         viewModel.toggleFavorite(for: recipeId)
         
         DispatchQueue.main.async {
-            isLoading = false  // 完成後隱藏進度條
+            isLoading = false
         }
     }
     
     // MARK: - 輔助函數
-    
-    // 將更新份量的邏輯提取出來
+
     private func updateServings() {
         if let newServings = Int(inputServings), newServings > 0 {
             viewModel.adjustServings(newServings: newServings)
@@ -693,14 +298,14 @@ struct RecipeDetailView: View {
         }
         
         let foodItem = FoodItem(
-            id: UUID().uuidString, // 確保每個食材有唯一的 ID
+            id: UUID().uuidString,
             name: ingredient.name.capitalized,
             quantity: ingredient.quantity,
             unit: ingredient.unit,
             status: .toBuy,
             daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
             expirationDate: ingredient.expirationDate,
-            imageURL: nil // 如果您有食材圖片，也可以傳入
+            imageURL: nil
         )
         
         firestoreService.addFoodItem(forUser: userId, foodItem: foodItem, image: nil) { result in
@@ -728,7 +333,6 @@ struct RecipeDetailView: View {
             }
         }
         
-        // 根据结果显示不同的提示
         if !addedToCart.isEmpty {
             activeAlert = .ingredient("Added \(addedToCart.joined(separator: ", ")) to your Grocery List!")
         }
@@ -738,7 +342,6 @@ struct RecipeDetailView: View {
     }
 }
 
-// 新增一個 CategoryItemView，用於顯示每個分類項目及其 TagViews
 struct CategoryItemView: View {
     let title: String
     let items: [String]
@@ -767,7 +370,6 @@ struct CategoryItemView: View {
     }
 }
 
-// 新增一個 TagView，用於顯示每個項目
 struct TagView: View {
     let text: String
     

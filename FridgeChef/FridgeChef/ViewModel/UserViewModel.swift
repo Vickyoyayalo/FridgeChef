@@ -51,7 +51,7 @@ class UserViewModel: ObservableObject {
                         self.firestoreService.saveUser(userData, uid: uid) { result in
                             switch result {
                             case .success():
-                                self.isSignUpSuccessful = true // 註冊成功
+                                self.isSignUpSuccessful = true
                                 self.alert = Alert(title: Text("Sign Up Successful"), message: Text("Sign Up Successful!"))
                             case .failure(let error):
                                 self.alert = Alert(title: Text("Failed to Sign Up"), message: Text("Cannot save the avatar: \(error.localizedDescription)"))
@@ -65,13 +65,13 @@ class UserViewModel: ObservableObject {
 
     private func uploadAvatar(uid: String, completion: @escaping (Bool, String?) -> Void) {
         guard let avatar = avatar, let imageData = avatar.jpegData(compressionQuality: 0.8) else {
-            completion(true, nil) // No avatar, proceed without uploading
+            completion(true, nil)
             return
         }
 
         let storageRef = Storage.storage().reference().child("avatars/\(uid).jpg")
         storageRef.putData(imageData, metadata: nil) { metadata, error in
-            if let error = error {
+            if error != nil {
                 completion(false, nil)
                 return
             }
@@ -151,11 +151,8 @@ class UserViewModel: ObservableObject {
         do {
             try Auth.auth().signOut()
             self.user = nil
-//            self.name = ""
-//            self.email = ""
-//            self.avatar = nil
         } catch {
-            self.alert = Alert(title: Text("登出失敗"), message: Text(error.localizedDescription))
+            self.alert = Alert(title: Text("Log out failed"), message: Text(error.localizedDescription))
             self.showAlert = true
         }
     }

@@ -15,7 +15,7 @@ struct RecipeRowView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            // 图片处理
+       
             if let imageUrl = recipe.image, let url = URL(string: imageUrl) {
                 AsyncImage(url: url) { phase in
                     switch phase {
@@ -53,7 +53,6 @@ struct RecipeRowView: View {
                     .shadow(radius: 5)
             }
 
-            // 食谱标题和收藏按钮
             HStack {
                 
                 VStack(alignment: .leading, spacing: 5) {
@@ -88,9 +87,9 @@ struct RecipeRowView: View {
                         .animation(.easeInOut(duration: 0.3), value: animate)
                 }
                 .buttonStyle(PlainButtonStyle())
-                .padding(.trailing, 20) // 添加右侧内边距
+                .padding(.trailing, 20)
             }
-            .padding(.vertical) // 添加上下内边距
+            .padding(.vertical)
         }
         .listRowBackground(Color.clear)
         .frame(maxWidth: .infinity)
@@ -98,8 +97,8 @@ struct RecipeRowView: View {
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.white.opacity(0.7))
         )
-        .padding(.horizontal) // 添加左右内边距
-        .padding(.vertical, 5) // 添加上下内边距，使每个 cell 有间距
+        .padding(.horizontal)
+        .padding(.vertical, 5) 
         .shadow(radius: 5)
     }
 }

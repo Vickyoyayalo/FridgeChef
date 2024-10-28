@@ -17,14 +17,11 @@ struct MainTabView: View {
         let appearance = UITabBarAppearance()
         appearance.shadowImage = UIImage()
         appearance.shadowColor = .clear
-//        appearance.configureWithTransparentBackground()
-        
-        // 將 HEX 顏色 #ccb562 轉換為 UIColor
+
         let customColor = UIColor(hex: "#ccb562")
 
-        // 使用 createGradientImage 函數來創建漸變圖像，並應用到 UITabBar 的背景
         if let gradientImage = createGradientImage(colors: [UIColor.systemOrange, UIColor.systemYellow], size: CGSize(width: UIScreen.main.bounds.width, height: 50), opacity: 0.4) {
-            appearance.backgroundImage = gradientImage  // 將漸變圖像作為背景
+            appearance.backgroundImage = gradientImage
         }
         appearance.stackedLayoutAppearance.normal.iconColor = customColor
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: customColor]
@@ -79,7 +76,7 @@ struct MainTabView: View {
             }
             
             Button(action: {
-                selectedTabIndex = 2 // Navigate to ChatView
+                selectedTabIndex = 2
             }) {
                 Image("CenterChat")
                     .resizable()
@@ -87,9 +84,8 @@ struct MainTabView: View {
                     .frame(width: 100, height: 130)
                     .shadow(radius: 5)
             }
-            .offset(y: -keyboardResponder.currentHeight / 2) // Adjust offset based on the keyboard height
-            .padding(.bottom, -5) // This padding is constant, additional to any keyboard adjustments
-            /*.zIndex(1)*/ // Ensures the button stays on top
+            .offset(y: -keyboardResponder.currentHeight / 2)
+            .padding(.bottom, -5)
         }
         .edgesIgnoringSafeArea(.all)
     }

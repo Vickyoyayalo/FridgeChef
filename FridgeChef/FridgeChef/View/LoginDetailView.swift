@@ -33,7 +33,6 @@ struct LoginDetailView: View {
                         .padding(.vertical, -100)
                         .padding(.top, -100)
                     
-                    // Email TextField
                     TextField("Email", text: $loginViewModel.email)
                         .padding()
                         .background(Color(UIColor.systemGray6))
@@ -41,17 +40,15 @@ struct LoginDetailView: View {
                         .shadow(radius: 5)
                         .autocapitalization(.none)
                         .keyboardType(.emailAddress)
-                    
-                    // Password SecureField
+
                     SecureField("Password", text: $loginViewModel.password)
                         .padding()
                         .background(Color(UIColor.systemGray6))
                         .cornerRadius(8)
                         .shadow(radius: 5)
                     
-                    // 登入按鈕 (Email & Password)
                     Button(action: {
-                        loginWithEmailPassword()  // Email & Password 登录逻辑
+                        loginWithEmailPassword()
                     }) {
                         Text("Sign In")
                             .foregroundColor(.white)
@@ -64,7 +61,7 @@ struct LoginDetailView: View {
                             .shadow(radius: 5)
                     }
                     NavigationLink(destination: MainTabView(), isActive: $navigateToHome) {
-                        EmptyView()  // 隐藏的链接，只在登录成功后触发
+                        EmptyView()
                     }
                     // 忘記密碼按鈕
                     Button(action: {
@@ -84,7 +81,6 @@ struct LoginDetailView: View {
                         ForgotPasswordView()
                     }
                     
-                    // 分隔线
                     Text("Or sign up with")
                         .font(.custom("ArialRoundedMTBold", size: 15))
                         .foregroundColor(.gray)
@@ -98,7 +94,7 @@ struct LoginDetailView: View {
                     } onCompletion: { result in
                         switch result {
                         case .success(let authorization):
-                            loginWithFirebase(authorization)  // Apple 登录
+                            loginWithFirebase(authorization)
                         case .failure(let error):
                             showError(error.localizedDescription)
                         }
@@ -136,7 +132,7 @@ struct LoginDetailView: View {
         }
     }
     
-    // Email & Password 登录逻辑
+    // Email & Password log in
     func loginWithEmailPassword() {
         isLoggedIn = true
         Auth.auth().signIn(withEmail: loginViewModel.email, password: loginViewModel.password) { authResult, error in
@@ -145,7 +141,6 @@ struct LoginDetailView: View {
                 isLoggedIn = false
                 return
             }
-            // 登录成功，更新 logStatus 并导航到 MainTabView
             logStatus = true
             isLoggedIn = false
             navigateToHome = true
@@ -158,7 +153,6 @@ struct LoginDetailView: View {
         isLoggedIn = false
     }
     
-    // Apple ID 登录逻辑
     func loginWithFirebase(_ authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             
@@ -180,16 +174,13 @@ struct LoginDetailView: View {
                     showError(error.localizedDescription)
                     return
                 }
-                // Apple 登录成功，更新 logStatus
                 logStatus = true
                 isLoggedIn = false
                 navigateToHome = true
-                
-                // 確保用戶已登入並打印 UID
+               
                 if let user = Auth.auth().currentUser {
                     print("User is logged in with UID: \(user.uid)")
-                    
-                    // 將用戶資料保存到 Firestore
+                   
                     let userData: [String: Any] = [
                         "email": user.email ?? "No Email",
                         "name": appleIDCredential.fullName?.givenName ?? "Anonymous"
@@ -210,7 +201,6 @@ struct LoginDetailView: View {
         }
     }
 
-    
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         var randomBytes = [UInt8](repeating: 0, count: length)
@@ -223,7 +213,6 @@ struct LoginDetailView: View {
                Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
 
                let nonce = randomBytes.map { byte in
-                   // Pick a random character from the set, wrapping around if needed.
                    charset[Int(byte) % charset.count]
                }
        

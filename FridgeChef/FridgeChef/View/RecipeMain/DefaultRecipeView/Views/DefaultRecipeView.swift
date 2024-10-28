@@ -21,11 +21,11 @@ struct DefaultRecipeView: View {
                     ZStack {
                         Image("discomonster3") // 替換為你的插圖名稱
                             .resizable()
-                            .scaledToFit()
-                            .frame(height: 300)
+                            .scaledToFill()
+                            .frame(height: 400)
                             .shadow(radius: 10)
                         // 使用 @State 變數控制水平偏移
-                            .offset(y: moveUp ? -30 : 30)
+                            .offset(y: moveUp ? -50 : 50)
                             .animation(
                                 Animation.easeInOut(duration: 1)
                                     .repeatForever(autoreverses: true),
@@ -42,25 +42,25 @@ struct DefaultRecipeView: View {
                         .font(.custom("Menlo-BoldItalic", size: 17))
                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.systemOrange))
                         .fontWeight(.bold)
-                        .padding(.top, 10)
+                        .padding(.top, 15)
                         .shadow(radius: 10)
                 }
                 .padding(.horizontal, 16) // 統一的水平內邊距
             }
-            VStack {
-                ForEach(recipeManager.recipes) { recipe in
-                    DefaultRecipeCard(recipe: recipe)
-                        .onTapGesture {
-                            selectedRecipe = recipe
-                        }
-                }
-                .padding(.horizontal)
-            }
-            .padding(.vertical)
-                .fullScreenCover(item: $selectedRecipe) { recipe in
-                    DefaultRecipeDetailView(recipe: recipe)
-
-                }
+//            VStack {
+//                ForEach(recipeManager.recipes) { recipe in
+//                    DefaultRecipeCard(recipe: recipe)
+//                        .onTapGesture {
+//                            selectedRecipe = recipe
+//                        }
+//                }
+//                .padding(.horizontal)
+//            }
+//            .padding(.vertical)
+//                .fullScreenCover(item: $selectedRecipe) { recipe in
+//                    DefaultRecipeDetailView(recipe: recipe)
+//
+//                }
             }
         .scrollIndicators(.hidden)
 //            .background(.ultraThinMaterial)

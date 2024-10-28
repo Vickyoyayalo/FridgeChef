@@ -10,6 +10,12 @@ import FirebaseAuth
 import FirebaseFirestore
 import UserNotifications
 
+protocol NotificationCenterProtocol {
+    func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)?)
+}
+
+extension UNUserNotificationCenter: NotificationCenterProtocol {}
+
 struct FridgeView: View {
     @EnvironmentObject var foodItemStore: FoodItemStore
     @State private var searchText = ""
@@ -22,7 +28,6 @@ struct FridgeView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                // 背景漸變
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
                     startPoint: .top,
@@ -33,7 +38,6 @@ struct FridgeView: View {
                 
                 GeometryReader { geometry in
                     VStack {
-                        // 顯示背景圖片和文字
                         if filteredFoodItems.isEmpty {
                             VStack {
                                 Image("SearchFood")
@@ -56,7 +60,7 @@ struct FridgeView: View {
                         moveToFridge: moveToFridge,
                         moveToFreezer: moveToFreezer,
                         editingItem: $editingItem,
-                        deleteItems: deleteItems  // Pass the function directly
+                        deleteItems: deleteItems
                     )
                 }
             }
@@ -79,7 +83,7 @@ struct FridgeView: View {
                 alignment: .bottom
             )
             .onAppear {
-                listenToFoodItems() // 在視圖出現時啟動實時監聽
+                listenToFoodItems()
             }
         }
     }
@@ -110,27 +114,24 @@ struct FridgeView: View {
         }
     }
     
-    func scheduleExpirationNotification(for item: FoodItem) {
-        // Create the content for the notification
+    //UnitTest
+    func scheduleExpirationNotification(for item: FoodItem, notificationCenter: NotificationCenterProtocol = UNUserNotificationCenter.current()) {
         let content = UNMutableNotificationContent()
         content.title = "Expiration Alert‼️"
         content.body = "\(item.name) is about to expire in \(item.daysRemaining) days!"
         content.sound = UNNotificationSound.default
         
-        // 計算通知的觸發時間
-        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60) // 將天數轉換為秒
+        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60)
         if timeInterval <= 0 {
             print("Invalid timeInterval: \(timeInterval) for item \(item.name)")
-            return  // 如果時間間隔無效，退出並不排程通知
+            return
         }
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         
-        // Create a request
         let request = UNNotificationRequest(identifier: item.id, content: content, trigger: trigger)
         
-        // Schedule the notification
-        UNUserNotificationCenter.current().add(request) { error in
+        notificationCenter.add(request) { error in
             if let error = error {
                 print("Error scheduling notification: \(error.localizedDescription)")
             } else {
@@ -138,8 +139,32 @@ struct FridgeView: View {
             }
         }
     }
+
+//    func scheduleExpirationNotification(for item: FoodItem) {
+//        let content = UNMutableNotificationContent()
+//        content.title = "Expiration Alert‼️"
+//        content.body = "\(item.name) is about to expire in \(item.daysRemaining) days!"
+//        content.sound = UNNotificationSound.default
+//        
+//        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60)
+//        if timeInterval <= 0 {
+//            print("Invalid timeInterval: \(timeInterval) for item \(item.name)")
+//            return
+//        }
+//
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
+//        
+//        let request = UNNotificationRequest(identifier: item.id, content: content, trigger: trigger)
+//        
+//        UNUserNotificationCenter.current().add(request) { error in
+//            if let error = error {
+//                print("Error scheduling notification: \(error.localizedDescription)")
+//            } else {
+//                print("Notification scheduled for \(item.name)")
+//            }
+//        }
+//    }
     
-    // 計算屬性，過濾食材
     var filteredFoodItems: [FoodItem] {
         let filtered = foodItemStore.foodItems.filter { $0.status == .fridge || $0.status == .freezer }
             .filter { item in
@@ -152,10 +177,8 @@ struct FridgeView: View {
         return filtered
     }
     
-    // 添加按鈕
     var addButton: some View {
         Button(action: {
-            // Present MLIngredientView without an editing item
             showingMLIngredientView = true
         }) {
             Image(systemName: "plus")
@@ -180,7 +203,6 @@ struct FridgeView: View {
         let itemsToDelete = offsets.map { items[$0] }
         
         for item in itemsToDelete {
-            // Delete from Firebase
             firestoreService.deleteFoodItem(forUser: currentUser.uid, foodItemId: item.id) { result in
                 switch result {
                 case .success():
@@ -189,15 +211,13 @@ struct FridgeView: View {
                     print("Failed to delete food item from Firebase: \(error.localizedDescription)")
                 }
             }
-            
-            // Delete from local data source
+     
             if let indexInFoodItems = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
                 foodItemStore.foodItems.remove(at: indexInFoodItems)
             }
         }
     }
     
-    // 保存食材
     func handleSave(_ ingredient: Ingredient) {
         guard let currentUser = Auth.auth().currentUser else {
             print("No user is currently logged in.")
@@ -212,7 +232,7 @@ struct FridgeView: View {
             status: Status(rawValue: ingredient.storageMethod) ?? .fridge,
             daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
             expirationDate: ingredient.expirationDate,
-            imageURL: nil // We'll set this after uploading
+            imageURL: nil
         )
         
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == ingredient.id }) {
@@ -229,32 +249,26 @@ struct FridgeView: View {
                 "expirationDate": Timestamp(date: foodItem.expirationDate ?? Date())
             ]
             
-            // Handle image upload
             if let image = ingredient.image {
                 let imagePath = "users/\(currentUser.uid)/foodItems/\(foodItem.id)/image.jpg"
                 firestoreService.uploadImage(image, path: imagePath) { result in
                     switch result {
-                    case .success(let url):  // 這裡假設返回的是 String 類型的 URL
-                        updatedFields["imageURL"] = url  // 直接將 String 保存到 imageURL
+                    case .success(let url):
+                        updatedFields["imageURL"] = url
                         firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
-                            // Handle result
                         }
                     case .failure(let error):
                         print("Failed to upload image: \(error.localizedDescription)")
                     }
                 }
             } else {
-                // 沒有圖片上傳，仍然需要更新其餘字段
                 firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
-                    // Handle result
                 }
             }
             
         } else {
-            // Add new item
             foodItemStore.foodItems.append(foodItem)
             
-            // Save to Firestore
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: foodItem, image: ingredient.image) { result in
                 switch result {
                 case .success():
@@ -264,16 +278,12 @@ struct FridgeView: View {
                 }
             }
         }
-        
-        // Clear editingItem
         editingItem = nil
         
-        // Ensure SwiftUI detects data update
         DispatchQueue.main.async {
             self.foodItemStore.objectWillChange.send()
         }
         
-        // Show ProgressView
         showingProgressView = true
         progressMessage = "Food item saved!"
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -281,18 +291,14 @@ struct FridgeView: View {
         }
     }
     
-    // 將食材移動回 GroceryList
     func moveToGrocery(item: FoodItem) {
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
-            // Update status and daysRemaining
             foodItemStore.foodItems[index].status = .toBuy
-            // Set new expiration date, e.g., 1 day later
             let newExpirationDate = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
             let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 1
             foodItemStore.foodItems[index].daysRemaining = daysRemaining
             foodItemStore.foodItems[index].expirationDate = newExpirationDate
-            
-            // Update Firebase
+    
             guard let currentUser = Auth.auth().currentUser else {
                 print("No user is currently logged in.")
                 return
@@ -313,10 +319,8 @@ struct FridgeView: View {
                 }
             }
             
-            // Show ProgressView
             showingProgressView = true
             progressMessage = "Food moved to Grocery List!"
-            // Hide ProgressView after delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 showingProgressView = false
             }
@@ -325,7 +329,6 @@ struct FridgeView: View {
         }
     }
     
-    // 將食材移動到 Fridge 或 Freezer
     func moveToFridge(item: FoodItem) {
         moveToStorage(item: item, storageMethod: "Fridge")
     }
@@ -334,10 +337,8 @@ struct FridgeView: View {
         moveToStorage(item: item, storageMethod: "Freezer")
     }
     
-    // 通用的移動函數
     func moveToStorage(item: FoodItem, storageMethod: String) {
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
-            // 更新状态和剩余天数
             let newStatus = Status(rawValue: storageMethod) ?? .fridge
             foodItemStore.foodItems[index].status = newStatus
             let newExpirationDate = Calendar.current.date(byAdding: .day, value: storageMethod == "Fridge" ? 5 : 14, to: Date()) ?? Date()
@@ -345,7 +346,6 @@ struct FridgeView: View {
             let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 0
             foodItemStore.foodItems[index].daysRemaining = daysRemaining
             
-            // 更新 Firebase
             guard let currentUser = Auth.auth().currentUser else {
                 print("No user is currently logged in.")
                 return
@@ -365,13 +365,11 @@ struct FridgeView: View {
                     print("Failed to update food item in Firebase: \(error.localizedDescription)")
                 }
             }
-            
-            // 确保 SwiftUI 检测到数据更新
+          
             DispatchQueue.main.async {
                 self.foodItemStore.objectWillChange.send()
             }
             
-            // 显示 ProgressView
             showingProgressView = true
             progressMessage = "Moved to \(storageMethod)!"
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -382,19 +380,17 @@ struct FridgeView: View {
         }
     }
     
-    // 將 FoodItem 轉換為 Ingredient
     func convertToIngredient(item: FoodItem) -> Ingredient {
-        // Fetch the image asynchronously if needed, but for now, you can set image to nil
         return Ingredient(
             id: item.id,
             name: item.name,
             quantity: item.quantity,
-            amount: 1.0, // Adjust as appropriate
+            amount: 1.0,
             unit: item.unit,
             expirationDate: item.expirationDate ?? Date(),
             storageMethod: item.status.rawValue,
             image: nil,
-            imageURL: item.imageURL// You may need to fetch the image from item.imageURL if necessary
+            imageURL: item.imageURL
         )
     }
     
@@ -410,12 +406,11 @@ struct FridgeListView: View {
     
     var body: some View {
         List {
-            // Fridge Section
             if !filteredFoodItems.filter { $0.status == .fridge }.isEmpty {
                 Section(header:  HStack {
                     Image(uiImage: UIImage(named: "fridge") ?? UIImage(systemName: "refrigerator.fill")!)
                         .resizable()
-                        .frame(width: 24, height: 24) // 調整圖片大小
+                        .frame(width: 24, height: 24)
                     Text("Fridge")
                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 }) {
@@ -440,13 +435,12 @@ struct FridgeListView: View {
                 }
             }
             
-            // Freezer Section
-            if !filteredFoodItems.filter { $0.status == .freezer }.isEmpty {
+            if !filteredFoodItems.filter({ $0.status == .freezer }).isEmpty {
                 Section(header:
                             HStack {
                     Image(uiImage: UIImage(named: "freezer") ?? UIImage(systemName: "snowflake")!)
                         .resizable()
-                        .frame(width: 24, height: 24) // 調整圖片大小
+                        .frame(width: 24, height: 24)
                     Text("Freezer")
                         .foregroundColor(.blue)
                 }) {

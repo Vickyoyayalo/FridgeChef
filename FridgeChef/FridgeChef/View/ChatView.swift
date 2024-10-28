@@ -4,7 +4,7 @@
 //
 //  Created by Vickyhereiam on 2024/9/10.
 //
-//MARK: 會辨識語言來做回答，但以英文為主
+
 import SwiftUI
 import PhotosUI
 import Vision
@@ -51,18 +51,18 @@ struct PlaceholderTextEditor: View {
     @Binding var text: String
     var placeholder: String
     
-    @State private var dynamicHeight: CGFloat = 44  // 设置初始高度
+    @State private var dynamicHeight: CGFloat = 44
     
     var body: some View {
         ZStack(alignment: .leading) {
             TextEditor(text: $text)
-                .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight < 100 ? dynamicHeight : 100)  // 控制高度变化和滚动
+                .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight < 100 ? dynamicHeight : 100)
                 .padding(8)
                 .background(Color.white)
                 .cornerRadius(10)
                 .shadow(radius: 3)
                 .onChange(of: text) { _ in
-                    calculateHeight()  // 每当文本改变时重新计算高度
+                    calculateHeight()
                 }
             
             if text.isEmpty {
@@ -75,17 +75,16 @@ struct PlaceholderTextEditor: View {
         }
     }
     
-    // 动态计算高度
     private func calculateHeight() {
         let maxSize = CGSize(width: UIScreen.main.bounds.width - 32, height: .infinity)
         let size = CGSize(width: maxSize.width, height: CGFloat.greatestFiniteMagnitude)
         
-        let text = self.text.isEmpty ? " " : self.text  // 避免计算为空文本
+        let text = self.text.isEmpty ? " " : self.text
         let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 17)]
         let rect = NSString(string: text).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
         
         DispatchQueue.main.async {
-            self.dynamicHeight = rect.height + 24  // 根据文本计算高度并增加 padding
+            self.dynamicHeight = rect.height + 24
         }
     }
 }
@@ -158,7 +157,6 @@ struct ChatView: View {
         NavigationView {
             if Auth.auth().currentUser != nil {
                 ZStack {
-                    // 漸層背景
                     LinearGradient(
                         gradient: Gradient(colors: [Color.yellow, Color.orange]),
                         startPoint: .top,
@@ -166,11 +164,9 @@ struct ChatView: View {
                     )
                     .opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
-                    
-                    // 使用 GeometryReader 來實現背景的可點擊
+                
                     GeometryReader { geometry in
                         VStack {
-                            // 顯示背景圖片和文字
                             if messages.isEmpty {
                                 VStack {
                                     Image("Chatmonster")
@@ -183,13 +179,11 @@ struct ChatView: View {
                             }
                         }
                         .onTapGesture {
-                            // 當點擊背景時，讓使用者能點擊進入輸入框
                             IQKeyboardManager.shared.resignFirstResponder()
                         }
                         
                         VStack {
                             ZStack {
-                                // HStack 用於放置錯誤訊息和搜尋按鈕
                                 HStack {
                                     if let errorMessage = errorMessage {
                                         Text(errorMessage)
@@ -209,7 +203,6 @@ struct ChatView: View {
                                     }
                                 }
                                 
-                                // Logo 放在 ZStack 的中心
                                 Image("FridgeChefLogo")
                                     .resizable()
                                     .scaledToFill()
@@ -217,20 +210,18 @@ struct ChatView: View {
                                     .padding(.top)
                             }
 
-                            // 自定義搜尋框（從右邊滑入的動畫）
                             if isSearchVisible {
-                                HStack(spacing: 10) { // 設置內部元素的間距
+                                HStack(spacing: 10) {
                                     Image(systemName: "magnifyingglass")
                                         .foregroundColor(.orange)
-                                        .padding(.leading, 8) // 左側內邊距
+                                        .padding(.leading, 8)
 
                                     TextField("Search messages...", text: $searchText, onCommit: {
-                                        // 當使用者按下回車鍵時，執行搜尋並清空搜尋框
                                         performSearch()
                                     })
                                     .textFieldStyle(PlainTextFieldStyle())
                                     .padding(.vertical, 8)
-                                    .padding(.trailing, 8) // 右側內邊距，避免與 xmark 圖標重疊
+                                    .padding(.trailing, 8)
 
                                     if !searchText.isEmpty {
                                         Button(action: {
@@ -238,49 +229,28 @@ struct ChatView: View {
                                         }) {
                                             Image(systemName: "xmark.circle.fill")
                                                 .foregroundColor(.orange)
-                                                .padding(.trailing, 8) // 右側內邊距
+                                                .padding(.trailing, 8)
                                         }
                                         .buttonStyle(PlainButtonStyle())
                                     }
                                 }
                                 .background(RoundedRectangle(cornerRadius: 10).fill(Color.white).opacity(0.3))
                                 .padding(.horizontal)
-                                .transition(.move(edge: .trailing)) // 從右邊滑入
+                                .transition(.move(edge: .trailing))
                             }
 
-//                            ScrollViewReader { proxy in
-//                                ScrollView {
-//                                    VStack(alignment: .leading, spacing: 10) {
-//                                        ForEach(filteredMessages) { message in
-//                                            messageView(for: message)
-//                                                .id(message.id) // 確保每個訊息有唯一的 ID
-//                                        }
-//                                    }
-//                                    .onChange(of: messages.count) { _ in
-//                                        if let lastMessage = messages.last {
-//                                            // 這裡可以選擇是否保留滾動到最後一個訊息的行為
-//                                             proxy.scrollTo(lastMessage.id, anchor: .bottom)
-//                                        }
-//                                    }
-//                                    .onChange(of: selectedMessageID) { id in
-//                                        if let id = id {
-//                                            withAnimation {
-//                                                proxy.scrollTo(id, anchor: .top) // 使用 .top 錨點滾動到訊息的開頭
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
                             ScrollViewReader { proxy in
                                 ScrollView {
                                     VStack(alignment: .leading, spacing: 10) {
                                         ForEach(filteredMessages) { message in
                                             messageView(for: message)
-                                                .id(message.id) // 確保每個訊息有唯一的 ID
+                                                .id(message.id)
+                                                .lineLimit(nil)
+                                                .fixedSize(horizontal: false, vertical: true)
                                         }
+                                        .frame(maxWidth: .infinity)
                                     }
                                     .onChange(of: messages.count) { _ in
-                                        // 滾動到最新的訊息
                                         if let lastMessage = messages.last, let id = lastMessage.id {
                                             DispatchQueue.main.async {
                                                 withAnimation {
@@ -324,23 +294,23 @@ struct ChatView: View {
                                 Button(action: { showPhotoOptions = true }) {
                                     Image(systemName: "camera.fill")
                                         .resizable()
-                                        .scaledToFit() // 確保圖片在框架內正確縮放
+                                        .scaledToFit()
                                         .frame(width: 35, height: 35)
                                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                                 }
                                 .padding(.leading, 15)
-                                .fixedSize() // 防止按鈕被壓縮
+                                .fixedSize()
                                 .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions, titleVisibility: .visible) {
                                     Button("Camera") { photoSource = .camera }
                                     Button("Photo Library") { photoSource = .photoLibrary }
                                 }
                                 
-                                Spacer(minLength: 20) // 確保空間分佈
+                                Spacer(minLength: 20)
                                 
                                 PlaceholderTextEditor(text: $inputText, placeholder: "Want ideas? 🥙 ...")
-                                    .frame(minHeight: 40, maxHeight: 60) // 與按鈕高度一致
+                                    .frame(minHeight: 40, maxHeight: 60)
                                 
-                                Spacer(minLength: 20) // 確保空間分佈
+                                Spacer(minLength: 20)
                                 
                                 Button(action: sendMessage) {
                                     Image(systemName: "paperplane.fill")
@@ -350,7 +320,7 @@ struct ChatView: View {
                                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                                 }
                                 .padding(.trailing, 15)
-                                .fixedSize() // 防止按鈕被壓縮
+                                .fixedSize()
                             }
                             .padding(.bottom, 8)
                         }
@@ -377,19 +347,20 @@ struct ChatView: View {
         }
     }
     
-    // 搜尋結果過濾
     var filteredMessages: [Message] {
-           if searchText.isEmpty {
-               return messages
-           } else {
-               // 根據使用者的搜尋文字過濾訊息內容，保持大小寫敏感
-               return messages.filter { message in
-                   message.content?.contains(searchText) ?? false
-               }
-           }
-       }
-    
-    // 執行搜尋並清空搜尋框
+        if searchText.isEmpty {
+            return messages
+        } else {
+            return messages.filter { message in
+                if let content = message.content {
+                    return content.lowercased().contains(searchText.lowercased())
+                } else {
+                    return false
+                }
+            }
+        }
+    }
+
     func performSearch() {
         if let matchedMessage = messages.first(where: { $0.content?.lowercased().contains(searchText.lowercased()) ?? false }) {
             selectedMessageID = matchedMessage.id
@@ -408,7 +379,6 @@ struct ChatView: View {
             switch result {
             case .success(let fetchedMessages):
                 DispatchQueue.main.async {
-                    // 比較現有的 messages 與 fetchedMessages，僅添加新的訊息
                     let newMessages = fetchedMessages.filter { fetchedMessage in
                         fetchedMessage.timestamp > self.chatViewOpenedAt &&
                         !self.messages.contains(where: { $0.id == fetchedMessage.id })
@@ -424,7 +394,7 @@ struct ChatView: View {
                     }
                     
                     self.messages.append(contentsOf: parsedNewMessages)
-                    print("Fetched and updated messages: \(self.messages.count) messages") // 日誌
+                    print("Fetched and updated messages: \(self.messages.count) messages")
                 }
             case .failure(let error):
                 print("Error fetching messages: \(error.localizedDescription)")
@@ -451,8 +421,10 @@ struct ChatView: View {
 
     // MARK: - Send Message
     func sendMessage() {
-        // 確保有文字或圖片要傳送
-        guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || image != nil else { return }
+        guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || image != nil else {
+            print("No text or image to send")
+            return
+        }
         
         let messageText = inputText
         let messageImage = image
@@ -464,15 +436,20 @@ struct ChatView: View {
         let timestamp = Date()
         
         if let messageImage = messageImage {
-            // 上傳圖片並識別食材
+    
             firestoreService.uploadImage(messageImage, path: "chat_images/\(UUID().uuidString).jpg") { result in
                 switch result {
                 case .success(let imageURL):
-                    // 辨識圖片中的食材
                     recognizeFood(in: messageImage) { recognizedText in
+                        guard !recognizedText.isEmpty else {
+                            self.errorMessage = "Could not identify any ingredients. Please try again."
+                            self.isWaitingForResponse = false
+                            return
+                        }
+                        
                         let finalMessageText = "Identified ingredient: \(recognizedText).\nPlease provide detailed recipes and cooking steps."
                         let userMessage = Message(
-                            id: nil, // 不手動設置 ID
+                            id: nil,
                             role: .user,
                             content: finalMessageText,
                             imageURL: imageURL,
@@ -480,30 +457,18 @@ struct ChatView: View {
                             parsedRecipe: nil
                         )
                         
-                        // 保存到 Firestore，實時監聽器會自動更新 messages
                         self.saveMessageToFirestore(userMessage)
                         self.checkCachedResponseAndRespond(message: finalMessageText)
                     }
                 case .failure(let error):
-                    print("Failed to upload image: \(error.localizedDescription)")
-                    // 如果圖片上傳失敗，只傳送文字訊息
-                    let userMessage = Message(
-                        id: nil, // 不手動設置 ID
-                        role: .user,
-                        content: messageText,
-                        imageURL: nil,
-                        timestamp: timestamp,
-                        parsedRecipe: nil
-                    )
-                    // 保存到 Firestore，實時監聽器會自動更新 messages
-                    self.saveMessageToFirestore(userMessage)
-                    self.checkCachedResponseAndRespond(message: messageText)
+                    self.errorMessage = "Failed to upload image: \(error.localizedDescription)"
+                    print(self.errorMessage!)
+                    self.isWaitingForResponse = false
                 }
             }
         } else {
-            // 如果沒有圖片，只傳送文字訊息
             let userMessage = Message(
-                id: nil, // 不手動設置 ID
+                id: nil,
                 role: .user,
                 content: messageText,
                 imageURL: nil,
@@ -522,7 +487,7 @@ struct ChatView: View {
             switch result {
             case .success(let cachedResponse):
                 if let cachedResponse = cachedResponse {
-                    print("使用緩存回應: \(cachedResponse.response)")
+                    print("Use Cache Response: \(cachedResponse.response)")
                     let assistantMessage = Message(
                         id: nil,
                         role: .assistant,
@@ -533,14 +498,13 @@ struct ChatView: View {
                     )
                     
                     self.saveMessageToFirestore(assistantMessage)
-                    // 回應完成，停止動畫
                     self.isWaitingForResponse = false
                 } else {
-                    print("沒有緩存，呼叫 API")
+                    print("No Cache, calling API")
                     self.sendMessageToAssistant(standardizedMessage)
                 }
             case .failure(let error):
-                print("檢查緩存回應失敗: \(error)")
+                print("Cache Response failure: \(error)")
                 self.sendMessageToAssistant(standardizedMessage)
             }
         }
@@ -557,14 +521,14 @@ struct ChatView: View {
         
         Task {
             do {
-                print("📤 正在呼叫 API 並發送訊息: \(messageToSend)")
+                print("📤 Calling API and sending messages: \(messageToSend)")
                 let responseText = try await api.sendMessage(messageToSend)
-                print("📥 收到 API 回應: \(responseText)")
+                print("📥 Taking API response: \(responseText)")
 
                 let parsedRecipe = parseRecipe(from: responseText)
 
                 guard let currentUser = Auth.auth().currentUser else {
-                    print("🔒 沒有用戶登錄。")
+                    print("🔒 No user log in.")
                     self.isWaitingForResponse = false
                     return
                 }
@@ -572,9 +536,9 @@ struct ChatView: View {
                 firestoreService.saveCachedResponse(message: messageText, response: responseText) { result in
                     switch result {
                     case .success():
-                        print("✅ 緩存回應已保存。")
+                        print("✅ Saving Cache Response.")
                     case .failure(let error):
-                        print("❌ 無法保存緩存回應: \(error)")
+                        print("❌ Cannot saving Cache Response: \(error)")
                     }
                 }
 
@@ -589,13 +553,12 @@ struct ChatView: View {
 
                 self.saveMessageToFirestore(responseMessage)
                 self.errorMessage = nil
-                // API 回應完成，停止動畫
                 self.isWaitingForResponse = false
 
             } catch {
-                print("❌ 發送訊息時出錯: \(error)")
+                print("❌ Sending message error: \(error)")
                 DispatchQueue.main.async {
-                    self.errorMessage = "發送訊息時出錯: \(error.localizedDescription)"
+                    self.errorMessage = "Sending message error: \(error.localizedDescription)"
                     self.isWaitingForResponse = false
                 }
             }
@@ -628,7 +591,6 @@ struct ChatView: View {
                     }
                 } else {
                     VStack(alignment: .leading, spacing: 10) {
-                        // 顯示食譜名稱
                         if let title = recipe.title {
                             Text("\(title) 🥙")
                                 .font(.custom("ArialRoundedMTBold", size: 20))
@@ -636,7 +598,6 @@ struct ChatView: View {
                                 .padding(.bottom, 5)
                         }
 
-                        // 顯示食材列表
                         if !recipe.ingredients.isEmpty {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("🥬【Ingredients】")
@@ -649,7 +610,6 @@ struct ChatView: View {
                             .background(Color.purple.opacity(0.1))
                             .cornerRadius(10)
 
-                            // 添加按鈕
                             Button(action: {
                                 if allIngredientsInCart(ingredients: recipe.ingredients) {
                                     addRemainingIngredientsToCart(ingredients: recipe.ingredients)
@@ -676,7 +636,6 @@ struct ChatView: View {
                             }
                         }
 
-                        // 顯示烹飪步驟
                         if !recipe.steps.isEmpty {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("🍳【Cooking Steps】")
@@ -695,7 +654,6 @@ struct ChatView: View {
                             .cornerRadius(10)
                         }
 
-                        // 顯示食譜連結
                         if let link = recipe.link, let url = URL(string: link) {
                             Link(destination: url) {
                                 HStack {
@@ -708,13 +666,8 @@ struct ChatView: View {
                                 .cornerRadius(10)
                             }
                         } else {
-                            Text("Oops! Can't share the recipe link right now. Got other ingredients or meals in mind? \nLet me help you find something tasty! 👨🏻‍🌾")
-                                .padding()
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(10)
                         }
 
-                        // 顯示貼心提醒
                         if let tips = recipe.tips {
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("👩🏻‍🍳【Friendly Reminder】")
@@ -729,7 +682,6 @@ struct ChatView: View {
                     Spacer()
                 }
             } else {
-                // 未解析的訊息
                 if message.role == .user {
                     Spacer()
                     VStack(alignment: .trailing) {
@@ -785,7 +737,6 @@ struct ChatView: View {
         
         // 創建 Vision 請求
         let request = VNCoreMLRequest(model: model) { request, error in
-            // 處理請求結果
             guard let results = request.results as? [VNClassificationObservation],
                   let topResult = results.first else {
                 print("No results: \(error?.localizedDescription ?? "Unknown error")")
@@ -793,21 +744,18 @@ struct ChatView: View {
                 return
             }
             
-            // 在主線程上返回識別結果
             DispatchQueue.main.async {
                 let label = topResult.identifier
                 completion(label)
             }
         }
         
-        // 將 UIImage 轉換為 CIImage
         guard let ciImage = CIImage(image: image) else {
             print("Unable to create \(CIImage.self) from \(image).")
             completion("Unknown Food")
             return
         }
         
-        // 創建處理器並執行請求
         let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
         DispatchQueue.global(qos: .userInitiated).async {
             do {
@@ -855,13 +803,12 @@ struct ChatView: View {
                     let ingredient = ParsedIngredient(name: name, quantity: quantityDouble, unit: unit, expirationDate: expirationDate)
                     ingredients.append(ingredient)
                     
-                    print("Parsed Ingredient: \(ingredient)") // 調試日誌
+                    print("Parsed Ingredient: \(ingredient)")
                 } else {
-                    // 如果无法解析，设置默认的 quantity 和 expirationDate
                     let ingredient = ParsedIngredient(name: trimmedLine, quantity: 1.0, unit: "unit", expirationDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()) ?? Date())
                     ingredients.append(ingredient)
                     
-                    print("Parsed Ingredient with Defaults: \(ingredient)") // 調試日誌
+                    print("Parsed Ingredient with Defaults: \(ingredient)")
                 }
             }
         }
@@ -872,20 +819,18 @@ struct ChatView: View {
                 trimmedLine = removeLeadingNumber(from: trimmedLine)
                 steps.append(trimmedLine)
                 
-                print("Parsed Step: \(trimmedLine)") // 調試日誌
+                print("Parsed Step: \(trimmedLine)")
             }
         }
-        
+        //UnitTest修改過後
         func processLinkLine(_ line: String) {
             if let urlRange = line.range(of: #"https?://[^\s]+"#, options: .regularExpression) {
                 link = String(line[urlRange])
-                print("Parsed Link: \(link!)") // 調試日誌
+                print("Parsed Link: \(link!)")
             } else if let urlRange = line.range(of: #"www\.[^\s]+"#, options: .regularExpression) {
-                // 如果是以 www 開頭，但沒有完整的 http(s)，自動補全
                 link = "https://" + String(line[urlRange])
-                print("Auto-corrected and Parsed Link: \(link!)") // 調試日誌
+                print("Auto-corrected and Parsed Link: \(link!)")
             } else {
-                // 如果無法提取鏈接，嘗試處理
                 print("Failed to parse a valid link.")
                 link = nil
             }
@@ -894,7 +839,6 @@ struct ChatView: View {
         func autoCorrectMessageFormat(_ message: String) -> String {
             var correctedMessage = message
             
-            // 自動補充一些常見的格式錯誤，例如換行符
             if !correctedMessage.contains("\n【Recipe Link】") {
                 correctedMessage = correctedMessage.replacingOccurrences(of: "【Recipe Link】", with: "\n【Recipe Link】")
             }
@@ -902,22 +846,20 @@ struct ChatView: View {
             return correctedMessage
         }
 
-
 //        func processLinkLine(_ line: String) {
 //            if let urlRange = line.range(of: #"https?://[^\s]+"#, options: .regularExpression) {
 //                link = String(line[urlRange])
-//                print("Parsed Link: \(link!)") // 調試日誌
+//                print("Parsed Link: \(link!)")
 //            } else {
-//                // 如果无法提取链接，检查是否有提示无法提供链接的文本
 //                if line.contains("Cannot provide") || line.contains("Sorry") {
 //                    link = nil
-//                    print("No link provided by assistant.") // 調試日誌
+//                    print("No link provided by assistant.")
 //                } else {
-//                    // 如果有其他文本，可能是一个 URL，但没有以 http 开头，尝试补全
+//
 //                    let potentialLink = line.trimmingCharacters(in: .whitespacesAndNewlines)
 //                    if !potentialLink.isEmpty {
 //                        link = "https://" + potentialLink
-//                        print("Parsed Potential Link: \(link!)") // 調試日誌
+//                        print("Parsed Potential Link: \(link!)")
 //                    } else {
 //                        link = nil
 //                    }
@@ -927,16 +869,14 @@ struct ChatView: View {
         
         func processTipsLine(_ line: String) {
             tips = (tips ?? "") + line + "\n"
-            print("Parsed Tip: \(line)") // 調試日誌
+            print("Parsed Tip: \(line)")
         }
-        
-        // 主循環
+       
         for line in lines {
             if line.contains("🥙") && line.contains("Recipe Name") {
                 var cleanedLine = line.replacingOccurrences(of: "🥙 ", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
                 cleanedLine = cleanedLine.replacingOccurrences(of: "Recipe Name:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
                 
-                // 使用正則表達式提取中文名稱、拼音和英文名稱
                 let pattern = #"(.+?)\s*\((.+?)\)\s*\((.+?)\)"#
                 if let regex = try? NSRegularExpression(pattern: pattern, options: []),
                    let match = regex.firstMatch(in: cleanedLine, options: [], range: NSRange(location: 0, length: cleanedLine.utf16.count)),
@@ -951,11 +891,11 @@ struct ChatView: View {
                         let englishName = String(cleanedLine[englishRange]).trimmingCharacters(in: .whitespaces)
                         title = "\(chineseName) (\(englishName))"
                         
-                        print("Parsed Title: \(title!)") // 調試日誌
+                        print("Parsed Title: \(title!)")
                     }
                 } else {
                     title = cleanedLine
-                    print("Parsed Title without English Name: \(title!)") // 調試日誌
+                    print("Parsed Title without English Name: \(title!)")
                 }
                 
                 isParsed = true
@@ -1002,7 +942,6 @@ struct ChatView: View {
         
         tips = tips?.trimmingCharacters(in: .whitespacesAndNewlines)
         
-        // 如果未成功解析，將整個消息內容作為未解析內容
         if !isParsed {
             unparsedContent = message
             print("Parsed Recipe with Unparsed Content: \(String(describing: unparsedContent))")
@@ -1039,9 +978,7 @@ struct ChatView: View {
             var parsedRecipe = parseRecipe(from: responseContent)
             
             if var title = parsedRecipe.title {
-                // If the title is in Chinese, translate it to English
                 if isChinese(text: title) {
-                    // Use your translation function to get the English title
                     let translatedTitle = await withCheckedContinuation { continuation in
                         translate(text: title, from: "zh", to: "en") { translatedText in
                             continuation.resume(returning: translatedText)
@@ -1051,11 +988,9 @@ struct ChatView: View {
                         title = translatedTitle
                     }
                 }
-                // Fetch the link from Spoonacular API using the English title
                 if let link = await fetchRecipeLink(recipeName: title) {
                     parsedRecipe.link = link
                 } else {
-                    // Handle the case where no link is found
                     parsedRecipe.link = nil
                 }
             }
@@ -1097,19 +1032,12 @@ struct ChatView: View {
         )
 
         if !foodItemStore.foodItems.contains(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
-            // 添加到本地数组
+   
             DispatchQueue.main.async {
                 self.foodItemStore.foodItems.append(newFoodItem)
             }
 
-            // 保存到 Firestore
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: newFoodItem, image: nil) { result in
-                switch result {
-                case .success():
-                    print("Food item successfully added to Firestore.")
-                case .failure(let error):
-                    print("Failed to add food item to Firestore: \(error.localizedDescription)")
-                }
             }
 
             return true
@@ -1141,7 +1069,6 @@ struct ChatView: View {
             }
         }
         
-        // 根據結果更新 Alert 內容
         if addedToCart.isEmpty {
             alertTitle = "No New Ingredients Added"
             alertMessage = "All ingredients are already in your cart."
@@ -1165,8 +1092,6 @@ struct ChatView: View {
                 addedToCart.append(ingredient.name)
             }
         }
-        
-        // 顯示已添加的食材
         alertTitle = "Ingredients Added"
         alertMessage = "Added: \(addedToCart.joined(separator: ", "))"
         showAlert = true
@@ -1179,10 +1104,10 @@ struct ChatView: View {
         var isIngredientSection = false
         
         for line in lines {
-            if line.contains("【食材】") {
+            if line.contains("【Ingredient】") {
                 isIngredientSection = true
                 continue
-            } else if line.contains("【烹飪步驟】") || line.contains("🍳") {
+            } else if line.contains("【Cooking Instructions】") || line.contains("🍳") {
                 break
             }
             
@@ -1233,10 +1158,10 @@ struct ChatView: View {
         var isIngredientSection = false
         
         for line in lines {
-            if line.contains("【食材】") {
+            if line.contains("【Ingredient】") {
                 isIngredientSection = true
                 continue
-            } else if line.contains("【烹飪步驟】") || line.contains("🍳") {
+            } else if line.contains("【Cooking Instructions】") || line.contains("🍳") {
                 isIngredientSection = false
             }
             
@@ -1247,7 +1172,6 @@ struct ChatView: View {
         return newLines.joined(separator: "\n")
     }
 }
-
 
 struct IngredientRow: View {
     var ingredient: ParsedIngredient
@@ -1263,25 +1187,23 @@ struct IngredientRow: View {
             if !isAdded {
                 let success = addAction(ingredient)
                 alertMessage = success ? "\(ingredient.name) add to your Grocery List 🛒" : "\(ingredient.name) already exists!"
-                print("Added \(ingredient.name): \(success)") // Debug
+                print("Added \(ingredient.name): \(success)")
             } else {
                 alertMessage = "\(ingredient.name) already exists."
-                print("\(ingredient.name) already exists.") // Debug
+                print("\(ingredient.name) already exists.")
             }
             showAlert = true
         }) {
             HStack {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(ingredient.name)
                         .foregroundColor(isAdded ? .gray : Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                         .bold()
                         .lineLimit(nil)
                         .fixedSize(horizontal: false, vertical: true)
-                    
-                    Spacer(minLength: 5)
-                    
-                    if ingredient.quantity > 0 { // 改為檢查 quantity > 0
-                        Text("Qty：\(ingredient.quantity, specifier: "%.2f") \(ingredient.unit)") // 格式化為兩位小數
+
+                    if ingredient.quantity > 0 {
+                        Text("Qty: \(ingredient.quantity, specifier: "%.2f") \(ingredient.unit)")
                             .font(.custom("ArialRoundedMTBold", size: 15))
                             .foregroundColor(.gray)
                     }
@@ -1312,28 +1234,37 @@ struct MonsterAnimationView: View {
             Image("runmonster")
                 .resizable()
                 .frame(width: 100, height: 100)
-                .offset(x: moveRight ? 180 : -150) // runmonster 在 chicken 後面追逐
+                .offset(x: moveRight ? 180 : -150)
                 .animation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: moveRight)
             
             Image("RUNchicken")
                 .resizable()
                 .frame(width: 60, height: 60)
-                .offset(x: moveRight ? 120 : -280) // chicken 從左到右移動
+                .offset(x: moveRight ? 120 : -280)
                 .animation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true), value: moveRight)
         }
         .onAppear {
-            moveRight = true // 開始動畫
+            moveRight = true
             print("Animation started")
         }
-        // 加入 onDisappear 或 onRemove 來保證動畫狀態保持
         .onDisappear {
-            moveRight = false // 停止動畫
+            moveRight = false
             print("Animation stopped")
         }
-        .animation(nil)
+        .onAppear {
+            withAnimation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
+                moveRight = true // Start animation
+            }
+            print("Animation started")
+        }
+        .onDisappear {
+            withAnimation(nil) {
+                moveRight = false 
+            }
+            print("Animation stopped")
+        }
     }
 }
-
 
 extension Color {
     static func customColor(named name: String) -> Color {

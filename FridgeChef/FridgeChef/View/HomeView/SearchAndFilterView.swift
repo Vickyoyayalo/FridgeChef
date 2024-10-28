@@ -12,7 +12,7 @@ struct SearchAndFilterView: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            //                Search
+                   
             HStack {
                 Image(uiImage: #imageLiteral(resourceName: "search"))
                 TextField("Search my favorites", text: $searchText)
@@ -21,14 +21,6 @@ struct SearchAndFilterView: View {
             .padding(8)
             .background(Color.lightGray).opacity(0.7)
             .cornerRadius(8)
-//            
-//            Image(uiImage: #imageLiteral(resourceName: "filter"))
-//                .padding()
-//                .background(Color("LightGrayColor"))
-//                .cornerRadius(8.0)
-//                .onTapGesture {
-//                    
-//                }
         }
     }
 }

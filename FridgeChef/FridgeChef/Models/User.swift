@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 
 struct User: Identifiable, Codable {
-    @DocumentID var id: String? // Firestore 的文件 ID
+    @DocumentID var id: String? 
     var avatar: String?
     var name: String
     var email: String

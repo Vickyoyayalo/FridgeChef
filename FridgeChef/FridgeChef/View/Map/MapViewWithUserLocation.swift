@@ -32,7 +32,7 @@ struct MapViewWithUserLocation: View {
                 dismissButton
             }
         }
-        .alert(isPresented: $showingNavigationAlert) { // Alert now depends on showingNavigationAlert
+        .alert(isPresented: $showingNavigationAlert) {
             Alert(
                 title: Text("Go to ➡️ \(selectedSupermarket?.name ?? "the selected location")？"),
                 message: Text("📍Direction： \(selectedSupermarket?.address ?? "")"),
@@ -50,7 +50,7 @@ struct MapViewWithUserLocation: View {
         HStack(alignment: .center) {
             TextField("🔍 Search supermarkets nearby", text: $searchText)
                 .padding(.leading, 10)
-                .padding(.vertical, 10) // Vertical padding adjusted for alignment
+                .padding(.vertical, 10)
                 .background(Color.white)
                 .cornerRadius(10)
                 .shadow(radius: 3)
@@ -72,8 +72,8 @@ struct MapViewWithUserLocation: View {
                     searchSupermarkets()
                 })
         }
-        .padding(.horizontal) // Add padding around the entire HStack
-        .padding(.top, 10)    // Add top padding for alignment
+        .padding(.horizontal)
+        .padding(.top, 10)
     }
     var navigationButton: some View {
         Button(action: {
@@ -102,20 +102,12 @@ struct MapViewWithUserLocation: View {
     private var map: some View {
         CustomMapView(region: $locationManager.region,
                       showingNavigationAlert: $showingNavigationAlert,
-                      selectedSupermarket: $selectedSupermarket,  // 傳遞 showingNavigationAlert
+                      selectedSupermarket: $selectedSupermarket,
                       locationManager: locationManager,
                       supermarkets: locationManager.placesFetcher.supermarkets.filter { supermarket in
             searchText.isEmpty || supermarket.name.localizedCaseInsensitiveContains(searchText)
         })
         .edgesIgnoringSafeArea(.all)
-//        .onChange(of: selectedSupermarket) { _ in
-//            locationManager.isUserInteracting = true
-//        }
-//        .gesture(DragGesture().onChanged { _ in
-//            locationManager.isUserInteracting = true
-//        }.onEnded { _ in
-//            locationManager.isUserInteracting = false
-//        })
     }
     private var listResults: some View {
         List(searchResults, id: \.id) { supermarket in
@@ -123,14 +115,14 @@ struct MapViewWithUserLocation: View {
                 Text(supermarket.name)
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, 20)  // 添加左侧内边距为20
+                    .padding(.leading, 20)
                 Text("\(supermarket.address) - \(supermarket.distanceToUser(location: locationManager.lastKnownLocation?.coordinate) ?? 0, specifier: "%.2f") km")
                     .font(.custom("ArialRoundedMTBold", size: 13))
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, 20)  // 同样添加左侧内边距为20
+                    .padding(.leading, 20)
             }
-            .padding(.vertical) // Add vertical padding to each cell
+            .padding(.vertical)
             .listRowBackground(Color.clear)
             .frame(maxWidth: .infinity)
             .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.9)))
@@ -139,9 +131,9 @@ struct MapViewWithUserLocation: View {
                 self.showingNavigationAlert = true
             }
         }
-        .padding(.horizontal) // Add horizontal padding around the list
+        .padding(.horizontal)
         .listStyle(PlainListStyle())
-        .background(Color.clear) // Ensure the list’s background is clear
+        .background(Color.clear)
     }
     
     private var dismissButton: some View {
@@ -159,13 +151,12 @@ struct MapViewWithUserLocation: View {
         .padding()
     }
     
-    
     private func performSearch() {
         if let coordinate = locationManager.lastKnownLocation?.coordinate {
             locationManager.placesFetcher.fetchNearbyPlaces(coordinate: coordinate)
         }
-        // Optionally, navigate to the first result after fetching
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { // assuming delay for fetching
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if let firstResult = searchResults.first {
                 self.selectedSupermarket = firstResult
                 openMapsAppWithDirections(to: firstResult.coordinate, destinationName: firstResult.name)
@@ -177,7 +168,7 @@ struct MapViewWithUserLocation: View {
         guard let userLocation = locationManager.lastKnownLocation?.coordinate else { return }
         searchResults = locationManager.placesFetcher.supermarkets.filter {
             $0.name.localizedCaseInsensitiveContains(searchText)
-        }.sorted { // Make sure the results are sorted right after filtering
+        }.sorted {
             let loc1 = CLLocation(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude)
             let loc2 = CLLocation(latitude: $1.coordinate.latitude, longitude: $1.coordinate.longitude)
             return loc1.distance(from: CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude))
@@ -198,6 +189,6 @@ extension Supermarket {
         guard let userLocation = location else { return nil }
         let supermarketLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         let userCLLocation = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
-        return supermarketLocation.distance(from: userCLLocation) / 1000 // Convert to kilometers
+        return supermarketLocation.distance(from: userCLLocation) / 1000 
     }
 }

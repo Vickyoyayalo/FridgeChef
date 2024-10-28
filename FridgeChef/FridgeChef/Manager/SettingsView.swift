@@ -5,7 +5,7 @@
 //  Created by Vickyhereiam on 2024/10/7.
 //
 
-//TODO: make button to change language
+//todo: make button to change language
 import SwiftUI
 
 struct SettingsView: View {
@@ -18,7 +18,7 @@ struct SettingsView: View {
                 Text("English").tag("en")
                 Text("Chinese").tag("zh")
             }
-            .pickerStyle(SegmentedPickerStyle()) // Optional style
+            .pickerStyle(SegmentedPickerStyle()) 
         }
         .padding()
     }

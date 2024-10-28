@@ -4,80 +4,8 @@
 //
 //  Created by Vickyhereiam on 2024/9/13.
 //
-import Foundation
-import FirebaseAuth
-import FirebaseFirestore
-import WidgetKit
-
-class FoodItemStore: ObservableObject {
-    @Published var foodItems: [FoodItem] = []
-    private var listener: ListenerRegistration?
-
-    init() {
-        fetchFoodItems()
-    }
-    
-    // 當資料更新時，通知 Widget
-    func updateWidget() {
-        WidgetCenter.shared.reloadTimelines(ofKind: "FridgeChefWidget")
-    }
-    // 在主應用中保存 SimpleFoodItem 數據
-    func saveFoodItemsToUserDefaults(_ foodItems: [FoodItem]) {
-        let sharedDefaults = UserDefaults(suiteName: "group.com.vickyoyaya.FridgeChef")
-        
-        // 將 FoodItem 轉換為 SimpleFoodItem
-        let simpleItems = foodItems.map { item in
-            SimpleFoodItem(id: item.id, name: item.name, quantity: item.quantity, unit: item.unit, daysRemaining: item.daysRemaining, status: item.status)
-        }
-
-        if let encodedData = try? JSONEncoder().encode(simpleItems) {
-            sharedDefaults?.set(encodedData, forKey: "foodItems")
-            
-            updateWidget()
-        }
-    }
-
-    // 從 Firebase 獲取 FoodItem 並保存到 App Group
-    func fetchFoodItems() {
-        guard let currentUser = Auth.auth().currentUser else {
-            print("No user is currently logged in.")
-            return
-        }
-
-        listener = FirestoreService().listenToFoodItems(forUser: currentUser.uid) { [weak self] result in
-            switch result {
-            case .success(let items):
-                DispatchQueue.main.async {
-                    // 將獲取到的 items 設置到 foodItems 中
-                    self?.foodItems = items
-                    
-                    // 將 items 保存到 UserDefaults 中，以便 Widget 使用
-                    self?.saveFoodItemsToUserDefaults(items)
-                    
-                    print("Fetched \(items.count) food items from Firebase.")
-                }
-            case .failure(let error):
-                print("Failed to fetch food items: \(error.localizedDescription)")
-            }
-        }
-    }
-
-    deinit {
-        listener?.remove()
-    }
-}
-
-struct SimpleFoodItem: Identifiable, Codable {
-    var id: String
-    var name: String
-    var quantity: Double
-    var unit: String
-    var daysRemaining: Int
-    var status: Status // 新增 status 屬性
-}
-
 import SwiftUI
-// 食材結構
+
 struct FoodItem: Identifiable, Codable, Equatable {
     var id: String
     var name: String
@@ -86,7 +14,7 @@ struct FoodItem: Identifiable, Codable, Equatable {
     var status: Status
     var daysRemaining: Int
     var expirationDate: Date?
-    var imageURL: String?  // Replace imageBase64 with imageURL
+    var imageURL: String?
     
     var uiImage: UIImage? {
             get {
@@ -103,7 +31,6 @@ struct FoodItem: Identifiable, Codable, Equatable {
     }
 }
 
-// 狀態枚舉
 enum Status: String, Codable {
     case toBuy = "toBuy"
     case fridge = "Fridge"
@@ -111,7 +38,6 @@ enum Status: String, Codable {
 }
 
 extension FoodItem {
-    // 根據剩餘天數顯示不同的提示文字
     var daysRemainingText: String {
         switch status {
         case .toBuy:
@@ -140,12 +66,11 @@ extension FoodItem {
         }
     }
 
-    // 根據剩餘天數顯示不同的顏色，Fridge 和 Freezer 顏色統一，To Buy 狀態超過今天的日期變成紅色
     var daysRemainingColor: Color {
         switch status {
         case .toBuy:
             if let expirationDate = expirationDate {
-                if expirationDate < Date() { // 如果 expirationDate 小於當前日期，表示已過期
+                if expirationDate < Date() {
                     return .red
                 } else {
                     return .blue
@@ -155,26 +80,25 @@ extension FoodItem {
             }
         case .fridge, .freezer:
             if daysRemaining > 5 {
-                return .gray // 超過5天顯示灰色
+                return .gray
             } else if daysRemaining > 2 {
-                return .purple // 3-5天顯示紫色
+                return .purple
             } else if daysRemaining > 0 {
-                return .blue // 1-2天顯示藍色
+                return .blue
             } else if daysRemaining == 0 {
-                return .orange // 當天顯示橙色
+                return .orange
             } else {
-                return .red // 已過期顯示紅色
+                return .red
             }
         }
     }
 
-    // 5天內加粗字體
     var daysRemainingFontWeight: Font.Weight {
         switch status {
         case .toBuy:
-            return .bold // To Buy 狀態加粗
+            return .bold
         case .fridge, .freezer:
-            return daysRemaining <= 5 ? .bold : .regular // 5天內的食材加粗字體
+            return daysRemaining <= 5 ? .bold : .regular
         }
     }
 }
@@ -186,16 +110,15 @@ struct FoodItemRow: View {
     var moveToGrocery: ((FoodItem) -> Void)?
     var moveToFridge: ((FoodItem) -> Void)?
     var moveToFreezer: ((FoodItem) -> Void)?
-    var onTap: ((FoodItem) -> Void)? // onTap 閉包
+    var onTap: ((FoodItem) -> Void)?
     
     var body: some View {
         HStack {
             if let imageURLString = item.imageURL, let imageURL = URL(string: imageURLString) {
                 WebImage(url: imageURL)
                     .onSuccess { image, data, cacheType in
-                        // Success handler if needed
                     }
-                    .resizable() // Add resizable directly
+                    .resizable()
                     .scaledToFill()
                     .frame(width: 50, height: 50)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -204,7 +127,7 @@ struct FoodItemRow: View {
                             .resizable()
                             .scaledToFill()
                             .frame(width: 50, height: 50)
-                            .opacity(0.3) // Add opacity for a background-like effect
+                            .opacity(0.3)
                     )
                 
             } else {
@@ -213,7 +136,7 @@ struct FoodItemRow: View {
                     .scaledToFill()
                     .frame(width: 50, height: 50)
             }
-            // 食材詳細信息
+            
             VStack(alignment: .leading) {
                 Text(item.name)
                     .font(.custom("ArialRoundedMTBold", size: 16))
@@ -228,9 +151,8 @@ struct FoodItemRow: View {
             
             Spacer()
             
-            // 按鈕區域
             HStack(spacing: 15) {
-                // GroceryList 按鈕
+
                 if let moveToGrocery = moveToGrocery {
                     Button(action: {
                         moveToGrocery(item)
@@ -240,7 +162,6 @@ struct FoodItemRow: View {
                     }
                 }
                 
-                // Fridge 按鈕
                 if let moveToFridge = moveToFridge {
                     Button(action: {
                         moveToFridge(item)
@@ -250,7 +171,6 @@ struct FoodItemRow: View {
                     }
                 }
                 
-                // Freezer 按鈕
                 if let moveToFreezer = moveToFreezer {
                     Button(action: {
                         moveToFreezer(item)
@@ -260,11 +180,11 @@ struct FoodItemRow: View {
                     }
                 }
             }
-            .buttonStyle(PlainButtonStyle()) // 確保按鈕不會觸發父視圖的點擊事件
+            .buttonStyle(PlainButtonStyle())
         }
-        .contentShape(Rectangle()) // 確保整行可點擊
+        .contentShape(Rectangle())
         .onTapGesture {
-            onTap?(item) // 僅在非按鈕區域觸發
+            onTap?(item)
         }
     }
 }

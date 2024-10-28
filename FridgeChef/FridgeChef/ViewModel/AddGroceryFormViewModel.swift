@@ -9,9 +9,8 @@ import Foundation
 import SwiftUI
 import Combine
 
-// 确保你的 ViewModel 类实现 ObservableObject
 class AddGroceryFormViewModel: ObservableObject {
-    // Input
+
     @Published var name: String = ""
     @Published var type: String = ""
     @Published var location: String = ""

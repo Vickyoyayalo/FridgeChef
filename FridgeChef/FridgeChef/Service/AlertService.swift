@@ -9,6 +9,6 @@ import SwiftUI
 
 class AlertService {
     func showAlert(title: String, message: String) -> Alert {
-        return Alert(title: Text(title), message: Text(message), dismissButton: .default(Text("確定")))
+        return Alert(title: Text(title), message: Text(message), dismissButton: .default(Text("Sure")))
     }
 }

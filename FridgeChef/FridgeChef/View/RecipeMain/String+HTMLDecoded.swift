@@ -22,6 +22,3 @@ extension String {
         return attributedString.string
     }
 }
-
-
-

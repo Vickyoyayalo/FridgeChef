@@ -26,7 +26,7 @@ class LoginDetailViewModel: ObservableObject {
                     self?.alertMessage = error.localizedDescription
                     self?.showAlert = true
                 } else {
-                    completion()  // Execute completion handler on successful login
+                    completion()  
                 }
             }
         }

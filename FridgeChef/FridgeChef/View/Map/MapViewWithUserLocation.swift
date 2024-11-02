@@ -9,12 +9,27 @@ import SwiftUI
 import MapKit
 
 struct MapViewWithUserLocation: View {
-    @ObservedObject var locationManager: LocationManager
+    @StateObject private var locationManager: LocationManager
     @Binding var isPresented: Bool
     @State private var selectedSupermarket: Supermarket?
     @State private var searchText: String = ""
     @State private var searchResults: [Supermarket] = []
     @State private var showingNavigationAlert: Bool = false
+    
+    init(locationManager: LocationManager, isPresented: Binding<Bool>) {
+        _locationManager = StateObject(wrappedValue: locationManager)
+        _isPresented = isPresented
+        
+        APIKeyManager.shared.initializeAPIKeys()
+        
+        if let apiKey = APIKeyManager.shared.getAPIKey(forKey: "SupermarketAPI_Key") {
+            let placesFetcher = PlacesFetcher(apiKey: apiKey)
+            _locationManager = StateObject(wrappedValue: LocationManager(placesFetcher: placesFetcher))
+        } else {
+            print("SupermarketAPI_Key is missing.")
+            _locationManager = StateObject(wrappedValue: LocationManager(placesFetcher: PlacesFetcher(apiKey: "")))
+        }
+    }
     
     var body: some View {
         ZStack {

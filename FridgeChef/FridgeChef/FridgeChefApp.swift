@@ -14,7 +14,9 @@ import IQKeyboardManagerSwift
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // 初始化 Firebase
+        
+        APIKeyManager.shared.initializeAPIKeys()
+        
         if FirebaseApp.app() == nil {
             FirebaseApp.configure()
             print("Firebase has been configured successfully.")
@@ -24,7 +26,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             Firestore.firestore().settings = settings
         }
         
-       
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if let currentUser = Auth.auth().currentUser {
                 print("User is logged in with UID: \(currentUser.uid)")
@@ -34,13 +35,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         }
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
-                if granted {
-                    print("User notifications are allowed.")
-                } else {
-                    print("User notifications are not allowed.")
-        } }
-
-       
+            if granted {
+                print("User notifications are allowed.")
+            } else {
+                print("User notifications are not allowed.")
+            } }
+        
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
         navBarAppearance.largeTitleTextAttributes = [
@@ -96,7 +96,7 @@ func createGradientImage(colors: [UIColor], size: CGSize, opacity: CGFloat) -> U
     gradientLayer.colors = colors.map { $0.withAlphaComponent(opacity).cgColor }
     gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)  // Top
     gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)    // Bottom
-
+    
     UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
     guard let context = UIGraphicsGetCurrentContext() else { return nil }
     gradientLayer.render(in: context)
@@ -122,7 +122,7 @@ struct FridgeChefApp: App {
             if !hasSeenTutorial {
                 TutorialView()
                     .onDisappear {
-                        hasSeenTutorial = true  // 用戶完成教程後，設定為 true
+                        hasSeenTutorial = true
                     }
                     .environmentObject(viewModel)
                     .environmentObject(foodItemStore)

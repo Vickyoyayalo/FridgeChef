@@ -6,8 +6,6 @@
 //
 
 import Foundation
-
-
 struct DefaultRecipe: Identifiable {
     var id = UUID()
     var title: String

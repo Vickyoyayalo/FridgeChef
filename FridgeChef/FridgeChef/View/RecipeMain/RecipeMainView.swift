@@ -17,7 +17,6 @@ struct RecipeMainView: View {
     var body: some View {
         NavigationView {
             ZStack {
-              
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
                     startPoint: .top,

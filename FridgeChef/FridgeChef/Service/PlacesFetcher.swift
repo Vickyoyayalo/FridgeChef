@@ -4,93 +4,28 @@
 //
 //  Created by Vickyhereiam on 2024/9/21.
 //
+
 import Foundation
 import CoreLocation
-
-struct Supermarket: Identifiable, Codable, Equatable, Hashable {
-    var id: UUID
-    var name: String
-    var address: String
-    var coordinate: CLLocationCoordinate2D
-    
-    enum CodingKeys: String, CodingKey {
-        case id, name, address, latitude = "lat", longitude = "lng"
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(UUID.self, forKey: .id)
-        name = try container.decode(String.self, forKey: .name)
-        address = try container.decode(String.self, forKey: .address)
-        let latitude = try container.decode(Double.self, forKey: .latitude)
-        let longitude = try container.decode(Double.self, forKey: .longitude)
-        coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        try container.encode(name, forKey: .name)
-        try container.encode(address, forKey: .address)
-        try container.encode(coordinate.latitude, forKey: .latitude)
-        try container.encode(coordinate.longitude, forKey: .longitude)
-    }
-    
-    static func == (lhs: Supermarket, rhs: Supermarket) -> Bool {
-        return lhs.id == rhs.id
-    }
-}
-
-extension Supermarket {
-    
-    init(id: UUID, name: String, address: String, coordinate: CLLocationCoordinate2D) {
-        self.id = id
-        self.name = name
-        self.address = address
-        self.coordinate = coordinate
-    }
-}
-
-struct PlacesResponse: Decodable {
-    let results: [PlaceResult]
-}
-
-struct PlaceResult: Decodable {
-    let name: String
-    let vicinity: String
-    let geometry: Geometry
-}
-
-struct Geometry: Decodable {
-    let location: Location
-}
-
-struct Location: Decodable {
-    let lat: Double
-    let lng: Double
-}
+import Combine
 
 class PlacesFetcher: ObservableObject {
     @Published var supermarkets = [Supermarket]()
     private let savedSupermarketsKey = "savedSupermarkets"
-    private let apiKey = "AIzaSyBb_LtEBzE0y2mATvrQ3sZnaWnieTHf6_E"//TODO Demo 記得改乘旁邊的 AIzaSyBb_LtEBzE0y2mATvrQ3sZnaWnieTHf6_E
-
+    private let apiKey: String
     private let lastFetchedLatitudeKey = "lastFetchedLatitude"
     private let lastFetchedLongitudeKey = "lastFetchedLongitude"
     private let cacheTimeStampKey = "cacheTimeStamp"
     private var lastFetchedLocation: CLLocation?
-    private var cacheDuration: TimeInterval = 60 * 60 // 1小時的緩存時間
+    private var cacheDuration: TimeInterval = 60 * 60
     private var cacheTimeStamp: Date?
-    var isDataLoadedFromStorage = false
-
-    // 距離閾值 (500 公尺)
     private let fetchThresholdDistance: CLLocationDistance = 500
-
-    // 儲存超市資料到本地
+    var isDataLoadedFromStorage = false
+    
+    init(apiKey: String) {
+        self.apiKey = apiKey
+    }
+  
     func saveSupermarkets() {
         if let encodedData = try? JSONEncoder().encode(supermarkets) {
             UserDefaults.standard.set(encodedData, forKey: savedSupermarketsKey)
@@ -98,7 +33,6 @@ class PlacesFetcher: ObservableObject {
         }
     }
 
-    // 從本地讀取已保存的超市資料
     func loadSavedSupermarkets() {
         if !isDataLoadedFromStorage {
             if let savedData = UserDefaults.standard.data(forKey: savedSupermarketsKey),
@@ -112,7 +46,6 @@ class PlacesFetcher: ObservableObject {
         }
     }
 
-    // 保存緩存資料
     func saveCacheData() {
         if let lastLocation = lastFetchedLocation {
             UserDefaults.standard.set(lastLocation.coordinate.latitude, forKey: lastFetchedLatitudeKey)
@@ -143,7 +76,6 @@ class PlacesFetcher: ObservableObject {
             print("No cache timestamp found in storage.")
         }
     }
-    
 
     func fetchNearbyPlaces(coordinate: CLLocationCoordinate2D) {
      
@@ -220,7 +152,6 @@ class PlacesFetcher: ObservableObject {
                         } else {
                             print("Supermarkets data unchanged, no need to update.")
                         }
-                        // 更新 lastFetchedLocation 和 cacheTimeStamp，並保存緩存資料
                         self.lastFetchedLocation = currentLocation
                         self.cacheTimeStamp = Date()
                         self.saveCacheData()

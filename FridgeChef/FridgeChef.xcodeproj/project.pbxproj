@@ -41,6 +41,10 @@
 		1C4490B12CB2810200675765 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490B02CB2810200675765 /* CategoryView.swift */; };
 		1C4AD1502CAAA75E00C90905 /* MainCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */; };
 		1C59F54B2CB37589002451A8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C59F54A2CB37589002451A8 /* SettingsView.swift */; };
+		1C63F02C2CD4AE2A00B598EB /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C63F02B2CD4AE2A00B598EB /* Keychain.swift */; };
+		1C63F02F2CD4AE9900B598EB /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1C63F02E2CD4AE9900B598EB /* KeychainSwift */; };
+		1C63F0312CD4B61100B598EB /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C63F0302CD4B61100B598EB /* KeychainManager.swift */; };
+		1C63F0332CD4B66600B598EB /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C63F0322CD4B66600B598EB /* APIService.swift */; };
 		1C6CC3882C984C89001C4643 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC3872C984C89001C4643 /* LoginView.swift */; };
 		1C6CC38D2C985109001C4643 /* LoginVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */; };
 		1C6CC38F2C985227001C4643 /* LoginDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC38E2C985227001C4643 /* LoginDetailView.swift */; };
@@ -91,6 +95,8 @@
 		1C9568C52CA8290B006181F9 /* RecipeSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9568C42CA8290B006181F9 /* RecipeSearchViewModel.swift */; };
 		1C9568C82CA82944006181F9 /* RecipeRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9568C62CA82944006181F9 /* RecipeRowView.swift */; };
 		1C9568C92CA82944006181F9 /* RecipeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9568C72CA82944006181F9 /* RecipeDetailView.swift */; };
+		1C95736E2CD5D439000D13B4 /* Supermarket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C95736D2CD5D439000D13B4 /* Supermarket.swift */; };
+		1C9573702CD5D9A8000D13B4 /* APIKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C95736F2CD5D9A8000D13B4 /* APIKeyManager.swift */; };
 		1C99D1792CAE6C47003D2997 /* FloatingMapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D1782CAE6C47003D2997 /* FloatingMapButton.swift */; };
 		1C99D17B2CAE6C63003D2997 /* ProgressOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D17A2CAE6C63003D2997 /* ProgressOverlay.swift */; };
 		1C99D17D2CAEA882003D2997 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D17C2CAEA882003D2997 /* Double.swift */; };
@@ -192,6 +198,9 @@
 		1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionView.swift; sourceTree = "<group>"; };
 		1C59F54A2CB37589002451A8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1C5D43382CB65AF300A06927 /* FridgeChefWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FridgeChefWidgetExtension.entitlements; sourceTree = "<group>"; };
+		1C63F02B2CD4AE2A00B598EB /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		1C63F0302CD4B61100B598EB /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		1C63F0322CD4B66600B598EB /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		1C6CC3872C984C89001C4643 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1C6CC38C2C985109001C4643 /* LoginVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = LoginVideo.mp4; sourceTree = "<group>"; };
 		1C6CC38E2C985227001C4643 /* LoginDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDetailView.swift; sourceTree = "<group>"; };
@@ -241,6 +250,8 @@
 		1C9568C42CA8290B006181F9 /* RecipeSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeSearchViewModel.swift; sourceTree = "<group>"; };
 		1C9568C62CA82944006181F9 /* RecipeRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeRowView.swift; sourceTree = "<group>"; };
 		1C9568C72CA82944006181F9 /* RecipeDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipeDetailView.swift; sourceTree = "<group>"; };
+		1C95736D2CD5D439000D13B4 /* Supermarket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Supermarket.swift; sourceTree = "<group>"; };
+		1C95736F2CD5D9A8000D13B4 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
 		1C99D1782CAE6C47003D2997 /* FloatingMapButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingMapButton.swift; sourceTree = "<group>"; };
 		1C99D17A2CAE6C63003D2997 /* ProgressOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressOverlay.swift; sourceTree = "<group>"; };
 		1C99D17C2CAEA882003D2997 /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
@@ -292,6 +303,7 @@
 				1CB5BCAA2C944441006C66E5 /* FirebaseStorageCombine-Community in Frameworks */,
 				1C19F1B62C943B290094FBEA /* FirebaseAppCheck in Frameworks */,
 				1C75CCAB2CA2E1690072D55C /* IQKeyboardManagerSwift in Frameworks */,
+				1C63F02F2CD4AE9900B598EB /* KeychainSwift in Frameworks */,
 				1CB5BCA62C94441D006C66E5 /* FirebaseAuthCombine-Community in Frameworks */,
 				1C19F1B02C943B290094FBEA /* FirebaseAnalytics in Frameworks */,
 				1CB5BCA82C944441006C66E5 /* FirebaseStorage in Frameworks */,
@@ -449,6 +461,7 @@
 				1C99D17C2CAEA882003D2997 /* Double.swift */,
 				1CAF43092CAD52EE0022D393 /* String+Extensions.swift */,
 				1C7F45F12C9B146100846B44 /* CornerRadius.swift */,
+				1C63F02B2CD4AE2A00B598EB /* Keychain.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -528,6 +541,7 @@
 		1CB5BC872C943CFE006C66E5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1C95736D2CD5D439000D13B4 /* Supermarket.swift */,
 				1CDF1DCB2CA161B0005BD251 /* ChatGPTAPI.swift */,
 				1CB14A0C2CAC096400399AAF /* TranslationAPI.swift */,
 				1CB5BC882C943D36006C66E5 /* User.swift */,
@@ -608,6 +622,9 @@
 			isa = PBXGroup;
 			children = (
 				1CB5BCA12C944408006C66E5 /* FirebaseManager.swift */,
+				1C95736F2CD5D9A8000D13B4 /* APIKeyManager.swift */,
+				1C63F0302CD4B61100B598EB /* KeychainManager.swift */,
+				1C63F0322CD4B66600B598EB /* APIService.swift */,
 				1C59F54A2CB37589002451A8 /* SettingsView.swift */,
 				1C75CCAC2CA2E7500072D55C /* KeyboardResponder.swift */,
 				1C2DD56F2C9D3E34000173F6 /* LocationManager.swift */,
@@ -674,6 +691,7 @@
 				1C8DC5392C99C5210041A2A2 /* Kingfisher */,
 				1C75CCAA2CA2E1690072D55C /* IQKeyboardManagerSwift */,
 				1C0F69AD2CBA454B004D481F /* SDWebImageSwiftUI */,
+				1C63F02E2CD4AE9900B598EB /* KeychainSwift */,
 			);
 			productName = FridgeChef;
 			productReference = 1C19F19D2C94372A0094FBEA /* FridgeChef.app */;
@@ -763,6 +781,7 @@
 				1C75CCA92CA2E1690072D55C /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 				1C0F69A82CBA4194004D481F /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				1C7432422CC868F200F7E984 /* XCRemoteSwiftPackageReference "ViewInspector" */,
+				1C63F02D2CD4AE9900B598EB /* XCRemoteSwiftPackageReference "keychain-swift" */,
 			);
 			productRefGroup = 1C19F19E2C94372A0094FBEA /* Products */;
 			projectDirPath = "";
@@ -886,11 +905,14 @@
 				1C7F45CC2C9A787A00846B44 /* RecommendRecipe.swift in Sources */,
 				1C7F45F62C9C17AE00846B44 /* DatePickerTextField.swift in Sources */,
 				1C6CC38F2C985227001C4643 /* LoginDetailView.swift in Sources */,
+				1C63F0312CD4B61100B598EB /* KeychainManager.swift in Sources */,
 				1C9568C52CA8290B006181F9 /* RecipeSearchViewModel.swift in Sources */,
+				1C63F0332CD4B66600B598EB /* APIService.swift in Sources */,
 				1CB5BCA22C944408006C66E5 /* FirebaseManager.swift in Sources */,
 				1C8DC5692C99E6F70041A2A2 /* CustomBackButtonModifier.swift in Sources */,
 				1CB14A0D2CAC096400399AAF /* TranslationAPI.swift in Sources */,
 				1CCE0CB22CC0E1A70059613C /* FoodItem.swift in Sources */,
+				1C63F02C2CD4AE2A00B598EB /* Keychain.swift in Sources */,
 				1C7F45E72C9AC9DB00846B44 /* AddGroceryFormViewModel.swift in Sources */,
 				1CB5BC922C943DE4006C66E5 /* Ingredient.swift in Sources */,
 				1C8DC5642C99E1DA0041A2A2 /* Food.mlmodel in Sources */,
@@ -898,6 +920,7 @@
 				1CDF1DCC2CA161B0005BD251 /* ChatGPTAPI.swift in Sources */,
 				1C4490AD2CB27FA500675765 /* FeatureRowView.swift in Sources */,
 				1C8DC55E2C99E0A20041A2A2 /* ScannerView.swift in Sources */,
+				1C9573702CD5D9A8000D13B4 /* APIKeyManager.swift in Sources */,
 				1C1E9A122CA7B135002A15C8 /* String+HTMLDecoded.swift in Sources */,
 				1C1E9A132CA7B135002A15C8 /* StepView.swift in Sources */,
 				1C7F45E52C9AC96100846B44 /* AddGroceryForm.swift in Sources */,
@@ -933,6 +956,7 @@
 				1CB019142CBCE56F00156C81 /* GroceryListStore.swift in Sources */,
 				1C6D2D892CB00B65000C49DC /* RecipeCollectionView.swift in Sources */,
 				1CD4F7A72C97F1BC00F4417D /* GoogleServiceInfo.swift in Sources */,
+				1C95736E2CD5D439000D13B4 /* Supermarket.swift in Sources */,
 				1C6D2D8B2CB00B65000C49DC /* SectionTitleView.swift in Sources */,
 				1C2DD5842C9D68D7000173F6 /* RecipeMainView.swift in Sources */,
 				1C8DC56B2C99EDCB0041A2A2 /* TranslationDictionary.swift in Sources */,
@@ -1335,6 +1359,14 @@
 				minimumVersion = 11.2.0;
 			};
 		};
+		1C63F02D2CD4AE9900B598EB /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 24.0.0;
+			};
+		};
 		1C7432422CC868F200F7E984 /* XCRemoteSwiftPackageReference "ViewInspector" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nalexn/ViewInspector";
@@ -1429,6 +1461,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1C19F1AE2C943B290094FBEA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseAppDistribution-Beta";
+		};
+		1C63F02E2CD4AE9900B598EB /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1C63F02D2CD4AE9900B598EB /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
 		};
 		1C7432432CC868F200F7E984 /* ViewInspector */ = {
 			isa = XCSwiftPackageProductDependency;

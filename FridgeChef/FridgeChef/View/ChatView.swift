@@ -52,11 +52,10 @@ struct PlaceholderTextEditor: View {
     var placeholder: String
     
     @State private var dynamicHeight: CGFloat = 44
-    
     var body: some View {
         ZStack(alignment: .leading) {
             TextEditor(text: $text)
-                .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight < 100 ? dynamicHeight : 100)
+                .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)
                 .padding(8)
                 .background(Color.white)
                 .cornerRadius(10)
@@ -65,6 +64,7 @@ struct PlaceholderTextEditor: View {
                     calculateHeight()
                 }
             
+            // 顯示 placeholder，當 text 為空時才顯示
             if text.isEmpty {
                 Text(placeholder)
                     .foregroundColor(.gray)
@@ -72,6 +72,9 @@ struct PlaceholderTextEditor: View {
                     .padding(.vertical, 12)
                     .allowsHitTesting(false)
             }
+        }
+        .onAppear {
+            calculateHeight() // 確保初始高度計算
         }
     }
     
@@ -91,6 +94,7 @@ struct PlaceholderTextEditor: View {
 
 struct ChatView: View {
     let firestoreService = FirestoreService()
+    private let apiService = APIService()
     @State private var chatViewOpenedAt = Date()
     @State private var alertTitle = ""
     @State private var alertMessage = ""
@@ -104,7 +108,7 @@ struct ChatView: View {
     @State private var showAlert = false
     @State private var showPhotoOptions = false
     @State private var showChangePhotoDialog = false
-    @State private var errorMessage: String?
+    @State private var errorMessage: String? = nil
     @State private var isButtonDisabled = false
     @State private var moveRight = true
     @State private var isFetchingLink: Bool = false
@@ -112,9 +116,15 @@ struct ChatView: View {
     @State private var isSearchVisible = false
     @State private var selectedMessageID: String? = nil
     @State private var listener: ListenerRegistration?
-    @State private var api = ChatGPTAPI(
-        apiKey: "sk-8VrzLltl-TexufDVK8RWN-GVvWLusdkCjGi9lKNSSkT3BlbkFJMryR2KSLUPFRKb5VCzGPXJGI8s-8bUt9URrmdfq0gA",
-        systemPrompt: """
+    @State private var api: ChatGPTAPI?
+    
+    init() {
+        let apiKey = KeychainManager.shared.getApiKey(forKey: "OpenAIAPI_Key")
+            print("Retrieved API Key from Keychain: \(apiKey ?? "nil")")
+        if let apiKey = KeychainManager.shared.getApiKey(forKey: "OpenAIAPI_Key"), !apiKey.isEmpty {
+            _api = State(initialValue: ChatGPTAPI(
+                apiKey: apiKey,
+                systemPrompt: """
         You are a professional chef assistant capable of providing detailed recipes and cooking steps based on the ingredients, images, and descriptions provided by the user. Each reply must include the recipe name and a complete list of 【Ingredients】, along with a valid URL for the specified recipe. If a valid URL cannot be provided, please explicitly state so.
         
         🥙 Recipe Name: [English Name]
@@ -145,7 +155,12 @@ struct ChatView: View {
         - Additionally, you can recommend related recipes and detailed cooking methods based on the user's ideas.
         - Strictly follow the above format without adding any extra content or changing the format.
         """
-    )
+                
+            ))
+        } else {
+            print("API Key is missing!")
+        }
+    }
     
     enum PhotoSource: Identifiable {
         case photoLibrary
@@ -185,11 +200,6 @@ struct ChatView: View {
                         VStack {
                             ZStack {
                                 HStack {
-                                    if let errorMessage = errorMessage {
-                                        Text(errorMessage)
-                                            .foregroundColor(.red)
-                                            .padding()
-                                    }
                                     Spacer()
                                     Button(action: {
                                         withAnimation {
@@ -341,10 +351,34 @@ struct ChatView: View {
                 }
             }
         }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text(alertTitle),
+                message: Text(alertMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
         .fullScreenCover(item: $photoSource) { source in
             ImagePicker(image: $image, sourceType: source == .photoLibrary ? .photoLibrary : .camera)
                 .ignoresSafeArea()
         }
+        .onAppear {
+            if api == nil {
+                if let apiKey = KeychainManager.shared.getApiKey(forKey: "OpenAIAPI_Key"), !apiKey.isEmpty {
+                    api = ChatGPTAPI(apiKey: apiKey, systemPrompt: "...")
+                } else {
+                    alertTitle = "Missing API Key"
+                    alertMessage = "Please provide a valid API Key to use this feature."
+                    showAlert = true
+                }
+            }
+        }
+    }
+    
+    func triggerAlert(title: String, message: String) {
+        self.alertTitle = title
+        self.errorMessage = message
+        self.showAlert = true
     }
     
     var filteredMessages: [Message] {
@@ -421,6 +455,14 @@ struct ChatView: View {
 
     // MARK: - Send Message
     func sendMessage() {
+        
+        guard let api = api else {
+            alertTitle = "Missing API Key"
+            alertMessage = "Please provide a valid API Key to use this feature."
+            showAlert = true
+            return
+        }
+        
         guard !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || image != nil else {
             print("No text or image to send")
             return
@@ -440,14 +482,15 @@ struct ChatView: View {
             firestoreService.uploadImage(messageImage, path: "chat_images/\(UUID().uuidString).jpg") { result in
                 switch result {
                 case .success(let imageURL):
-                    recognizeFood(in: messageImage) { recognizedText in
-                        guard !recognizedText.isEmpty else {
+                    recognizeFood(in: messageImage) { translatedLabel in
+                        guard !translatedLabel.isEmpty else {
                             self.errorMessage = "Could not identify any ingredients. Please try again."
+                            self.triggerAlert(title: "Error", message: "Could not identify any ingredients. Please try again.")
                             self.isWaitingForResponse = false
                             return
                         }
                         
-                        let finalMessageText = "Identified ingredient: \(recognizedText).\nPlease provide detailed recipes and cooking steps."
+                        let finalMessageText = "Identified ingredient: \(translatedLabel).\nPlease provide detailed recipes and cooking steps."
                         let userMessage = Message(
                             id: nil,
                             role: .user,
@@ -461,6 +504,7 @@ struct ChatView: View {
                         self.checkCachedResponseAndRespond(message: finalMessageText)
                     }
                 case .failure(let error):
+                    self.triggerAlert(title: "Error", message: "Failed to upload image: \(error.localizedDescription)")
                     self.errorMessage = "Failed to upload image: \(error.localizedDescription)"
                     print(self.errorMessage!)
                     self.isWaitingForResponse = false
@@ -512,6 +556,13 @@ struct ChatView: View {
 
     // MARK: - Send Message to Assistant
     func sendMessageToAssistant(_ messageText: String) {
+        guard let api = api else {
+            alertTitle = "Missing API Key"
+            alertMessage = "Please provide a valid API Key to use this feature."
+            showAlert = true
+            return
+        }
+        
         guard !messageText.isEmpty else {
             self.isWaitingForResponse = false
             return
@@ -728,7 +779,7 @@ struct ChatView: View {
     // MARK: - Recognize Food
     func recognizeFood(in image: UIImage, completion: @escaping (String) -> Void) {
         
-        // 嘗試加載 CoreML 模型
+        // 加載 CoreML 模型
         guard let model = try? VNCoreMLModel(for: Food().model) else {
             print("Failed to load model")
             completion("Unknown Food")
@@ -746,7 +797,8 @@ struct ChatView: View {
             
             DispatchQueue.main.async {
                 let label = topResult.identifier
-                completion(label)
+                let translatedLabel = TranslationDictionary.foodNames[label] ?? "Unknown"
+                completion(translatedLabel)
             }
         }
         

@@ -13,7 +13,7 @@ import WidgetKit
 class FoodItemStore: ObservableObject {
     @Published var foodItems: [FoodItem] = []
     private var listener: ListenerRegistration?
-
+    
     init() {
         fetchFoodItems()
     }
@@ -28,25 +28,25 @@ class FoodItemStore: ObservableObject {
         let simpleItems = foodItems.map { item in
             SimpleFoodItem(id: item.id, name: item.name, quantity: item.quantity, unit: item.unit, daysRemaining: item.daysRemaining, status: item.status)
         }
-
+        
         if let encodedData = try? JSONEncoder().encode(simpleItems) {
             sharedDefaults?.set(encodedData, forKey: "foodItems")
             
             updateWidget()
         }
     }
-
+    
     func fetchFoodItems() {
         guard let currentUser = Auth.auth().currentUser else {
             print("No user is currently logged in.")
             return
         }
-
+        
         listener = FirestoreService().listenToFoodItems(forUser: currentUser.uid) { [weak self] result in
             switch result {
             case .success(let items):
                 DispatchQueue.main.async {
-                   
+                    
                     self?.foodItems = items
                     
                     self?.saveFoodItemsToUserDefaults(items)
@@ -58,7 +58,20 @@ class FoodItemStore: ObservableObject {
             }
         }
     }
-
+    
+    private func updateDaysRemaining() {
+        let currentDate = Date()
+        for index in foodItems.indices {
+            if let expirationDate = foodItems[index].expirationDate {
+                foodItems[index].daysRemaining = calculateDaysRemaining(from: expirationDate, to: currentDate)
+            }
+        }
+    }
+    
+    private func calculateDaysRemaining(from expirationDate: Date, to currentDate: Date) -> Int {
+        return Calendar.current.dateComponents([.day], from: currentDate, to: expirationDate).day ?? 0
+    }
+    
     deinit {
         listener?.remove()
     }

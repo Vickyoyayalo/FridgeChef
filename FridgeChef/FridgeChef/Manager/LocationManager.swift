@@ -11,23 +11,23 @@ import CoreLocation
 import MapKit
 
 class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
-    private let manager = CLLocationManager()
     @Published var lastKnownLocation: CLLocation?
     @Published var region: MKCoordinateRegion = MKCoordinateRegion()
     @Published var isUserInteracting = false
     @Published var showAlert = false
-    var placesFetcher = PlacesFetcher()
-    
+    let placesFetcher: PlacesFetcher
+    private let manager = CLLocationManager()
     private var lastUpdatedLocation: CLLocation?
-
-    override init() {
+    
+    init(placesFetcher: PlacesFetcher) {
+        self.placesFetcher = placesFetcher
         super.init()
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.startUpdatingLocation()
     }
-
+    
     // MARK: - Update Region with Threshold Check
     func updateRegion(coordinate: CLLocationCoordinate2D? = nil, zoomIn: Bool = true) {
         DispatchQueue.main.async {

@@ -5,7 +5,7 @@
 //  Created by Vickyhereiam on 2024/10/7.
 //
 
-//todo: make button to change language
+// todo: make button to change language
 import SwiftUI
 
 struct SettingsView: View {

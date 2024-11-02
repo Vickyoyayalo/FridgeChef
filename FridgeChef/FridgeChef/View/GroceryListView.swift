@@ -17,8 +17,21 @@ struct GroceryListView: View {
     @State private var progressMessage = ""
     @State private var showingMLIngredientView = false
     @State private var showingMapView = false
-    @StateObject private var locationManager = LocationManager()
+    @StateObject private var locationManager: LocationManager
     let firestoreService = FirestoreService()
+    
+    init() {
+        APIKeyManager.shared.initializeAPIKeys()
+        
+        if let apiKey = APIKeyManager.shared.getAPIKey(forKey: "SupermarketAPI_Key") {
+            let placesFetcher = PlacesFetcher(apiKey: apiKey)
+            _locationManager = StateObject(wrappedValue: LocationManager(placesFetcher: placesFetcher))
+        } else {
+            print("SupermarketAPI_Key is missing.")
+           
+            _locationManager = StateObject(wrappedValue: LocationManager(placesFetcher: PlacesFetcher(apiKey: "")))
+        }
+    }
     
     var body: some View {
         NavigationView {

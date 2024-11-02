@@ -14,6 +14,7 @@ class APIKeyManager {
     
     func initializeAPIKeys() {
 //        deleteOldApiKey(forKey: "SupermarketAPI_Key")
+        initializeAPIKey(forKey: "API_KEY", plistName: "GoogleService-Info")
         initializeAPIKey(forKey: "OpenAIAPI_Key", plistName: "GoogleService-Info")
         initializeAPIKey(forKey: "SupermarketAPI_Key", plistName: "GoogleService-Info")
     }

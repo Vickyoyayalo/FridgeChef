@@ -120,7 +120,7 @@ struct ChatView: View {
     
     init() {
         let apiKey = KeychainManager.shared.getApiKey(forKey: "OpenAIAPI_Key")
-            print("Retrieved API Key from Keychain: \(apiKey ?? "nil")")
+
         if let apiKey = KeychainManager.shared.getApiKey(forKey: "OpenAIAPI_Key"), !apiKey.isEmpty {
             _api = State(initialValue: ChatGPTAPI(
                 apiKey: apiKey,

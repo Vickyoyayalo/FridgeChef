@@ -32,8 +32,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     func updateRegion(coordinate: CLLocationCoordinate2D? = nil, zoomIn: Bool = true) {
         DispatchQueue.main.async {
             let newCoordinate = coordinate ?? self.lastKnownLocation?.coordinate
-            if let coordinate = newCoordinate, (zoomIn || !self.isUserInteracting) {
-                // Only update region if not interacting or if zooming in
+            if let coordinate = newCoordinate, zoomIn || !self.isUserInteracting {
                 self.region = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
             }
         }
@@ -43,25 +42,22 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         
-        // Calculate distance from last update
-        let distanceThreshold: CLLocationDistance = 50.0 // Threshold of 50 meters
+        let distanceThreshold: CLLocationDistance = 50.0
         if let lastUpdatedLocation = lastUpdatedLocation {
             let distance = lastUpdatedLocation.distance(from: location)
             if distance < distanceThreshold {
-                return // Ignore updates if the user has moved less than 50 meters
+                return
             }
         }
         
         DispatchQueue.main.async {
             self.lastKnownLocation = location
-            self.lastUpdatedLocation = location // Store this location for future comparison
+            self.lastUpdatedLocation = location
             
-            // Only update region if the user is not interacting
             if !self.isUserInteracting {
                 self.updateRegion(coordinate: location.coordinate)
             }
             
-            // Fetch nearby places regardless of interaction
             self.placesFetcher.fetchNearbyPlaces(coordinate: location.coordinate)
         }
     }

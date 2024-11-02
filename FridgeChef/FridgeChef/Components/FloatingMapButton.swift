@@ -22,7 +22,7 @@ struct FloatingMapButton: View {
                 Button(action: {
                     if let apiKey = APIKeyManager.shared.getAPIKey(forKey: "SupermarketAPI_Key") {
                         let placesFetcher = PlacesFetcher(apiKey: apiKey)
-                        let locationManager = LocationManager(placesFetcher: placesFetcher)
+                        _ = LocationManager(placesFetcher: placesFetcher)
                         showingMapView = true
                     } else {
                         showingAlert = true
@@ -46,7 +46,7 @@ struct FloatingMapButton: View {
                 .sheet(isPresented: $showingMapView, content: {
                     let placesFetcher = PlacesFetcher(apiKey: APIKeyManager.shared.getAPIKey(forKey: "SupermarketAPI_Key") ?? "")
                     let locationManager = LocationManager(placesFetcher: placesFetcher)
-                    MapViewWithUserLocation(locationManager: locationManager, isPresented: $showingMapView)
+                    MapView(locationManager: locationManager, isPresented: $showingMapView)
                 })
                 .alert(isPresented: $showingAlert, content: {
                     alertService.showAlert(

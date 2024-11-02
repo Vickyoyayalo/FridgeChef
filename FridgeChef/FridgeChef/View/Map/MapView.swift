@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct MapViewWithUserLocation: View {
+struct MapView: View {
     @StateObject private var viewModel: MapViewModel
     @Binding var isPresented: Bool
     @FocusState private var isSearchFieldFocused: Bool
@@ -94,7 +94,7 @@ struct MapViewWithUserLocation: View {
     
     private var listResults: some View {
         List(viewModel.searchResults, id: \.id) { supermarket in
-            SupermarketRow(supermarket: supermarket, userLocation: viewModel.userLocation)
+            SupermarketRowView(supermarket: supermarket, userLocation: viewModel.userLocation)
                 .onTapGesture {
                     viewModel.openDirections(to: supermarket)
                 }

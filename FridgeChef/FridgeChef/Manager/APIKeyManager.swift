@@ -9,14 +9,24 @@ import Foundation
 
 class APIKeyManager {
     static let shared = APIKeyManager()
+    private let isInitializedKey = "isAPIKeyInitialized"
     
     private init() {}
     
     func initializeAPIKeys() {
-//        deleteOldApiKey(forKey: "SupermarketAPI_Key")
+        if UserDefaults.standard.bool(forKey: isInitializedKey) {
+            print("API keys have already been initialized.")
+            return
+        }
+        
+        UserDefaults.standard.set(true, forKey: isInitializedKey)
+        
+        //        deleteOldApiKey(forKey: "SupermarketAPI_Key")
+        
         initializeAPIKey(forKey: "API_KEY", plistName: "GoogleService-Info")
         initializeAPIKey(forKey: "OpenAIAPI_Key", plistName: "GoogleService-Info")
         initializeAPIKey(forKey: "SupermarketAPI_Key", plistName: "GoogleService-Info")
+        initializeAPIKey(forKey: "SpoonacularAPI_Key", plistName: "GoogleService-Info")
     }
     
     private func initializeAPIKey(forKey key: String, plistName: String) {
@@ -43,9 +53,9 @@ class APIKeyManager {
         return KeychainManager.shared.getApiKey(forKey: key)
     }
     
-//    private func deleteOldApiKey(forKey key: String) {
-//        KeychainManager.shared.deleteApiKey(forKey: key)
-//        print("Old API Key for \(key) has been deleted from Keychain.")
-//    }
+    //    private func deleteOldApiKey(forKey key: String) {
+    //        KeychainManager.shared.deleteApiKey(forKey: key)
+    //        print("Old API Key for \(key) has been deleted from Keychain.")
+    //    }
     
 }

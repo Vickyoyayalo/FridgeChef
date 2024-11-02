@@ -41,7 +41,6 @@
 		1C4490B12CB2810200675765 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4490B02CB2810200675765 /* CategoryView.swift */; };
 		1C4AD1502CAAA75E00C90905 /* MainCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */; };
 		1C59F54B2CB37589002451A8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C59F54A2CB37589002451A8 /* SettingsView.swift */; };
-		1C63F02C2CD4AE2A00B598EB /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C63F02B2CD4AE2A00B598EB /* Keychain.swift */; };
 		1C63F02F2CD4AE9900B598EB /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1C63F02E2CD4AE9900B598EB /* KeychainSwift */; };
 		1C63F0312CD4B61100B598EB /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C63F0302CD4B61100B598EB /* KeychainManager.swift */; };
 		1C63F0332CD4B66600B598EB /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C63F0322CD4B66600B598EB /* APIService.swift */; };
@@ -69,7 +68,6 @@
 		1C7F45C92C9A752300846B44 /* Nunito-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C7F45C62C9A752300846B44 /* Nunito-Bold.ttf */; };
 		1C7F45CA2C9A752300846B44 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C7F45C72C9A752300846B44 /* Nunito-Regular.ttf */; };
 		1C7F45CC2C9A787A00846B44 /* RecommendRecipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45CB2C9A787A00846B44 /* RecommendRecipe.swift */; };
-		1C7F45CE2C9A793900846B44 /* MapViewStudy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45CD2C9A793900846B44 /* MapViewStudy.swift */; };
 		1C7F45D62C9A7AB600846B44 /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45D52C9A7AB600846B44 /* ReviewView.swift */; };
 		1C7F45E12C9AA40600846B44 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45E02C9AA40600846B44 /* MainTabView.swift */; };
 		1C7F45E32C9AC75100846B44 /* GroceryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7F45E22C9AC75100846B44 /* GroceryListView.swift */; };
@@ -98,12 +96,12 @@
 		1C95736E2CD5D439000D13B4 /* Supermarket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C95736D2CD5D439000D13B4 /* Supermarket.swift */; };
 		1C9573702CD5D9A8000D13B4 /* APIKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C95736F2CD5D9A8000D13B4 /* APIKeyManager.swift */; };
 		1C9573722CD5FA08000D13B4 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9573712CD5FA08000D13B4 /* MapViewModel.swift */; };
-		1C9573742CD5FC2B000D13B4 /* SupermarketRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9573732CD5FC2B000D13B4 /* SupermarketRow.swift */; };
+		1C9573742CD5FC2B000D13B4 /* SupermarketRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9573732CD5FC2B000D13B4 /* SupermarketRowView.swift */; };
 		1C99D1792CAE6C47003D2997 /* FloatingMapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D1782CAE6C47003D2997 /* FloatingMapButton.swift */; };
 		1C99D17B2CAE6C63003D2997 /* ProgressOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D17A2CAE6C63003D2997 /* ProgressOverlay.swift */; };
 		1C99D17D2CAEA882003D2997 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C99D17C2CAEA882003D2997 /* Double.swift */; };
 		1CA8CE8B2C9D7A2B00C9CADD /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8A2C9D7A2B00C9CADD /* MobileNetV2.mlmodel */; };
-		1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */; };
+		1CA8CE8D2C9D899600C9CADD /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8C2C9D899600C9CADD /* MapView.swift */; };
 		1CA8CE8F2C9E720900C9CADD /* PlacesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8CE8E2C9E720900C9CADD /* PlacesFetcher.swift */; };
 		1CA8CE912C9E854400C9CADD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA8CE902C9E854300C9CADD /* CoreLocation.framework */; };
 		1CAF42F92CACBF8B0022D393 /* DefaultRecipeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF42F62CACBF8B0022D393 /* DefaultRecipeDetailView.swift */; };
@@ -200,7 +198,6 @@
 		1C4AD14F2CAAA75E00C90905 /* MainCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionView.swift; sourceTree = "<group>"; };
 		1C59F54A2CB37589002451A8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1C5D43382CB65AF300A06927 /* FridgeChefWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FridgeChefWidgetExtension.entitlements; sourceTree = "<group>"; };
-		1C63F02B2CD4AE2A00B598EB /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		1C63F0302CD4B61100B598EB /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		1C63F0322CD4B66600B598EB /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		1C6CC3872C984C89001C4643 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -226,7 +223,6 @@
 		1C7F45C62C9A752300846B44 /* Nunito-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Bold.ttf"; sourceTree = "<group>"; };
 		1C7F45C72C9A752300846B44 /* Nunito-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Regular.ttf"; sourceTree = "<group>"; };
 		1C7F45CB2C9A787A00846B44 /* RecommendRecipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RecommendRecipe.swift; path = ../../../../../../Downloads/RecommendRecipe.swift; sourceTree = "<group>"; };
-		1C7F45CD2C9A793900846B44 /* MapViewStudy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewStudy.swift; sourceTree = "<group>"; };
 		1C7F45D52C9A7AB600846B44 /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
 		1C7F45E02C9AA40600846B44 /* MainTabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		1C7F45E22C9AC75100846B44 /* GroceryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroceryListView.swift; sourceTree = "<group>"; };
@@ -255,12 +251,12 @@
 		1C95736D2CD5D439000D13B4 /* Supermarket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Supermarket.swift; sourceTree = "<group>"; };
 		1C95736F2CD5D9A8000D13B4 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
 		1C9573712CD5FA08000D13B4 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
-		1C9573732CD5FC2B000D13B4 /* SupermarketRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupermarketRow.swift; sourceTree = "<group>"; };
+		1C9573732CD5FC2B000D13B4 /* SupermarketRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupermarketRowView.swift; sourceTree = "<group>"; };
 		1C99D1782CAE6C47003D2997 /* FloatingMapButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingMapButton.swift; sourceTree = "<group>"; };
 		1C99D17A2CAE6C63003D2997 /* ProgressOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressOverlay.swift; sourceTree = "<group>"; };
 		1C99D17C2CAEA882003D2997 /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		1CA8CE8A2C9D7A2B00C9CADD /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
-		1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewWithUserLocation.swift; sourceTree = "<group>"; };
+		1CA8CE8C2C9D899600C9CADD /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		1CA8CE8E2C9E720900C9CADD /* PlacesFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesFetcher.swift; sourceTree = "<group>"; };
 		1CA8CE902C9E854300C9CADD /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		1CAF42F62CACBF8B0022D393 /* DefaultRecipeDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultRecipeDetailView.swift; sourceTree = "<group>"; };
@@ -451,9 +447,8 @@
 		1C75CCAE2CA3B7360072D55C /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				1C7F45CD2C9A793900846B44 /* MapViewStudy.swift */,
-				1CA8CE8C2C9D899600C9CADD /* MapViewWithUserLocation.swift */,
-				1C9573732CD5FC2B000D13B4 /* SupermarketRow.swift */,
+				1CA8CE8C2C9D899600C9CADD /* MapView.swift */,
+				1C9573732CD5FC2B000D13B4 /* SupermarketRowView.swift */,
 				1C9573712CD5FA08000D13B4 /* MapViewModel.swift */,
 				1C25A3732C9ECE9B00A997C7 /* CustomMapView.swift */,
 			);
@@ -467,7 +462,6 @@
 				1C99D17C2CAEA882003D2997 /* Double.swift */,
 				1CAF43092CAD52EE0022D393 /* String+Extensions.swift */,
 				1C7F45F12C9B146100846B44 /* CornerRadius.swift */,
-				1C63F02B2CD4AE2A00B598EB /* Keychain.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -901,7 +895,6 @@
 				1C6CC3A12C996F94001C4643 /* AlertService.swift in Sources */,
 				1C4490AF2CB27FB500675765 /* FlowLayout.swift in Sources */,
 				1C4490AB2CB27F9500675765 /* CategoryIconView.swift in Sources */,
-				1C7F45CE2C9A793900846B44 /* MapViewStudy.swift in Sources */,
 				1CAF42F92CACBF8B0022D393 /* DefaultRecipeDetailView.swift in Sources */,
 				1C7F45E92C9AF20700846B44 /* ActivityView.swift in Sources */,
 				1C1E9A0D2CA7B072002A15C8 /* RecipeSearchService.swift in Sources */,
@@ -918,7 +911,6 @@
 				1C8DC5692C99E6F70041A2A2 /* CustomBackButtonModifier.swift in Sources */,
 				1CB14A0D2CAC096400399AAF /* TranslationAPI.swift in Sources */,
 				1CCE0CB22CC0E1A70059613C /* FoodItem.swift in Sources */,
-				1C63F02C2CD4AE2A00B598EB /* Keychain.swift in Sources */,
 				1C7F45E72C9AC9DB00846B44 /* AddGroceryFormViewModel.swift in Sources */,
 				1CB5BC922C943DE4006C66E5 /* Ingredient.swift in Sources */,
 				1C8DC5642C99E1DA0041A2A2 /* Food.mlmodel in Sources */,
@@ -937,14 +929,14 @@
 				1C6D2D8D2CB04ACA000C49DC /* LogoutSheetView.swift in Sources */,
 				1CD4F7BB2C981D5B00F4417D /* UserViewModel.swift in Sources */,
 				1C59F54B2CB37589002451A8 /* SettingsView.swift in Sources */,
-				1C9573742CD5FC2B000D13B4 /* SupermarketRow.swift in Sources */,
+				1C9573742CD5FC2B000D13B4 /* SupermarketRowView.swift in Sources */,
 				1C99D17B2CAE6C63003D2997 /* ProgressOverlay.swift in Sources */,
 				1CAF42FA2CACBF8B0022D393 /* DefaultRecipeView.swift in Sources */,
 				1C4490B12CB2810200675765 /* CategoryView.swift in Sources */,
 				1C99D17D2CAEA882003D2997 /* Double.swift in Sources */,
 				1CA8CE8B2C9D7A2B00C9CADD /* MobileNetV2.mlmodel in Sources */,
 				1C06EF6B2CCF51B700C6EFB8 /* FoodItemStore.swift in Sources */,
-				1CA8CE8D2C9D899600C9CADD /* MapViewWithUserLocation.swift in Sources */,
+				1CA8CE8D2C9D899600C9CADD /* MapView.swift in Sources */,
 				1C8A74092CA000980005E54D /* ChatView.swift in Sources */,
 				1C7F45E32C9AC75100846B44 /* GroceryListView.swift in Sources */,
 				1CAF43082CAD3B650022D393 /* BulletPointView.swift in Sources */,

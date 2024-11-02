@@ -19,21 +19,21 @@ class MapViewModel: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     private let locationManager: LocationManager
-
+    
     var userLocation: CLLocationCoordinate2D? {
         locationManager.lastKnownLocation?.coordinate
     }
-
+    
     var allSupermarkets: [Supermarket] {
         locationManager.placesFetcher.supermarkets
     }
-
+    
     init(locationManager: LocationManager) {
         self.locationManager = locationManager
         self.region = locationManager.region
         setupBindings()
     }
-
+    
     private func setupBindings() {
         locationManager.$region
             .receive(on: RunLoop.main)
@@ -41,21 +41,21 @@ class MapViewModel: ObservableObject {
                 self?.region = newRegion
             }
             .store(in: &cancellables)
-
+        
         locationManager.$lastKnownLocation
             .compactMap { $0 }
             .sink { [weak self] newLocation in
                 self?.performSearch(at: newLocation.coordinate)
             }
             .store(in: &cancellables)
-
+        
         locationManager.placesFetcher.$supermarkets
             .receive(on: RunLoop.main)
-            .sink { [weak self] newSupermarkets in
+            .sink { [weak self] _ in
                 self?.updateSearchResults()
             }
             .store(in: &cancellables)
-
+        
         $searchText
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
@@ -63,7 +63,7 @@ class MapViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-
+    
     func updateSearchResults() {
         guard let userLocation = userLocation else {
             searchResults = []
@@ -79,18 +79,18 @@ class MapViewModel: ObservableObject {
                 return distanceToFirst < distanceToSecond
             }
     }
-
+    
     private func distance(from userLocation: CLLocationCoordinate2D, to supermarketLocation: CLLocationCoordinate2D) -> Double {
         let userCLLocation = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
         let supermarketCLLocation = CLLocation(latitude: supermarketLocation.latitude, longitude: supermarketLocation.longitude)
         return userCLLocation.distance(from: supermarketCLLocation)
     }
-
+    
     func openDirections(to supermarket: Supermarket) {
         selectedSupermarket = supermarket
         showingNavigationAlert = true
     }
-
+    
     func performNavigation() {
         guard let supermarket = selectedSupermarket else { return }
         if isGoogleMapsInstalled() {
@@ -99,14 +99,14 @@ class MapViewModel: ObservableObject {
             openAppleMaps(to: supermarket.coordinate, destinationName: supermarket.name)
         }
     }
-
+    
     private func isGoogleMapsInstalled() -> Bool {
         if let url = URL(string: "comgooglemaps://"), UIApplication.shared.canOpenURL(url) {
             return true
         }
         return false
     }
-
+    
     private func openGoogleMaps(to coordinate: CLLocationCoordinate2D, destinationName: String) {
         let encodedName = destinationName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         let urlString = "comgooglemaps://?daddr=\(encodedName)&directionsmode=driving"
@@ -114,14 +114,14 @@ class MapViewModel: ObservableObject {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
-
+    
     private func openAppleMaps(to coordinate: CLLocationCoordinate2D, destinationName: String) {
         let placemark = MKPlacemark(coordinate: coordinate)
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = destinationName
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
     }
-
+    
     func performSearch(at coordinate: CLLocationCoordinate2D) {
         locationManager.placesFetcher.fetchNearbyPlaces(coordinate: coordinate)
     }

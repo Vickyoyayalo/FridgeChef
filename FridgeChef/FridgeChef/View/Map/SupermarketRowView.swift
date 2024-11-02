@@ -9,7 +9,7 @@ import SwiftUI
 import MapKit
 import Foundation
 
-struct SupermarketRow: View {
+struct SupermarketRowView: View {
     let supermarket: Supermarket
     let userLocation: CLLocationCoordinate2D?
 

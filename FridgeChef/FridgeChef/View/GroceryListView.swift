@@ -21,7 +21,6 @@ struct GroceryListView: View {
     let firestoreService = FirestoreService()
     
     init() {
-        APIKeyManager.shared.initializeAPIKeys()
         
         if let apiKey = APIKeyManager.shared.getAPIKey(forKey: "SupermarketAPI_Key") {
             let placesFetcher = PlacesFetcher(apiKey: apiKey)

@@ -94,7 +94,7 @@ class PlacesFetcher: ObservableObject {
             let urlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(coordinate.latitude),\(coordinate.longitude)&radius=5000&type=supermarket&key=\(apiKey)&language=zh-TW"
             guard let url = URL(string: urlString) else { return }
             
-            URLSession.shared.dataTask(with: url) { data, response, error in
+            URLSession.shared.dataTask(with: url) { data, _, error in
                 if let error = error {
                     DispatchQueue.main.async {
                         print("Failed to fetch places: \(error.localizedDescription)")

@@ -13,6 +13,7 @@ class APIKeyManager {
     private init() {}
     
     func initializeAPIKeys() {
+//        deleteOldApiKey(forKey: "SupermarketAPI_Key")
         initializeAPIKey(forKey: "OpenAIAPI_Key", plistName: "GoogleService-Info")
         initializeAPIKey(forKey: "SupermarketAPI_Key", plistName: "GoogleService-Info")
     }
@@ -40,4 +41,10 @@ class APIKeyManager {
     func getAPIKey(forKey key: String) -> String? {
         return KeychainManager.shared.getApiKey(forKey: key)
     }
+    
+//    private func deleteOldApiKey(forKey key: String) {
+//        KeychainManager.shared.deleteApiKey(forKey: key)
+//        print("Old API Key for \(key) has been deleted from Keychain.")
+//    }
+    
 }

@@ -149,8 +149,9 @@ struct WhatToEatGameView: View {
                             showingRecipeSheet = true
                         })
                         .sheet(isPresented: $showingRecipeSheet) {
-                            RecipeMainView()
-                                .environmentObject(RecipeSearchViewModel())
+                            RecipeMainView(
+                                viewModel: RecipeSearchViewModel(),
+                                foodItemStore: FoodItemStore())
                         }
                     }
                    

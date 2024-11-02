@@ -4,13 +4,14 @@
 //
 //  Created by Vickyhereiam on 2024/9/18.
 //
+
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 import UserNotifications
 
 struct GroceryListView: View {
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var foodItemStore: FoodItemStore
     @State private var searchText = ""
     @State private var editingItem: FoodItem?
     @State private var showingProgressView = false
@@ -20,8 +21,9 @@ struct GroceryListView: View {
     @StateObject private var locationManager: LocationManager
     let firestoreService = FirestoreService()
     
-    init() {
-        
+    init(foodItemStore: FoodItemStore) {
+            self.foodItemStore = foodItemStore
+
         if let apiKey = APIKeyManager.shared.getAPIKey(forKey: "SupermarketAPI_Key") {
             let placesFetcher = PlacesFetcher(apiKey: apiKey)
             _locationManager = StateObject(wrappedValue: LocationManager(placesFetcher: placesFetcher))
@@ -72,7 +74,8 @@ struct GroceryListView: View {
                         onSave: { updatedIngredient in
                             handleSave(updatedIngredient)
                         },
-                        editingFoodItem: ingredient
+                        editingFoodItem: ingredient, 
+                        foodItemStore: FoodItemStore()
                     )
                 }
                 FloatingMapButton(showingMapView: $showingMapView)
@@ -158,21 +161,19 @@ struct GroceryListView: View {
             MLIngredientView(
                 onSave: { newIngredient in
                     handleSave(newIngredient)
-                }
+                }, foodItemStore: FoodItemStore()
             )
         }
     }
 
     func deleteItems(at offsets: IndexSet) {
-        guard let currentUser = Auth.auth().currentUser else {
-            print("No user is currently logged in.")
-            return
-        }
-
         let itemsToDelete = offsets.map { filteredFoodItems[$0] }
-
         for item in itemsToDelete {
-   
+            foodItemStore.removeFoodItem(withId: item.id)
+            guard let currentUser = Auth.auth().currentUser else {
+                print("No user is currently logged in.")
+                return
+            }
             firestoreService.deleteFoodItem(forUser: currentUser.uid, foodItemId: item.id) { result in
                 switch result {
                 case .success():
@@ -181,7 +182,7 @@ struct GroceryListView: View {
                     print("Failed to delete food item from Firebase: \(error.localizedDescription)")
                 }
             }
-
+            
             if let indexInFoodItems = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
                 foodItemStore.foodItems.remove(at: indexInFoodItems)
             }
@@ -393,7 +394,7 @@ struct GroceryListView_Previews: PreviewProvider {
         let store = FoodItemStore()
         store.foodItems = [sampleFoodItem]
         
-        return GroceryListView()
+        return GroceryListView(foodItemStore: FoodItemStore())
             .environmentObject(store)
     }
 }

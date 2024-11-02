@@ -1,5 +1,5 @@
 //
-//  String+Extensions.swift
+//  String.swift
 //  FridgeChef
 //
 //  Created by Vickyhereiam on 2024/10/2.

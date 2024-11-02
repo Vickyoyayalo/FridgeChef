@@ -9,8 +9,8 @@ import SwiftUI
 import FirebaseAuth
 
 struct MainCollectionView: View {
-    @EnvironmentObject var viewModel: RecipeSearchViewModel
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var viewModel: RecipeSearchViewModel
+    @ObservedObject var foodItemStore: FoodItemStore
     @State private var showingLogoutSheet = false
     @State private var showingNotificationSheet = false
     @State private var isEditing = false
@@ -34,25 +34,26 @@ struct MainCollectionView: View {
                         SectionTitleView(title: "⏰ Fridge Updates")
                             .padding(.horizontal)
 
-                        FridgeReminderView(editingItem: $editingItem)
+                        FridgeReminderView(foodItemStore: FoodItemStore(), editingItem: $editingItem)
 
                         SectionTitleView(title: "📚 Favorite Recipe")
                             .padding(.horizontal)
-
+                        
                         SearchAndFilterView(searchText: $searchText)
                             .padding(.horizontal)
                         
-                        RecipeListView(selectedRecipe: $selectedRecipe, searchText: $searchText)
+                        RecipeListView(viewModel: RecipeSearchViewModel(), selectedRecipe: $selectedRecipe, searchText: $searchText)
                             .sheet(item: $selectedRecipe, onDismiss: {
                                 selectedRecipe = nil
                             }) { recipe in
                                 if recipe.id == RecipeCollectionView_Previews.sampleRecipe.id {
-                                    RecipeMainView()
+                                    RecipeMainView(viewModel: viewModel, foodItemStore: foodItemStore) // Pass existing instances here
                                 } else {
-                                    RecipeDetailView(recipeId: recipe.id)
+                                    RecipeDetailView(recipeId: recipe.id, viewModel: viewModel, foodItemStore: foodItemStore)
                                 }
                             }
-                            .animation(nil) 
+                        
+                            .animation(nil)
                     }
                     .onAppear {
                         viewModel.loadFavorites()
@@ -67,7 +68,7 @@ struct MainCollectionView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         menuButton
                     }
-
+                    
                     ToolbarItem(placement: .principal) {
                         Image("FridgeChefLogo")
                             .resizable()
@@ -75,9 +76,9 @@ struct MainCollectionView: View {
                             .frame(width: 250, height: 180)
                             .padding(.top)
                     }
-
-//                    ToolbarItem(placement: .navigationBarLeading) {
-//                        notificationButton
+                    
+                    //                    ToolbarItem(placement: .navigationBarLeading) {
+                    //                        notificationButton
 //                    }
                 }
                 .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
@@ -225,8 +226,8 @@ struct MainCollectionView: View {
 
 struct MainCollectionView_Previews: PreviewProvider {
     static var previews: some View {
-        MainCollectionView()
-            .environmentObject(RecipeSearchViewModel())
-            .environmentObject(FoodItemStore())
+        MainCollectionView(
+            viewModel: RecipeSearchViewModel(),
+            foodItemStore: FoodItemStore())
     }
 }

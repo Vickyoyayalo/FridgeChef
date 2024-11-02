@@ -8,42 +8,8 @@
 import Foundation
 
 // MARK: - Models
-struct ParsedIngredient: Identifiable, Codable, CustomStringConvertible {
-    var id = UUID()
-    let name: String
-    let quantity: Double
-    let unit: String
-    let expirationDate: Date
-    
-    var description: String {
-        return "ParsedIngredient(id: \(id), name: \"\(name)\", quantity: \(quantity), unit: \"\(unit)\", expirationDate: \(expirationDate))"
-    }
-}
 
-struct ParsedRecipe: Codable, CustomStringConvertible {
-    let title: String?
-    let ingredients: [ParsedIngredient]
-    let steps: [String]
-    var link: String?
-    let tips: String?
-    let unparsedContent: String?
-//    let language: String
-
-    var description: String {
-        return """
-        ParsedRecipe(
-            title: \(title ?? "nil"),
-            ingredients: \(ingredients),
-            steps: \(steps),
-            link: \(link ?? "nil"),
-            tips: \(tips ?? "nil"),
-            unparsedContent: \(unparsedContent ?? "nil")
-        )
-        """
-    }
-}
-
-struct Recipe: Identifiable, Codable, Equatable {
+struct Recipe: Identifiable, Codable, Equatable, Hashable {
     let id: Int
     let title: String
     let image: String?
@@ -146,14 +112,10 @@ struct EquipmentItem: Codable {
 enum ActiveAlert: Identifiable {
     case error(ErrorMessage)
     case ingredient(String)
-    
+    case accumulation(ParsedIngredient)
+    case regular(title: String, message: String)
+
     var id: UUID {
-        switch self {
-        case .error(_):
-            return UUID()
-        case .ingredient(_):
-            return UUID()
-        }
+        return UUID()
     }
 }
-

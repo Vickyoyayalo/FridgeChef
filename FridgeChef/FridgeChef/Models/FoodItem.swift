@@ -140,7 +140,7 @@ struct FoodItemRow: View {
             VStack(alignment: .leading) {
                 Text(item.name)
                     .font(.custom("ArialRoundedMTBold", size: 16))
-                Text("\(item.quantity, specifier: "%.2f") \(item.unit)")
+                Text("\(item.quantity, specifier: "%.1f") \(item.unit)")
                     .font(.custom("ArialRoundedMTBold", size: 14))
                     .foregroundColor(.gray)
                 Text(item.daysRemainingText)

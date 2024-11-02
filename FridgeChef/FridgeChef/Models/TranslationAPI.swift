@@ -8,7 +8,7 @@
 import Foundation
 
 func translate(text: String, from sourceLanguage: String = "zh", to targetLanguage: String = "en", completion: @escaping (String?) -> Void) {
-    let apiKey = ""/*AIzaSyBb_LtEBzE0y2mATvrQ3sZnaWnieTHf6_E*/
+    let apiKey = ""
     let urlStr = "https://translation.googleapis.com/language/translate/v2?key=\(apiKey)"
     guard let url = URL(string: urlStr) else {
         completion(nil)

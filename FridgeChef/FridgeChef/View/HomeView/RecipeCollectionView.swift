@@ -11,7 +11,7 @@ struct RecipeCollectionView: View {
     let toggleFavorite: () -> Void
     
     @State private var animate = false
-
+    
     var body: some View {
         HStack {
             
@@ -42,7 +42,7 @@ struct RecipeCollectionView: View {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-           
+                
                 if let dishType = recipe.dishTypes.first {
                     Text(dishType.capitalized)
                         .font(.custom("ArialRoundedMTBold", size: 15))
@@ -117,8 +117,11 @@ struct RecipeCollectionView_Previews: PreviewProvider {
     )
     
     static var previews: some View {
-        NavigationView {
-            NavigationLink(destination: RecipeMainView(showEditAndAddButtons: false)) {
+        let sampleViewModel = RecipeSearchViewModel()
+        let sampleFoodItemStore = FoodItemStore()
+        
+        return NavigationView {
+            NavigationLink(destination: RecipeMainView(viewModel: sampleViewModel, foodItemStore: sampleFoodItemStore, showEditAndAddButtons: false)) {
                 RecipeCollectionView(recipe: sampleRecipe, toggleFavorite: {})
             }
         }

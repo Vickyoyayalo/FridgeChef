@@ -1,13 +1,14 @@
 //
-//  UIColor+Ext.swift
-//  FoodPin
+//  UIColor+Color.swift
+//  FridgeChef
 //
 //  Created by Vickyhereiam on 2024/9/13.
 //
 
 import UIKit
+import SwiftUI
 
-import UIKit
+//MARK: -UIColor
 
 extension UIColor {
     convenience init(hex: String) {
@@ -28,4 +29,13 @@ extension UIColor {
         self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
     }
 }
+
+//MARK: -Color
+
+extension Color {
+    static func customColor(named name: String) -> Color {
+        return Color(UIColor(named: name) ?? .systemRed)
+    }
+}
+
 

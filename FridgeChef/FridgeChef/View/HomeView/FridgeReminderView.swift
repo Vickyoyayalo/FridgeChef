@@ -8,7 +8,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct FridgeReminderView: View {
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var foodItemStore: FoodItemStore
     @Binding var editingItem: FoodItem?
     @State private var selectedFoodItem: FoodItem? 
     @State private var showingSheet = false
@@ -60,9 +60,9 @@ struct FridgeReminderView: View {
 
         .sheet(item: $selectedFoodItem) { foodItem in
             if foodItem.status == .toBuy {
-                GroceryListView()
+                GroceryListView(foodItemStore: FoodItemStore())
             } else {
-                FridgeView()
+                FridgeView(foodItemStore: FoodItemStore())
             }
         }
     }
@@ -148,7 +148,7 @@ struct FridgeRecipeCard: View {
                     .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("\(foodItem.quantity, specifier: "%.2f") \(foodItem.unit)")
+                Text("\(foodItem.quantity, specifier: "%.1f") \(foodItem.unit)")
                     .font(.custom("ArialRoundedMTBold", size: 13))
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
@@ -185,7 +185,7 @@ struct FridgeReminderView_Preview: PreviewProvider {
     @State static var editingItem: FoodItem? = nil
 
     static var previews: some View {
-        FridgeReminderView(editingItem: $editingItem)
+        FridgeReminderView(foodItemStore: FoodItemStore(), editingItem: $editingItem)
             .environmentObject(FoodItemStore())
     }
 }

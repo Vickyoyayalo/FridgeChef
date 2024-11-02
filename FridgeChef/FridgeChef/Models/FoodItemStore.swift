@@ -5,10 +5,18 @@
 //  Created by Vickyhereiam on 2024/10/28.
 //
 
+import Combine
+import WidgetKit
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
-import WidgetKit
+
+protocol FoodItemStoreProtocol: ObservableObject {
+    var foodItems: [FoodItem] { get set }
+    func addFoodItem(_ item: FoodItem)
+    func removeFoodItem(withId id: String)
+    func isIngredientInCart(_ ingredient: String) -> Bool
+}
 
 class FoodItemStore: ObservableObject {
     @Published var foodItems: [FoodItem] = []
@@ -34,6 +42,22 @@ class FoodItemStore: ObservableObject {
             
             updateWidget()
         }
+    }
+    
+    func addFoodItem(_ item: FoodItem) {
+        if !foodItems.contains(where: { $0.id == item.id }) {
+            foodItems.append(item)
+        }
+    }
+    
+    func removeFoodItem(withId id: String) {
+        if let index = foodItems.firstIndex(where: { $0.id == id }) {
+            foodItems.remove(at: index)
+        }
+    }
+    
+    func isIngredientInCart(_ ingredient: String) -> Bool {
+        return foodItems.contains { $0.name.lowercased() == ingredient.lowercased() }
     }
     
     func fetchFoodItems() {

@@ -10,13 +10,13 @@ import SwiftUI
 struct LoginView: View {
     @State private var isShowingLoginDetail = false
     @State private var isShowingSignUp = false
-    
     @State private var scaleEffect1: CGFloat = 0.5
     @State private var opacityEffect1 = 0.0
-    
     @State private var scaleEffect2: CGFloat = 1.0
     @State private var opacityEffect2 = 1.0
     @State private var offsetXEffect2: CGFloat = 0
+    @ObservedObject var viewModel: RecipeSearchViewModel
+    @ObservedObject var foodItemStore: FoodItemStore
     
     var body: some View {
         CustomNavigationBarView(title: "Welcome") {
@@ -71,7 +71,7 @@ struct LoginView: View {
                     
                     Button(action: {
                         self.isShowingLoginDetail = true
-                    }) {
+                    }, label: {
                         Text("Sign In")
                             .font(.custom("ArialRoundedMTBold", size: 19))
                             .foregroundColor(.white)
@@ -89,11 +89,11 @@ struct LoginView: View {
                             .shadow(radius: 5)
                             .padding(.horizontal)
                             .contentShape(Rectangle())
-                    }
+                    })
                     
                     Button(action: {
                         self.isShowingSignUp = true
-                    }) {
+                    }, label: {
                         Text("Sign Up")
                             .font(.custom("ArialRoundedMTBold", size: 18))
                             .foregroundColor(.white)
@@ -106,7 +106,7 @@ struct LoginView: View {
                             .shadow(radius: 5)
                             .padding(.horizontal)
                             .contentShape(Rectangle())
-                    }
+                    })
 
                     // EULA Link
                     Link("End-User License Agreement (EULA)", destination: URL(string: "https://www.privacypolicies.com/live/3068621d-05a8-47a8-8321-28522fc642ed")!)

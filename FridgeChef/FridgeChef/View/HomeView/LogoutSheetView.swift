@@ -124,7 +124,9 @@ struct LogoutSheetView: View {
             loadUserInfo()
         }
         .fullScreenCover(isPresented: $showLoginView) {
-            LoginView()
+            LoginView(
+                viewModel: RecipeSearchViewModel(),
+                foodItemStore: FoodItemStore())
         }
 
     }

@@ -3,15 +3,15 @@
 //  WhatToEat
 //
 //  Created by Vickyhereiam on 2024/9/27.
- 
+
 import SwiftUI
 import IQKeyboardManagerSwift
 import FirebaseAuth
 
 struct RecipeDetailView: View {
     let recipeId: Int
-    @EnvironmentObject var viewModel: RecipeSearchViewModel
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var viewModel: RecipeSearchViewModel
+    @ObservedObject var foodItemStore: FoodItemStore
     @State private var inputServings: String = ""
     @State private var animate = false
     @State private var ratingScore: Int = 5
@@ -29,7 +29,7 @@ struct RecipeDetailView: View {
     
     var body: some View {
         ZStack {
-       
+            
             LinearGradient(
                 gradient: Gradient(colors: [Color.yellow, Color.orange]),
                 startPoint: .top,
@@ -83,7 +83,7 @@ struct RecipeDetailView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     animate = false
                                 }
-                            }) {
+                            }, label: {
                                 Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
                                     .foregroundColor(recipe.isFavorite ? primaryColor : Color.gray)
                                     .padding(10)
@@ -93,7 +93,7 @@ struct RecipeDetailView: View {
                                     .scaleEffect(animate ? 1.5 : 1.0)
                                     .opacity(animate ? 0.5 : 1.0)
                                     .animation(.easeInOut(duration: 0.3), value: animate)
-                            }
+                            })
                             .padding(.top, 40)
                             .padding(.trailing, 25)
                         }
@@ -168,24 +168,29 @@ struct RecipeDetailView: View {
                             SectionView(title: "Ingredients") {
                                 VStack(alignment: .leading, spacing: 10) {
                                     ForEach(parsedIngredients, id: \.name) { ingredient in
-                                        IngredientRow(ingredient: ingredient) { selectedIngredient in
-                                          
-                                            addIngredientToShoppingList(selectedIngredient)
-                                        }
+                                        
+                                        let isInCart = foodItemStore.foodItems.contains { $0.name.lowercased() == ingredient.name.lowercased() }
+                                        
+                                        IngredientRow(
+                                            viewModel: ChatViewModel(foodItemStore: foodItemStore),
+                                            ingredient: ingredient,
+                                            addAction: addIngredientToShoppingList,
+                                            isInCart: isInCart
+                                        )
                                         .environmentObject(foodItemStore)
                                     }
-                                   
+                                    
                                     Button(action: {
                                         addAllIngredientsToCart(ingredients: parsedIngredients)
                                         isButtonDisabled = true
-                                    }) {
+                                    }, label: {
                                         Text("Add All Ingredients to Cart")
                                             .bold()
                                             .foregroundColor(.white)
                                             .padding()
                                             .background(primaryColor)
                                             .cornerRadius(10)
-                                    }
+                                    })
                                     .frame(maxWidth: .infinity)
                                     .opacity(isButtonDisabled ? 0.7 : 1.0)
                                     .disabled(isButtonDisabled)
@@ -245,15 +250,33 @@ struct RecipeDetailView: View {
                         return Alert(
                             title: Text("Error"),
                             message: Text(errorMessage.message),
-                            dismissButton: .default(Text("Sure")) {
-                                viewModel.errorMessage = nil
-                            }
+                            dismissButton: .default(Text("OK"))
                         )
+                        
                     case .ingredient(let message):
                         return Alert(
-                            title: Text("Added to your Grocery List!"),
+                            title: Text("Ingredient Added"),
                             message: Text(message),
-                            dismissButton: .default(Text("Sure"))
+                            dismissButton: .default(Text("OK"))
+                        )
+                        
+                    case .accumulation(let ingredient):
+                        return Alert(
+                            title: Text("Ingredient Already Exists"),
+                            message: Text("Do you want to add \(ingredient.quantity) \(ingredient.unit) of \(ingredient.name) to your existing amount?"),
+                            primaryButton: .default(Text("Accumulate"), action: {
+                                handleAccumulationChoice(for: ingredient, accumulate: true)
+                            }),
+                            secondaryButton: .cancel(Text("Keep Existing"), action: {
+                                handleAccumulationChoice(for: ingredient, accumulate: false)
+                            })
+                        )
+                        
+                    case .regular(let title, let message):
+                        return Alert(
+                            title: Text(title),
+                            message: Text(message),
+                            dismissButton: .default(Text("OK"))
                         )
                     }
                 }
@@ -271,7 +294,7 @@ struct RecipeDetailView: View {
     
     private func toggleFavorite() {
         isLoading = true
-
+        
         viewModel.toggleFavorite(for: recipeId)
         
         DispatchQueue.main.async {
@@ -279,8 +302,23 @@ struct RecipeDetailView: View {
         }
     }
     
+    private func handleAccumulationChoice(for ingredient: ParsedIngredient, accumulate: Bool) {
+        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) {
+            if accumulate {
+                let newQuantity = foodItemStore.foodItems[existingIndex].quantity + ingredient.quantity
+                foodItemStore.foodItems[existingIndex].quantity = newQuantity
+                activeAlert = .ingredient("Updated quantity of \(ingredient.name) to \(newQuantity) \(ingredient.unit).")
+            } else {
+                activeAlert = .regular(
+                    title: "No Changes Made",
+                    message: "\(ingredient.name) remains at \(foodItemStore.foodItems[existingIndex].quantity) \(ingredient.unit)."
+                )
+            }
+        }
+    }
+    
     // MARK: - 輔助函數
-
+    
     private func updateServings() {
         if let newServings = Int(inputServings), newServings > 0 {
             viewModel.adjustServings(newServings: newServings)
@@ -337,11 +375,13 @@ struct RecipeDetailView: View {
             activeAlert = .ingredient("Added \(addedToCart.joined(separator: ", ")) to your Grocery List!")
         }
         if !alreadyInCart.isEmpty {
-            activeAlert = .ingredient("Already in your Grocery List: \(alreadyInCart.joined(separator: ", "))")
+            activeAlert = .regular(
+                title: "Already in Grocery List",
+                message: "Already in your Grocery List: \(alreadyInCart.joined(separator: ", "))"
+            )
         }
     }
 }
-
 struct CategoryItemView: View {
     let title: String
     let items: [String]

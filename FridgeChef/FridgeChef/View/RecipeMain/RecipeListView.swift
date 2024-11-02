@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RecipeListView: View {
-    @EnvironmentObject var viewModel: RecipeSearchViewModel
+    @ObservedObject var viewModel: RecipeSearchViewModel
     @Binding var selectedRecipe: Recipe?
     @Binding var searchText: String
     
@@ -52,7 +52,9 @@ struct RecipeListView: View {
 
 struct RecipeListView_Previews: PreviewProvider {
     static var previews: some View {
-        RecipeListView(selectedRecipe: .constant(nil), searchText: .constant(""))
-            .environmentObject(RecipeSearchViewModel())
+        RecipeListView(
+            viewModel: RecipeSearchViewModel(),
+            selectedRecipe: .constant(nil),
+            searchText: .constant(""))
     }
 }

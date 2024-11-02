@@ -15,7 +15,7 @@ struct MLIngredientView: View {
     var onSave: ((Ingredient) -> Void)?
     var editingFoodItem: Ingredient?
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var foodItemStore: FoodItemStore
     
     let storageOptions = ["Fridge", "Freezer"]
     
@@ -24,10 +24,12 @@ struct MLIngredientView: View {
         GridItem(.flexible())
     ]
     
-    init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {
+    init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil, foodItemStore: FoodItemStore) {
         self.onSave = onSave
         self.editingFoodItem = editingFoodItem
+        self.foodItemStore = foodItemStore
         _viewModel = StateObject(wrappedValue: MLIngredientViewModel(editingFoodItem: editingFoodItem, onSave: onSave))
+        
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white
         UISegmentedControl.appearance().backgroundColor = UIColor(named: "NavigationBarTitle") ?? UIColor.orange
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemRed, .font: UIFont(name: "ArialRoundedMTBold", size: 15)!], for: .selected)
@@ -282,13 +284,17 @@ struct MLIngredientView: View {
         }
     }
 }
+
 struct MLIngredientView_Previews: PreviewProvider {
     static var previews: some View {
         let foodItemStore = FoodItemStore()
         let viewModel = MLIngredientViewModel()
-        MLIngredientView(onSave: { ingredient in
-            print("Preview Save: \(ingredient)")
-        }, editingFoodItem: nil)
-        .environmentObject(foodItemStore)
+        MLIngredientView(
+            onSave: { ingredient in
+                print("Preview Save: \(ingredient)")
+            },
+            editingFoodItem: nil,
+            foodItemStore: foodItemStore // 傳入 foodItemStore
+        )
     }
 }

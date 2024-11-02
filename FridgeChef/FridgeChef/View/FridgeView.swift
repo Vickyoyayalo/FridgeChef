@@ -17,7 +17,7 @@ protocol NotificationCenterProtocol {
 extension UNUserNotificationCenter: NotificationCenterProtocol {}
 
 struct FridgeView: View {
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var foodItemStore: FoodItemStore
     @State private var searchText = ""
     @State private var editingItem: FoodItem?
     @State private var showingProgressView = false
@@ -71,7 +71,8 @@ struct FridgeView: View {
                     onSave: { updatedIngredient in
                         handleSave(updatedIngredient)
                     },
-                    editingFoodItem: ingredient
+                    editingFoodItem: ingredient, 
+                    foodItemStore: foodItemStore
                 )
             }
             
@@ -189,7 +190,8 @@ struct FridgeView: View {
             MLIngredientView(
                 onSave: { newIngredient in
                     handleSave(newIngredient)
-                }
+                }, 
+                foodItemStore: foodItemStore
             )
         }
     }
@@ -484,7 +486,7 @@ struct FridgeView_Previews: PreviewProvider {
         let store = FoodItemStore()
         store.foodItems = [sampleFoodItem]
         
-        return FridgeView()
+        return FridgeView(foodItemStore: store)
             .environmentObject(store)
     }
 }

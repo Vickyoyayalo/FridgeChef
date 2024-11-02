@@ -22,7 +22,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             print("Firebase has been configured successfully.")
             
             let settings = Firestore.firestore().settings
-            settings.isPersistenceEnabled = true
+            settings.cacheSettings = PersistentCacheSettings()
             Firestore.firestore().settings = settings
         }
         
@@ -34,12 +34,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             }
         }
         
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, _) in
             if granted {
                 print("User notifications are allowed.")
             } else {
                 print("User notifications are not allowed.")
-            } }
+            }
+        }
         
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
@@ -113,31 +114,25 @@ struct FridgeChefApp: App {
     @AppStorage("hasSeenTutorial") var hasSeenTutorial: Bool = false
     @AppStorage("log_Status") var isLoggedIn: Bool = false
     
-//    init() {
-//        UserDefaults.standard.set(false, forKey: "hasSeenTutorial")
-//    }
+    //    init() {
+    //        UserDefaults.standard.set(false, forKey: "hasSeenTutorial")
+    //    }
     
     var body: some Scene {
         WindowGroup {
             if !hasSeenTutorial {
-                TutorialView()
+                TutorialView(viewModel: viewModel, foodItemStore: foodItemStore)
                     .onDisappear {
                         hasSeenTutorial = true
                     }
-                    .environmentObject(viewModel)
-                    .environmentObject(foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
                     .preferredColorScheme(.light)
             } else if isLoggedIn {
-                MainTabView()
-                    .environmentObject(viewModel)
-                    .environmentObject(foodItemStore)
+                MainTabView(viewModel: viewModel, foodItemStore: foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
                     .preferredColorScheme(.light)
             } else {
-                LoginView()
-                    .environmentObject(viewModel)
-                    .environmentObject(foodItemStore)
+                LoginView(viewModel: viewModel, foodItemStore: foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
                     .preferredColorScheme(.light)
             }

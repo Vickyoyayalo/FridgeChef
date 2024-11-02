@@ -25,14 +25,14 @@ class PlacesFetcher: ObservableObject {
     init(apiKey: String) {
         self.apiKey = apiKey
     }
-  
+    
     func saveSupermarkets() {
         if let encodedData = try? JSONEncoder().encode(supermarkets) {
             UserDefaults.standard.set(encodedData, forKey: savedSupermarketsKey)
             print("Supermarkets saved to local storage.")
         }
     }
-
+    
     func loadSavedSupermarkets() {
         if !isDataLoadedFromStorage {
             if let savedData = UserDefaults.standard.data(forKey: savedSupermarketsKey),
@@ -45,7 +45,7 @@ class PlacesFetcher: ObservableObject {
             print("Supermarkets data already loaded from local storage.")
         }
     }
-
+    
     func saveCacheData() {
         if let lastLocation = lastFetchedLocation {
             UserDefaults.standard.set(lastLocation.coordinate.latitude, forKey: lastFetchedLatitudeKey)
@@ -57,8 +57,7 @@ class PlacesFetcher: ObservableObject {
             print("Saved cache timestamp: \(cacheTimeStamp)")
         }
     }
-
-    // 載入緩存資料
+    
     func loadCacheData() {
         let latitude = UserDefaults.standard.double(forKey: lastFetchedLatitudeKey)
         let longitude = UserDefaults.standard.double(forKey: lastFetchedLongitudeKey)
@@ -68,7 +67,7 @@ class PlacesFetcher: ObservableObject {
         } else {
             print("No last fetched location found in storage.")
         }
-
+        
         if let timestamp = UserDefaults.standard.object(forKey: cacheTimeStampKey) as? Date {
             cacheTimeStamp = timestamp
             print("Loaded cache timestamp: \(cacheTimeStamp!)")
@@ -76,47 +75,25 @@ class PlacesFetcher: ObservableObject {
             print("No cache timestamp found in storage.")
         }
     }
-
+    
     func fetchNearbyPlaces(coordinate: CLLocationCoordinate2D) {
-     
         loadCacheData()
-   
         loadSavedSupermarkets()
-
+        
         let currentLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-
-        if let lastLocation = lastFetchedLocation {
-            print("Last fetched location: \(lastLocation.coordinate.latitude), \(lastLocation.coordinate.longitude)")
-        } else {
-            print("Last fetched location is nil, this should be the first API request.")
-        }
-
-        if let cacheTimeStamp = cacheTimeStamp {
-            print("Cache timestamp: \(cacheTimeStamp)")
-        } else {
-            print("Cache timestamp is nil, should fetch new data.")
-        }
-
-        print("Current location: \(currentLocation.coordinate.latitude), \(currentLocation.coordinate.longitude)")
-
-        if let lastLocation = lastFetchedLocation {
-            let distance = currentLocation.distance(from: lastLocation)
-            print("Distance from last fetched location: \(distance) meters")
-        }
-
-        // **修改這裡，加入 supermarkets.isEmpty 的檢查**
-               let shouldFetchNewData = supermarkets.isEmpty ||
-                                        (lastFetchedLocation == nil) ||
-                                        (currentLocation.distance(from: lastFetchedLocation ?? currentLocation) >= fetchThresholdDistance) ||
-                                        (cacheTimeStamp == nil) ||
-                                        (Date().timeIntervalSince(cacheTimeStamp!) >= cacheDuration)
-
+        
+        let shouldFetchNewData = supermarkets.isEmpty ||
+        lastFetchedLocation == nil ||
+        cacheTimeStamp == nil ||
+        currentLocation.distance(from: lastFetchedLocation ?? currentLocation) >= fetchThresholdDistance ||
+        Date().timeIntervalSince(cacheTimeStamp!) >= cacheDuration
+        
         if shouldFetchNewData {
             print("Fetching new data from API...")
-
+            
             let urlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(coordinate.latitude),\(coordinate.longitude)&radius=5000&type=supermarket&key=\(apiKey)&language=zh-TW"
             guard let url = URL(string: urlString) else { return }
-
+            
             URLSession.shared.dataTask(with: url) { data, response, error in
                 if let error = error {
                     DispatchQueue.main.async {
@@ -144,7 +121,7 @@ class PlacesFetcher: ObservableObject {
                                 )
                             )
                         }
-
+                        
                         if newSupermarkets != self.supermarkets {
                             self.supermarkets = newSupermarkets
                             self.saveSupermarkets()
@@ -152,6 +129,7 @@ class PlacesFetcher: ObservableObject {
                         } else {
                             print("Supermarkets data unchanged, no need to update.")
                         }
+                        
                         self.lastFetchedLocation = currentLocation
                         self.cacheTimeStamp = Date()
                         self.saveCacheData()

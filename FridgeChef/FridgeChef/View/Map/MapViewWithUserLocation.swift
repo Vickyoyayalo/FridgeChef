@@ -170,7 +170,7 @@ struct MapViewWithUserLocation: View {
         if let coordinate = locationManager.lastKnownLocation?.coordinate {
             locationManager.placesFetcher.fetchNearbyPlaces(coordinate: coordinate)
         }
-
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if let firstResult = searchResults.first {
                 self.selectedSupermarket = firstResult
@@ -192,6 +192,32 @@ struct MapViewWithUserLocation: View {
     }
     
     private func openMapsAppWithDirections(to coordinate: CLLocationCoordinate2D, destinationName: String) {
+        if isGoogleMapsInstalled() {
+            openGoogleMaps(to: coordinate, destinationName: destinationName)
+        } else {
+            openAppleMaps(to: coordinate, destinationName: destinationName)
+        }
+    }
+    
+    private func isGoogleMapsInstalled() -> Bool {
+        if let url = URL(string: "comgooglemaps://"), UIApplication.shared.canOpenURL(url) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func openGoogleMaps(to coordinate: CLLocationCoordinate2D, destinationName: String) {
+        let encodedName = destinationName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let urlString = "comgooglemaps://?daddr=\(encodedName)&directionsmode=driving"
+        if let url = URL(string: urlString) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            print("Failed to open Google Maps.")
+        }
+    }
+    
+    private func openAppleMaps(to coordinate: CLLocationCoordinate2D, destinationName: String) {
         let placemark = MKPlacemark(coordinate: coordinate)
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = destinationName
@@ -204,6 +230,6 @@ extension Supermarket {
         guard let userLocation = location else { return nil }
         let supermarketLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
         let userCLLocation = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
-        return supermarketLocation.distance(from: userCLLocation) / 1000 
+        return supermarketLocation.distance(from: userCLLocation) / 1000
     }
 }

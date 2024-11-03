@@ -1,3 +1,10 @@
+//
+//  IngredientRow.swift
+//  FridgeChef
+//
+//  Created by Vickyhereiam on 2024/11/2.
+//
+
 import SwiftUI
 import Foundation
 
@@ -10,31 +17,25 @@ struct IngredientRow: View {
 
     var body: some View {
         Button(action: {
-            let success = addAction(ingredient)
-            if success {
-                viewModel.alertTitle = "Added to your Grocery List!"
-                viewModel.alertMessage = "\(ingredient.name) added to your Grocery List 🛒"
-                viewModel.showAlert = true
-            }
-            // If not successful, the accumulation alert is handled in ChatView
+            addAction(ingredient)
         }) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(ingredient.name)
-                        .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                        .foregroundColor(isInCart ? .gray : Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                         .bold()
                         .lineLimit(nil)
                         .fixedSize(horizontal: false, vertical: true)
-
+                    
                     if ingredient.quantity > 0 {
-                        Text("Qty: \(ingredient.quantity, specifier: "%.1f") \(ingredient.unit)")
+                        Text("Qty: \(ingredient.quantity, specifier: "%.2f") \(ingredient.unit)")
                             .font(.custom("ArialRoundedMTBold", size: 15))
                             .foregroundColor(.gray)
                     }
                 }
                 Spacer()
                 if isInCart {
-                    Image(systemName: "cart.fill")
+                    Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
                 } else {
                     Image(systemName: "cart.badge.plus.fill")
@@ -44,5 +45,7 @@ struct IngredientRow: View {
             .padding(.vertical, 5)
         }
         .buttonStyle(PlainButtonStyle())
+//        .disabled(isInCart)
     }
 }
+

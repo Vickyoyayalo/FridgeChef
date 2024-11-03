@@ -31,6 +31,8 @@ class ChatViewModel: ObservableObject {
     @Published var isButtonDisabled = false
     @Published var activeAlert: ActiveAlert?
     
+    var showAlertClosure: ((ActiveAlert) -> Void)?
+    var onAddIngredientToCart: ((ParsedIngredient) -> Void)?
     var pendingIngredientToAdd: ParsedIngredient?
     var accumulationCompletion: ((Bool) -> Void)?
     var alertTitle = ""
@@ -108,10 +110,12 @@ class ChatViewModel: ObservableObject {
         return foodItemStore.foodItems.contains { $0.name.lowercased() == ingredient.name.lowercased() }
     }
     
-    func addIngredientToCart(_ ingredient: ParsedIngredient) -> Bool {
+    func addIngredientToCart(_ ingredient: ParsedIngredient, foodItemStore: FoodItemStore) {
         guard let currentUser = Auth.auth().currentUser else {
-            print("No user is currently logged in.")
-            return false
+            DispatchQueue.main.async {
+                self.showAlertClosure?(.error(ErrorMessage(message: "No user is logged in.")))
+            }
+            return
         }
         
         let newFoodItem = FoodItem(
@@ -120,17 +124,23 @@ class ChatViewModel: ObservableObject {
             quantity: ingredient.quantity,
             unit: ingredient.unit,
             status: .toBuy,
-            daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
+            daysRemaining: 0, // 您可以根据需要计算剩余天数
             expirationDate: ingredient.expirationDate,
             imageURL: nil
         )
         
-        if !foodItemStore.foodItems.contains(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
-            
+        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) {
+            // 食材已存在，处理累加逻辑
             DispatchQueue.main.async {
-                self.foodItemStore.foodItems.append(newFoodItem)
+                self.showAlertClosure?(.accumulation(ingredient))
+            }
+        } else {
+            // 添加新食材
+            DispatchQueue.main.async {
+                foodItemStore.foodItems.append(newFoodItem)
             }
             
+            // 保存到 Firestore
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: newFoodItem, image: nil) { result in
                 switch result {
                 case .success:
@@ -140,11 +150,9 @@ class ChatViewModel: ObservableObject {
                 }
             }
             
-            return true
-        } else {
-            
-            print("\(ingredient.name) already exists in the cart.")
-            return false
+            DispatchQueue.main.async {
+                self.showAlertClosure?(.ingredient("\(ingredient.name) added to your Grocery List 🛒"))
+            }
         }
     }
     
@@ -166,10 +174,10 @@ class ChatViewModel: ObservableObject {
         }
         
         listener = firestoreService.listenForMessages(forUser: currentUser.uid, after: chatViewOpenedAt) { [weak self] result in
-            switch result {
-            case .success(let fetchedMessages):
-                DispatchQueue.main.async {
-                    guard let self = self else { return }
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(let fetchedMessages):
                     let newMessages = fetchedMessages.filter { fetchedMessage in
                         fetchedMessage.timestamp > self.chatViewOpenedAt &&
                         !self.messages.contains(where: { $0.id == fetchedMessage.id })
@@ -186,15 +194,15 @@ class ChatViewModel: ObservableObject {
                     
                     self.messages.append(contentsOf: parsedNewMessages)
                     print("Fetched and updated messages: \(self.messages.count) messages")
+                case .failure(let error):
+                    print("Error fetching messages: \(error.localizedDescription)")
                 }
-            case .failure(let error):
-                print("Error fetching messages: \(error.localizedDescription)")
             }
         }
     }
     
     func sendMessage() {
-        guard let api = api else {
+        guard api != nil else {
             self.alertTitle = "Missing API Key"
             self.alertMessage = "Please provide a valid API Key to use this feature."
             self.showAlert = true
@@ -264,10 +272,12 @@ class ChatViewModel: ObservableObject {
     
     func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
         guard let currentUser = Auth.auth().currentUser else {
-            activeAlert = .error(ErrorMessage(message: "No user is logged in."))
+            DispatchQueue.main.async {
+                self.activeAlert = .error(ErrorMessage(message: "No user is logged in."))
+            }
             return false
         }
-
+        
         let newFoodItem = FoodItem(
             id: UUID().uuidString,
             name: ingredient.name,
@@ -278,45 +288,67 @@ class ChatViewModel: ObservableObject {
             expirationDate: ingredient.expirationDate,
             imageURL: nil
         )
-
+        
         if let _ = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
-            activeAlert = .accumulation(ingredient) // Trigger accumulation alert
+            DispatchQueue.main.async {
+                self.activeAlert = .accumulation(ingredient)
+            }
             return false
         } else {
-            foodItemStore.foodItems.append(newFoodItem)
-            activeAlert = .ingredient("\(ingredient.name) added to your Grocery List 🛒")
+            DispatchQueue.main.async {
+                self.foodItemStore.foodItems.append(newFoodItem)
+                self.activeAlert = .ingredient("\(ingredient.name) added to your Grocery List 🛒")
+            }
+            
+            firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: newFoodItem, image: nil) { result in
+                switch result {
+                case .success:
+                    print("Food item successfully added to Firestore.")
+                case .failure(let error):
+                    print("Failed to add food item to Firestore: \(error.localizedDescription)")
+                }
+            }
+            
             return true
         }
     }
     
+    
     // MARK: - Handle Accumulation Choice
     
-    func handleAccumulationChoice(for ingredient: ParsedIngredient, accumulate: Bool) {
-        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) {
-            if accumulate {
-                let newQuantity = foodItemStore.foodItems[existingIndex].quantity + ingredient.quantity
-                
-                foodItemStore.objectWillChange.send()
+    func handleAccumulationChoice(for ingredient: ParsedIngredient, accumulate: Bool, foodItemStore: FoodItemStore) {
+        guard let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) else {
+            return
+        }
+        
+        if accumulate {
+            let newQuantity = foodItemStore.foodItems[existingIndex].quantity + ingredient.quantity
+            
+            DispatchQueue.main.async {
                 foodItemStore.foodItems[existingIndex].quantity = newQuantity
-                
-                if let userId = Auth.auth().currentUser?.uid {
-                    let updatedFields: [String: Any] = ["quantity": newQuantity]
-                    firestoreService.updateFoodItem(forUser: userId, foodItemId: foodItemStore.foodItems[existingIndex].id, updatedFields: updatedFields) { result in
-                        switch result {
-                        case .success:
-                            print("Food item quantity updated in Firestore.")
-                        case .failure(let error):
-                            print("Failed to update food item: \(error.localizedDescription)")
-                        }
+            }
+            
+            if let userId = Auth.auth().currentUser?.uid {
+                let updatedFields: [String: Any] = ["quantity": newQuantity]
+                firestoreService.updateFoodItem(forUser: userId, foodItemId: foodItemStore.foodItems[existingIndex].id, updatedFields: updatedFields) { result in
+                    switch result {
+                    case .success:
+                        print("Food item quantity updated in Firestore.")
+                    case .failure(let error):
+                        print("Failed to update food item: \(error.localizedDescription)")
                     }
                 }
-
-                activeAlert = .ingredient("Updated quantity of \(ingredient.name) to \(newQuantity) \(ingredient.unit).")
-            } else {
-                activeAlert = .regular(
+            }
+            
+            DispatchQueue.main.async {
+                self.showAlertClosure?(.ingredient("Updated quantity of \(ingredient.name) to \(newQuantity) \(ingredient.unit)."))
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.showAlertClosure?(.regular(
                     title: "No Changes Made",
                     message: "\(ingredient.name) remains at \(foodItemStore.foodItems[existingIndex].quantity) \(ingredient.unit)."
-                )
+                ))
             }
         }
     }

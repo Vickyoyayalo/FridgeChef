@@ -28,6 +28,14 @@ struct Recipe: Identifiable, Codable, Equatable, Hashable {
         case summary
         case dishTypes
     }
+    
+    static func == (lhs: Recipe, rhs: Recipe) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 struct RecipeSearchResponse: Codable {

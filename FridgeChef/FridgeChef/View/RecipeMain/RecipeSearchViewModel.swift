@@ -23,8 +23,17 @@ class RecipeSearchViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: ErrorMessage?
     
+    var showAlertClosure: ((ActiveAlert) -> Void)?
+    
+    private let firestoreService: FirestoreService
+    
+    init(firestoreService: FirestoreService = FirestoreService()) {
+        self.firestoreService = firestoreService
+        
+    }
+    
     private let recipeService = RecipeSearchService()
-
+    
     private func getSavedFavoriteIDs() -> Set<Int> {
         if let savedFavorites = UserDefaults.standard.data(forKey: "favorites"),
            let loadedFavorites = try? JSONDecoder().decode([Recipe].self, from: savedFavorites) {
@@ -64,23 +73,23 @@ class RecipeSearchViewModel: ObservableObject {
     
     func toggleFavorite(for recipeId: Int) {
         guard let index = recipes.firstIndex(where: { $0.id == recipeId }) else { return }
-
+        
         guard let userId = Auth.auth().currentUser?.uid else {
             print("Error: No user is currently logged in.")
             return
         }
-
+        
         let favoritesRef = db.collection("users").document(userId).collection("favorites")
-
+        
         if recipes[index].isFavorite {
-          
+            
             favoritesRef.document("\(recipeId)").delete { error in
                 if let error = error {
                     print("Error removing favorite: \(error.localizedDescription)")
                 } else {
                     DispatchQueue.main.async {
                         self.recipes[index].isFavorite = false
-                      
+                        
                         if self.selectedRecipe?.id == recipeId {
                             self.selectedRecipe?.isFavorite = false
                         }
@@ -88,7 +97,7 @@ class RecipeSearchViewModel: ObservableObject {
                 }
             }
         } else {
-          
+            
             let favoriteData: [String: Any] = [
                 "id": recipeId,
                 "title": recipes[index].title,
@@ -97,14 +106,14 @@ class RecipeSearchViewModel: ObservableObject {
                 "readyInMinutes": recipes[index].readyInMinutes,
                 "dishTypes": recipes[index].dishTypes // 添加 dishTypes
             ]
-
+            
             favoritesRef.document("\(recipeId)").setData(favoriteData) { error in
                 if let error = error {
                     print("Error saving favorite: \(error.localizedDescription)")
                 } else {
                     DispatchQueue.main.async {
                         self.recipes[index].isFavorite = true
-                      
+                        
                         if self.selectedRecipe?.id == recipeId {
                             self.selectedRecipe?.isFavorite = true
                         }
@@ -113,16 +122,16 @@ class RecipeSearchViewModel: ObservableObject {
             }
         }
     }
-
+    
     func checkIfFavorite(recipeId: Int) {
-       
+        
         guard let userId = Auth.auth().currentUser?.uid else {
             print("Error: No user is currently logged in.")
             return
         }
-
+        
         let favoritesRef = db.collection("users").document(userId).collection("favorites")
-
+        
         favoritesRef.document("\(recipeId)").getDocument { document, error in
             if let document = document, document.exists {
                 DispatchQueue.main.async {
@@ -141,14 +150,14 @@ class RecipeSearchViewModel: ObservableObject {
             print("Error: No user is currently logged in.")
             return
         }
-
+        
         let favoritesRef = db.collection("users").document(userId).collection("favorites")
         favoritesRef.getDocuments { snapshot, error in
             if let error = error {
                 print("Error fetching favorites: \(error.localizedDescription)")
                 return
             }
-
+            
             if let snapshot = snapshot {
                 var favoriteRecipes: [Recipe] = []
                 for document in snapshot.documents {
@@ -158,9 +167,9 @@ class RecipeSearchViewModel: ObservableObject {
                        let image = favoriteData["image"] as? String,
                        let readyInMinutes = favoriteData["readyInMinutes"] as? Int,
                        let servings = favoriteData["servings"] as? Int {
-
+                        
                         let dishTypes = favoriteData["dishTypes"] as? [String] ?? []
-
+                        
                         let recipe = Recipe(
                             id: recipeId,
                             title: title,
@@ -181,13 +190,100 @@ class RecipeSearchViewModel: ObservableObject {
             }
         }
     }
-private func saveFavorites() {
-    let favorites = recipes.filter { $0.isFavorite }
-    if let encoded = try? JSONEncoder().encode(favorites) {
-        UserDefaults.standard.set(encoded, forKey: "favorites")
+    
+    private func saveFavorites() {
+        let favorites = recipes.filter { $0.isFavorite }
+        if let encoded = try? JSONEncoder().encode(favorites) {
+            UserDefaults.standard.set(encoded, forKey: "favorites")
+        }
     }
-}
+    
+    func addIngredientToCart(_ ingredient: ParsedIngredient, foodItemStore: FoodItemStore) -> Bool {
+        guard let currentUser = Auth.auth().currentUser else {
+            DispatchQueue.main.async {
+                self.showAlertClosure?(.error(ErrorMessage(message: "An error occurred.")))
+            }
 
+            return false
+        }
+        
+        let newFoodItem = FoodItem(
+            id: UUID().uuidString,
+            name: ingredient.name,
+            quantity: ingredient.quantity,
+            unit: ingredient.unit,
+            status: .toBuy,
+            daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
+            expirationDate: ingredient.expirationDate,
+            imageURL: nil
+        )
+        
+        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
+            // 食材已存在，触发累加警告
+            DispatchQueue.main.async {
+                self.showAlertClosure?(.accumulation(ingredient))
+            }
+            return false
+        } else {
+            
+            DispatchQueue.main.async {
+                foodItemStore.foodItems.append(newFoodItem)
+                self.showAlertClosure?(.ingredient("\(ingredient.name) added to your Grocery List 🛒"))
+            }
+            
+            firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: newFoodItem, image: nil as UIImage?) { result in
+                switch result {
+                case .success:
+                    print("Food item successfully added to Firestore.")
+                case .failure(let error):
+                    print("Failed to add food item to Firestore: \(error.localizedDescription)")
+                }
+            }
+            
+            return true
+        }
+    }
+    
+    func handleAccumulationChoice(for ingredient: ParsedIngredient, accumulate: Bool, foodItemStore: FoodItemStore) {
+        guard let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) else {
+            return
+        }
+        
+        let existingItem = foodItemStore.foodItems[existingIndex]
+        if accumulate {
+            let newQuantity = existingItem.quantity + ingredient.quantity
+            DispatchQueue.main.async {
+                // Update local store
+                foodItemStore.foodItems[existingIndex].quantity = newQuantity
+                self.showAlertClosure?(.ingredient("Updated quantity of \(ingredient.name) to \(newQuantity) \(ingredient.unit)."))
+            }
+            
+            // Update Firestore
+            if let userId = Auth.auth().currentUser?.uid {
+                let updatedFields: [String: Any] = ["quantity": newQuantity]
+                firestoreService.updateFoodItem(forUser: userId, foodItemId: existingItem.id, updatedFields: updatedFields) { result in
+                    switch result {
+                    case .success:
+                        print("Food item quantity updated in Firestore.")
+                    case .failure(let error):
+                        print("Failed to update food item in Firestore: \(error.localizedDescription)")
+                        // Optionally revert local update if Firestore update fails
+                        DispatchQueue.main.async {
+                            foodItemStore.foodItems[existingIndex].quantity = existingItem.quantity // revert change locally
+                        }
+                    }
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.showAlertClosure?(.regular(
+                    title: "No Changes Made",
+                    message: "\(ingredient.name) remains at \(existingItem.quantity) \(ingredient.unit)."
+                ))
+            }
+        }
+    }
+    
     func adjustServings(newServings: Int) {
         guard var recipe = selectedRecipe, newServings > 0, recipe.servings > 0 else {
             if let recipe = selectedRecipe, recipe.servings <= 0 {
@@ -202,14 +298,14 @@ private func saveFavorites() {
     }
     
     func getRecipeDetails(recipeId: Int) {
-  
+        
         isLoading = true
         errorMessage = nil
-
+        
         recipeService.getRecipeInformation(recipeId: recipeId) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
-
+                
                 switch result {
                 case .success(var details):
                     if details.servings <= 0 {

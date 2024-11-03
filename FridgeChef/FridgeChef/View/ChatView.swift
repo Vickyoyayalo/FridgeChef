@@ -187,6 +187,9 @@ struct ChatView: View {
                         
                     }
                     .onAppear {
+                        viewModel.showAlertClosure = { alert in
+                            viewModel.activeAlert = alert
+                        }
                         viewModel.onAppear()
                     }
                     .onDisappear {
@@ -207,7 +210,7 @@ struct ChatView: View {
                                 viewModel.activeAlert = nil
                             }
                         )
-
+                        
                     case .ingredient(let message):
                         return Alert(
                             title: Text("Ingredient Added"),
@@ -216,19 +219,18 @@ struct ChatView: View {
                                 viewModel.activeAlert = nil
                             }
                         )
-
                     case .accumulation(let ingredient):
                         return Alert(
                             title: Text("Ingredient Already Exists"),
                             message: Text("Do you want to add \(String(format: "%.1f", ingredient.quantity)) \(ingredient.unit) of \(ingredient.name) to the existing amount?"),
                             primaryButton: .default(Text("Accumulate"), action: {
-                                viewModel.handleAccumulationChoice(for: ingredient, accumulate: true)
+                                handleAccumulationChoice(for: ingredient, accumulate: true)
                             }),
                             secondaryButton: .cancel(Text("Keep Existing"), action: {
-                                viewModel.handleAccumulationChoice(for: ingredient, accumulate: false)
+                                handleAccumulationChoice(for: ingredient, accumulate: false)
                             })
                         )
-
+                        
                     case .regular(let title, let message):
                         return Alert(
                             title: Text(title),
@@ -318,13 +320,6 @@ struct ChatView: View {
                             .frame(maxWidth: .infinity)
                             .opacity(viewModel.isButtonDisabled ? 0.3 : 0.8)
                             .disabled(viewModel.isButtonDisabled)
-                            .alert(isPresented: $viewModel.showAlert) {
-                                Alert(
-                                    title: Text(viewModel.alertTitle),
-                                    message: Text(viewModel.alertMessage),
-                                    dismissButton: .default(Text("OK"))
-                                )
-                            }
                         }
                         
                         if !recipe.steps.isEmpty {
@@ -409,6 +404,14 @@ struct ChatView: View {
     
     // MARK: - Helper Functions
     
+    private func addIngredientToCart(_ ingredient: ParsedIngredient) {
+        viewModel.addIngredientToCart(ingredient, foodItemStore: foodItemStore)
+    }
+    
+    private func handleAccumulationChoice(for ingredient: ParsedIngredient, accumulate: Bool) {
+        viewModel.handleAccumulationChoice(for: ingredient, accumulate: accumulate, foodItemStore: foodItemStore)
+    }
+    
     private func allIngredientsInCart(ingredients: [ParsedIngredient]) -> Bool {
         return ingredients.allSatisfy { viewModel.isIngredientInCart($0) }
     }
@@ -418,28 +421,28 @@ struct ChatView: View {
         var addedToCart = [String]()
         
         for ingredient in ingredients {
-               if viewModel.addIngredientToCart(ingredient) {
-                let success = viewModel.addIngredientToShoppingList(ingredient)
-                if success {
-                    addedToCart.append(ingredient.name)
-                }
+            if viewModel.addIngredientToShoppingList(ingredient) {
+                addedToCart.append(ingredient.name)
             } else {
                 alreadyInCart.append(ingredient.name)
             }
         }
         
         if addedToCart.isEmpty {
-            viewModel.alertTitle = "No New Ingredients Added"
-            viewModel.alertMessage = "All ingredients are already in your cart."
+            viewModel.activeAlert = .regular(
+                title: "No New Ingredients Added",
+                message: "All ingredients are already in your cart."
+            )
         } else {
-            viewModel.alertTitle = "Ingredients Added"
-            viewModel.alertMessage = "Added: \(addedToCart.joined(separator: ", "))"
-            
+            var message = "Added: \(addedToCart.joined(separator: ", "))"
             if !alreadyInCart.isEmpty {
-                viewModel.alertMessage += "\nAlready in cart: \(alreadyInCart.joined(separator: ", "))"
+                message += "\nAlready in cart: \(alreadyInCart.joined(separator: ", "))"
             }
+            viewModel.activeAlert = .regular(
+                title: "Ingredients Added",
+                message: message
+            )
         }
-        viewModel.showAlert = true
     }
     
     private func addAllIngredientsToCart(ingredients: [ParsedIngredient]) {
@@ -450,9 +453,10 @@ struct ChatView: View {
                 addedToCart.append(ingredient.name)
             }
         }
-        viewModel.alertTitle = "Ingredients Added"
-        viewModel.alertMessage = "Added: \(addedToCart.joined(separator: ", "))"
-        viewModel.showAlert = true
+        viewModel.activeAlert = .regular(
+            title: "Ingredients Added",
+            message: "Added: \(addedToCart.joined(separator: ", "))"
+        )
     }
 }
 

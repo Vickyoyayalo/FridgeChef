@@ -16,15 +16,13 @@ struct DefaultRecipeView: View {
         //        NavigationView {
         ScrollView {
             VStack(spacing: 20) {
-                // 1. 視覺吸引力
                 VStack {
                     ZStack {
-                        Image("discomonster3") // 替換為你的插圖名稱
+                        Image("discomonster3")
                             .resizable()
                             .scaledToFill()
                             .frame(height: 400)
                             .shadow(radius: 10)
-                        // 使用 @State 變數控制水平偏移
                             .offset(y: moveUp ? -50 : 50)
                             .animation(
                                 Animation.easeInOut(duration: 1)
@@ -45,7 +43,7 @@ struct DefaultRecipeView: View {
                         .padding(.top, 15)
                         .shadow(radius: 10)
                 }
-                .padding(.horizontal, 16) // 統一的水平內邊距
+                .padding(.horizontal, 16)
             }
 //            VStack {
 //                ForEach(recipeManager.recipes) { recipe in

@@ -97,7 +97,7 @@ struct LoginDetailView: View {
                             }
                         }
                         .frame(height: 45)
-                        .clipShape(.capsule)
+                        .clipShape(Capsule()) // 修改這一行
                         .overlay {
                             ZStack {
                                 Capsule()
@@ -126,6 +126,8 @@ struct LoginDetailView: View {
         .overlay {
             if isLoggedIn {
                 LoadingScreen()
+            } else {
+                EmptyView()
             }
         }
         .alert(isPresented: $loginViewModel.showAlert) {
@@ -133,7 +135,6 @@ struct LoginDetailView: View {
         }
     }
     
-    // Email & Password log in
     func loginWithEmailPassword() {
         isLoggedIn = true
         Auth.auth().signIn(withEmail: loginViewModel.email, password: loginViewModel.password) { authResult, error in
@@ -178,10 +179,10 @@ struct LoginDetailView: View {
                 logStatus = true
                 isLoggedIn = false
                 navigateToHome = true
-               
+                
                 if let user = Auth.auth().currentUser {
                     print("User is logged in with UID: \(user.uid)")
-                   
+                    
                     let userData: [String: Any] = [
                         "email": user.email ?? "No Email",
                         "name": appleIDCredential.fullName?.givenName ?? "Anonymous"
@@ -201,7 +202,7 @@ struct LoginDetailView: View {
             }
         }
     }
-
+    
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         var randomBytes = [UInt8](repeating: 0, count: length)
@@ -211,14 +212,14 @@ struct LoginDetailView: View {
         }
         
         let charset: [Character] =
-               Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-
-               let nonce = randomBytes.map { byte in
-                   charset[Int(byte) % charset.count]
-               }
-       
-               return String(nonce)
-           }
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        
+        let nonce = randomBytes.map { byte in
+            charset[Int(byte) % charset.count]
+        }
+        
+        return String(nonce)
+    }
     
     private func sha256(_ input: String) -> String {
         let inputData = Data(input.utf8)
@@ -229,10 +230,17 @@ struct LoginDetailView: View {
     @ViewBuilder
     func LoadingScreen() -> some View {
         ZStack {
-            Rectangle().fill(.ultraThinMaterial)
+            Rectangle()
+                .fill(Color.black.opacity(0.4))
+                .ignoresSafeArea()
+            
             ProgressView()
                 .frame(width: 45, height: 45)
-                .background(.background, in: .rect(cornerRadius: 5))
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.white)
+                )
+                .shadow(radius: 10)
         }
     }
 }

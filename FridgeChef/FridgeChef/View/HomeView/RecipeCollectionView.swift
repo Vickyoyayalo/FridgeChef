@@ -11,7 +11,7 @@ struct RecipeCollectionView: View {
     let toggleFavorite: () -> Void
     
     @State private var animate = false
-    
+
     var body: some View {
         HStack {
             
@@ -42,7 +42,7 @@ struct RecipeCollectionView: View {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                
+           
                 if let dishType = recipe.dishTypes.first {
                     Text(dishType.capitalized)
                         .font(.custom("ArialRoundedMTBold", size: 15))
@@ -88,13 +88,13 @@ struct RecipeCollectionView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     animate = false
                 }
-            }) {
+            }, label: {
                 Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
                     .foregroundColor((recipe.isFavorite) ? (Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange)) : Color.gray)
                     .scaleEffect(animate ? 1.5 : 1.0)
                     .opacity(animate ? 0.5 : 1.0)
                     .animation(.easeInOut(duration: 0.3), value: animate)
-            }
+            })
         }
         .padding()
         .background(Color.orange.opacity(0.2))
@@ -117,12 +117,22 @@ struct RecipeCollectionView_Previews: PreviewProvider {
     )
     
     static var previews: some View {
+        
         let sampleViewModel = RecipeSearchViewModel()
         let sampleFoodItemStore = FoodItemStore()
         
         return NavigationView {
-            NavigationLink(destination: RecipeMainView(viewModel: sampleViewModel, foodItemStore: sampleFoodItemStore, showEditAndAddButtons: false)) {
-                RecipeCollectionView(recipe: sampleRecipe, toggleFavorite: {})
+            NavigationLink(
+                destination: RecipeMainView(
+                    viewModel: sampleViewModel,
+                    foodItemStore: sampleFoodItemStore,
+                    showEditAndAddButtons: false
+                )
+            ) {
+                RecipeCollectionView(
+                    recipe: sampleRecipe,
+                    toggleFavorite: {}
+                )
             }
         }
     }

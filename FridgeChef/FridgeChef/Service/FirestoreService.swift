@@ -142,7 +142,6 @@ class FirestoreService {
         }
     }
     
-    
     func fetchFoodItems(forUser userId: String, completion: @escaping (Result<[FoodItem], Error>) -> Void) {
         db.collection("users").document(userId).collection("foodItems")
             .getDocuments(source: .cache) { (snapshot, error) in
@@ -180,6 +179,8 @@ class FirestoreService {
     }
     
     func updateFoodItem(forUser userId: String, foodItemId: String, updatedFields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
+        print("更新 foodItemId: \(foodItemId), 更新內容: \(updatedFields)") 
+
         db.collection("users").document(userId).collection("foodItems").document(foodItemId)
             .updateData(updatedFields) { error in
                 if let error = error {
@@ -191,6 +192,20 @@ class FirestoreService {
                 }
             }
     }
+
+//    func updateFoodItem(forUser userId: String, foodItemId: String, updatedFields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
+//        db.collection("users").document(userId).collection("foodItems").document(foodItemId)
+//            .updateData(updatedFields) { error in
+//                if let error = error {
+//                    print("Failed to update food item: \(error.localizedDescription)")
+//                    completion(.failure(error))
+//                } else {
+//                    print("Food item successfully updated with ID: \(foodItemId)")
+//                    completion(.success(()))
+//                }
+//            }
+//    }
+    
     
     func deleteFoodItem(forUser userId: String, foodItemId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         db.collection("users").document(userId).collection("foodItems").document(foodItemId)

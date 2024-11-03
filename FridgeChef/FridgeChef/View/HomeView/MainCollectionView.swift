@@ -27,33 +27,35 @@ struct MainCollectionView: View {
             ZStack(alignment: .topTrailing) {
                 gradientBackground
                     .blur(radius: showingLogoutSheet || showingNotificationSheet ? 5 : 0)
-
+                
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 16) {
-
+                        
                         SectionTitleView(title: "⏰ Fridge Updates")
                             .padding(.horizontal)
-
+                        
                         FridgeReminderView(foodItemStore: FoodItemStore(), editingItem: $editingItem)
-
+                        
                         SectionTitleView(title: "📚 Favorite Recipe")
                             .padding(.horizontal)
                         
                         SearchAndFilterView(searchText: $searchText)
                             .padding(.horizontal)
                         
-                        RecipeListView(viewModel: RecipeSearchViewModel(), selectedRecipe: $selectedRecipe, searchText: $searchText)
-                            .sheet(item: $selectedRecipe, onDismiss: {
-                                selectedRecipe = nil
-                            }) { recipe in
-                                if recipe.id == RecipeCollectionView_Previews.sampleRecipe.id {
-                                    RecipeMainView(viewModel: viewModel, foodItemStore: foodItemStore) // Pass existing instances here
-                                } else {
-                                    RecipeDetailView(recipeId: recipe.id, viewModel: viewModel, foodItemStore: foodItemStore)
-                                }
+                        RecipeListView(
+                            viewModel: viewModel,
+                            selectedRecipe: $selectedRecipe,
+                            searchText: $searchText
+                        )
+                        .sheet(item: $selectedRecipe, onDismiss: {
+                            selectedRecipe = nil
+                        }) { recipe in
+                            if recipe.id == RecipeCollectionView_Previews.sampleRecipe.id {
+                                RecipeMainView(viewModel: viewModel, foodItemStore: foodItemStore)
+                            } else {
+                                RecipeDetailView(recipeId: recipe.id, viewModel: viewModel, foodItemStore: foodItemStore)
                             }
-                        
-                            .animation(nil)
+                        }
                     }
                     .onAppear {
                         viewModel.loadFavorites()
@@ -79,7 +81,7 @@ struct MainCollectionView: View {
                     
                     //                    ToolbarItem(placement: .navigationBarLeading) {
                     //                        notificationButton
-//                    }
+                    //                    }
                 }
                 .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
                 
@@ -97,7 +99,7 @@ struct MainCollectionView: View {
                 ZStack {
                     gradientBackground
                         .edgesIgnoringSafeArea(.all)
-
+                    
                     notificationSheetContent
                 }
                 .presentationDetents([.fraction(0.55)])
@@ -107,7 +109,7 @@ struct MainCollectionView: View {
             }
         }
     }
-
+    
     private var gradientBackground: some View {
         LinearGradient(
             gradient: Gradient(colors: [Color.yellow, Color.orange]),
@@ -117,7 +119,7 @@ struct MainCollectionView: View {
         .opacity(0.4)
         .edgesIgnoringSafeArea(.all)
     }
-
+    
     private var notificationButton: some View {
         Button(action: {
             showingNotificationSheet = true
@@ -128,7 +130,7 @@ struct MainCollectionView: View {
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
         }
     }
-
+    
     private var menuButton: some View {
         Button(action: {
             showingLogoutSheet = true
@@ -139,29 +141,29 @@ struct MainCollectionView: View {
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange).opacity(0.8))
         }
     }
-
+    
     private var floatingButton: some View {
         ZStack {
             Button(action: {
-                   isShowingGameView = true
-               }) {
-                   Image("clickmemonster")
-                       .resizable()
-                       .scaledToFit()
-                       .frame(width: 130, height: 130)
-                       .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
-               }
-               .padding(.trailing, -10)
-               .padding(.top, 320)
-               .scaleEffect(isScaledUp ? 1.0 : 0.8)
-               .onAppear {
-                   withAnimation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-                       isScaledUp.toggle()
-                   }
+                isShowingGameView = true
+            }) {
+                Image("clickmemonster")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 130, height: 130)
+                    .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
+            }
+            .padding(.trailing, -10)
+            .padding(.top, 320)
+            .scaleEffect(isScaledUp ? 1.0 : 0.8)
+            .onAppear {
+                withAnimation(Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+                    isScaledUp.toggle()
+                }
             }
         }
     }
-
+    
     private var notificationSheetContent: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Notification Summary")
@@ -169,11 +171,11 @@ struct MainCollectionView: View {
                 .font(.custom("ZenLoop-Regular", size: 60))
                 .padding(.top, 20)
                 .frame(maxWidth: .infinity)
-
+            
             Divider()
                 .background(Color.orange)
                 .padding(.horizontal)
-
+            
             if expiringItemsCount > 0 {
                 HStack {
                     Text("• ")
@@ -187,7 +189,7 @@ struct MainCollectionView: View {
                 }
                 .fontWeight(.regular)
             }
-
+            
             if expiredItemsCount > 0 {
                 HStack {
                     Text("• ")
@@ -213,11 +215,11 @@ struct MainCollectionView: View {
                 .fill(Color.clear)
         )
     }
-
+    
     private var expiringItemsCount: Int {
         foodItemStore.foodItems.filter { $0.daysRemaining <= 3 && $0.daysRemaining >= 0 }.count
     }
-
+    
     private var expiredItemsCount: Int {
         foodItemStore.foodItems.filter { $0.daysRemaining < 0 }.count
     }

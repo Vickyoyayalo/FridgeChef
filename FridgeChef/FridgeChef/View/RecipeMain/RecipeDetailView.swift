@@ -125,7 +125,7 @@ struct RecipeDetailView: View {
                                 
                                 Button(action: {
                                     updateServings()
-                                }) {
+                                }, label: {
                                     Text("Go")
                                         .bold()
                                         .foregroundColor(.white)
@@ -133,7 +133,7 @@ struct RecipeDetailView: View {
                                         .padding(5)
                                         .background(primaryColor)
                                         .cornerRadius(8)
-                                }
+                                })
                             }
                             .padding(.horizontal)
                         }
@@ -172,14 +172,13 @@ struct RecipeDetailView: View {
                                         let isInCart = foodItemStore.foodItems.contains { $0.name.lowercased() == ingredient.name.lowercased() }
                                         
                                         IngredientRow(
-                                            viewModel: ChatViewModel(foodItemStore: foodItemStore),
-                                            ingredient: ingredient,
-                                            addAction: addIngredientToShoppingList,
+                                            viewModel: ChatViewModel(foodItemStore: FoodItemStore()), ingredient: ingredient,
+                                            addAction: { ingredient in
+                                                addIngredientToCart(ingredient)
+                                            },
                                             isInCart: isInCart
                                         )
-                                        .environmentObject(foodItemStore)
                                     }
-                                    
                                     Button(action: {
                                         addAllIngredientsToCart(ingredients: parsedIngredients)
                                         isButtonDisabled = true
@@ -241,6 +240,9 @@ struct RecipeDetailView: View {
                     }
                 }
                 .onAppear {
+                    viewModel.showAlertClosure = { alert in
+                        self.activeAlert = alert // Bind directly
+                    }
                     viewModel.getRecipeDetails(recipeId: recipeId)
                 }
                 .navigationBarTitle("Recipe Details", displayMode: .inline)
@@ -250,20 +252,22 @@ struct RecipeDetailView: View {
                         return Alert(
                             title: Text("Error"),
                             message: Text(errorMessage.message),
-                            dismissButton: .default(Text("OK"))
+                            dismissButton: .default(Text("OK")) {
+                                self.activeAlert = nil
+                            }
                         )
-                        
                     case .ingredient(let message):
                         return Alert(
                             title: Text("Ingredient Added"),
                             message: Text(message),
-                            dismissButton: .default(Text("OK"))
+                            dismissButton: .default(Text("OK")) {
+                                self.activeAlert = nil
+                            }
                         )
-                        
                     case .accumulation(let ingredient):
                         return Alert(
                             title: Text("Ingredient Already Exists"),
-                            message: Text("Do you want to add \(ingredient.quantity) \(ingredient.unit) of \(ingredient.name) to your existing amount?"),
+                            message: Text("Do you want to add \(String(format: "%.1f", ingredient.quantity)) \(ingredient.unit) of \(ingredient.name) to the existing amount?"),
                             primaryButton: .default(Text("Accumulate"), action: {
                                 handleAccumulationChoice(for: ingredient, accumulate: true)
                             }),
@@ -271,15 +275,17 @@ struct RecipeDetailView: View {
                                 handleAccumulationChoice(for: ingredient, accumulate: false)
                             })
                         )
-                        
                     case .regular(let title, let message):
                         return Alert(
                             title: Text(title),
                             message: Text(message),
-                            dismissButton: .default(Text("OK"))
+                            dismissButton: .default(Text("OK")) {
+                                self.activeAlert = nil
+                            }
                         )
                     }
                 }
+
                 if isLoading {
                     ProgressView()
                         .scaleEffect(1.5)
@@ -325,6 +331,10 @@ struct RecipeDetailView: View {
         } else {
             activeAlert = .error(ErrorMessage(message: "Please insert a correct number."))
         }
+    }
+    
+    private func addIngredientToCart(_ ingredient: ParsedIngredient) -> Bool {
+        return viewModel.addIngredientToCart(ingredient, foodItemStore: foodItemStore)
     }
     
     private func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
@@ -424,4 +434,3 @@ struct TagView: View {
             .cornerRadius(8)
     }
 }
-

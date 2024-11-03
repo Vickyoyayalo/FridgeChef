@@ -123,7 +123,17 @@ enum ActiveAlert: Identifiable {
     case accumulation(ParsedIngredient)
     case regular(title: String, message: String)
 
-    var id: UUID {
-        return UUID()
+    var id: String {
+        switch self {
+        case .error(let errorMessage):
+            return errorMessage.id.uuidString
+        case .ingredient(let message):
+            return message
+        case .accumulation(let ingredient):
+            return ingredient.name
+        case .regular(let title, let message):
+            return title + message
+        }
     }
 }
+

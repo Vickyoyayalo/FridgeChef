@@ -241,7 +241,9 @@ struct RecipeDetailView: View {
                 }
                 .onAppear {
                     viewModel.showAlertClosure = { alert in
-                        self.activeAlert = alert // Bind directly
+                        DispatchQueue.main.async {
+                            self.activeAlert = alert
+                        }
                     }
                     viewModel.getRecipeDetails(recipeId: recipeId)
                 }

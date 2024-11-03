@@ -203,35 +203,31 @@ class RecipeSearchViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.showAlertClosure?(.error(ErrorMessage(message: "An error occurred.")))
             }
-
             return false
         }
         
-        let newFoodItem = FoodItem(
-            id: UUID().uuidString,
-            name: ingredient.name,
-            quantity: ingredient.quantity,
-            unit: ingredient.unit,
-            status: .toBuy,
-            daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
-            expirationDate: ingredient.expirationDate,
-            imageURL: nil
-        )
-        
-        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == newFoodItem.name.lowercased() }) {
-            // 食材已存在，触发累加警告
-            DispatchQueue.main.async {
-                self.showAlertClosure?(.accumulation(ingredient))
-            }
+        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) {
+            
+            handleAccumulationChoice(for: ingredient, accumulate: false, foodItemStore: foodItemStore)
             return false
         } else {
+            let newFoodItem = FoodItem(
+                id: UUID().uuidString,
+                name: ingredient.name,
+                quantity: ingredient.quantity,
+                unit: ingredient.unit,
+                status: .toBuy,
+                daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
+                expirationDate: ingredient.expirationDate,
+                imageURL: nil
+            )
             
             DispatchQueue.main.async {
                 foodItemStore.foodItems.append(newFoodItem)
                 self.showAlertClosure?(.ingredient("\(ingredient.name) added to your Grocery List 🛒"))
             }
             
-            firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: newFoodItem, image: nil as UIImage?) { result in
+            firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: newFoodItem, image: nil) { result in
                 switch result {
                 case .success:
                     print("Food item successfully added to Firestore.")
@@ -239,7 +235,6 @@ class RecipeSearchViewModel: ObservableObject {
                     print("Failed to add food item to Firestore: \(error.localizedDescription)")
                 }
             }
-            
             return true
         }
     }
@@ -253,33 +248,21 @@ class RecipeSearchViewModel: ObservableObject {
         if accumulate {
             let newQuantity = existingItem.quantity + ingredient.quantity
             DispatchQueue.main.async {
-                // Update local store
                 foodItemStore.foodItems[existingIndex].quantity = newQuantity
                 self.showAlertClosure?(.ingredient("Updated quantity of \(ingredient.name) to \(newQuantity) \(ingredient.unit)."))
             }
             
-            // Update Firestore
             if let userId = Auth.auth().currentUser?.uid {
                 let updatedFields: [String: Any] = ["quantity": newQuantity]
                 firestoreService.updateFoodItem(forUser: userId, foodItemId: existingItem.id, updatedFields: updatedFields) { result in
-                    switch result {
-                    case .success:
-                        print("Food item quantity updated in Firestore.")
-                    case .failure(let error):
+                    if case .failure(let error) = result {
                         print("Failed to update food item in Firestore: \(error.localizedDescription)")
-                        // Optionally revert local update if Firestore update fails
-                        DispatchQueue.main.async {
-                            foodItemStore.foodItems[existingIndex].quantity = existingItem.quantity // revert change locally
-                        }
                     }
                 }
             }
         } else {
             DispatchQueue.main.async {
-                self.showAlertClosure?(.regular(
-                    title: "No Changes Made",
-                    message: "\(ingredient.name) remains at \(existingItem.quantity) \(ingredient.unit)."
-                ))
+                self.showAlertClosure?(.accumulation(ingredient))
             }
         }
     }

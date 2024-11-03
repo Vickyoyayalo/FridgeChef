@@ -179,7 +179,7 @@ class FirestoreService {
     }
     
     func updateFoodItem(forUser userId: String, foodItemId: String, updatedFields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
-        print("更新 foodItemId: \(foodItemId), 更新內容: \(updatedFields)") 
+        print("Update foodItemId: \(foodItemId), updatedContents: \(updatedFields)")
 
         db.collection("users").document(userId).collection("foodItems").document(foodItemId)
             .updateData(updatedFields) { error in

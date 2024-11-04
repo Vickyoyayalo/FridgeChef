@@ -118,7 +118,7 @@ class ChatViewModel: ObservableObject {
             return
         }
 
-        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) {
+        if foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) != nil {
            
             DispatchQueue.main.async {
                 self.pendingIngredientToAdd = ingredient
@@ -268,7 +268,6 @@ class ChatViewModel: ObservableObject {
         }
     }
 
-    
     func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
         guard let currentUser = Auth.auth().currentUser else {
             DispatchQueue.main.async {
@@ -502,7 +501,6 @@ class ChatViewModel: ObservableObject {
                 return
             }
             
-            // Perform the request
             let handler = VNImageRequestHandler(ciImage: ciImage, options: [:])
             DispatchQueue.global(qos: .userInitiated).async {
                 do {
@@ -729,7 +727,7 @@ class ChatViewModel: ObservableObject {
     }
     
     func removeIngredientsSection(from message: String) -> String {
-        var lines = message.components(separatedBy: "\n")
+        let lines = message.components(separatedBy: "\n")
         var newLines: [String] = []
         var isIngredientSection = false
         

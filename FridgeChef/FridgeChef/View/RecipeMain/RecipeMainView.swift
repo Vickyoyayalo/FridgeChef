@@ -3,22 +3,22 @@
 //  FridgeChef
 //
 //  Created by Vickyhereiam on 2024/10/06.
-
-
+//
 
 import SwiftUI
 
 struct RecipeMainView: View {
-    @ObservedObject var viewModel: RecipeSearchViewModel
+    @StateObject var viewModel: RecipeSearchViewModel = RecipeSearchViewModel()
     @ObservedObject var foodItemStore: FoodItemStore
     @State private var showingAddGroceryForm = false
     @State private var searchQuery: String = ""
     @State private var isShowingDefaultPage = true
     @State private var selectedRecipe: Recipe? = nil
+    
     var showEditAndAddButtons: Bool = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
@@ -39,15 +39,14 @@ struct RecipeMainView: View {
                             Spacer()
                         } else if !viewModel.recipes.isEmpty {
                             List(viewModel.recipes, id: \.id) { recipe in
-                                RecipeRowView(
-                                    recipe: recipe,
-                                    toggleFavorite: {
-                                        viewModel.toggleFavorite(for: recipe.id)
-                                    },
-                                    viewModel: viewModel
-                                )
-                                .onTapGesture {
-                                    selectedRecipe = recipe
+                                NavigationLink(value: recipe) {
+                                    RecipeRowView(
+                                        recipe: recipe,
+                                        toggleFavorite: {
+                                            viewModel.toggleFavorite(for: recipe.id)
+                                        },
+                                        viewModel: viewModel
+                                    )
                                 }
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
@@ -89,21 +88,12 @@ struct RecipeMainView: View {
                 .sheet(isPresented: $showingAddGroceryForm) {
                     AddGroceryForm(viewModel: AddGroceryFormViewModel())
                 }
-                
-                if let recipe = selectedRecipe {
-                    NavigationLink(
-                        destination: RecipeDetailView(
-                            recipeId: recipe.id,
-                            viewModel: viewModel,
-                            foodItemStore: foodItemStore
-                        ),
-                        isActive: Binding(
-                            get: { selectedRecipe != nil },
-                            set: { if !$0 { selectedRecipe = nil } }
-                        )
-                    ) {
-                        EmptyView()
-                    }
+                .navigationDestination(for: Recipe.self) { recipe in
+                    RecipeDetailView(
+                        recipeId: recipe.id,
+                        viewModel: viewModel,
+                        foodItemStore: foodItemStore
+                    )
                 }
             }
             .navigationBarItems(

@@ -4,6 +4,7 @@
 //
 //  Created by Vickyhereiam on 2024/9/25.
 //
+
 import SwiftUI
 
 struct FoodCategory: Identifiable, Equatable {
@@ -148,13 +149,15 @@ struct WhatToEatGameView: View {
                         RecipeButton(action: {
                             showingRecipeSheet = true
                         })
-                        .sheet(isPresented: $showingRecipeSheet) {
+                        .sheet(isPresented: $showingRecipeSheet, onDismiss: {
+                            showingRecipeSheet = false
+                        }) {
                             RecipeMainView(
                                 viewModel: RecipeSearchViewModel(),
-                                foodItemStore: FoodItemStore())
+                                foodItemStore: FoodItemStore()
+                            )
                         }
                     }
-                   
                 }
             }
             .padding(.bottom, 30)
@@ -203,7 +206,6 @@ struct RecipeButton: View {
             }
         }
     }
-
 
 struct WheelView: View {
     @Binding var degree: Double

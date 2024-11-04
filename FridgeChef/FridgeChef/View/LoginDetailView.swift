@@ -63,7 +63,7 @@ struct LoginDetailView: View {
                         }
                         Button(action: {
                             navigateToForgotPassword = true
-                        }) {
+                        }, label: {
                             Text("Forget Password?")
                                 .foregroundColor(
                                     Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
@@ -73,7 +73,7 @@ struct LoginDetailView: View {
                                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(
                                     Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
                                 .shadow(radius: 5)
-                        }
+                        })
                         .sheet(isPresented: $navigateToForgotPassword) {
                             ForgotPasswordView()
                         }
@@ -82,7 +82,6 @@ struct LoginDetailView: View {
                             .font(.custom("ArialRoundedMTBold", size: 15))
                             .foregroundColor(.gray)
                         
-                        // Apple Sign In
                         SignInWithAppleButton(.signIn) { request in
                             let nonce = randomNonceString()
                             self.nonce = nonce
@@ -97,7 +96,7 @@ struct LoginDetailView: View {
                             }
                         }
                         .frame(height: 45)
-                        .clipShape(Capsule()) // 修改這一行
+                        .clipShape(Capsule())
                         .overlay {
                             ZStack {
                                 Capsule()

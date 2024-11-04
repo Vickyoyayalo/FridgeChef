@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct DefaultRecipeView: View {
-    @ObservedObject var recipeManager: RecipeManager
-    @State var selectedRecipe: DefaultRecipe? = nil
     @State private var moveUp = false
     
     var body: some View {
@@ -67,12 +65,6 @@ struct DefaultRecipeView: View {
     }
 //}
 
-struct RecipeView_Previews: PreviewProvider {
-    static var previews: some View {
-        DefaultRecipeView(recipeManager: RecipeManager())
-            .preferredColorScheme(.light)
-    }
-}
 //
 //import SwiftUI
 //

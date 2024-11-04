@@ -16,7 +16,7 @@ class NotificationTests: XCTestCase {
         let item = FoodItem(id: "1", name: "Milk", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 2, expirationDate: Date(), imageURL: nil)
         
         // Act: 調用 scheduleExpirationNotification 通過 FridgeView 的實例
-        let fridgeView = FridgeView()
+        let fridgeView = FridgeView(foodItemStore: FoodItemStore())
         fridgeView.scheduleExpirationNotification(for: item, notificationCenter: mockNotificationCenter)
         
         // Assert: 確認通知被調用
@@ -43,7 +43,7 @@ class NotificationTests: XCTestCase {
         let item = FoodItem(id: "1", name: "Expired Milk", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 0, expirationDate: Date(), imageURL: nil)
         
         // Act: 調用 scheduleExpirationNotification，這次不應該調用 add()
-        let fridgeView = FridgeView() 
+        let fridgeView = FridgeView(foodItemStore: FoodItemStore())
         fridgeView.scheduleExpirationNotification(for: item, notificationCenter: mockNotificationCenter)
         
         // Assert: 檢查是否沒有調用 add()

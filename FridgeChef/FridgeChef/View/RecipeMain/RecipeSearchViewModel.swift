@@ -206,9 +206,11 @@ class RecipeSearchViewModel: ObservableObject {
             return false
         }
         
-        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) {
-            
-            handleAccumulationChoice(for: ingredient, accumulate: false, foodItemStore: foodItemStore)
+        if foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) != nil {
+          
+            DispatchQueue.main.async {
+                self.showAlertClosure?(.accumulation(ingredient))
+            }
             return false
         } else {
             let newFoodItem = FoodItem(
@@ -246,6 +248,7 @@ class RecipeSearchViewModel: ObservableObject {
         
         let existingItem = foodItemStore.foodItems[existingIndex]
         if accumulate {
+          
             let newQuantity = existingItem.quantity + ingredient.quantity
             DispatchQueue.main.async {
                 foodItemStore.foodItems[existingIndex].quantity = newQuantity
@@ -261,8 +264,12 @@ class RecipeSearchViewModel: ObservableObject {
                 }
             }
         } else {
+           
             DispatchQueue.main.async {
-                self.showAlertClosure?(.accumulation(ingredient))
+                self.showAlertClosure?(.regular(
+                    title: "No Changes Made",
+                    message: "\(ingredient.name) remains at \(existingItem.quantity) \(ingredient.unit)."
+                ))
             }
         }
     }

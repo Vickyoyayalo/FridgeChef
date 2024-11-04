@@ -30,7 +30,6 @@ enum Status: String, Codable {
     case freezer = "Freezer"
 }
 
-
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
   

@@ -192,18 +192,16 @@ struct LogoutSheetView: View {
         }
     }
     
-    // 先標記帳戶為已刪除，然後再刪除 Firebase Authentication 帳戶
     private func deleteAccount() {
         if let user = Auth.auth().currentUser {
             let uid = user.uid
             let db = Firestore.firestore()
             
-            // 標記帳號已删除
             db.collection("users").document(uid).updateData(["isDeleted": true]) { error in
                 if let error = error {
                     print("Error marking account as deleted: \(error.localizedDescription)")
                 } else {
-                    // 2. 完成 Firestore 操作后删除 Firebase Authentication 帳戶
+                   
                     user.delete { error in
                         if let error = error {
                             print("Failed to delete account: \(error.localizedDescription)")

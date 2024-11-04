@@ -184,11 +184,12 @@ struct ChatView: View {
                             }
                             .padding(.bottom, 8)
                         }
-                        
                     }
                     .onAppear {
                         viewModel.showAlertClosure = { alert in
-                            viewModel.activeAlert = alert
+                            DispatchQueue.main.async {
+                                viewModel.activeAlert = alert
+                            }
                         }
                         viewModel.onAppear()
                     }
@@ -219,15 +220,16 @@ struct ChatView: View {
                                 viewModel.activeAlert = nil
                             }
                         )
+                        
                     case .accumulation(let ingredient):
                         return Alert(
                             title: Text("Ingredient Already Exists"),
                             message: Text("Do you want to add \(String(format: "%.1f", ingredient.quantity)) \(ingredient.unit) of \(ingredient.name) to the existing amount?"),
                             primaryButton: .default(Text("Accumulate"), action: {
-                                handleAccumulationChoice(for: ingredient, accumulate: true)
+                                viewModel.handleAccumulationChoice(for: ingredient, accumulate: true, foodItemStore: foodItemStore)
                             }),
                             secondaryButton: .cancel(Text("Keep Existing"), action: {
-                                handleAccumulationChoice(for: ingredient, accumulate: false)
+                                viewModel.handleAccumulationChoice(for: ingredient, accumulate: false, foodItemStore: foodItemStore)
                             })
                         )
                         

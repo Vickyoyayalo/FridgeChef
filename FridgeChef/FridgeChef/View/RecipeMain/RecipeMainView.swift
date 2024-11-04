@@ -30,7 +30,7 @@ struct RecipeMainView: View {
                 
                 VStack {
                     if isShowingDefaultPage {
-                        DefaultRecipeView(recipeManager: RecipeManager())
+                        DefaultRecipeView()
                     } else {
                         if viewModel.isLoading {
                             Spacer()

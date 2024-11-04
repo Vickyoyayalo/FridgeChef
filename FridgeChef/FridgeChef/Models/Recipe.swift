@@ -136,4 +136,3 @@ enum ActiveAlert: Identifiable {
         }
     }
 }
-

@@ -258,6 +258,7 @@ struct RecipeDetailView: View {
                                 self.activeAlert = nil
                             }
                         )
+                        
                     case .ingredient(let message):
                         return Alert(
                             title: Text("Ingredient Added"),
@@ -266,15 +267,16 @@ struct RecipeDetailView: View {
                                 self.activeAlert = nil
                             }
                         )
+                        
                     case .accumulation(let ingredient):
                         return Alert(
                             title: Text("Ingredient Already Exists"),
                             message: Text("Do you want to add \(String(format: "%.1f", ingredient.quantity)) \(ingredient.unit) of \(ingredient.name) to the existing amount?"),
                             primaryButton: .default(Text("Accumulate"), action: {
-                                handleAccumulationChoice(for: ingredient, accumulate: true)
+                                viewModel.handleAccumulationChoice(for: ingredient, accumulate: true, foodItemStore: foodItemStore)
                             }),
                             secondaryButton: .cancel(Text("Keep Existing"), action: {
-                                handleAccumulationChoice(for: ingredient, accumulate: false)
+                                viewModel.handleAccumulationChoice(for: ingredient, accumulate: false, foodItemStore: foodItemStore)
                             })
                         )
                     case .regular(let title, let message):
@@ -287,7 +289,7 @@ struct RecipeDetailView: View {
                         )
                     }
                 }
-
+                
                 if isLoading {
                     ProgressView()
                         .scaleEffect(1.5)
@@ -309,23 +311,6 @@ struct RecipeDetailView: View {
             isLoading = false
         }
     }
-    
-    private func handleAccumulationChoice(for ingredient: ParsedIngredient, accumulate: Bool) {
-        if let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) {
-            if accumulate {
-                let newQuantity = foodItemStore.foodItems[existingIndex].quantity + ingredient.quantity
-                foodItemStore.foodItems[existingIndex].quantity = newQuantity
-                activeAlert = .ingredient("Updated quantity of \(ingredient.name) to \(newQuantity) \(ingredient.unit).")
-            } else {
-                activeAlert = .regular(
-                    title: "No Changes Made",
-                    message: "\(ingredient.name) remains at \(foodItemStore.foodItems[existingIndex].quantity) \(ingredient.unit)."
-                )
-            }
-        }
-    }
-    
-    // MARK: - 輔助函數
     
     private func updateServings() {
         if let newServings = Int(inputServings), newServings > 0 {
@@ -392,47 +377,5 @@ struct RecipeDetailView: View {
                 message: "Already in your Grocery List: \(alreadyInCart.joined(separator: ", "))"
             )
         }
-    }
-}
-struct CategoryItemView: View {
-    let title: String
-    let items: [String]
-    let primaryColor: Color
-    
-    var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("•")
-                .font(.custom("ArialRoundedMTBold", size: 16))
-                .foregroundColor(primaryColor)
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text("\(title):")
-                    .font(.custom("ArialRoundedMTBold", size: 16))
-                    .foregroundColor(.gray)
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(items, id: \.self) { item in
-                            TagView(text: item)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct TagView: View {
-    let text: String
-    
-    var body: some View {
-        Text(text)
-            .font(.custom("ArialRoundedMTBold", size: 15))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange).opacity(0.6))
-            .foregroundColor(.white)
-            .fontWeight(.medium)
-            .cornerRadius(8)
     }
 }

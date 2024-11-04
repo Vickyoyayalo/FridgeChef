@@ -87,6 +87,7 @@ Explore all our cute function.
 -  **Trained and integrated OpenAPI responses** to enhance the app’s interactivity by fetching real-time data from external sources, improving recipe suggestions and user experience.
 
 ![videogit](https://github.com/user-attachments/assets/464be755-df5d-4378-bc7c-0c5651836c09)
+![17307254846371730725484637](https://github.com/user-attachments/assets/16299914-f3e6-4c61-929c-5a0be3774cee)
 
 ## Future Improvements
 
@@ -96,7 +97,7 @@ Explore all our cute function.
 
 
 ## Author
-
+￼
 If you'd like to learn more about this project or discuss potential improvements, feel free to reach out:
 
 - **Name**: Wei-Chi Liu

@@ -4,49 +4,121 @@
 //
 //  Created by Vickyhereiam on 2024/10/23.
 //
+
 import XCTest
 import UserNotifications
 @testable import FridgeChef
 
 class NotificationTests: XCTestCase {
-
+    
     func testScheduleExpirationNotification() {
-        // Arrange: 準備 FoodItem 和 Mock Notification Center
+        // Arrange
         let mockNotificationCenter = MockNotificationCenter()
         let item = FoodItem(id: "1", name: "Milk", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 2, expirationDate: Date(), imageURL: nil)
         
-        // Act: 調用 scheduleExpirationNotification 通過 FridgeView 的實例
-        let fridgeView = FridgeView()
+        // Act
+        let fridgeView = FridgeView(foodItemStore: FoodItemStore())
         fridgeView.scheduleExpirationNotification(for: item, notificationCenter: mockNotificationCenter)
         
-        // Assert: 確認通知被調用
+        // Assert
         XCTAssertEqual(mockNotificationCenter.addCallCount, 1, "add() should be called once")
         XCTAssertNotNil(mockNotificationCenter.lastAddedRequest, "The notification request should be created")
+        XCTAssertEqual(mockNotificationCenter.lastAddedRequest?.content.title, "Expiration Alert‼️")
+        XCTAssertEqual(mockNotificationCenter.lastAddedRequest?.content.body, "Milk is about to expire in 2 days!")
         
-        // Assert: 檢查通知內容
+        if let trigger = mockNotificationCenter.lastAddedRequest?.trigger as? UNTimeIntervalNotificationTrigger {
+            XCTAssertEqual(trigger.timeInterval, 2 * 24 * 60 * 60, accuracy: 1.0)
+        } else {
+            XCTFail("Trigger is not of expected type")
+        }
+    }
+    
+    func testExpiredItemNotification() {
+        // Arrange
+        let mockNotificationCenter = MockNotificationCenter()
+        let expiredItem = FoodItem(id: "2", name: "Expired Cheese", quantity: 1, unit: "片", status: .fridge, daysRemaining: -1, expirationDate: Date())
+        
+        // Act
+        let fridgeView = FridgeView(foodItemStore: FoodItemStore())
+        fridgeView.scheduleExpirationNotification(for: expiredItem, notificationCenter: mockNotificationCenter)
+        
+        // Assert
+        XCTAssertEqual(mockNotificationCenter.addCallCount, 1, "add() should be called once for an expired item")
+        XCTAssertEqual(mockNotificationCenter.lastAddedRequest?.content.title, "Expired Alert‼️")
+        XCTAssertEqual(mockNotificationCenter.lastAddedRequest?.content.body, "Expired Cheese expired 1 day ago!")
+        
+        if let trigger = mockNotificationCenter.lastAddedRequest?.trigger as? UNTimeIntervalNotificationTrigger {
+            XCTAssertEqual(trigger.timeInterval, 1, "The trigger time interval should be immediate for expired items")
+        } else {
+            XCTFail("Trigger is not of expected type")
+        }
+    }
+    
+    func testScheduleNotificationsForExpiringAndExpiredItems() {
+        // Arrange
+        let mockNotificationCenter = MockNotificationCenter()
+        let expiringItem = FoodItem(id: "1", name: "Yogurt", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 2, expirationDate: Date())
+        let expiredItem = FoodItem(id: "2", name: "Cheese", quantity: 1, unit: "片", status: .fridge, daysRemaining: -1, expirationDate: Date())
+        
+        // Act
+        let fridgeView = FridgeView(foodItemStore: FoodItemStore())
+        fridgeView.scheduleExpirationNotification(for: expiredItem, notificationCenter: mockNotificationCenter)
+        fridgeView.scheduleExpirationNotification(for: expiringItem, notificationCenter: mockNotificationCenter)
+        
+        // Assert
+        XCTAssertEqual(mockNotificationCenter.addCallCount, 2, "Two notifications should be scheduled (for expiring and expired items)")
+        
+        XCTAssertEqual(mockNotificationCenter.requests[0].content.body, "Cheese expired 1 day ago!")
+        XCTAssertEqual(mockNotificationCenter.requests[1].content.body, "Yogurt is about to expire in 2 days!")
+    }
+    
+    func testImmediateNotificationForExpiredItem() {
+        let mockNotificationCenter = MockNotificationCenter()
+        let expiredItem = FoodItem(id: "1", name: "Expired Milk", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: -1, expirationDate: Date())
+        
+        let fridgeView = FridgeView(foodItemStore: FoodItemStore())
+        fridgeView.scheduleExpirationNotification(for: expiredItem, notificationCenter: mockNotificationCenter)
+        
+        XCTAssertEqual(mockNotificationCenter.addCallCount, 1, "Notification should be added immediately for expired item")
+        XCTAssertEqual(mockNotificationCenter.lastAddedRequest?.content.body, "Expired Milk expired 1 day ago!")
+    }
+    
+    func testScheduledNotificationForExpiringItem() {
+        let mockNotificationCenter = MockNotificationCenter()
+        let expiringItem = FoodItem(id: "2", name: "Yogurt", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 2, expirationDate: Date())
+        
+        let fridgeView = FridgeView(foodItemStore: FoodItemStore())
+        fridgeView.scheduleExpirationNotification(for: expiringItem, notificationCenter: mockNotificationCenter)
+        
+        XCTAssertEqual(mockNotificationCenter.addCallCount, 1, "Notification should be scheduled for expiring item")
+        XCTAssertEqual(mockNotificationCenter.lastAddedRequest?.content.body, "Yogurt is about to expire in 2 days!")
+    }
+}
+
+class GroceryNotificationTests: XCTestCase {
+    
+    func testScheduleToBuyNotification() {
+        // Arrange
+        let mockNotificationCenter = MockNotificationCenter()
+        let item = FoodItem(id: "1", name: "Apples", quantity: 5, unit: "個", status: .toBuy, daysRemaining: 3, expirationDate: Date(), imageURL: nil)
+        
+        // Act
+        let groceryListView = GroceryListView(foodItemStore: FoodItemStore())
+        groceryListView.scheduleToBuyNotification(for: item, notificationCenter: mockNotificationCenter)
+        
+        // Assert
+        XCTAssertEqual(mockNotificationCenter.addCallCount, 1, "add() should be called once for to-buy notification")
+        
         let request = mockNotificationCenter.lastAddedRequest
-        XCTAssertEqual(request?.content.title, "Expiration Alert‼️")
-        XCTAssertEqual(request?.content.body, "Milk is about to expire in 2 days!")
+        XCTAssertEqual(request?.content.title, "Grocery Reminder")
+        XCTAssertEqual(request?.content.body, "Don't forget to buy Apples!")
         XCTAssertEqual(request?.identifier, "1")
         
-        // Assert: 檢查通知的時間間隔
         if let trigger = request?.trigger as? UNTimeIntervalNotificationTrigger {
-            XCTAssertEqual(trigger.timeInterval, 2 * 24 * 60 * 60, accuracy: 1.0)
+            XCTAssertEqual(trigger.timeInterval, 3600, accuracy: 1.0, "The trigger time interval should be 1 hour")
         } else {
             XCTFail("Trigger is nil or not of expected type")
         }
     }
-    
-    func testScheduleNotificationWithInvalidTimeInterval() {
-        // Arrange: 準備一個過期的食材
-        let mockNotificationCenter = MockNotificationCenter()
-        let item = FoodItem(id: "1", name: "Expired Milk", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 0, expirationDate: Date(), imageURL: nil)
-        
-        // Act: 調用 scheduleExpirationNotification，這次不應該調用 add()
-        let fridgeView = FridgeView() 
-        fridgeView.scheduleExpirationNotification(for: item, notificationCenter: mockNotificationCenter)
-        
-        // Assert: 檢查是否沒有調用 add()
-        XCTAssertEqual(mockNotificationCenter.addCallCount, 0, "add() should not be called for an expired item")
-    }
 }
+

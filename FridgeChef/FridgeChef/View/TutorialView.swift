@@ -4,11 +4,14 @@
 //
 //  Created by Vickyhereiam on 2024/10/8.
 //
+
 import SwiftUI
 
 struct TutorialView: View {
+    @ObservedObject var viewModel: RecipeSearchViewModel
+    @ObservedObject var foodItemStore: FoodItemStore
     @AppStorage("hasSeenTutorial") var hasSeenTutorial: Bool = false
-    @State private var navigateToLogin: Bool = false  // 用來控制跳轉
+    @State private var navigateToLogin: Bool = false
     
     let pageHeadings = [
         "TAKE CONTROL \nOF YOUR FRIDGE",
@@ -28,13 +31,9 @@ struct TutorialView: View {
         "Plan your meals, add ingredients to your cart, and use our built-in supermarket navigator to get what you need, fast!"
     ]
     
-    let pageImages = [ "tutor1", "tutor2", "tutor3", "tutor4","tutor5","tutor6"]
+    let pageImages = [ "tutor1", "tutor2", "tutor3", "tutor4", "tutor5", "tutor6"]
     
     @State private var currentPage = 0
-    
-    init() {
-        UIPageControl.appearance().currentPageIndicatorTintColor = .orange
-    }
     
     var body: some View {
         NavigationView {
@@ -50,8 +49,12 @@ struct TutorialView: View {
                 VStack {
                     TabView(selection: $currentPage) {
                         ForEach(pageHeadings.indices, id: \.self) { index in
-                            TutorialPage(image: pageImages[index], heading: pageHeadings[index], subHeading: pageSubHeadings[index])
-                                .tag(index)
+                            TutorialPage(
+                                image: pageImages[index],
+                                heading: pageHeadings[index],
+                                subHeading: pageSubHeadings[index]
+                            )
+                            .tag(index)
                         }
                     }
                     .tabViewStyle(.page(indexDisplayMode: .always))
@@ -63,14 +66,13 @@ struct TutorialView: View {
                             if currentPage < pageHeadings.count - 1 {
                                 currentPage += 1
                             } else {
-                                // 完成教程，進入LoginView
                                 hasSeenTutorial = true
-                                navigateToLogin = true  // 跳轉標記為 true
+                                navigateToLogin = true
                             }
                         }) {
                             Text(currentPage == pageHeadings.count - 1 ? "GET STARTED" : "NEXT")
                                 .font(.custom("Menlo-BoldItalic", size: 20))
-                                .foregroundStyle(.white)
+                                .foregroundColor(.white)
                                 .padding()
                                 .padding(.horizontal, 50)
                                 .background(Color.customColor(named: "NavigationBarTitle"))
@@ -84,23 +86,32 @@ struct TutorialView: View {
                             }) {
                                 Text("Skip")
                                     .font(.custom("Menlo-BoldItalic", size: 16))
-                                    .foregroundStyle(Color(.darkGray))
+                                    .foregroundColor(Color(.darkGray))
                             }
                         }
                     }
                     .padding(.bottom)
-             
-                    NavigationLink(destination: LoginView(), isActive: $navigateToLogin) {
+                    
+                    NavigationLink(
+                        destination: LoginView(viewModel: viewModel, foodItemStore: foodItemStore),
+                        isActive: $navigateToLogin
+                    ) {
                         EmptyView()
                     }
                 }
             }
         }
+        .onAppear {
+            UIPageControl.appearance().currentPageIndicatorTintColor = .orange
+        }
     }
 }
 
 #Preview {
-    TutorialView()
+    TutorialView(
+        viewModel: RecipeSearchViewModel(),
+        foodItemStore: FoodItemStore()
+    )
 }
 
 struct TutorialPage: View {

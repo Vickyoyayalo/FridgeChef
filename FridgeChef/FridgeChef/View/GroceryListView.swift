@@ -4,21 +4,36 @@
 //
 //  Created by Vickyhereiam on 2024/9/18.
 //
+
 import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 import UserNotifications
 
 struct GroceryListView: View {
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var foodItemStore: FoodItemStore
     @State private var searchText = ""
+    @State private var listenerHandle: ListenerRegistration?
     @State private var editingItem: FoodItem?
     @State private var showingProgressView = false
     @State private var progressMessage = ""
     @State private var showingMLIngredientView = false
     @State private var showingMapView = false
-    @StateObject private var locationManager = LocationManager()
+    @StateObject private var locationManager: LocationManager
     let firestoreService = FirestoreService()
+    
+    init(foodItemStore: FoodItemStore) {
+        self.foodItemStore = foodItemStore
+        
+        if let apiKey = APIKeyManager.shared.getAPIKey(forKey: "SupermarketAPI_Key") {
+            let placesFetcher = PlacesFetcher(apiKey: apiKey)
+            _locationManager = StateObject(wrappedValue: LocationManager(placesFetcher: placesFetcher))
+        } else {
+            print("SupermarketAPI_Key is missing.")
+            
+            _locationManager = StateObject(wrappedValue: LocationManager(placesFetcher: PlacesFetcher(apiKey: "")))
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -30,7 +45,7 @@ struct GroceryListView: View {
                 )
                 .opacity(0.4)
                 .ignoresSafeArea()
-               
+                
                 GeometryReader { geometry in
                     VStack {
                         if filteredFoodItems.isEmpty {
@@ -60,7 +75,8 @@ struct GroceryListView: View {
                         onSave: { updatedIngredient in
                             handleSave(updatedIngredient)
                         },
-                        editingFoodItem: ingredient
+                        editingFoodItem: ingredient,
+                        foodItemStore: FoodItemStore()
                     )
                 }
                 FloatingMapButton(showingMapView: $showingMapView)
@@ -75,6 +91,10 @@ struct GroceryListView: View {
             .onAppear {
                 listenToFoodItems()
             }
+            .onDisappear {
+                listenerHandle?.remove()
+                listenerHandle = nil
+            }
         }
     }
     
@@ -83,8 +103,8 @@ struct GroceryListView: View {
             print("No user is currently logged in.")
             return
         }
-
-        firestoreService.listenToFoodItems(forUser: currentUser.uid) { result in
+        
+        listenerHandle = firestoreService.listenToFoodItems(forUser: currentUser.uid) { result in
             switch result {
             case .success(let items):
                 DispatchQueue.main.async {
@@ -102,17 +122,16 @@ struct GroceryListView: View {
         }
     }
     
-    func scheduleToBuyNotification(for item: FoodItem) {
+    func scheduleToBuyNotification(for item: FoodItem, notificationCenter: NotificationCenterProtocol = UNUserNotificationCenter.current()) {
         let content = UNMutableNotificationContent()
         content.title = "Grocery Reminder"
         content.body = "Don't forget to buy \(item.name)!"
         content.sound = UNNotificationSound.default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3600, repeats: false)
-        
         let request = UNNotificationRequest(identifier: item.id, content: content, trigger: trigger)
         
-        UNUserNotificationCenter.current().add(request) { error in
+        notificationCenter.add(request) { error in
             if let error = error {
                 print("Error scheduling notification: \(error.localizedDescription)")
             } else {
@@ -128,11 +147,11 @@ struct GroceryListView: View {
             }
         print("GroceryListView - Filtered items count: \(filtered.count)")
         for item in filtered {
-            print(" - \(item.name): \(item.quantity)") // 調試輸出
+            print(" - \(item.name): \(item.quantity)")
         }
         return filtered
     }
-
+    
     var addButton: some View {
         Button(action: {
             // Present MLIngredientView without an editing item
@@ -146,21 +165,19 @@ struct GroceryListView: View {
             MLIngredientView(
                 onSave: { newIngredient in
                     handleSave(newIngredient)
-                }
+                }, foodItemStore: FoodItemStore()
             )
         }
     }
-
+    
     func deleteItems(at offsets: IndexSet) {
-        guard let currentUser = Auth.auth().currentUser else {
-            print("No user is currently logged in.")
-            return
-        }
-
         let itemsToDelete = offsets.map { filteredFoodItems[$0] }
-
         for item in itemsToDelete {
-   
+            foodItemStore.removeFoodItem(withId: item.id)
+            guard let currentUser = Auth.auth().currentUser else {
+                print("No user is currently logged in.")
+                return
+            }
             firestoreService.deleteFoodItem(forUser: currentUser.uid, foodItemId: item.id) { result in
                 switch result {
                 case .success():
@@ -169,13 +186,13 @@ struct GroceryListView: View {
                     print("Failed to delete food item from Firebase: \(error.localizedDescription)")
                 }
             }
-
+            
             if let indexInFoodItems = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
                 foodItemStore.foodItems.remove(at: indexInFoodItems)
             }
         }
     }
-
+    
     func handleSave(_ ingredient: Ingredient) {
         guard let currentUser = Auth.auth().currentUser else {
             print("No user is currently logged in.")
@@ -194,7 +211,7 @@ struct GroceryListView: View {
         )
         
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == ingredient.id }) {
-
+            
             foodItemStore.foodItems[index] = foodItem
             
             var updatedFields: [String: Any] = [
@@ -212,23 +229,23 @@ struct GroceryListView: View {
                     switch result {
                     case .success(let url):
                         updatedFields["imageURL"] = url
-                      
+                        
                         firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
-                         
+                            
                         }
                     case .failure(let error):
                         print("Failed to upload image: \(error.localizedDescription)")
                     }
                 }
             } else {
-              
+                
                 firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
-           
+                    
                 }
             }
             
         } else {
-           
+            
             foodItemStore.foodItems.append(foodItem)
             
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: foodItem, image: ingredient.image) { result in
@@ -242,7 +259,7 @@ struct GroceryListView: View {
         }
         
         editingItem = nil
-       
+        
         DispatchQueue.main.async {
             self.foodItemStore.objectWillChange.send()
         }
@@ -253,15 +270,15 @@ struct GroceryListView: View {
             showingProgressView = false
         }
     }
-
+    
     func moveToFridge(item: FoodItem) {
         moveToStorage(item: item, storageMethod: "Fridge")
     }
-
+    
     func moveToFreezer(item: FoodItem) {
         moveToStorage(item: item, storageMethod: "Freezer")
     }
-
+    
     func moveToStorage(item: FoodItem, storageMethod: String) {
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
             // Update status and expiration date
@@ -269,18 +286,18 @@ struct GroceryListView: View {
             let newExpirationDate = Calendar.current.date(byAdding: .day, value: storageMethod == "Fridge" ? 5 : 14, to: Date()) ?? Date()
             foodItemStore.foodItems[index].expirationDate = newExpirationDate
             foodItemStore.foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 0
-
+            
             guard let currentUser = Auth.auth().currentUser else {
                 print("No user is currently logged in.")
                 return
             }
-
+            
             let updatedFields: [String: Any] = [
                 "status": foodItemStore.foodItems[index].status.rawValue,
                 "expirationDate": Timestamp(date: newExpirationDate),
                 "daysRemaining": foodItemStore.foodItems[index].daysRemaining
             ]
-
+            
             firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: item.id, updatedFields: updatedFields) { result in
                 switch result {
                 case .success():
@@ -289,21 +306,21 @@ struct GroceryListView: View {
                     print("Failed to update food item in Firebase: \(error.localizedDescription)")
                 }
             }
-
+            
             DispatchQueue.main.async {
                 self.foodItemStore.objectWillChange.send()
             }
-
+            
             showingProgressView = true
             progressMessage = "Food moved to \(storageMethod)!"
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 showingProgressView = false
             }
-
+            
             print("Moved \(item.name) to \(storageMethod) Storage with status: \(foodItemStore.foodItems[index].status.rawValue)")
         }
     }
-
+    
     func convertToIngredient(item: FoodItem) -> Ingredient {
         // Fetch the image asynchronously if needed, but for now, you can set image to nil
         return Ingredient(
@@ -341,7 +358,7 @@ struct GroceryListContentView: View {
     @Binding var editingItem: FoodItem?
     var deleteItems: (IndexSet) -> Void
     var handleSave: (Ingredient) -> Void
-
+    
     var body: some View {
         List {
             ForEach(filteredFoodItems) { item in
@@ -381,7 +398,7 @@ struct GroceryListView_Previews: PreviewProvider {
         let store = FoodItemStore()
         store.foodItems = [sampleFoodItem]
         
-        return GroceryListView()
+        return GroceryListView(foodItemStore: FoodItemStore())
             .environmentObject(store)
     }
 }

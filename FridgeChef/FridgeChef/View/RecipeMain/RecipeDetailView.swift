@@ -3,15 +3,15 @@
 //  WhatToEat
 //
 //  Created by Vickyhereiam on 2024/9/27.
- 
+
 import SwiftUI
 import IQKeyboardManagerSwift
 import FirebaseAuth
 
 struct RecipeDetailView: View {
     let recipeId: Int
-    @EnvironmentObject var viewModel: RecipeSearchViewModel
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var viewModel: RecipeSearchViewModel
+    @ObservedObject var foodItemStore: FoodItemStore
     @State private var inputServings: String = ""
     @State private var animate = false
     @State private var ratingScore: Int = 5
@@ -29,7 +29,7 @@ struct RecipeDetailView: View {
     
     var body: some View {
         ZStack {
-       
+            
             LinearGradient(
                 gradient: Gradient(colors: [Color.yellow, Color.orange]),
                 startPoint: .top,
@@ -83,7 +83,7 @@ struct RecipeDetailView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     animate = false
                                 }
-                            }) {
+                            }, label: {
                                 Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
                                     .foregroundColor(recipe.isFavorite ? primaryColor : Color.gray)
                                     .padding(10)
@@ -93,7 +93,7 @@ struct RecipeDetailView: View {
                                     .scaleEffect(animate ? 1.5 : 1.0)
                                     .opacity(animate ? 0.5 : 1.0)
                                     .animation(.easeInOut(duration: 0.3), value: animate)
-                            }
+                            })
                             .padding(.top, 40)
                             .padding(.trailing, 25)
                         }
@@ -125,7 +125,7 @@ struct RecipeDetailView: View {
                                 
                                 Button(action: {
                                     updateServings()
-                                }) {
+                                }, label: {
                                     Text("Go")
                                         .bold()
                                         .foregroundColor(.white)
@@ -133,7 +133,7 @@ struct RecipeDetailView: View {
                                         .padding(5)
                                         .background(primaryColor)
                                         .cornerRadius(8)
-                                }
+                                })
                             }
                             .padding(.horizontal)
                         }
@@ -168,24 +168,28 @@ struct RecipeDetailView: View {
                             SectionView(title: "Ingredients") {
                                 VStack(alignment: .leading, spacing: 10) {
                                     ForEach(parsedIngredients, id: \.name) { ingredient in
-                                        IngredientRow(ingredient: ingredient) { selectedIngredient in
-                                          
-                                            addIngredientToShoppingList(selectedIngredient)
-                                        }
-                                        .environmentObject(foodItemStore)
+                                        
+                                        let isInCart = foodItemStore.foodItems.contains { $0.name.lowercased() == ingredient.name.lowercased() }
+                                        
+                                        IngredientRow(
+                                            viewModel: ChatViewModel(foodItemStore: FoodItemStore()), ingredient: ingredient,
+                                            addAction: { ingredient in
+                                                addIngredientToCart(ingredient)
+                                            },
+                                            isInCart: isInCart
+                                        )
                                     }
-                                   
                                     Button(action: {
                                         addAllIngredientsToCart(ingredients: parsedIngredients)
                                         isButtonDisabled = true
-                                    }) {
+                                    }, label: {
                                         Text("Add All Ingredients to Cart")
                                             .bold()
                                             .foregroundColor(.white)
                                             .padding()
                                             .background(primaryColor)
                                             .cornerRadius(10)
-                                    }
+                                    })
                                     .frame(maxWidth: .infinity)
                                     .opacity(isButtonDisabled ? 0.7 : 1.0)
                                     .disabled(isButtonDisabled)
@@ -236,6 +240,11 @@ struct RecipeDetailView: View {
                     }
                 }
                 .onAppear {
+                    viewModel.showAlertClosure = { alert in
+                        DispatchQueue.main.async {
+                            self.activeAlert = alert
+                        }
+                    }
                     viewModel.getRecipeDetails(recipeId: recipeId)
                 }
                 .navigationBarTitle("Recipe Details", displayMode: .inline)
@@ -245,18 +254,42 @@ struct RecipeDetailView: View {
                         return Alert(
                             title: Text("Error"),
                             message: Text(errorMessage.message),
-                            dismissButton: .default(Text("Sure")) {
-                                viewModel.errorMessage = nil
+                            dismissButton: .default(Text("OK")) {
+                                self.activeAlert = nil
                             }
                         )
+                        
                     case .ingredient(let message):
                         return Alert(
-                            title: Text("Added to your Grocery List!"),
+                            title: Text("Ingredient Added"),
                             message: Text(message),
-                            dismissButton: .default(Text("Sure"))
+                            dismissButton: .default(Text("OK")) {
+                                self.activeAlert = nil
+                            }
+                        )
+                        
+                    case .accumulation(let ingredient):
+                        return Alert(
+                            title: Text("Ingredient Already Exists"),
+                            message: Text("Do you want to add \(String(format: "%.1f", ingredient.quantity)) \(ingredient.unit) of \(ingredient.name) to the existing amount?"),
+                            primaryButton: .default(Text("Accumulate"), action: {
+                                viewModel.handleAccumulationChoice(for: ingredient, accumulate: true, foodItemStore: foodItemStore)
+                            }),
+                            secondaryButton: .cancel(Text("Keep Existing"), action: {
+                                viewModel.handleAccumulationChoice(for: ingredient, accumulate: false, foodItemStore: foodItemStore)
+                            })
+                        )
+                    case .regular(let title, let message):
+                        return Alert(
+                            title: Text(title),
+                            message: Text(message),
+                            dismissButton: .default(Text("OK")) {
+                                self.activeAlert = nil
+                            }
                         )
                     }
                 }
+                
                 if isLoading {
                     ProgressView()
                         .scaleEffect(1.5)
@@ -271,7 +304,7 @@ struct RecipeDetailView: View {
     
     private func toggleFavorite() {
         isLoading = true
-
+        
         viewModel.toggleFavorite(for: recipeId)
         
         DispatchQueue.main.async {
@@ -279,14 +312,16 @@ struct RecipeDetailView: View {
         }
     }
     
-    // MARK: - 輔助函數
-
     private func updateServings() {
         if let newServings = Int(inputServings), newServings > 0 {
             viewModel.adjustServings(newServings: newServings)
         } else {
             activeAlert = .error(ErrorMessage(message: "Please insert a correct number."))
         }
+    }
+    
+    private func addIngredientToCart(_ ingredient: ParsedIngredient) -> Bool {
+        return viewModel.addIngredientToCart(ingredient, foodItemStore: foodItemStore)
     }
     
     private func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
@@ -337,51 +372,10 @@ struct RecipeDetailView: View {
             activeAlert = .ingredient("Added \(addedToCart.joined(separator: ", ")) to your Grocery List!")
         }
         if !alreadyInCart.isEmpty {
-            activeAlert = .ingredient("Already in your Grocery List: \(alreadyInCart.joined(separator: ", "))")
+            activeAlert = .regular(
+                title: "Already in Grocery List",
+                message: "Already in your Grocery List: \(alreadyInCart.joined(separator: ", "))"
+            )
         }
     }
 }
-
-struct CategoryItemView: View {
-    let title: String
-    let items: [String]
-    let primaryColor: Color
-    
-    var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("•")
-                .font(.custom("ArialRoundedMTBold", size: 16))
-                .foregroundColor(primaryColor)
-            
-            VStack(alignment: .leading, spacing: 5) {
-                Text("\(title):")
-                    .font(.custom("ArialRoundedMTBold", size: 16))
-                    .foregroundColor(.gray)
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(items, id: \.self) { item in
-                            TagView(text: item)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct TagView: View {
-    let text: String
-    
-    var body: some View {
-        Text(text)
-            .font(.custom("ArialRoundedMTBold", size: 15))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange).opacity(0.6))
-            .foregroundColor(.white)
-            .fontWeight(.medium)
-            .cornerRadius(8)
-    }
-}
-

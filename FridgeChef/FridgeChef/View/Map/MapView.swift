@@ -1,59 +1,121 @@
 //
-//  MapView.swift
+//  MapViewWithUserLocation.swift
 //  FridgeChef
 //
-//  Created by Vickyhereiam on 2024/9/18.
+//  Created by Vickyhereiam on 2024/9/20.
 //
 
 import SwiftUI
 import MapKit
 
 struct MapView: View {
-    var location: String = ""
-    var interactionMode: MapInteractionModes = .all
+    @StateObject private var viewModel: MapViewModel
+    @Binding var isPresented: Bool
+    @FocusState private var isSearchFieldFocused: Bool
     
-    @State private var position: MapCameraPosition = .automatic
-    @State private var markerLocation = CLLocation()
+    init(locationManager: LocationManager, isPresented: Binding<Bool>) {
+        _viewModel = StateObject(wrappedValue: MapViewModel(locationManager: locationManager))
+        _isPresented = isPresented
+    }
     
     var body: some View {
-        
-        Map(position: $position, interactionModes: interactionMode) {
-            Marker("", coordinate: markerLocation.coordinate)
-                .tint(.red)
+        ZStack {
+            map
+                .overlay(
+                    (isSearchFieldFocused || !viewModel.searchText.isEmpty) && !viewModel.searchResults.isEmpty
+                    ? Color.black.opacity(0.4).edgesIgnoringSafeArea(.all)
+                    : nil
+                )
+            VStack {
+                searchField
+                if (isSearchFieldFocused || !viewModel.searchText.isEmpty) && !viewModel.searchResults.isEmpty {
+                    listResults
+                }
+                Spacer()
+                dismissButton
+            }
         }
-        .task {
-            convertAddress(location: location)
+        .alert(isPresented: $viewModel.showingNavigationAlert) {
+            Alert(
+                title: Text("Go to ➡️ \(viewModel.selectedSupermarket?.name ?? "the selected location")？"),
+                message: Text("📍Direction： \(viewModel.selectedSupermarket?.address ?? "")"),
+                primaryButton: .default(Text("Let's GO 🛒"), action: {
+                    viewModel.performNavigation()
+                }),
+                secondaryButton: .cancel()
+            )
         }
-        
     }
     
-    private func convertAddress(location: String) {
-        
-        print("Calling convert address...")
-        
-        let geoCoder = CLGeocoder()
-
-        geoCoder.geocodeAddressString(location, completionHandler: { placemarks, error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            
-            guard let placemarks = placemarks,
-                  let location = placemarks[0].location else {
-                return
-            }
-            
-            print(location.coordinate)
-            
-            let region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.0015, longitudeDelta: 0.0015))
-            
-            self.position = .region(region)
-            self.markerLocation = location
-        })
+    private var searchField: some View {
+        HStack(alignment: .center) {
+            TextField("🔍 Search supermarkets nearby", text: $viewModel.searchText)
+                .onChange(of: viewModel.searchText) {
+                    viewModel.updateSearchResults()
+                }
+                .focused($isSearchFieldFocused)
+                .padding(.leading, 10)
+                .padding(.vertical, 10)
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 3)
+                .overlay(
+                    HStack {
+                        Spacer()
+                        if !viewModel.searchText.isEmpty {
+                            Button(action: {
+                                viewModel.searchText = ""
+                                isSearchFieldFocused = false
+                            }, label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(Color.gray)
+                                    .padding(.trailing, 8)
+                            })
+                        }
+                    }
+                )
+        }
+        .padding(.horizontal)
+        .padding(.top, 10)
     }
-}
-
-#Preview {
-    MapView(location: "54 Frith Street London W1D 4SL United Kingdom")
+    
+    private var map: some View {
+        CustomMapView(
+            region: $viewModel.region,
+            showingNavigationAlert: $viewModel.showingNavigationAlert,
+            selectedSupermarket: $viewModel.selectedSupermarket,
+            supermarkets: viewModel.searchResults.isEmpty && viewModel.searchText.isEmpty ? viewModel.allSupermarkets : viewModel.searchResults,
+            onRegionChange: { newRegion in
+                viewModel.region = newRegion
+            }
+        )
+        .edgesIgnoringSafeArea(.all)
+    }
+    
+    private var listResults: some View {
+        List(viewModel.searchResults, id: \.id) { supermarket in
+            SupermarketRowView(supermarket: supermarket, userLocation: viewModel.userLocation)
+                .onTapGesture {
+                    viewModel.openDirections(to: supermarket)
+                }
+        }
+        .padding(.horizontal)
+        .listStyle(PlainListStyle())
+        .background(Color.clear)
+    }
+    
+    private var dismissButton: some View {
+        Button(action: {
+            isPresented = false
+        }, label: {
+            Image(systemName: "xmark.circle.fill")
+                .resizable()
+                .frame(width: 40, height: 40)
+                .padding()
+                .background(Color.white.opacity(0.8))
+                .clipShape(Circle())
+                .shadow(radius: 5)
+        })
+        .padding()
+    }
 }

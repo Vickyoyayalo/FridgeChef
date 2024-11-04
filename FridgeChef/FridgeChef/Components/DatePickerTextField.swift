@@ -20,11 +20,11 @@ struct DatePickerTextField: View {
                 .labelsHidden()
                 .datePickerStyle(DefaultDatePickerStyle())
                 .font(.custom("ArialRoundedMTBold", size: 18))
-                .environment(\.locale, Locale(identifier: "en-US"))  // TODO: language
+                .environment(\.locale, Locale(identifier: "en-US"))
         }
         .padding()
         .contentShape(Rectangle())
-        .background(Color.clear)  // 设置背景为透明
+        .background(Color.clear)
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingDatePicker) {
             VStack{
@@ -52,6 +52,6 @@ struct DatePickerTextField: View {
 
 struct DatePickerTextField_Previews: PreviewProvider {
     static var previews: some View {
-        DatePickerTextField(date: .constant(Date()), label: "選擇日期")
+        DatePickerTextField(date: .constant(Date()), label: "Choose Date!")
     }
 }

@@ -12,10 +12,12 @@ import SDWebImageSwiftUI
 
 struct MLIngredientView: View {
     @StateObject var viewModel: MLIngredientViewModel
+    @Environment(\.dismiss) var dismiss
+    @ObservedObject var foodItemStore: FoodItemStore
+    private let timer = Timer.publish(every: 86400, on: .main, in: .common).autoconnect()
+    
     var onSave: ((Ingredient) -> Void)?
     var editingFoodItem: Ingredient?
-    @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var foodItemStore: FoodItemStore
     
     let storageOptions = ["Fridge", "Freezer"]
     
@@ -24,10 +26,12 @@ struct MLIngredientView: View {
         GridItem(.flexible())
     ]
     
-    init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil) {
+    init(onSave: ((Ingredient) -> Void)? = nil, editingFoodItem: Ingredient? = nil, foodItemStore: FoodItemStore) {
         self.onSave = onSave
         self.editingFoodItem = editingFoodItem
+        self.foodItemStore = foodItemStore
         _viewModel = StateObject(wrappedValue: MLIngredientViewModel(editingFoodItem: editingFoodItem, onSave: onSave))
+        
         UISegmentedControl.appearance().selectedSegmentTintColor = UIColor.white
         UISegmentedControl.appearance().backgroundColor = UIColor(named: "NavigationBarTitle") ?? UIColor.orange
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor(named: "NavigationBarTitle") ?? UIColor.systemRed, .font: UIFont(name: "ArialRoundedMTBold", size: 15)!], for: .selected)
@@ -87,15 +91,18 @@ struct MLIngredientView: View {
                             Text("Name")
                                 .font(.custom("ArialRoundedMTBold", size: 18))
                             HStack {
-                                TextField("Detect Image", text: $viewModel.recognizedText)
-                                    .padding()
+                                TextEditor(text: $viewModel.recognizedText)
+                                    .scrollContentBackground(.hidden)
+                                    .padding(6)
+                                    .background(Color.clear)
+                                    .cornerRadius(8)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 8)
                                             .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                     )
                             }
-                            .frame(maxWidth: .infinity)
-                            
+                            .frame(height: 44)
+
                             Text("Quantity")
                                 .font(.custom("ArialRoundedMTBold", size: 18))
                             TextField("Please insert numbers", text: $viewModel.quantity)
@@ -117,7 +124,7 @@ struct MLIngredientView: View {
                                 )
                         }
                         .padding(.horizontal)
-                      
+                        
                         Button(action: {
                             viewModel.saveIngredient()
                             dismiss()
@@ -135,13 +142,13 @@ struct MLIngredientView: View {
                         .alert(isPresented: $viewModel.isSavedAlertPresented) {
                             Alert(title: Text("Success"), message: Text("Saved the ingredient!"), dismissButton: .default(Text("OK")))
                         }
-                       
+                        
                         VStack(alignment: .leading, spacing: 20) {
-                       
+                            
                             Text("👨🏽‍🍳 Summary List....")
                                 .font(.custom("ArialRoundedMTBold", size: 18))
                                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                           
+                            
                             VStack(alignment: .leading, spacing: 10) {
                                 Text("🥬 Fridge Items")
                                     .font(.headline)
@@ -282,13 +289,17 @@ struct MLIngredientView: View {
         }
     }
 }
+
 struct MLIngredientView_Previews: PreviewProvider {
     static var previews: some View {
         let foodItemStore = FoodItemStore()
         let viewModel = MLIngredientViewModel()
-        MLIngredientView(onSave: { ingredient in
-            print("Preview Save: \(ingredient)")
-        }, editingFoodItem: nil)
-        .environmentObject(foodItemStore)
+        MLIngredientView(
+            onSave: { ingredient in
+                print("Preview Save: \(ingredient)")
+            },
+            editingFoodItem: nil,
+            foodItemStore: foodItemStore // 傳入 foodItemStore
+        )
     }
 }

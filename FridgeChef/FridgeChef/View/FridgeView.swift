@@ -17,7 +17,7 @@ protocol NotificationCenterProtocol {
 extension UNUserNotificationCenter: NotificationCenterProtocol {}
 
 struct FridgeView: View {
-    @EnvironmentObject var foodItemStore: FoodItemStore
+    @ObservedObject var foodItemStore: FoodItemStore
     @State private var searchText = ""
     @State private var editingItem: FoodItem?
     @State private var showingProgressView = false
@@ -71,7 +71,8 @@ struct FridgeView: View {
                     onSave: { updatedIngredient in
                         handleSave(updatedIngredient)
                     },
-                    editingFoodItem: ingredient
+                    editingFoodItem: ingredient, 
+                    foodItemStore: foodItemStore
                 )
             }
             
@@ -84,6 +85,7 @@ struct FridgeView: View {
             )
             .onAppear {
                 listenToFoodItems()
+                checkPendingNotifications()
             }
         }
     }
@@ -114,21 +116,27 @@ struct FridgeView: View {
         }
     }
     
-    //UnitTest
     func scheduleExpirationNotification(for item: FoodItem, notificationCenter: NotificationCenterProtocol = UNUserNotificationCenter.current()) {
         let content = UNMutableNotificationContent()
-        content.title = "Expiration Alert‼️"
-        content.body = "\(item.name) is about to expire in \(item.daysRemaining) days!"
+        if item.daysRemaining < 0 {
+            let daysAgo = abs(item.daysRemaining)
+            let dayText = daysAgo == 1 ? "day" : "days"
+            content.title = "Expired Alert‼️"
+            content.body = "\(item.name) expired \(daysAgo) \(dayText) ago!"
+        } else {
+            let dayText = item.daysRemaining == 1 ? "day" : "days"
+            content.title = "Expiration Alert‼️"
+            content.body = "\(item.name) is about to expire in \(item.daysRemaining) \(dayText)!"
+        }
         content.sound = UNNotificationSound.default
         
-        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60)
-        if timeInterval <= 0 {
-            print("Invalid timeInterval: \(timeInterval) for item \(item.name)")
+        let timeInterval = item.daysRemaining < 0 ? 1 : TimeInterval(item.daysRemaining * 24 * 60 * 60)
+        guard timeInterval > 0 else {
+            print("Invalid time interval for notification")
             return
         }
-
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         let request = UNNotificationRequest(identifier: item.id, content: content, trigger: trigger)
         
         notificationCenter.add(request) { error in
@@ -139,31 +147,6 @@ struct FridgeView: View {
             }
         }
     }
-
-//    func scheduleExpirationNotification(for item: FoodItem) {
-//        let content = UNMutableNotificationContent()
-//        content.title = "Expiration Alert‼️"
-//        content.body = "\(item.name) is about to expire in \(item.daysRemaining) days!"
-//        content.sound = UNNotificationSound.default
-//        
-//        let timeInterval = TimeInterval(item.daysRemaining * 24 * 60 * 60)
-//        if timeInterval <= 0 {
-//            print("Invalid timeInterval: \(timeInterval) for item \(item.name)")
-//            return
-//        }
-//
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-//        
-//        let request = UNNotificationRequest(identifier: item.id, content: content, trigger: trigger)
-//        
-//        UNUserNotificationCenter.current().add(request) { error in
-//            if let error = error {
-//                print("Error scheduling notification: \(error.localizedDescription)")
-//            } else {
-//                print("Notification scheduled for \(item.name)")
-//            }
-//        }
-//    }
     
     var filteredFoodItems: [FoodItem] {
         let filtered = foodItemStore.foodItems.filter { $0.status == .fridge || $0.status == .freezer }
@@ -189,7 +172,8 @@ struct FridgeView: View {
             MLIngredientView(
                 onSave: { newIngredient in
                     handleSave(newIngredient)
-                }
+                }, 
+                foodItemStore: foodItemStore
             )
         }
     }
@@ -211,7 +195,7 @@ struct FridgeView: View {
                     print("Failed to delete food item from Firebase: \(error.localizedDescription)")
                 }
             }
-     
+            
             if let indexInFoodItems = foodItemStore.foodItems.firstIndex(where: { $0.id == item.id }) {
                 foodItemStore.foodItems.remove(at: indexInFoodItems)
             }
@@ -236,10 +220,9 @@ struct FridgeView: View {
         )
         
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == ingredient.id }) {
-            // Update existing item in local array
+           
             foodItemStore.foodItems[index] = foodItem
-            
-            // Update in Firestore
+          
             var updatedFields: [String: Any] = [
                 "name": foodItem.name,
                 "quantity": foodItem.quantity,
@@ -298,7 +281,7 @@ struct FridgeView: View {
             let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 1
             foodItemStore.foodItems[index].daysRemaining = daysRemaining
             foodItemStore.foodItems[index].expirationDate = newExpirationDate
-    
+            
             guard let currentUser = Auth.auth().currentUser else {
                 print("No user is currently logged in.")
                 return
@@ -365,7 +348,7 @@ struct FridgeView: View {
                     print("Failed to update food item in Firebase: \(error.localizedDescription)")
                 }
             }
-          
+            
             DispatchQueue.main.async {
                 self.foodItemStore.objectWillChange.send()
             }
@@ -406,7 +389,7 @@ struct FridgeListView: View {
     
     var body: some View {
         List {
-            if !filteredFoodItems.filter { $0.status == .fridge }.isEmpty {
+            if !filteredFoodItems.filter({ $0.status == .fridge }).isEmpty {
                 Section(header:  HStack {
                     Image(uiImage: UIImage(named: "fridge") ?? UIImage(systemName: "refrigerator.fill")!)
                         .resizable()
@@ -484,7 +467,18 @@ struct FridgeView_Previews: PreviewProvider {
         let store = FoodItemStore()
         store.foodItems = [sampleFoodItem]
         
-        return FridgeView()
+        return FridgeView(foodItemStore: store)
             .environmentObject(store)
+    }
+}
+
+extension FridgeView {
+    func checkPendingNotifications() {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            for request in requests {
+                print("Pending notification: \(request.identifier) - \(request.content.body)")
+            }
+            print("Total pending notifications: \(requests.count)")
+        }
     }
 }

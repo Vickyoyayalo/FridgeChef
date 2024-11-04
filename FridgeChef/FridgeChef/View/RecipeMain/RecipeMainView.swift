@@ -3,21 +3,23 @@
 //  FridgeChef
 //
 //  Created by Vickyhereiam on 2024/10/06.
+//
 
 import SwiftUI
 
 struct RecipeMainView: View {
-    @EnvironmentObject var viewModel: RecipeSearchViewModel
+    @StateObject var viewModel: RecipeSearchViewModel = RecipeSearchViewModel()
+    @ObservedObject var foodItemStore: FoodItemStore
     @State private var showingAddGroceryForm = false
     @State private var searchQuery: String = ""
     @State private var isShowingDefaultPage = true
     @State private var selectedRecipe: Recipe? = nil
+    
     var showEditAndAddButtons: Bool = false
-
+    
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
-              
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
                     startPoint: .top,
@@ -25,10 +27,10 @@ struct RecipeMainView: View {
                 )
                 .opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
-
+                
                 VStack {
                     if isShowingDefaultPage {
-                        DefaultRecipeView(recipeManager: RecipeManager())
+                        DefaultRecipeView()
                     } else {
                         if viewModel.isLoading {
                             Spacer()
@@ -36,27 +38,27 @@ struct RecipeMainView: View {
                                 .scaleEffect(1.5)
                             Spacer()
                         } else if !viewModel.recipes.isEmpty {
-                           
                             List(viewModel.recipes, id: \.id) { recipe in
-                                RecipeRowView(recipe: recipe, toggleFavorite: {
-                                    viewModel.toggleFavorite(for: recipe.id)
-                                }, viewModel: RecipeSearchViewModel())
-                                .onTapGesture {
-                                    selectedRecipe = recipe
+                                NavigationLink(value: recipe) {
+                                    RecipeRowView(
+                                        recipe: recipe,
+                                        toggleFavorite: {
+                                            viewModel.toggleFavorite(for: recipe.id)
+                                        },
+                                        viewModel: viewModel
+                                    )
                                 }
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
                             }
                             .listStyle(PlainListStyle())
                         } else if let errorMessage = viewModel.errorMessage {
-                            
                             Spacer()
                             Text("wrong：\(errorMessage.message)")
                                 .foregroundColor(.red)
                                 .padding()
                             Spacer()
                         } else {
-                         
                             Spacer()
                             Text("Opps...Let's try again.. \nSearch by keywords🕵🏻‍♂️")
                                 .foregroundColor(.gray)
@@ -86,24 +88,21 @@ struct RecipeMainView: View {
                 .sheet(isPresented: $showingAddGroceryForm) {
                     AddGroceryForm(viewModel: AddGroceryFormViewModel())
                 }
+                .navigationDestination(for: Recipe.self) { recipe in
+                    RecipeDetailView(
+                        recipeId: recipe.id,
+                        viewModel: viewModel,
+                        foodItemStore: foodItemStore
+                    )
+                }
             }
             .navigationBarItems(
                 leading: showEditAndAddButtons ? EditButton().bold() : nil,
                 trailing: showEditAndAddButtons ? addButton : nil
             )
-            .background(
-                NavigationLink(
-                    destination: selectedRecipe.map { RecipeDetailView(recipeId: $0.id) },
-                    isActive: Binding(
-                        get: { selectedRecipe != nil },
-                        set: { if !$0 { selectedRecipe = nil } }
-                    ),
-                    label: { EmptyView() } 
-                )
-            )
         }
     }
-
+    
     var addButton: some View {
         Button(action: {
             showingAddGroceryForm = true
@@ -117,7 +116,6 @@ struct RecipeMainView: View {
 
 struct RecipeMainView_Previews: PreviewProvider {
     static var previews: some View {
-        RecipeMainView()
-            .environmentObject(RecipeSearchViewModel())
+        RecipeMainView(viewModel: RecipeSearchViewModel(), foodItemStore: FoodItemStore())
     }
 }

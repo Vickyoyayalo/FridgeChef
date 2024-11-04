@@ -14,17 +14,18 @@ import IQKeyboardManagerSwift
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // 初始化 Firebase
+        
+        APIKeyManager.shared.initializeAPIKeys()
+        
         if FirebaseApp.app() == nil {
             FirebaseApp.configure()
             print("Firebase has been configured successfully.")
             
             let settings = Firestore.firestore().settings
-            settings.isPersistenceEnabled = true
+            settings.cacheSettings = PersistentCacheSettings()
             Firestore.firestore().settings = settings
         }
         
-       
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if let currentUser = Auth.auth().currentUser {
                 print("User is logged in with UID: \(currentUser.uid)")
@@ -33,14 +34,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             }
         }
         
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
-                if granted {
-                    print("User notifications are allowed.")
-                } else {
-                    print("User notifications are not allowed.")
-        } }
-
-       
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, _) in
+            if granted {
+                print("User notifications are allowed.")
+            } else {
+                print("User notifications are not allowed.")
+            }
+        }
+        
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
         navBarAppearance.largeTitleTextAttributes = [
@@ -96,7 +97,7 @@ func createGradientImage(colors: [UIColor], size: CGSize, opacity: CGFloat) -> U
     gradientLayer.colors = colors.map { $0.withAlphaComponent(opacity).cgColor }
     gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)  // Top
     gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)    // Bottom
-
+    
     UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
     guard let context = UIGraphicsGetCurrentContext() else { return nil }
     gradientLayer.render(in: context)
@@ -113,31 +114,25 @@ struct FridgeChefApp: App {
     @AppStorage("hasSeenTutorial") var hasSeenTutorial: Bool = false
     @AppStorage("log_Status") var isLoggedIn: Bool = false
     
-//    init() {
-//        UserDefaults.standard.set(false, forKey: "hasSeenTutorial")
-//    }
+    //    init() {
+    //        UserDefaults.standard.set(false, forKey: "hasSeenTutorial")
+    //    }
     
     var body: some Scene {
         WindowGroup {
             if !hasSeenTutorial {
-                TutorialView()
+                TutorialView(viewModel: viewModel, foodItemStore: foodItemStore)
                     .onDisappear {
-                        hasSeenTutorial = true  // 用戶完成教程後，設定為 true
+                        hasSeenTutorial = true
                     }
-                    .environmentObject(viewModel)
-                    .environmentObject(foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
                     .preferredColorScheme(.light)
             } else if isLoggedIn {
-                MainTabView()
-                    .environmentObject(viewModel)
-                    .environmentObject(foodItemStore)
+                MainTabView(viewModel: viewModel, foodItemStore: foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
                     .preferredColorScheme(.light)
             } else {
-                LoginView()
-                    .environmentObject(viewModel)
-                    .environmentObject(foodItemStore)
+                LoginView(viewModel: viewModel, foodItemStore: foodItemStore)
                     .font(.custom("ArialRoundedMTBold", size: 18))
                     .preferredColorScheme(.light)
             }

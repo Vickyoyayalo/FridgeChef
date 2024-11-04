@@ -1,5 +1,5 @@
 {
-  "originHash" : "543a8c6b9bde628def0887c812523777801a8b08045bcdc893d4ad15ca7b8963",
+  "originHash" : "a5ded3b4b1f02b6aa3ebe4ef11f835d8b10b04e285a88c18fd53e5b0358f6562",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -98,6 +98,15 @@
       "state" : {
         "revision" : "fa9b2bac94b3fabe2d6ca7c74b269d4e8c355111",
         "version" : "7.1.1"
+      }
+    },
+    {
+      "identity" : "keychain-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/evgenyneu/keychain-swift",
+      "state" : {
+        "revision" : "5e1b02b6a9dac2a759a1d5dbc175c86bd192a608",
+        "version" : "24.0.0"
       }
     },
     {

@@ -30,15 +30,12 @@ enum Status: String, Codable {
     case freezer = "Freezer"
 }
 
-
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-  
         SimpleEntry(date: Date(), expiringItems: [], expiredItems: [])
     }
     
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) {
-       
         let entry = SimpleEntry(date: Date(), expiringItems: mockExpiringItems(), expiredItems: mockExpiredItems())
         completion(entry)
     }
@@ -52,18 +49,16 @@ struct Provider: TimelineProvider {
         
         if let foodItemsData = sharedDefaults?.data(forKey: "foodItems") {
             if let decodedFoodItems = try? JSONDecoder().decode([SimpleFoodItem].self, from: foodItemsData) {
-              
                 expiringItems = decodedFoodItems.filter { $0.daysRemaining <= 3 && $0.daysRemaining >= 0 && ($0.status == .fridge || $0.status == .freezer) }
                 expiredItems = decodedFoodItems.filter { $0.daysRemaining < 0 && ($0.status == .fridge || $0.status == .freezer) }
             }
         }
-
+        
         let entry = SimpleEntry(date: currentDate, expiringItems: expiringItems, expiredItems: expiredItems)
-       
         let timeline = Timeline(entries: [entry], policy: .after(Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!))
         completion(timeline)
     }
-
+    
     func mockExpiringItems() -> [SimpleFoodItem] {
         return [
             SimpleFoodItem(id: UUID().uuidString, name: "Milk", quantity: 1.0, unit: "Liter", daysRemaining: 2, status: .fridge),
@@ -83,6 +78,19 @@ struct FridgeChefWidgetEntryView: View {
     var entry: Provider.Entry
     @Environment(\.widgetFamily) var widgetFamily
     
+    func dayText(for daysRemaining: Int) -> String {
+        if daysRemaining == 0 {
+            return "Expires today"
+        } else if daysRemaining < 0 {
+            let daysAgo = abs(daysRemaining)
+            let dayText = daysAgo == 1 ? "day" : "days"
+            return "Expired \(daysAgo) \(dayText) ago"
+        } else {
+            let dayText = daysRemaining == 1 ? "day" : "days"
+            return "\(daysRemaining) \(dayText) left"
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             if entry.expiringItems.isEmpty && entry.expiredItems.isEmpty {
@@ -96,7 +104,6 @@ struct FridgeChefWidgetEntryView: View {
                 }
             } else {
                 switch widgetFamily {
-                    
                 case .systemSmall:
                     VStack(alignment: .leading, spacing: 10) {
                         if let firstExpiring = entry.expiringItems.first {
@@ -104,7 +111,7 @@ struct FridgeChefWidgetEntryView: View {
                                 Image("runmonster")
                                     .resizable()
                                     .frame(width: 50, height: 50)
-                                Text("⚠️ Notice \n\(firstExpiring.name)")
+                                Text("⚠️ Notice \n\(firstExpiring.name): \(dayText(for: firstExpiring.daysRemaining))")
                                     .font(.custom("ArialRoundedMTBold", size: 14))
                                     .foregroundColor(.orange)
                             }
@@ -115,7 +122,7 @@ struct FridgeChefWidgetEntryView: View {
                                 Image("alertmonster")
                                     .resizable()
                                     .frame(width: 50, height: 50)
-                                Text("Expired‼️ \n\(firstExpired.name)")
+                                Text("Expired‼️ \n\(firstExpired.name): \(dayText(for: firstExpired.daysRemaining))")
                                     .font(.custom("ArialRoundedMTBold", size: 14))
                                     .foregroundColor(.red)
                             }
@@ -127,10 +134,9 @@ struct FridgeChefWidgetEntryView: View {
                 case .systemMedium:
                     let monsterImages = ["mapmonster", "discomonster1", "discomonster2", "discomonster3", "discomonster4", "discomonster5"]
                     let randomMonsterImage = monsterImages.randomElement() ?? "mapmonster"
-
+                    
                     ZStack {
                         VStack(alignment: .leading, spacing: 5) {
-                            // Expiring soon section
                             if !entry.expiringItems.isEmpty {
                                 HStack(alignment: .center, spacing: 5) {
                                     Text("Expiring soon ⚠️")
@@ -138,7 +144,7 @@ struct FridgeChefWidgetEntryView: View {
                                         .foregroundColor(.orange)
                                 }
                                 ForEach(entry.expiringItems.prefix(3), id: \.id) { item in
-                                    Text("\(item.name): \(item.daysRemaining) days left")
+                                    Text("\(item.name): \(dayText(for: item.daysRemaining))")
                                         .font(.custom("ArialRoundedMTBold", size: 15))
                                         .foregroundColor(.orange)
                                 }
@@ -148,8 +154,6 @@ struct FridgeChefWidgetEntryView: View {
                                         .foregroundColor(.gray)
                                 }
                             }
-
-                            // Expired section
                             if !entry.expiredItems.isEmpty {
                                 HStack(alignment: .center, spacing: 5) {
                                     Text("Expired ‼️")
@@ -157,7 +161,7 @@ struct FridgeChefWidgetEntryView: View {
                                         .foregroundColor(.red)
                                 }
                                 ForEach(entry.expiredItems.prefix(3), id: \.id) { item in
-                                    Text("\(item.name): \(abs(item.daysRemaining)) days ago")
+                                    Text("\(item.name): \(dayText(for: item.daysRemaining))")
                                         .font(.custom("ArialRoundedMTBold", size: 14))
                                         .foregroundColor(.pink)
                                 }
@@ -170,7 +174,7 @@ struct FridgeChefWidgetEntryView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.leading, 0)
-
+                        
                         VStack {
                             Spacer()
                             HStack {
@@ -183,7 +187,7 @@ struct FridgeChefWidgetEntryView: View {
                         }
                         .padding([.bottom], 20)
                     }
-
+                    
                 default:
                     Text("Widget not supported.")
                 }
@@ -216,11 +220,9 @@ struct FridgeChefWidget: Widget {
 struct FridgeChefWidget_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            // Preview for systemSmall
             FridgeChefWidgetEntryView(entry: SimpleEntry(date: Date(), expiringItems: Provider().mockExpiringItems(), expiredItems: Provider().mockExpiredItems()))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            // Preview for systemMedium
             FridgeChefWidgetEntryView(entry: SimpleEntry(date: Date(), expiringItems: Provider().mockExpiringItems(), expiredItems: Provider().mockExpiredItems()))
                 .previewContext(WidgetPreviewContext(family: .systemMedium))
         }

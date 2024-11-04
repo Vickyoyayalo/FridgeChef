@@ -5,8 +5,8 @@
 //  Created by Vickyhereiam on 2024/9/18.
 //
 
-import Foundation
 import SwiftUI
+import Foundation
 
 extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
@@ -27,4 +27,3 @@ struct RoundedCorners: Shape {
         return Path(path.cgPath)
     }
 }
-

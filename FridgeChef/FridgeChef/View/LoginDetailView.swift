@@ -24,107 +24,109 @@ struct LoginDetailView: View {
     @AppStorage("log_Status") private var logStatus: Bool = false
     
     var body: some View {
-        CustomNavigationBarView(title: "") {
-            ZStack(alignment: .topLeading) {
-                VStack(spacing: 15) {
-                    Image("FridgeChefLogo")
-                        .resizable()
-                        .scaledToFit()
-                        .padding(.vertical, -100)
-                        .padding(.top, -100)
-                    
-                    TextField("Email", text: $loginViewModel.email)
-                        .padding()
-                        .background(Color(UIColor.systemGray6))
-                        .cornerRadius(8)
-                        .shadow(radius: 5)
-                        .autocapitalization(.none)
-                        .keyboardType(.emailAddress)
-
-                    SecureField("Password", text: $loginViewModel.password)
-                        .padding()
-                        .background(Color(UIColor.systemGray6))
-                        .cornerRadius(8)
-                        .shadow(radius: 5)
-                    
-                    Button(action: {
-                        loginWithEmailPassword()
-                    }) {
-                        Text("Sign In")
-                            .foregroundColor(.white)
-                            .fontWeight(.bold)
-                            .frame(maxWidth: .infinity)
+        NavigationStack {
+            CustomNavigationBarView(title: "") {
+                ZStack(alignment: .topLeading) {
+                    VStack(spacing: 15) {
+                        Image("FridgeChefLogo")
+                            .resizable()
+                            .scaledToFit()
+                            .padding(.vertical, -100)
+                            .padding(.top, -100)
+                        
+                        TextField("Email", text: $loginViewModel.email)
                             .padding()
-                            .background(
-                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                            .background(Color(UIColor.systemGray6))
                             .cornerRadius(8)
                             .shadow(radius: 5)
-                    }
-                    NavigationLink(destination: MainTabView(), isActive: $navigateToHome) {
-                        EmptyView()
-                    }
-                    // 忘記密碼按鈕
-                    Button(action: {
-                        navigateToForgotPassword = true
-                    }) {
-                        Text("Forget Password?")
-                            .foregroundColor(
-                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                            .frame(maxWidth: .infinity)
-                            .fontWeight(.bold)
+                            .autocapitalization(.none)
+                            .keyboardType(.emailAddress)
+                        
+                        SecureField("Password", text: $loginViewModel.password)
                             .padding()
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(
-                                Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
+                            .background(Color(UIColor.systemGray6))
+                            .cornerRadius(8)
                             .shadow(radius: 5)
-                    }
-                    .sheet(isPresented: $navigateToForgotPassword) {
-                        ForgotPasswordView()
-                    }
-                    
-                    Text("Or sign up with")
-                        .font(.custom("ArialRoundedMTBold", size: 15))
-                        .foregroundColor(.gray)
-                    
-                    // Apple Sign In
-                    SignInWithAppleButton(.signIn) { request in
-                        let nonce = randomNonceString()
-                        self.nonce = nonce
-                        request.requestedScopes = [.email, .fullName]
-                        request.nonce = sha256(nonce)
-                    } onCompletion: { result in
-                        switch result {
-                        case .success(let authorization):
-                            loginWithFirebase(authorization)
-                        case .failure(let error):
-                            showError(error.localizedDescription)
+                        
+                        Button(action: {
+                            loginWithEmailPassword()
+                        }) {
+                            Text("Sign In")
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(
+                                    Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                .cornerRadius(8)
+                                .shadow(radius: 5)
                         }
-                    }
-                    .frame(height: 45)
-                    .clipShape(.capsule)
-                    .overlay {
-                        ZStack {
-                            Capsule()
-                            HStack {
-                                Image(systemName: "applelogo")
-                                Text("Sign in with Apple")
+                        Button(action: {
+                            navigateToForgotPassword = true
+                        }, label: {
+                            Text("Forget Password?")
+                                .foregroundColor(
+                                    Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
+                                .frame(maxWidth: .infinity)
+                                .fontWeight(.bold)
+                                .padding()
+                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(
+                                    Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange), lineWidth: 2))
+                                .shadow(radius: 5)
+                        })
+                        .sheet(isPresented: $navigateToForgotPassword) {
+                            ForgotPasswordView()
+                        }
+                        
+                        Text("Or sign up with")
+                            .font(.custom("ArialRoundedMTBold", size: 15))
+                            .foregroundColor(.gray)
+                        
+                        SignInWithAppleButton(.signIn) { request in
+                            let nonce = randomNonceString()
+                            self.nonce = nonce
+                            request.requestedScopes = [.email, .fullName]
+                            request.nonce = sha256(nonce)
+                        } onCompletion: { result in
+                            switch result {
+                            case .success(let authorization):
+                                loginWithFirebase(authorization)
+                            case .failure(let error):
+                                showError(error.localizedDescription)
                             }
-                            .foregroundStyle(scheme == .dark ? .black : .white)
                         }
-                        .allowsHitTesting(false)
+                        .frame(height: 45)
+                        .clipShape(Capsule())
+                        .overlay {
+                            ZStack {
+                                Capsule()
+                                HStack {
+                                    Image(systemName: "applelogo")
+                                    Text("Sign in with Apple")
+                                }
+                                .foregroundStyle(scheme == .dark ? .black : .white)
+                            }
+                            .allowsHitTesting(false)
+                        }
                     }
+                    .padding()
+                    Image("Loginmonster")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 250, height: 300)
+                        .offset(x: 70, y: 400)
                 }
-                .padding()
-                Image("Loginmonster")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 250, height: 300)
-                    .offset(x: 70, y: 400)
             }
+        }
+        .navigationDestination(isPresented: $navigateToHome) {
+            MainTabView(viewModel: RecipeSearchViewModel(), foodItemStore: FoodItemStore())
         }
         .alert(errorMessage, isPresented: $showAlert) {}
         .overlay {
             if isLoggedIn {
                 LoadingScreen()
+            } else {
+                EmptyView()
             }
         }
         .alert(isPresented: $loginViewModel.showAlert) {
@@ -132,7 +134,6 @@ struct LoginDetailView: View {
         }
     }
     
-    // Email & Password log in
     func loginWithEmailPassword() {
         isLoggedIn = true
         Auth.auth().signIn(withEmail: loginViewModel.email, password: loginViewModel.password) { authResult, error in
@@ -177,10 +178,10 @@ struct LoginDetailView: View {
                 logStatus = true
                 isLoggedIn = false
                 navigateToHome = true
-               
+                
                 if let user = Auth.auth().currentUser {
                     print("User is logged in with UID: \(user.uid)")
-                   
+                    
                     let userData: [String: Any] = [
                         "email": user.email ?? "No Email",
                         "name": appleIDCredential.fullName?.givenName ?? "Anonymous"
@@ -200,7 +201,7 @@ struct LoginDetailView: View {
             }
         }
     }
-
+    
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
         var randomBytes = [UInt8](repeating: 0, count: length)
@@ -210,14 +211,14 @@ struct LoginDetailView: View {
         }
         
         let charset: [Character] =
-               Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-
-               let nonce = randomBytes.map { byte in
-                   charset[Int(byte) % charset.count]
-               }
-       
-               return String(nonce)
-           }
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        
+        let nonce = randomBytes.map { byte in
+            charset[Int(byte) % charset.count]
+        }
+        
+        return String(nonce)
+    }
     
     private func sha256(_ input: String) -> String {
         let inputData = Data(input.utf8)
@@ -228,10 +229,17 @@ struct LoginDetailView: View {
     @ViewBuilder
     func LoadingScreen() -> some View {
         ZStack {
-            Rectangle().fill(.ultraThinMaterial)
+            Rectangle()
+                .fill(Color.black.opacity(0.4))
+                .ignoresSafeArea()
+            
             ProgressView()
                 .frame(width: 45, height: 45)
-                .background(.background, in: .rect(cornerRadius: 5))
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.white)
+                )
+                .shadow(radius: 10)
         }
     }
 }

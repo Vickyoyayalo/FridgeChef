@@ -78,6 +78,19 @@ struct FridgeChefWidgetEntryView: View {
     var entry: Provider.Entry
     @Environment(\.widgetFamily) var widgetFamily
     
+    func dayText(for daysRemaining: Int) -> String {
+        if daysRemaining == 0 {
+            return "Expires today"
+        } else if daysRemaining < 0 {
+            let daysAgo = abs(daysRemaining)
+            let dayText = daysAgo == 1 ? "day" : "days"
+            return "Expired \(daysAgo) \(dayText) ago"
+        } else {
+            let dayText = daysRemaining == 1 ? "day" : "days"
+            return "\(daysRemaining) \(dayText) left"
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             if entry.expiringItems.isEmpty && entry.expiredItems.isEmpty {
@@ -98,7 +111,7 @@ struct FridgeChefWidgetEntryView: View {
                                 Image("runmonster")
                                     .resizable()
                                     .frame(width: 50, height: 50)
-                                Text("⚠️ Notice \n\(firstExpiring.name)")
+                                Text("⚠️ Notice \n\(firstExpiring.name): \(dayText(for: firstExpiring.daysRemaining))")
                                     .font(.custom("ArialRoundedMTBold", size: 14))
                                     .foregroundColor(.orange)
                             }
@@ -109,7 +122,7 @@ struct FridgeChefWidgetEntryView: View {
                                 Image("alertmonster")
                                     .resizable()
                                     .frame(width: 50, height: 50)
-                                Text("Expired‼️ \n\(firstExpired.name)")
+                                Text("Expired‼️ \n\(firstExpired.name): \(dayText(for: firstExpired.daysRemaining))")
                                     .font(.custom("ArialRoundedMTBold", size: 14))
                                     .foregroundColor(.red)
                             }
@@ -124,7 +137,6 @@ struct FridgeChefWidgetEntryView: View {
                     
                     ZStack {
                         VStack(alignment: .leading, spacing: 5) {
-                            // Expiring soon section
                             if !entry.expiringItems.isEmpty {
                                 HStack(alignment: .center, spacing: 5) {
                                     Text("Expiring soon ⚠️")
@@ -132,7 +144,7 @@ struct FridgeChefWidgetEntryView: View {
                                         .foregroundColor(.orange)
                                 }
                                 ForEach(entry.expiringItems.prefix(3), id: \.id) { item in
-                                    Text("\(item.name): \(item.daysRemaining) days left")
+                                    Text("\(item.name): \(dayText(for: item.daysRemaining))")
                                         .font(.custom("ArialRoundedMTBold", size: 15))
                                         .foregroundColor(.orange)
                                 }
@@ -142,8 +154,6 @@ struct FridgeChefWidgetEntryView: View {
                                         .foregroundColor(.gray)
                                 }
                             }
-                            
-                            // Expired section
                             if !entry.expiredItems.isEmpty {
                                 HStack(alignment: .center, spacing: 5) {
                                     Text("Expired ‼️")
@@ -151,7 +161,7 @@ struct FridgeChefWidgetEntryView: View {
                                         .foregroundColor(.red)
                                 }
                                 ForEach(entry.expiredItems.prefix(3), id: \.id) { item in
-                                    Text("\(item.name): \(abs(item.daysRemaining)) days ago")
+                                    Text("\(item.name): \(dayText(for: item.daysRemaining))")
                                         .font(.custom("ArialRoundedMTBold", size: 14))
                                         .foregroundColor(.pink)
                                 }

@@ -21,15 +21,25 @@ protocol FoodItemStoreProtocol: ObservableObject {
 class FoodItemStore: ObservableObject {
     @Published var foodItems: [FoodItem] = []
     private var listener: ListenerRegistration?
+    private var updateTimer: Timer?
+    
+    var expiringItems: [FoodItem] {
+        foodItems.filter { $0.status != .toBuy && $0.daysRemaining <= 3 && $0.daysRemaining >= 0 }
+    }
+    
+    var expiredItems: [FoodItem] {
+        foodItems.filter { $0.status != .toBuy && $0.daysRemaining < 0 }
+    }
     
     init() {
         fetchFoodItems()
+        startUpdateTimer()
     }
-    
+
     func updateWidget() {
         WidgetCenter.shared.reloadTimelines(ofKind: "FridgeChefWidget")
     }
-    
+
     func saveFoodItemsToUserDefaults(_ foodItems: [FoodItem]) {
         let sharedDefaults = UserDefaults(suiteName: "group.com.vickyoyaya.FridgeChef")
         
@@ -39,7 +49,6 @@ class FoodItemStore: ObservableObject {
         
         if let encodedData = try? JSONEncoder().encode(simpleItems) {
             sharedDefaults?.set(encodedData, forKey: "foodItems")
-            
             updateWidget()
         }
     }
@@ -47,6 +56,7 @@ class FoodItemStore: ObservableObject {
     func addFoodItem(_ item: FoodItem) {
         if !foodItems.contains(where: { $0.id == item.id }) {
             foodItems.append(item)
+            updateDaysRemaining()
         }
     }
     
@@ -70,9 +80,8 @@ class FoodItemStore: ObservableObject {
             switch result {
             case .success(let items):
                 DispatchQueue.main.async {
-                    
                     self?.foodItems = items
-                    
+                    self?.updateDaysRemaining()  // 更新食材時重新計算 daysRemaining
                     self?.saveFoodItemsToUserDefaults(items)
                     
                     print("Fetched \(items.count) food items from Firebase.")
@@ -82,7 +91,13 @@ class FoodItemStore: ObservableObject {
             }
         }
     }
-    
+
+    private func startUpdateTimer() {
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 86400, repeats: true) { [weak self] _ in
+            self?.updateDaysRemaining()
+        }
+    }
+
     private func updateDaysRemaining() {
         let currentDate = Date()
         for index in foodItems.indices {
@@ -98,6 +113,7 @@ class FoodItemStore: ObservableObject {
     
     deinit {
         listener?.remove()
+        updateTimer?.invalidate()
     }
 }
 
@@ -109,4 +125,3 @@ struct SimpleFoodItem: Identifiable, Codable {
     var daysRemaining: Int
     var status: Status
 }
-

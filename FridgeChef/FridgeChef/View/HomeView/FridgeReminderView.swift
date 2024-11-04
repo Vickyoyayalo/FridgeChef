@@ -11,54 +11,47 @@ import SDWebImageSwiftUI
 struct FridgeReminderView: View {
     @ObservedObject var foodItemStore: FoodItemStore
     @Binding var editingItem: FoodItem?
-    @State private var selectedFoodItem: FoodItem? 
+    @State private var selectedFoodItem: FoodItem?
     @State private var showingSheet = false
-
-    private var expiringItems: [FoodItem] {
-        foodItemStore.foodItems.filter { $0.status != .toBuy && $0.daysRemaining <= 3 && $0.daysRemaining >= 0 }
-    }
-
-    private var expiredItems: [FoodItem] {
-        foodItemStore.foodItems.filter { $0.status != .toBuy && $0.daysRemaining < 0 }
-    }
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    if expiringItems.isEmpty {
-                        DefaultFridgeReminderCard(color: .blue.opacity(0.2), message: "No items will expire within 3 days.", textColor: .blue)
-                    }
-
-                    if expiredItems.isEmpty {
-                        DefaultFridgeReminderCard(color: .red.opacity(0.2), message: "No items expired.", textColor: .red)
-                    }
-
-                    ForEach(expiringItems) { item in
-                        Button(action: {
-                            selectedFoodItem = item
-                            showingSheet = true
-                        }) {
-                            FridgeRecipeCard(foodItem: item, isExpired: false)
+            withAnimation(nil) {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        if foodItemStore.expiringItems.isEmpty {
+                            DefaultFridgeReminderCard(color: .blue.opacity(0.2), message: "No items will expire within 3 days.", textColor: .blue)
+                        }
+                        
+                        if foodItemStore.expiredItems.isEmpty {
+                            DefaultFridgeReminderCard(color: .red.opacity(0.2), message: "No items expired.", textColor: .red)
+                        }
+                        
+                        ForEach(foodItemStore.expiringItems) { item in
+                            Button(action: {
+                                selectedFoodItem = item
+                                showingSheet = true
+                            }) {
+                                FridgeRecipeCard(foodItem: item, isExpired: false)
+                            }
+                        }
+                        
+                        ForEach(foodItemStore.expiredItems) { item in
+                            Button(action: {
+                                selectedFoodItem = item
+                                showingSheet = true
+                            }) {
+                                FridgeRecipeCard(foodItem: item, isExpired: true)
+                            }
                         }
                     }
-
-                    ForEach(expiredItems) { item in
-                        Button(action: {
-                            selectedFoodItem = item
-                            showingSheet = true
-                        }) {
-                            FridgeRecipeCard(foodItem: item, isExpired: true)
-                        }
-                    }
+                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, 16)
+                .scrollIndicators(.hidden)
+                .padding(.horizontal, -16)
             }
-            .scrollIndicators(.hidden)
-            .padding(.horizontal, -16)
         }
         .padding(.horizontal)
-
         .sheet(item: $selectedFoodItem) { foodItem in
             if foodItem.status == .toBuy {
                 GroceryListView(foodItemStore: FoodItemStore())
@@ -77,7 +70,6 @@ struct DefaultFridgeReminderCard: View {
     var body: some View {
         ZStack {
             VStack(alignment: .center, spacing: 8) {
-               
                 Image("FridgeUpdate")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -85,7 +77,7 @@ struct DefaultFridgeReminderCard: View {
                     .cornerRadius(10)
                     .clipped()
                     .shadow(radius: 5)
-              
+                
                 Text(message)
                     .fontWeight(.medium)
                     .font(.custom("ArialRoundedMTBold", size: 14))
@@ -101,14 +93,14 @@ struct DefaultFridgeReminderCard: View {
             .cornerRadius(20.0)
             .shadow(radius: 8)
         }
-        .frame(width: 180, height: 250)
+        .frame(width: 180)
     }
 }
 
 struct FridgeRecipeCard: View {
     let foodItem: FoodItem
     let isExpired: Bool
-
+    
     var body: some View {
         ZStack {
             VStack(alignment: .center, spacing: 8) {
@@ -116,18 +108,6 @@ struct FridgeRecipeCard: View {
                 if let imageURLString = foodItem.imageURL, let imageURL = URL(string: imageURLString) {
                     WebImage(url: imageURL)
                         .resizable()
-                        .background(
-                            Image("RecipeFood")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 120, height: 120)
-                        )
-                        .overlay(
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                                .opacity(0.8)
-                        )
-                        .transition(.opacity)
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 120, height: 120)
                         .cornerRadius(10)
@@ -142,18 +122,18 @@ struct FridgeRecipeCard: View {
                         .clipped()
                         .frame(maxWidth: .infinity)
                 }
-
+                
                 Text(foodItem.name)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
-
+                
                 Text("\(foodItem.quantity, specifier: "%.1f") \(foodItem.unit)")
                     .font(.custom("ArialRoundedMTBold", size: 13))
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
-
+                
                 if isExpired {
                     Text("Expired \n\(abs(foodItem.daysRemaining)) days ago‼️")
                         .font(.custom("ArialRoundedMTBold", size: 13))
@@ -176,15 +156,14 @@ struct FridgeRecipeCard: View {
             .background(isExpired ? Color.red.opacity(0.2) : Color.blue.opacity(0.2))
             .cornerRadius(20.0)
         }
-        .frame(width: 180, height: 250)
+        .frame(width: 180)
         .padding(.trailing, 10)
     }
 }
 
-
 struct FridgeReminderView_Preview: PreviewProvider {
     @State static var editingItem: FoodItem? = nil
-
+    
     static var previews: some View {
         FridgeReminderView(foodItemStore: FoodItemStore(), editingItem: $editingItem)
             .environmentObject(FoodItemStore())

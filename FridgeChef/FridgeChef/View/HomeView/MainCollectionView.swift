@@ -19,7 +19,6 @@ struct MainCollectionView: View {
     @State private var showingRecipeSheet = false
     @State private var editingItem: FoodItem?
     @State private var selectedRecipe: Recipe?
-    @State private var offsetX: CGFloat = -20
     @State private var isScaledUp = false
     
     var body: some View {
@@ -34,7 +33,7 @@ struct MainCollectionView: View {
                         SectionTitleView(title: "⏰ Fridge Updates")
                             .padding(.horizontal)
                         
-                        FridgeReminderView(foodItemStore: FoodItemStore(), editingItem: $editingItem)
+                        FridgeReminderView(foodItemStore: foodItemStore, editingItem: $editingItem)
                         
                         SectionTitleView(title: "📚 Favorite Recipe")
                             .padding(.horizontal)
@@ -64,7 +63,6 @@ struct MainCollectionView: View {
                 }
                 .scrollIndicators(.hidden)
                 .padding(.top, 20)
-                .scrollIndicators(.hidden)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -78,10 +76,6 @@ struct MainCollectionView: View {
                             .frame(width: 250, height: 180)
                             .padding(.top)
                     }
-                    
-                    //                    ToolbarItem(placement: .navigationBarLeading) {
-                    //                        notificationButton
-                    //                    }
                 }
                 .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
                 
@@ -224,7 +218,6 @@ struct MainCollectionView: View {
         foodItemStore.foodItems.filter { $0.daysRemaining < 0 }.count
     }
 }
-
 
 struct MainCollectionView_Previews: PreviewProvider {
     static var previews: some View {

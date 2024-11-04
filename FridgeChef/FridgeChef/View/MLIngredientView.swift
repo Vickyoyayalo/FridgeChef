@@ -12,10 +12,12 @@ import SDWebImageSwiftUI
 
 struct MLIngredientView: View {
     @StateObject var viewModel: MLIngredientViewModel
-    var onSave: ((Ingredient) -> Void)?
-    var editingFoodItem: Ingredient?
     @Environment(\.dismiss) var dismiss
     @ObservedObject var foodItemStore: FoodItemStore
+    private let timer = Timer.publish(every: 86400, on: .main, in: .common).autoconnect()
+    
+    var onSave: ((Ingredient) -> Void)?
+    var editingFoodItem: Ingredient?
     
     let storageOptions = ["Fridge", "Freezer"]
     
@@ -89,15 +91,18 @@ struct MLIngredientView: View {
                             Text("Name")
                                 .font(.custom("ArialRoundedMTBold", size: 18))
                             HStack {
-                                TextField("Detect Image", text: $viewModel.recognizedText)
-                                    .padding()
+                                TextEditor(text: $viewModel.recognizedText)
+                                    .scrollContentBackground(.hidden)
+                                    .padding(6)
+                                    .background(Color.clear)
+                                    .cornerRadius(8)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 8)
                                             .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                                     )
                             }
-                            .frame(maxWidth: .infinity)
-                            
+                            .frame(height: 44)
+
                             Text("Quantity")
                                 .font(.custom("ArialRoundedMTBold", size: 18))
                             TextField("Please insert numbers", text: $viewModel.quantity)
@@ -119,7 +124,7 @@ struct MLIngredientView: View {
                                 )
                         }
                         .padding(.horizontal)
-                      
+                        
                         Button(action: {
                             viewModel.saveIngredient()
                             dismiss()
@@ -137,13 +142,13 @@ struct MLIngredientView: View {
                         .alert(isPresented: $viewModel.isSavedAlertPresented) {
                             Alert(title: Text("Success"), message: Text("Saved the ingredient!"), dismissButton: .default(Text("OK")))
                         }
-                       
+                        
                         VStack(alignment: .leading, spacing: 20) {
-                       
+                            
                             Text("👨🏽‍🍳 Summary List....")
                                 .font(.custom("ArialRoundedMTBold", size: 18))
                                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                           
+                            
                             VStack(alignment: .leading, spacing: 10) {
                                 Text("🥬 Fridge Items")
                                     .font(.headline)

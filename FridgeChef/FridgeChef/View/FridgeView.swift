@@ -220,10 +220,9 @@ struct FridgeView: View {
         )
         
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == ingredient.id }) {
-            // Update existing item in local array
+           
             foodItemStore.foodItems[index] = foodItem
-            
-            // Update in Firestore
+          
             var updatedFields: [String: Any] = [
                 "name": foodItem.name,
                 "quantity": foodItem.quantity,
@@ -390,7 +389,7 @@ struct FridgeListView: View {
     
     var body: some View {
         List {
-            if !filteredFoodItems.filter { $0.status == .fridge }.isEmpty {
+            if !filteredFoodItems.filter({ $0.status == .fridge }).isEmpty {
                 Section(header:  HStack {
                     Image(uiImage: UIImage(named: "fridge") ?? UIImage(systemName: "refrigerator.fill")!)
                         .resizable()

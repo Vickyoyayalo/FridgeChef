@@ -32,12 +32,10 @@ enum Status: String, Codable {
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-  
         SimpleEntry(date: Date(), expiringItems: [], expiredItems: [])
     }
     
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> Void) {
-       
         let entry = SimpleEntry(date: Date(), expiringItems: mockExpiringItems(), expiredItems: mockExpiredItems())
         completion(entry)
     }
@@ -51,18 +49,16 @@ struct Provider: TimelineProvider {
         
         if let foodItemsData = sharedDefaults?.data(forKey: "foodItems") {
             if let decodedFoodItems = try? JSONDecoder().decode([SimpleFoodItem].self, from: foodItemsData) {
-              
                 expiringItems = decodedFoodItems.filter { $0.daysRemaining <= 3 && $0.daysRemaining >= 0 && ($0.status == .fridge || $0.status == .freezer) }
                 expiredItems = decodedFoodItems.filter { $0.daysRemaining < 0 && ($0.status == .fridge || $0.status == .freezer) }
             }
         }
-
+        
         let entry = SimpleEntry(date: currentDate, expiringItems: expiringItems, expiredItems: expiredItems)
-       
         let timeline = Timeline(entries: [entry], policy: .after(Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!))
         completion(timeline)
     }
-
+    
     func mockExpiringItems() -> [SimpleFoodItem] {
         return [
             SimpleFoodItem(id: UUID().uuidString, name: "Milk", quantity: 1.0, unit: "Liter", daysRemaining: 2, status: .fridge),
@@ -95,7 +91,6 @@ struct FridgeChefWidgetEntryView: View {
                 }
             } else {
                 switch widgetFamily {
-                    
                 case .systemSmall:
                     VStack(alignment: .leading, spacing: 10) {
                         if let firstExpiring = entry.expiringItems.first {
@@ -126,7 +121,7 @@ struct FridgeChefWidgetEntryView: View {
                 case .systemMedium:
                     let monsterImages = ["mapmonster", "discomonster1", "discomonster2", "discomonster3", "discomonster4", "discomonster5"]
                     let randomMonsterImage = monsterImages.randomElement() ?? "mapmonster"
-
+                    
                     ZStack {
                         VStack(alignment: .leading, spacing: 5) {
                             // Expiring soon section
@@ -147,7 +142,7 @@ struct FridgeChefWidgetEntryView: View {
                                         .foregroundColor(.gray)
                                 }
                             }
-
+                            
                             // Expired section
                             if !entry.expiredItems.isEmpty {
                                 HStack(alignment: .center, spacing: 5) {
@@ -169,7 +164,7 @@ struct FridgeChefWidgetEntryView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.leading, 0)
-
+                        
                         VStack {
                             Spacer()
                             HStack {
@@ -182,7 +177,7 @@ struct FridgeChefWidgetEntryView: View {
                         }
                         .padding([.bottom], 20)
                     }
-
+                    
                 default:
                     Text("Widget not supported.")
                 }
@@ -215,11 +210,9 @@ struct FridgeChefWidget: Widget {
 struct FridgeChefWidget_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            // Preview for systemSmall
             FridgeChefWidgetEntryView(entry: SimpleEntry(date: Date(), expiringItems: Provider().mockExpiringItems(), expiredItems: Provider().mockExpiredItems()))
                 .previewContext(WidgetPreviewContext(family: .systemSmall))
             
-            // Preview for systemMedium
             FridgeChefWidgetEntryView(entry: SimpleEntry(date: Date(), expiringItems: Provider().mockExpiringItems(), expiredItems: Provider().mockExpiredItems()))
                 .previewContext(WidgetPreviewContext(family: .systemMedium))
         }

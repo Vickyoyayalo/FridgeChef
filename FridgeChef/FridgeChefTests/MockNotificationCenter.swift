@@ -12,10 +12,12 @@ import UserNotifications
 class MockNotificationCenter: NotificationCenterProtocol {
     var addCallCount = 0
     var lastAddedRequest: UNNotificationRequest?
-
+    var requests: [UNNotificationRequest] = []
+    
     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)? = nil) {
         addCallCount += 1
         lastAddedRequest = request
-        completionHandler?(nil) 
+        requests.append(request)
+        completionHandler?(nil)
     }
 }

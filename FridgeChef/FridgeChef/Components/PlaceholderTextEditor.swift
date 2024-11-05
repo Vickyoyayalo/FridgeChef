@@ -16,7 +16,7 @@ struct PlaceholderTextEditor: View {
     var body: some View {
         ZStack(alignment: .leading) {
             TextEditor(text: $text)
-                .onChange(of: text) { newValue, _ in
+                .onChange(of: text) {
                     calculateHeight()
                 }
                 .frame(minHeight: dynamicHeight, maxHeight: dynamicHeight)

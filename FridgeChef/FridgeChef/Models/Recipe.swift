@@ -18,7 +18,7 @@ struct Recipe: Identifiable, Codable, Equatable, Hashable {
     let summary: String
     var isFavorite: Bool = false
     let dishTypes: [String]
-
+    
     enum CodingKeys: String, CodingKey {
         case id
         case title
@@ -122,7 +122,7 @@ enum ActiveAlert: Identifiable {
     case ingredient(String)
     case accumulation(ParsedIngredient)
     case regular(title: String, message: String)
-
+    
     var id: String {
         switch self {
         case .error(let errorMessage):

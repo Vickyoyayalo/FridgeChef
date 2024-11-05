@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-//MARK: -UIColor
+// MARK: - UIColor
 
 extension UIColor {
     convenience init(hex: String) {
@@ -30,12 +30,11 @@ extension UIColor {
     }
 }
 
-//MARK: -Color
+// MARK: - Color
 
 extension Color {
     static func customColor(named name: String) -> Color {
         return Color(UIColor(named: name) ?? .systemRed)
     }
 }
-
 

@@ -17,13 +17,13 @@ struct FridgeChefWidgetProvider: TimelineProvider {
     func placeholder(in context: Context) -> FridgeChefWidgetEntry {
         FridgeChefWidgetEntry(date: Date(), ingredientName: "No Expiring Items")
     }
-
-    func getSnapshot(in context: Context, completion: @escaping (FridgeChefWidgetEntry) -> ()) {
+    
+    func getSnapshot(in context: Context, completion: @escaping (FridgeChefWidgetEntry) -> Void) {
         let entry = FridgeChefWidgetEntry(date: Date(), ingredientName: "Carrots expiring in 2 days")
         completion(entry)
     }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<FridgeChefWidgetEntry>) -> ()) {
+    
+    func getTimeline(in context: Context, completion: @escaping (Timeline<FridgeChefWidgetEntry>) -> Void) {
         var entries: [FridgeChefWidgetEntry] = []
         let currentDate = Date()
         
@@ -39,7 +39,7 @@ struct FridgeChefWidgetProvider: TimelineProvider {
 
 struct FridgeChefWidgetView: View {
     var entry: FridgeChefWidgetProvider.Entry
-
+    
     var body: some View {
         VStack {
             Text("FridgeChef")

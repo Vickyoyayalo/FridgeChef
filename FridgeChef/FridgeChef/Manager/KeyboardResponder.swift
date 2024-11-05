@@ -26,7 +26,7 @@ class KeyboardResponder: ObservableObject {
         NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
             .map { _ in CGFloat(0) }
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] height in
+            .sink(receiveValue: { [weak self] in
                 self?.currentHeight = 0
             })
             .store(in: &cancellables)

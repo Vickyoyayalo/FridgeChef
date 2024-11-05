@@ -14,8 +14,8 @@ struct ParsedRecipe: Codable, CustomStringConvertible {
     var link: String?
     let tips: String?
     let unparsedContent: String?
-//    let language: String
-
+    //    let language: String
+    
     var description: String {
         return """
         ParsedRecipe(

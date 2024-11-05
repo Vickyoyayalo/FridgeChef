@@ -114,9 +114,8 @@ struct TranslationDictionary {
     ]
 }
 
-
 //import Foundation
-//
+
 //struct TranslationDictionary {
 //    static let foodNames: [String: String] = [
 //        "Apple": "蘋果",
@@ -223,4 +222,3 @@ struct TranslationDictionary {
 //        "yolk_pastry": "蛋黃酥"
 //    ]
 //}
-//

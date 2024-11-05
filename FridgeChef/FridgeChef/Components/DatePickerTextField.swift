@@ -27,7 +27,7 @@ struct DatePickerTextField: View {
         .background(Color.clear)
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingDatePicker) {
-            VStack{
+            VStack {
                 DatePicker("Choose a date!", selection: $date, displayedComponents: .date)
                     .datePickerStyle(GraphicalDatePickerStyle())
                     .environment(\.locale, Locale(identifier: "en-US"))

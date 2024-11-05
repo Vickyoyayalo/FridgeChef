@@ -17,8 +17,8 @@ struct IngredientRow: View {
     
     var body: some View {
         Button(action: {
-            addAction(ingredient)
-        }) {
+            _ = addAction(ingredient)
+        }, label: {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(ingredient.name)
@@ -43,9 +43,8 @@ struct IngredientRow: View {
                 }
             }
             .padding(.vertical, 5)
-        }
+        })
         .buttonStyle(PlainButtonStyle())
-
     }
 }
 

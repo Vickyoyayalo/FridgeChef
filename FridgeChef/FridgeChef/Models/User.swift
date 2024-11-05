@@ -14,7 +14,7 @@ struct User: Identifiable, Codable {
     var name: String
     var email: String
     var password: String
-
+    
     init(id: String? = nil, avatar: String?, name: String, email: String, password: String) {
         self.id = id
         self.avatar = avatar

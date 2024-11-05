@@ -35,11 +35,11 @@ class FoodItemStore: ObservableObject {
         fetchFoodItems()
         startUpdateTimer()
     }
-
+    
     func updateWidget() {
         WidgetCenter.shared.reloadTimelines(ofKind: "FridgeChefWidget")
     }
-
+    
     func saveFoodItemsToUserDefaults(_ foodItems: [FoodItem]) {
         let sharedDefaults = UserDefaults(suiteName: "group.com.vickyoyaya.FridgeChef")
         
@@ -91,13 +91,13 @@ class FoodItemStore: ObservableObject {
             }
         }
     }
-
+    
     private func startUpdateTimer() {
         updateTimer = Timer.scheduledTimer(withTimeInterval: 86400, repeats: true) { [weak self] _ in
             self?.updateDaysRemaining()
         }
     }
-
+    
     private func updateDaysRemaining() {
         let currentDate = Date()
         for index in foodItems.indices {

@@ -96,7 +96,7 @@ Explore all our cute function.
 
 
 ## Author
-￼
+
 If you'd like to learn more about this project or discuss potential improvements, feel free to reach out:
 
 - **Name**: Wei-Chi Liu

@@ -47,63 +47,63 @@ class ChatGPTAPI {
         self.systemMessage = APIMessage(role: "system", content: newPrompt)
     }
     
-        func sendMessage(_ text: String) async throws -> String {
-            var messages = [systemMessage]
-            let recentHistory = historyList.suffix(20)
-            let validHistory = recentHistory.filter { !$0.content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-            messages += validHistory
-            messages.append(APIMessage(role: "user", content: text))
-            
-            for message in messages {
-                print("\(message.role): \(message.content)")
-            }
-            
-            let requestBody = Request(
-                model: model,
-                messages: messages,
-                temperature: temperature,
-                top_p: 0.9,
-                max_tokens: 2500,
-                stream: false
-            )
-            var urlRequest = self.urlRequest
-            urlRequest.httpBody = try JSONEncoder().encode(requestBody)
-
-            let (data, response) = try await urlSession.data(for: urlRequest)
-
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw "Invalid response"
-            }
-
-            guard 200...299 ~= httpResponse.statusCode else {
-                var errorMessage = "Bad Response: \(httpResponse.statusCode)"
-                if let errorResponse = try? jsonDecoder.decode(ErrorRootResponse.self, from: data).error {
-                    errorMessage.append(",\n\(errorResponse.message)")
-                }
-                throw errorMessage
-            }
-
-            let completionResponse = try jsonDecoder.decode(CompletionResponse.self, from: data)
-            guard let responseText = completionResponse.choices.first?.message.content else {
-                throw "No response from assistant"
-            }
-
-            appendToHistoryList(userText: text, responseText: responseText)
-
-            return responseText
+    func sendMessage(_ text: String) async throws -> String {
+        var messages = [systemMessage]
+        let recentHistory = historyList.suffix(20)
+        let validHistory = recentHistory.filter { !$0.content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        messages += validHistory
+        messages.append(APIMessage(role: "user", content: text))
+        
+        for message in messages {
+            print("\(message.role): \(message.content)")
         }
-
-       private func generateRequestBody(messages: [APIMessage]) -> Data? {
-           let request = Request(
-               model: model,
-               messages: messages,
-               temperature: temperature,
-               top_p: 0.9,
-               max_tokens: 2500,
-               stream: false
-           )
-           return try? JSONEncoder().encode(request)
-       }
+        
+        let requestBody = Request(
+            model: model,
+            messages: messages,
+            temperature: temperature,
+            top_p: 0.9,
+            max_tokens: 2500,
+            stream: false
+        )
+        var urlRequest = self.urlRequest
+        urlRequest.httpBody = try JSONEncoder().encode(requestBody)
+        
+        let (data, response) = try await urlSession.data(for: urlRequest)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw "Invalid response"
+        }
+        
+        guard 200...299 ~= httpResponse.statusCode else {
+            var errorMessage = "Bad Response: \(httpResponse.statusCode)"
+            if let errorResponse = try? jsonDecoder.decode(ErrorRootResponse.self, from: data).error {
+                errorMessage.append(",\n\(errorResponse.message)")
+            }
+            throw errorMessage
+        }
+        
+        let completionResponse = try jsonDecoder.decode(CompletionResponse.self, from: data)
+        guard let responseText = completionResponse.choices.first?.message.content else {
+            throw "No response from assistant"
+        }
+        
+        appendToHistoryList(userText: text, responseText: responseText)
+        
+        return responseText
+    }
+    
+    private func generateRequestBody(messages: [APIMessage]) -> Data? {
+        let request = Request(
+            model: model,
+            messages: messages,
+            temperature: temperature,
+            top_p: 0.9,
+            max_tokens: 2500,
+            stream: false
+        )
+        return try? JSONEncoder().encode(request)
+    }
     private func generateMessages(from text: String) -> [APIMessage] {
         var messages = [systemMessage]
         let recentHistory = historyList.suffix(20)
@@ -114,7 +114,7 @@ class ChatGPTAPI {
         
         return messages
     }
-
+    
     func appendToHistoryList(userText: String?, responseText: String?) {
         if let userText = userText, !userText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             historyList.append(APIMessage(role: "user", content: userText))
@@ -127,7 +127,7 @@ class ChatGPTAPI {
             historyList.removeFirst(historyList.count - 20)
         }
     }
-
+    
     struct Request: Codable {
         let model: String
         let messages: [APIMessage]

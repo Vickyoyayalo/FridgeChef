@@ -14,7 +14,7 @@ struct FridgeChefWidgetAttributes: ActivityAttributes {
         // Dynamic stateful properties about your activity go here!
         var emoji: String
     }
-
+    
     // Fixed non-changing properties about your activity go here!
     var name: String
 }
@@ -28,7 +28,7 @@ struct FridgeChefWidgetLiveActivity: Widget {
             }
             .activityBackgroundTint(Color.cyan)
             .activitySystemActionForegroundColor(Color.black)
-
+            
         } dynamicIsland: { context in
             DynamicIsland {
                 // Expanded UI goes here.  Compose the expanded UI through
@@ -65,15 +65,15 @@ extension FridgeChefWidgetAttributes {
 extension FridgeChefWidgetAttributes.ContentState {
     fileprivate static var smiley: FridgeChefWidgetAttributes.ContentState {
         FridgeChefWidgetAttributes.ContentState(emoji: "😀")
-     }
-     
-     fileprivate static var starEyes: FridgeChefWidgetAttributes.ContentState {
-         FridgeChefWidgetAttributes.ContentState(emoji: "🤩")
-     }
+    }
+    
+    fileprivate static var starEyes: FridgeChefWidgetAttributes.ContentState {
+        FridgeChefWidgetAttributes.ContentState(emoji: "🤩")
+    }
 }
 
 #Preview("Notification", as: .content, using: FridgeChefWidgetAttributes.preview) {
-   FridgeChefWidgetLiveActivity()
+    FridgeChefWidgetLiveActivity()
 } contentStates: {
     FridgeChefWidgetAttributes.ContentState.smiley
     FridgeChefWidgetAttributes.ContentState.starEyes

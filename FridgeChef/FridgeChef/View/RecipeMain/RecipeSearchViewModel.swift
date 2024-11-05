@@ -11,11 +11,13 @@ import FirebaseFirestore
 import FirebaseAuth
 
 // MARK: - ErrorMessage Struct
+
 struct ErrorMessage: Identifiable {
     let id = UUID()
     let message: String
 }
 // MARK: - ViewModel
+
 class RecipeSearchViewModel: ObservableObject {
     private let db = Firestore.firestore()
     @Published var recipes: [Recipe] = []
@@ -131,7 +133,6 @@ class RecipeSearchViewModel: ObservableObject {
         }
         
         let favoritesRef = db.collection("users").document(userId).collection("favorites")
-        
         favoritesRef.document("\(recipeId)").getDocument { document, error in
             if let document = document, document.exists {
                 DispatchQueue.main.async {
@@ -207,7 +208,7 @@ class RecipeSearchViewModel: ObservableObject {
         }
         
         if foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) != nil {
-          
+            
             DispatchQueue.main.async {
                 self.showAlertClosure?(.accumulation(ingredient))
             }
@@ -248,7 +249,7 @@ class RecipeSearchViewModel: ObservableObject {
         
         let existingItem = foodItemStore.foodItems[existingIndex]
         if accumulate {
-          
+            
             let newQuantity = existingItem.quantity + ingredient.quantity
             DispatchQueue.main.async {
                 foodItemStore.foodItems[existingIndex].quantity = newQuantity
@@ -264,7 +265,7 @@ class RecipeSearchViewModel: ObservableObject {
                 }
             }
         } else {
-           
+            
             DispatchQueue.main.async {
                 self.showAlertClosure?(.regular(
                     title: "No Changes Made",
@@ -304,10 +305,11 @@ class RecipeSearchViewModel: ObservableObject {
                     self?.checkIfFavorite(recipeId: recipeId)
                     details.isFavorite = self?.recipes.first(where: { $0.id == recipeId })?.isFavorite ?? false
                     self?.selectedRecipe = details
-                case .failure(let error):
+                case .failure(_):
                     self?.errorMessage = ErrorMessage(message: "Failed to fetch recipe details.")
                 }
             }
         }
     }
 }
+

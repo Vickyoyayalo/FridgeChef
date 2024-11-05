@@ -12,3 +12,4 @@ class AlertService {
         return Alert(title: Text(title), message: Text(message), dismissButton: .default(Text("Sure")))
     }
 }
+

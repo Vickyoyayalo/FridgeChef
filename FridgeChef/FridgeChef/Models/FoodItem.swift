@@ -17,14 +17,14 @@ struct FoodItem: Identifiable, Codable, Equatable {
     var imageURL: String?
     
     var uiImage: UIImage? {
-            get {
-                guard let imageURL = imageURL else { return nil }
-                if let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
-                    return UIImage(data: data)
-                }
-                return nil
+        get {
+            guard let imageURL = imageURL else { return nil }
+            if let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
+                return UIImage(data: data)
             }
+            return nil
         }
+    }
     
     enum CodingKeys: String, CodingKey {
         case id, name, quantity, unit, status, daysRemaining, expirationDate, imageURL
@@ -65,7 +65,7 @@ extension FoodItem {
             }
         }
     }
-
+    
     var daysRemainingColor: Color {
         switch status {
         case .toBuy:
@@ -92,7 +92,7 @@ extension FoodItem {
             }
         }
     }
-
+    
     var daysRemainingFontWeight: Font.Weight {
         switch status {
         case .toBuy:
@@ -116,8 +116,7 @@ struct FoodItemRow: View {
         HStack {
             if let imageURLString = item.imageURL, let imageURL = URL(string: imageURLString) {
                 WebImage(url: imageURL)
-                    .onSuccess { image, data, cacheType in
-                    }
+                    .onSuccess {_,_,_ in }
                     .resizable()
                     .scaledToFill()
                     .frame(width: 50, height: 50)
@@ -152,32 +151,32 @@ struct FoodItemRow: View {
             Spacer()
             
             HStack(spacing: 15) {
-
+                
                 if let moveToGrocery = moveToGrocery {
                     Button(action: {
                         moveToGrocery(item)
-                    }) {
+                    }, label: {
                         Image(systemName: "cart.fill")
                             .foregroundColor(.green)
-                    }
+                    })
                 }
                 
                 if let moveToFridge = moveToFridge {
                     Button(action: {
                         moveToFridge(item)
-                    }) {
+                    }, label: {
                         Image(systemName: "refrigerator.fill")
                             .foregroundColor(.orange)
-                    }
+                    })
                 }
                 
                 if let moveToFreezer = moveToFreezer {
                     Button(action: {
                         moveToFreezer(item)
-                    }) {
+                    }, label: {
                         Image(systemName: "snowflake")
                             .foregroundColor(.blue)
-                    }
+                    })
                 }
             }
             .buttonStyle(PlainButtonStyle())

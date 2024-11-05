@@ -13,7 +13,7 @@ class GroceryListStore: ObservableObject {
     @Published var groceryItems: [FoodItem] = []
     private var listener: ListenerRegistration?
     private let firestoreService = FirestoreService()
-    let listName: String 
+    let listName: String
     
     init(listName: String = "default") {
         self.listName = listName

@@ -11,7 +11,7 @@ import SwiftUI
 struct BulletPointView: View {
     let text: String
     let primaryColor: Color
-
+    
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text("•")
@@ -24,4 +24,3 @@ struct BulletPointView: View {
         }
     }
 }
-

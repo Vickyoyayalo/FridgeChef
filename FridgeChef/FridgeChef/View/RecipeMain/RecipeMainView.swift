@@ -13,7 +13,7 @@ struct RecipeMainView: View {
     @State private var showingAddGroceryForm = false
     @State private var searchQuery: String = ""
     @State private var isShowingDefaultPage = true
-    @State private var selectedRecipe: Recipe? = nil
+    @State private var selectedRecipe: Recipe?
     
     var showEditAndAddButtons: Bool = false
     
@@ -106,11 +106,11 @@ struct RecipeMainView: View {
     var addButton: some View {
         Button(action: {
             showingAddGroceryForm = true
-        }) {
+        }, label: {
             Image(systemName: "plus")
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 .bold()
-        }
+        })
     }
 }
 

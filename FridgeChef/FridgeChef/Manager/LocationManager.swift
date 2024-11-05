@@ -37,7 +37,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
             }
         }
     }
-
+    
     // MARK: - CLLocationManagerDelegate Methods
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
@@ -61,13 +61,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
             self.placesFetcher.fetchNearbyPlaces(coordinate: location.coordinate)
         }
     }
-
+    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         DispatchQueue.main.async {
             print("Failed to get user location: \(error.localizedDescription)")
         }
     }
-
+    
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         DispatchQueue.main.async {
             switch manager.authorizationStatus {

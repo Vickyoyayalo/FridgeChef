@@ -12,7 +12,7 @@ struct FloatingMapButton: View {
     @State private var isScaledUp = false
     @State private var showingAlert = false
     private let alertService = AlertService()
-
+    
     var body: some View {
         VStack {
             Spacer()
@@ -73,12 +73,12 @@ struct FloatingMapButton_Previews: PreviewProvider {
 struct StatefulPreviewWrapper<Content: View>: View {
     @State private var value: Bool
     var content: (Binding<Bool>) -> Content
-
+    
     init(_ initialValue: Bool, @ViewBuilder content: @escaping (Binding<Bool>) -> Content) {
         _value = State(initialValue: initialValue)
         self.content = content
     }
-
+    
     var body: some View {
         content($value)
     }

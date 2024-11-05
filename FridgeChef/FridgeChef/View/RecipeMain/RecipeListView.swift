@@ -24,7 +24,7 @@ struct RecipeListView: View {
             ForEach(displayedRecipes.indices, id: \.self) { index in
                 Button(action: {
                     selectedRecipe = displayedRecipes[index]
-                }) {
+                }, label: {
                     RecipeCollectionView(
                         recipe: displayedRecipes[index],
                         toggleFavorite: {
@@ -35,7 +35,7 @@ struct RecipeListView: View {
                     )
                     .padding(.horizontal)
                     .padding(.vertical, 4)
-                }
+                })
             }
         }
     }
@@ -46,3 +46,4 @@ struct RecipeListView_Previews: PreviewProvider {
         RecipeListView(viewModel: RecipeSearchViewModel(), selectedRecipe: .constant(nil), searchText: .constant(""))
     }
 }
+

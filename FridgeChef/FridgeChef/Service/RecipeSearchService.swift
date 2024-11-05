@@ -8,6 +8,7 @@
 import Foundation
 
 // MARK: - APIErrorResponse
+
 struct APIErrorResponse: Codable {
     let code: Int?
     let message: String?
@@ -15,6 +16,7 @@ struct APIErrorResponse: Codable {
 }
 
 // MARK: - RecipeSearchService
+
 class RecipeSearchService {
     private let baseURL = "https://api.spoonacular.com/recipes"
     

@@ -31,18 +31,18 @@ struct FridgeReminderView: View {
                             Button(action: {
                                 selectedFoodItem = item
                                 showingSheet = true
-                            }) {
+                            }, label: {
                                 FridgeRecipeCard(foodItem: item, isExpired: false)
-                            }
+                            })
                         }
                         
                         ForEach(foodItemStore.expiredItems) { item in
                             Button(action: {
                                 selectedFoodItem = item
                                 showingSheet = true
-                            }) {
+                            }, label: {
                                 FridgeRecipeCard(foodItem: item, isExpired: true)
-                            }
+                            })
                         }
                     }
                     .padding(.horizontal, 16)
@@ -162,7 +162,7 @@ struct FridgeRecipeCard: View {
 }
 
 struct FridgeReminderView_Preview: PreviewProvider {
-    @State static var editingItem: FoodItem? = nil
+    @State static var editingItem: FoodItem?
     
     static var previews: some View {
         FridgeReminderView(foodItemStore: FoodItemStore(), editingItem: $editingItem)

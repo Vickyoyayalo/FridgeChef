@@ -12,6 +12,6 @@ import SwiftUI
 struct FridgeChefWidgetBundle: WidgetBundle {
     var body: some Widget {
         FridgeChefWidget()
-//        FridgeChefWidgetLiveActivity()
+        //        FridgeChefWidgetLiveActivity()
     }
 }

@@ -12,10 +12,10 @@ struct RecipeRowView: View {
     let toggleFavorite: () -> Void
     @State private var animate = false
     @ObservedObject var viewModel: RecipeSearchViewModel
-
+    
     var body: some View {
         VStack(alignment: .leading) {
-       
+            
             if let imageUrl = recipe.image, let url = URL(string: imageUrl) {
                 AsyncImage(url: url) { phase in
                     switch phase {
@@ -52,7 +52,7 @@ struct RecipeRowView: View {
                     .cornerRadius(10)
                     .shadow(radius: 5)
             }
-
+            
             HStack {
                 
                 VStack(alignment: .leading, spacing: 5) {
@@ -60,7 +60,7 @@ struct RecipeRowView: View {
                         .foregroundColor(Color(UIColor(named: "SecondaryColor") ?? UIColor.blue))
                         .font(.custom("ArialRoundedMTBold", size: 15))
                         .padding(.leading, 20)
-                        
+                    
                     Text(recipe.title)
                         .font(.custom("ArialRoundedMTBold", size: 20))
                         .foregroundColor(.primary)
@@ -68,9 +68,9 @@ struct RecipeRowView: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.leading, 20)
                 }
-
+                
                 Spacer()
-
+                
                 Button(action: {
                     withAnimation(.easeInOut(duration: 0.3)) {
                         toggleFavorite()
@@ -79,13 +79,13 @@ struct RecipeRowView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         animate = false
                     }
-                }) {
+                }, label: {
                     Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
                         .foregroundColor(Color(UIColor(named: recipe.isFavorite ? "NavigationBarTitle" : "GrayColor") ?? UIColor.gray))
                         .scaleEffect(animate ? 1.5 : 1.0)
                         .opacity(animate ? 0.5 : 1.0)
                         .animation(.easeInOut(duration: 0.3), value: animate)
-                }
+                })
                 .buttonStyle(PlainButtonStyle())
                 .padding(.trailing, 20)
             }
@@ -98,7 +98,7 @@ struct RecipeRowView: View {
                 .fill(Color.white.opacity(0.7))
         )
         .padding(.horizontal)
-        .padding(.vertical, 5) 
+        .padding(.vertical, 5)
         .shadow(radius: 5)
     }
 }

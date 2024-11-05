@@ -48,7 +48,7 @@ struct MainTabView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 TabView(selection: $selectedTabIndex) {
-                    // 使用傳入的 viewModel 和 foodItemStore 實例
+                    
                     MainCollectionView(viewModel: viewModel, foodItemStore: foodItemStore)
                         .tabItem {
                             Label("Main", systemImage: "heart.fill")

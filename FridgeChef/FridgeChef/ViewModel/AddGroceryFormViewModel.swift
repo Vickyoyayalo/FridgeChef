@@ -10,7 +10,6 @@ import SwiftUI
 import Combine
 
 class AddGroceryFormViewModel: ObservableObject {
-
     @Published var name: String = ""
     @Published var type: String = ""
     @Published var location: String = ""
@@ -29,3 +28,4 @@ class AddGroceryFormViewModel: ObservableObject {
         }
     }
 }
+

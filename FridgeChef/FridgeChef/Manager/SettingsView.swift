@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("selectedLanguage") var selectedLanguage: String = "zh"
-
+    
     var body: some View {
         VStack {
             Text("Select Language")
@@ -18,7 +18,7 @@ struct SettingsView: View {
                 Text("English").tag("en")
                 Text("Chinese").tag("zh")
             }
-            .pickerStyle(SegmentedPickerStyle()) 
+            .pickerStyle(SegmentedPickerStyle())
         }
         .padding()
     }

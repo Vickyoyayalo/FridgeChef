@@ -10,7 +10,7 @@ import SwiftUI
 struct ActivityView: UIViewControllerRepresentable {
     
     var activityItems: [Any]
-    var applicationActivities: [UIActivity]? = nil
+    var applicationActivities: [UIActivity]?
     
     func makeUIViewController(context: Context) -> some UIViewController {
         let activityController = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)

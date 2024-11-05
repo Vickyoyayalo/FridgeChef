@@ -13,20 +13,21 @@ class LoginDetailViewModel: ObservableObject {
     @Published var showAlert: Bool = false
     @Published var alertMessage: String = ""
     @Published var uid: String?
-
+    
     func login(completion: @escaping () -> Void) {
         guard !email.isEmpty, !password.isEmpty else {
             self.alertMessage = "Please filled the Email and Password."
             self.showAlert = true
             return
         }
-        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+        
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] _, error in
             DispatchQueue.main.async {
                 if let error = error {
                     self?.alertMessage = error.localizedDescription
                     self?.showAlert = true
                 } else {
-                    completion()  
+                    completion()
                 }
             }
         }

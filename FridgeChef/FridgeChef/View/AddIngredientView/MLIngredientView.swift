@@ -102,7 +102,7 @@ struct MLIngredientView: View {
                                     )
                             }
                             .frame(height: 44)
-
+                            
                             Text("Quantity")
                                 .font(.custom("ArialRoundedMTBold", size: 18))
                             TextField("Please insert numbers", text: $viewModel.quantity)
@@ -128,7 +128,7 @@ struct MLIngredientView: View {
                         Button(action: {
                             viewModel.saveIngredient()
                             dismiss()
-                        }) {
+                        }, label: {
                             Text("Save")
                                 .font(.custom("ArialRoundedMTBold", size: 20))
                                 .padding()
@@ -137,7 +137,7 @@ struct MLIngredientView: View {
                                 .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
-                        }
+                        })
                         .padding()
                         .alert(isPresented: $viewModel.isSavedAlertPresented) {
                             Alert(title: Text("Success"), message: Text("Saved the ingredient!"), dismissButton: .default(Text("OK")))
@@ -234,10 +234,11 @@ struct MLIngredientView: View {
                 .navigationTitle("Add Ingredient")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: { dismiss() }) {
+                        Button(action: { dismiss()
+                        }, label: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-                        }
+                        })
                     }
                 }
                 .alert(isPresented: $viewModel.showPhotoPermissionAlert) {
@@ -293,13 +294,13 @@ struct MLIngredientView: View {
 struct MLIngredientView_Previews: PreviewProvider {
     static var previews: some View {
         let foodItemStore = FoodItemStore()
-        let viewModel = MLIngredientViewModel()
+        let MLIngredientViewModel = MLIngredientViewModel()
         MLIngredientView(
             onSave: { ingredient in
                 print("Preview Save: \(ingredient)")
             },
             editingFoodItem: nil,
-            foodItemStore: foodItemStore // 傳入 foodItemStore
+            foodItemStore: foodItemStore
         )
     }
 }

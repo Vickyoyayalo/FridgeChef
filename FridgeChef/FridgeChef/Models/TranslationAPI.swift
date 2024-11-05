@@ -26,7 +26,7 @@ func translate(text: String, from sourceLanguage: String = "zh", to targetLangua
     request.httpBody = try? JSONSerialization.data(withJSONObject: bodyParams, options: [])
     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
     
-    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+    let task = URLSession.shared.dataTask(with: request) { data, _, error in
         if let error = error {
             print("Translation error: \(error)")
             completion(nil)

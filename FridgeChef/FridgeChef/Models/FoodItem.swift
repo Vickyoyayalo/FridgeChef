@@ -116,8 +116,7 @@ struct FoodItemRow: View {
         HStack {
             if let imageURLString = item.imageURL, let imageURL = URL(string: imageURLString) {
                 WebImage(url: imageURL)
-                    .onSuccess { image, data, cacheType in
-                    }
+                    .onSuccess {_,_,_ in }
                     .resizable()
                     .scaledToFill()
                     .frame(width: 50, height: 50)
@@ -156,19 +155,19 @@ struct FoodItemRow: View {
                 if let moveToGrocery = moveToGrocery {
                     Button(action: {
                         moveToGrocery(item)
-                    }) {
+                    }, label: {
                         Image(systemName: "cart.fill")
                             .foregroundColor(.green)
-                    }
+                    })
                 }
                 
                 if let moveToFridge = moveToFridge {
                     Button(action: {
                         moveToFridge(item)
-                    }) {
+                    }, label: {
                         Image(systemName: "refrigerator.fill")
                             .foregroundColor(.orange)
-                    }
+                    })
                 }
                 
                 if let moveToFreezer = moveToFreezer {

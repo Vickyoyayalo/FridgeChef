@@ -4,28 +4,28 @@
 //
 //  Created by Vickyhereiam on 2024/9/16.
 //
+
 import SwiftUI
 
 struct SignUpView: View {
     @ObservedObject private var viewModel = UserViewModel()
     @State private var isShowingImagePicker = false
     @Environment(\.presentationMode) var presentationMode
-
+    
     var body: some View {
         CustomNavigationBarView(title: "") {
             VStack(spacing: 10) {
-                // App Logo
+                
                 Image("FridgeChefLogo")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 300, height: 100)
                     .padding(.top, 20)
                     .padding(.bottom, 5)
-
-                // User Avatar Button
+                
                 Button(action: {
                     self.isShowingImagePicker = true
-                }) {
+                }, label: {
                     if let image = viewModel.avatar {
                         Image(uiImage: image)
                             .resizable()
@@ -46,25 +46,21 @@ struct SignUpView: View {
                                 .padding(.top, 20)
                         }
                     }
-                }
-
-                // Name Field
+                })
+                
                 CustomTextField(placeholder: "Name", text: $viewModel.name)
-
-                // Email Field
+                
                 CustomTextField(placeholder: "Email", text: $viewModel.email, keyboardType: .emailAddress)
-
-                // Password Field
+                
                 SecureField("Password", text: $viewModel.password)
                     .padding()
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(8)
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.5), lineWidth: 1.5))
-
-                // Sign Up Button
+                
                 Button(action: {
                     viewModel.signUpUser()
-                }) {
+                }, label: {
                     Text("Sign Up")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -73,9 +69,9 @@ struct SignUpView: View {
                         .background(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                         .cornerRadius(12)
                         .shadow(radius: 5)
-                }
+                })
                 .padding(.top, 10)
-
+                
                 Spacer()
             }
             .padding()
@@ -86,9 +82,9 @@ struct SignUpView: View {
         .alert(isPresented: $viewModel.showAlert) {
             viewModel.alert
         }
-        .onChange(of: viewModel.isSignUpSuccessful) { success in
-            if success {
-                presentationMode.wrappedValue.dismiss() // 註冊成功後自動關閉當前頁面
+        .onChange(of: viewModel.isSignUpSuccessful) { newValue, _ in
+            if newValue {
+                presentationMode.wrappedValue.dismiss()
             }
         }
     }
@@ -98,7 +94,7 @@ struct CustomTextField: View {
     var placeholder: String
     @Binding var text: String
     var keyboardType: UIKeyboardType = .default
-
+    
     var body: some View {
         TextField(placeholder, text: $text)
             .padding()

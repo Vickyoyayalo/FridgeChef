@@ -48,7 +48,7 @@ struct LoginView: View {
                             .offset(x: offsetXEffect2)
                             .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
                             .onAppear {
-                                // 組合動畫
+                                
                                 withAnimation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
                                     offsetXEffect2 = 30
                                 }
@@ -107,13 +107,13 @@ struct LoginView: View {
                             .padding(.horizontal)
                             .contentShape(Rectangle())
                     })
-
+                    
                     // EULA Link
                     Link("End-User License Agreement (EULA)", destination: URL(string: "https://www.privacypolicies.com/live/3068621d-05a8-47a8-8321-28522fc642ed")!)
                         .font(.custom("ArialRoundedMTBold", size: 14))
                         .foregroundColor(.orange)
                         .padding(.top, 10)
-
+                    
                 }
                 .sheet(isPresented: $isShowingLoginDetail) {
                     LoginDetailView()
@@ -125,4 +125,3 @@ struct LoginView: View {
         }
     }
 }
-

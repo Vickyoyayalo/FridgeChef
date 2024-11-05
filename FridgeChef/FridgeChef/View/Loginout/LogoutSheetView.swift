@@ -36,7 +36,7 @@ struct LogoutSheetView: View {
                         .clipShape(Circle())
                         .shadow(radius: 5)
                         .padding()
-                        
+                    
                     Text(userName)
                         .font(.custom("ArialRoundedMTBold", size: 30))
                         .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
@@ -47,7 +47,7 @@ struct LogoutSheetView: View {
                 
                 Button(action: {
                     showLogoutAlert = true
-                }) {
+                }, label: {
                     HStack {
                         Image(systemName: "power.circle.fill")
                             .foregroundColor(.white)
@@ -61,7 +61,7 @@ struct LogoutSheetView: View {
                     .background(Color.red.opacity(0.7))
                     .cornerRadius(10)
                     .padding(.horizontal)
-                }
+                })
                 .alert(isPresented: $showLogoutAlert) {
                     Alert(
                         title: Text("Log Out"),
@@ -76,7 +76,7 @@ struct LogoutSheetView: View {
                 
                 Button(action: {
                     showDeleteAccountAlert = true
-                }) {
+                }, label: {
                     HStack {
                         Image(systemName: "trash.fill")
                             .foregroundColor(.white)
@@ -90,7 +90,7 @@ struct LogoutSheetView: View {
                     .background(Color.gray.opacity(0.7))
                     .cornerRadius(10)
                     .padding(.horizontal)
-                }
+                })
                 .alert(isPresented: $showDeleteAccountAlert) {
                     Alert(
                         title: Text("Delete Account"),
@@ -102,10 +102,10 @@ struct LogoutSheetView: View {
                         secondaryButton: .cancel()
                     )
                 }
-               
+                
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
-                }) {
+                }, label: {
                     Text("Cancel")
                         .foregroundColor(.white)
                         .padding()
@@ -113,7 +113,8 @@ struct LogoutSheetView: View {
                         .background(Color.blue.opacity(0.7))
                         .cornerRadius(10)
                         .padding(.horizontal)
-                }
+                })
+                
                 Spacer()
             }
             .padding()
@@ -128,19 +129,19 @@ struct LogoutSheetView: View {
                 viewModel: RecipeSearchViewModel(),
                 foodItemStore: FoodItemStore())
         }
-
+        
     }
-       
+    
     func resetAppPermissions() {
         let domain = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: domain)
         UserDefaults.standard.synchronize()
     }
-
+    
     private func loadUserInfo() {
         if let user = Auth.auth().currentUser {
             let db = Firestore.firestore()
-            db.collection("users").document(user.uid).getDocument { (document, error) in
+            db.collection("users").document(user.uid).getDocument { (document, _) in
                 if let document = document, document.exists {
                     if let isDeleted = document.data()?["isDeleted"] as? Bool, isDeleted {
                         logOut()
@@ -152,7 +153,7 @@ struct LogoutSheetView: View {
                             self.userName = user.displayName ?? "Foodie"
                         }
                         if let photoURL = user.photoURL {
-                            URLSession.shared.dataTask(with: photoURL) { data, response, error in
+                            URLSession.shared.dataTask(with: photoURL) { data, _, _ in
                                 if let data = data, let uiImage = UIImage(data: data) {
                                     DispatchQueue.main.async {
                                         self.userImage = Image(uiImage: uiImage)
@@ -165,7 +166,7 @@ struct LogoutSheetView: View {
             }
         }
     }
-
+    
     func saveUserNameToFirestore() {
         if let user = Auth.auth().currentUser {
             let db = Firestore.firestore()
@@ -201,7 +202,7 @@ struct LogoutSheetView: View {
                 if let error = error {
                     print("Error marking account as deleted: \(error.localizedDescription)")
                 } else {
-                   
+                    
                     user.delete { error in
                         if let error = error {
                             print("Failed to delete account: \(error.localizedDescription)")
@@ -215,7 +216,7 @@ struct LogoutSheetView: View {
             }
         }
     }
-
+    
     func markAccountAsDeleted(email: String, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
         
@@ -246,12 +247,12 @@ struct LogoutSheetView: View {
             }
         }
     }
-
+    
     func signInWithApple(email: String) {
-       
+        
         if let user = Auth.auth().currentUser {
             let newUID = user.uid
-           
+            
             linkNewUIDToOldData(newUID: newUID, email: email)
             saveUserNameToFirestore()
         }
@@ -290,7 +291,7 @@ struct LogoutSheetView: View {
                 let isDeleted = document.get("isDeleted") as? Bool ?? false
                 
                 if isDeleted {
-                  
+                    
                     db.collection("users").document(oldDocumentID).updateData(["uid": newUID, "isDeleted": false]) { error in
                         if let error = error {
                             print("Error updating UID: \(error)")
@@ -304,7 +305,7 @@ struct LogoutSheetView: View {
             }
         }
     }
-
+    
     func markAccountAsDeleted() {
         guard let userEmail = Auth.auth().currentUser?.email else { return }
         let db = Firestore.firestore()

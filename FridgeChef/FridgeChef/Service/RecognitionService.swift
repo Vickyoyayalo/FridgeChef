@@ -11,7 +11,7 @@ import UIKit
 import Speech
 
 class RecognitionService: ObservableObject {
-
+    
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "zh-Hant"))
     private let audioEngine = AVAudioEngine()
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
@@ -67,7 +67,6 @@ class RecognitionService: ObservableObject {
         }
     }
     
-    // 文字辨識 (OCR)
     func performTextRecognition(on image: UIImage, completion: @escaping (String) -> Void) {
         guard let ciImage = CIImage(image: image) else {
             completion("Unable to recognize photos.")
@@ -170,3 +169,4 @@ class RecognitionService: ObservableObject {
         showAlert = true
     }
 }
+

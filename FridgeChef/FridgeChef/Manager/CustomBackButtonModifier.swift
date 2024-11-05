@@ -34,11 +34,11 @@ struct CustomNavigationBarView<Content: View>: View {
             .navigationBarTitle(Text(title), displayMode: .inline)
             .navigationBarItems(leading: Button(action: {
                 self.presentationMode.wrappedValue.dismiss()
-            }) {
+            }, label: {
                 Image(systemName: "arrowshape.turn.up.backward.circle.fill")
                     .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                     .imageScale(.large)
-            })
+            }))
         }
     }
 }

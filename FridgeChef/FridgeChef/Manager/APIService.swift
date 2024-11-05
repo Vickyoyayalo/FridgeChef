@@ -30,7 +30,7 @@ class APIService {
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         
         // Make the network request
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { data, _, error in
             if let error = error {
                 completion(.failure(error))
                 return

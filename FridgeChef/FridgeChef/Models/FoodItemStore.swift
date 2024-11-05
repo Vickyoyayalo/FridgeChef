@@ -81,7 +81,7 @@ class FoodItemStore: ObservableObject {
             case .success(let items):
                 DispatchQueue.main.async {
                     self?.foodItems = items
-                    self?.updateDaysRemaining()  // 更新食材時重新計算 daysRemaining
+                    self?.updateDaysRemaining()
                     self?.saveFoodItemsToUserDefaults(items)
                     
                     print("Fetched \(items.count) food items from Firebase.")

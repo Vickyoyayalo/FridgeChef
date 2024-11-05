@@ -126,3 +126,4 @@ class MapViewModel: ObservableObject {
         locationManager.placesFetcher.fetchNearbyPlaces(coordinate: coordinate)
     }
 }
+

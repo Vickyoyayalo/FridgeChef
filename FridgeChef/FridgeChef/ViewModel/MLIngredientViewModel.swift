@@ -153,7 +153,6 @@ class MLIngredientViewModel: ObservableObject {
             }
         }
 
-    
     // MARK: - Speech Recognition
     func requestSpeechRecognitionAuthorization() {
         SFSpeechRecognizer.requestAuthorization { [weak self] status in
@@ -336,6 +335,7 @@ class MLIngredientViewModel: ObservableObject {
     }
 
     // MARK: - Clear Form
+    
     func clearForm() {
         recognizedText = ""
         quantity = "1.00"

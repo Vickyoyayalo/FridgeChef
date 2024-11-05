@@ -4,6 +4,7 @@
 //
 //  Created by Vickyhereiam on 2024/9/13.
 //
+
 import Foundation
 import Firebase
 import FirebaseAuth
@@ -69,7 +70,7 @@ class FirestoreService {
                         
                         self.saveUser(userData, uid: uid) { result in
                             switch result {
-                            case .success():
+                            case .success:
                                 print("User data saved to Firestore")
                             case .failure(let error):
                                 print("Failed to save user data: \(error.localizedDescription)")
@@ -180,7 +181,7 @@ class FirestoreService {
     
     func updateFoodItem(forUser userId: String, foodItemId: String, updatedFields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
         print("Update foodItemId: \(foodItemId), updatedContents: \(updatedFields)")
-
+        
         db.collection("users").document(userId).collection("foodItems").document(foodItemId)
             .updateData(updatedFields) { error in
                 if let error = error {
@@ -192,20 +193,6 @@ class FirestoreService {
                 }
             }
     }
-
-//    func updateFoodItem(forUser userId: String, foodItemId: String, updatedFields: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
-//        db.collection("users").document(userId).collection("foodItems").document(foodItemId)
-//            .updateData(updatedFields) { error in
-//                if let error = error {
-//                    print("Failed to update food item: \(error.localizedDescription)")
-//                    completion(.failure(error))
-//                } else {
-//                    print("Food item successfully updated with ID: \(foodItemId)")
-//                    completion(.success(()))
-//                }
-//            }
-//    }
-    
     
     func deleteFoodItem(forUser userId: String, foodItemId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         db.collection("users").document(userId).collection("foodItems").document(foodItemId)
@@ -315,6 +302,7 @@ class FirestoreService {
     }
     
     // MARK: - Listen to Grocery Items
+    
     func listenToGroceryItems(forUser userId: String, listName: String, onUpdate: @escaping (Result<[FoodItem], Error>) -> Void) -> ListenerRegistration {
         return db.collection("users").document(userId).collection("groceryLists").document(listName).collection("items")
             .addSnapshotListener { (snapshot, error) in
@@ -447,7 +435,6 @@ class FirestoreService {
         }
     }
     
-    
     func saveMessage(_ message: Message, forUser userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             _ = try db.collection("users").document(userId).collection("chats").addDocument(from: message)
@@ -502,7 +489,8 @@ class FirestoreService {
         }
     }
     
-    //MARK: -take data from Firebase
+    // MARK: - take data from Firebase
+    
     func fetchFavoriteRecipes(completion: @escaping ([Int]) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
             print("User not logged in")
@@ -537,5 +525,4 @@ class FirestoreService {
         
         favoritesRef.document(String(recipeId)).delete()
     }
-    
 }

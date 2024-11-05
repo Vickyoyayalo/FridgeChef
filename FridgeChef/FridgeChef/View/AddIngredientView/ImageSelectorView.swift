@@ -12,19 +12,19 @@ struct ImageSelectorView: View {
     @Binding var image: UIImage?
     @State private var showPhotoOptions = false
     @State private var photoSource: PhotoSource?
-
+    
     @State private var showAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
-
+    
     private let alertService = AlertService()
-
+    
     enum PhotoSource: Identifiable {
         case photoLibrary
         case camera
         var id: Int { self.hashValue }
     }
-
+    
     var body: some View {
         VStack {
             if let image = image {
@@ -86,7 +86,7 @@ struct ImageSelectorView: View {
             break
         }
     }
-   
+    
     private func checkPhotoLibraryAuthorizationStatus() {
         let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
         
@@ -107,16 +107,17 @@ struct ImageSelectorView: View {
             break
         }
     }
-
+    
     private func showCameraAccessDeniedAlert() {
         alertTitle = "Cannot use your camera."
         alertMessage = "Please go to settings and allow the app to access your camera. "
         showAlert = true
     }
-
+    
     private func showPhotoLibraryAccessDeniedAlert() {
         alertTitle = "Cannot use your photo album."
         alertMessage = "Please go to settings and allow the app to access your photo album."
         showAlert = true
     }
 }
+

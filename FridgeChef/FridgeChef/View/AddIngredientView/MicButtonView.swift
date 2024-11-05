@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MicButtonView: View {
     @ObservedObject var recognitionService: RecognitionService
-
+    
     var body: some View {
         Button(action: {
             if recognitionService.isRecording {
@@ -17,11 +17,11 @@ struct MicButtonView: View {
             } else {
                 recognitionService.startRecording()
             }
-        }) {
+        }, label: {
             Image(systemName: recognitionService.isRecording ? "mic.fill" : "mic")
                 .font(.custom("ArialRoundedMTBold", size: 16))
                 .foregroundColor(recognitionService.isRecording ? .red : .blue)
-        }
+        })
     }
 }
 

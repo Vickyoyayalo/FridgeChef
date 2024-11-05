@@ -52,19 +52,20 @@ struct ChatView: View {
                         VStack {
                             ZStack {
                                 HStack {
+                                    
                                     Spacer()
+                                    
                                     Button(action: {
                                         withAnimation {
                                             viewModel.isSearchVisible.toggle()
                                         }
-                                    }) {
+                                    }, label: {
                                         Image(systemName: viewModel.isSearchVisible ? "xmark.circle.fill" : "magnifyingglass")
                                             .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                                             .imageScale(.medium)
                                             .padding()
-                                    }
+                                    })
                                 }
-                                
                                 Image("FridgeChefLogo")
                                     .resizable()
                                     .scaledToFill()
@@ -86,11 +87,11 @@ struct ChatView: View {
                                     if !viewModel.searchText.isEmpty {
                                         Button(action: {
                                             self.viewModel.searchText = ""
-                                        }) {
+                                        }, label: {
                                             Image(systemName: "xmark.circle.fill")
                                                 .foregroundColor(.orange)
                                                 .padding(.trailing, 8)
-                                        }
+                                        })
                                         .buttonStyle(PlainButtonStyle())
                                     }
                                 }
@@ -110,7 +111,7 @@ struct ChatView: View {
                                         }
                                         .frame(maxWidth: .infinity)
                                     }
-                                    .onChange(of: viewModel.messages.count) { newValue, _ in
+                                    .onChange(of: viewModel.messages.count) {
                                         if let lastMessage = viewModel.messages.last, let id = lastMessage.id {
                                             DispatchQueue.main.async {
                                                 withAnimation {
@@ -311,14 +312,14 @@ struct ChatView: View {
                                 } else {
                                     addAllIngredientsToCart(ingredients: recipe.ingredients)
                                 }
-                            }) {
+                            }, label: {
                                 Text(allIngredientsInCart(ingredients: recipe.ingredients) ? "Add Remaining Ingredients to Cart" : "Add All Ingredients to Cart")
                                     .bold()
                                     .foregroundColor(.white)
                                     .padding()
                                     .background(Color.orange)
                                     .cornerRadius(10)
-                            }
+                            })
                             .frame(maxWidth: .infinity)
                             .opacity(viewModel.isButtonDisabled ? 0.3 : 0.8)
                             .disabled(viewModel.isButtonDisabled)
@@ -450,11 +451,10 @@ struct ChatView: View {
     private func addAllIngredientsToCart(ingredients: [ParsedIngredient]) {
         var addedToCart = [String]()
         
-        for ingredient in ingredients {
-            if viewModel.addIngredientToShoppingList(ingredient) {
-                addedToCart.append(ingredient.name)
-            }
+        for ingredient in ingredients where viewModel.addIngredientToShoppingList(ingredient) {
+            addedToCart.append(ingredient.name)
         }
+        
         viewModel.activeAlert = .regular(
             title: "Ingredients Added",
             message: "Added: \(addedToCart.joined(separator: ", "))"

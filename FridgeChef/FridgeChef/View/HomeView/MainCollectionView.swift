@@ -48,13 +48,13 @@ struct MainCollectionView: View {
                         )
                         .sheet(item: $selectedRecipe, onDismiss: {
                             selectedRecipe = nil
-                        }) { recipe in
+                        }, content: { recipe in
                             if recipe.id == RecipeCollectionView_Previews.sampleRecipe.id {
                                 RecipeMainView(viewModel: viewModel, foodItemStore: foodItemStore)
                             } else {
                                 RecipeDetailView(recipeId: recipe.id, viewModel: viewModel, foodItemStore: foodItemStore)
                             }
-                        }
+                        })
                     }
                     .onAppear {
                         viewModel.loadFavorites()
@@ -117,36 +117,36 @@ struct MainCollectionView: View {
     private var notificationButton: some View {
         Button(action: {
             showingNotificationSheet = true
-        }) {
+        }, label: {
             Image(uiImage: UIImage(named: "bell") ?? UIImage(systemName: "bell.fill")!)
                 .resizable()
                 .frame(width: 24, height: 24)
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
-        }
+        })
     }
     
     private var menuButton: some View {
         Button(action: {
             showingLogoutSheet = true
-        }) {
+        }, label: {
             Image(uiImage: UIImage(named: "settling") ?? UIImage(systemName: "gearshape.fill")!)
                 .resizable()
                 .frame(width: 24, height: 24)
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange).opacity(0.8))
-        }
+        })
     }
     
     private var floatingButton: some View {
         ZStack {
             Button(action: {
                 isShowingGameView = true
-            }) {
+            }, label: {
                 Image("clickmemonster")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 130, height: 130)
                     .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 10)
-            }
+            })
             .padding(.trailing, -10)
             .padding(.top, 320)
             .scaleEffect(isScaledUp ? 1.0 : 0.8)

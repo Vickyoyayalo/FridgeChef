@@ -23,7 +23,7 @@ struct WhatToEatGameView: View {
     @State private var selectedMonsterImage: String?
     @State private var showCategoryInitial = true
     @State private var showingRecipeSheet = false
-
+    
     let foodCategories: [FoodCategory] = [
         FoodCategory(category: "Japanese", foods: ["Sushi", "Ramen", "Sashimi"]),
         FoodCategory(category: "Western", foods: ["Pizza", "Burger", "Steak"]),
@@ -51,7 +51,7 @@ struct WhatToEatGameView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-           
+            
             LinearGradient(gradient: Gradient(colors: [Color.orange.opacity(0.3), Color.pink.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea()
                 .hueRotation(Angle(degrees: degree))
@@ -94,7 +94,7 @@ struct WhatToEatGameView: View {
                                     .shadow(radius: 8)
                                 
                                 Text(selectedFood.food)
-                                    .font(.custom("ArialRoundedMTBold", size:40))
+                                    .font(.custom("ArialRoundedMTBold", size: 40))
                                     .foregroundColor(.yellow)
                                     .lineLimit(nil)
                                     .multilineTextAlignment(.center)
@@ -151,12 +151,12 @@ struct WhatToEatGameView: View {
                         })
                         .sheet(isPresented: $showingRecipeSheet, onDismiss: {
                             showingRecipeSheet = false
-                        }) {
+                        }, content: {
                             RecipeMainView(
                                 viewModel: RecipeSearchViewModel(),
                                 foodItemStore: FoodItemStore()
                             )
-                        }
+                        })
                     }
                 }
             }
@@ -164,13 +164,13 @@ struct WhatToEatGameView: View {
             .frame(maxHeight: .infinity)
         }
     }
-
+    
     func spinWheelAndPickFood() {
         let rotationIncrement = Double(360 / foodCategories.count)
         withAnimation(.spring(response: 1.5, dampingFraction: 0.6, blendDuration: 1.0)) {
             degree += rotationIncrement * Double(foodCategories.count * 5)
         }
-
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             let selectedCategory = foodCategories.randomElement()
             if let selectedCategory = selectedCategory {
@@ -185,27 +185,27 @@ struct WhatToEatGameView: View {
 }
 
 struct RecipeButton: View {
-        var action: () -> Void
-        
-        var body: some View {
-            Button(action: action) {
-                HStack {
-                    Image(systemName: "book.fill")
-                        .font(.title2)
-                    Text("Recipes")
-                        .fontWeight(.semibold)
-                        .font(.custom("ArialRoundedMTBold", size:20))
-                }
-                .padding()
-                .foregroundColor(.white)
-                .background(
-                    LinearGradient(gradient: Gradient(colors: [Color.green, Color.blue]), startPoint: .leading, endPoint: .trailing)
-                )
-                .cornerRadius(30)
-                .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
+    var action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: "book.fill")
+                    .font(.title2)
+                Text("Recipes")
+                    .fontWeight(.semibold)
+                    .font(.custom("ArialRoundedMTBold", size: 20))
             }
+            .padding()
+            .foregroundColor(.white)
+            .background(
+                LinearGradient(gradient: Gradient(colors: [Color.green, Color.blue]), startPoint: .leading, endPoint: .trailing)
+            )
+            .cornerRadius(30)
+            .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
         }
     }
+}
 
 struct WheelView: View {
     @Binding var degree: Double
@@ -250,7 +250,7 @@ struct SpinButton: View {
                     .font(.title2)
                 Text("Spin and Pick Food")
                     .fontWeight(.semibold)
-                    .font(.custom("ArialRoundedMTBold", size:20))
+                    .font(.custom("ArialRoundedMTBold", size: 20))
             }
             .padding()
             .foregroundColor(.white)
@@ -276,7 +276,7 @@ struct ResetButton: View {
                     .font(.title2)
                 Text("Reset")
                     .fontWeight(.semibold)
-                    .font(.custom("ArialRoundedMTBold", size:20))
+                    .font(.custom("ArialRoundedMTBold", size: 20))
             }
             .padding()
             .foregroundColor(.white)
@@ -296,3 +296,4 @@ struct WhatToEatGameView_Previews: PreviewProvider {
         WhatToEatGameView()
     }
 }
+

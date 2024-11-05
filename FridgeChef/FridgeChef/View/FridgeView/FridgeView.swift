@@ -23,6 +23,7 @@ struct FridgeView: View {
     @State private var showingProgressView = false
     @State private var progressMessage = ""
     @State private var showingMLIngredientView = false
+
     let firestoreService = FirestoreService()
     
     var body: some View {
@@ -71,7 +72,7 @@ struct FridgeView: View {
                     onSave: { updatedIngredient in
                         handleSave(updatedIngredient)
                     },
-                    editingFoodItem: ingredient, 
+                    editingFoodItem: ingredient,
                     foodItemStore: foodItemStore
                 )
             }
@@ -102,12 +103,10 @@ struct FridgeView: View {
                 DispatchQueue.main.async {
                     self.foodItemStore.foodItems = items
                     print("Real-time update: Fetched \(items.count) food items from Firebase.")
-                    
-                    // Schedule notifications for items close to expiration
-                    for item in items {
-                        if item.daysRemaining <= 3 { // You can adjust the threshold
-                            self.scheduleExpirationNotification(for: item)
-                        }
+                   
+                    for item in items where
+                    item.daysRemaining <= 3 {
+                        self.scheduleExpirationNotification(for: item)
                     }
                 }
             case .failure(let error):
@@ -163,16 +162,16 @@ struct FridgeView: View {
     var addButton: some View {
         Button(action: {
             showingMLIngredientView = true
-        }) {
+        }, label: {
             Image(systemName: "plus")
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 .bold()
-        }
+        })
         .sheet(isPresented: $showingMLIngredientView) {
             MLIngredientView(
                 onSave: { newIngredient in
                     handleSave(newIngredient)
-                }, 
+                },
                 foodItemStore: foodItemStore
             )
         }
@@ -189,7 +188,7 @@ struct FridgeView: View {
         for item in itemsToDelete {
             firestoreService.deleteFoodItem(forUser: currentUser.uid, foodItemId: item.id) { result in
                 switch result {
-                case .success():
+                case .success:
                     print("Food item successfully deleted from Firebase.")
                 case .failure(let error):
                     print("Failed to delete food item from Firebase: \(error.localizedDescription)")
@@ -220,9 +219,9 @@ struct FridgeView: View {
         )
         
         if let index = foodItemStore.foodItems.firstIndex(where: { $0.id == ingredient.id }) {
-           
+            
             foodItemStore.foodItems[index] = foodItem
-          
+            
             var updatedFields: [String: Any] = [
                 "name": foodItem.name,
                 "quantity": foodItem.quantity,
@@ -254,7 +253,7 @@ struct FridgeView: View {
             
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: foodItem, image: ingredient.image) { result in
                 switch result {
-                case .success():
+                case .success:
                     print("Food item successfully added to Firebase.")
                 case .failure(let error):
                     print("Failed to add food item to Firebase: \(error.localizedDescription)")
@@ -342,7 +341,7 @@ struct FridgeView: View {
             
             firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: item.id, updatedFields: updatedFields) { result in
                 switch result {
-                case .success():
+                case .success:
                     print("Food item successfully updated in Firebase.")
                 case .failure(let error):
                     print("Failed to update food item in Firebase: \(error.localizedDescription)")
@@ -379,6 +378,7 @@ struct FridgeView: View {
     
 }
 // MARK: - Subviews
+
 struct FridgeListView: View {
     var filteredFoodItems: [FoodItem]
     var moveToGrocery: (FoodItem) -> Void

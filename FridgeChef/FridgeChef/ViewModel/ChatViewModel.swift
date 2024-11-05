@@ -39,6 +39,7 @@ class ChatViewModel: ObservableObject {
     var alertMessage = ""
     
     // MARK: - Private Properties
+    
     private let firestoreService: FirestoreService
     private let apiService: APIService
     private var listener: ListenerRegistration?
@@ -47,6 +48,7 @@ class ChatViewModel: ObservableObject {
     private var foodItemStore: FoodItemStore
     
     // MARK: - Initialization
+    
     init(foodItemStore: FoodItemStore, firestoreService: FirestoreService = FirestoreService(), apiService: APIService = APIService()) {
         self.foodItemStore = foodItemStore
         self.firestoreService = firestoreService
@@ -98,6 +100,7 @@ class ChatViewModel: ObservableObject {
     }
     
     // MARK: - Enums
+    
     enum PhotoSource: Identifiable {
         case photoLibrary
         case camera
@@ -117,9 +120,9 @@ class ChatViewModel: ObservableObject {
             }
             return
         }
-
+        
         if foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) != nil {
-           
+            
             DispatchQueue.main.async {
                 self.pendingIngredientToAdd = ingredient
                 self.showAlertClosure?(.accumulation(ingredient))
@@ -136,12 +139,12 @@ class ChatViewModel: ObservableObject {
                 expirationDate: ingredient.expirationDate,
                 imageURL: nil
             )
-
+            
             DispatchQueue.main.async {
                 foodItemStore.foodItems.append(newFoodItem)
                 self.showAlertClosure?(.ingredient("\(ingredient.name) added to your Grocery List 🛒"))
             }
-
+            
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: newFoodItem, image: nil) { result in
                 if case let .failure(error) = result {
                     print("Failed to add food item to Firestore: \(error.localizedDescription)")
@@ -267,7 +270,7 @@ class ChatViewModel: ObservableObject {
             checkCachedResponseAndRespond(message: messageText)
         }
     }
-
+    
     func addIngredientToShoppingList(_ ingredient: ParsedIngredient) -> Bool {
         guard let currentUser = Auth.auth().currentUser else {
             DispatchQueue.main.async {
@@ -317,15 +320,15 @@ class ChatViewModel: ObservableObject {
         guard let existingIndex = foodItemStore.foodItems.firstIndex(where: { $0.name.lowercased() == ingredient.name.lowercased() }) else {
             return
         }
-
+        
         if accumulate {
-           
+            
             let newQuantity = foodItemStore.foodItems[existingIndex].quantity + ingredient.quantity
             
             DispatchQueue.main.async {
                 foodItemStore.foodItems[existingIndex].quantity = newQuantity
             }
-
+            
             if let userId = Auth.auth().currentUser?.uid {
                 let updatedFields: [String: Any] = ["quantity": newQuantity]
                 firestoreService.updateFoodItem(forUser: userId, foodItemId: foodItemStore.foodItems[existingIndex].id, updatedFields: updatedFields) { result in
@@ -334,12 +337,12 @@ class ChatViewModel: ObservableObject {
                     }
                 }
             }
-
+            
             DispatchQueue.main.async {
                 self.showAlertClosure?(.ingredient("Updated quantity of \(ingredient.name) to \(newQuantity) \(ingredient.unit)."))
             }
         } else {
-          
+            
             DispatchQueue.main.async {
                 self.showAlertClosure?(.regular(
                     title: "No Changes Made",
@@ -367,7 +370,7 @@ class ChatViewModel: ObservableObject {
         
         firestoreService.saveMessage(message, forUser: currentUser.uid) { result in
             switch result {
-            case .success():
+            case .success:
                 print("Message successfully saved to Firestore.")
             case .failure(let error):
                 print("Failed to save message to Firestore: \(error.localizedDescription)")
@@ -762,3 +765,4 @@ class ChatViewModel: ObservableObject {
         }
     }
 }
+

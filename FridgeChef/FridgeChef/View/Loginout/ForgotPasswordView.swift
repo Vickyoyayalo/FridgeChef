@@ -24,7 +24,7 @@ struct ForgotPasswordView: View {
                     .frame(width: 200, height: 200)
                     .padding(.top, 5)
                     .padding(.bottom)
-             
+                
                 Text("Reset Password 🗝️")
                     .font(.custom("ArialRoundedMTBold", size: 30))
                     .foregroundColor(
@@ -49,7 +49,7 @@ struct ForgotPasswordView: View {
                         alertMessage = "Send the reset password link to your Email."
                         showingAlert = true
                     }
-                }) {
+                }, label: {
                     Text("Send reset Email link")
                         .font(.custom("ArialRoundedMTBold", size: 20))
                         .foregroundColor(.white)
@@ -59,7 +59,7 @@ struct ForgotPasswordView: View {
                             Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                         .cornerRadius(10)
                         .shadow(radius: 5)
-                }
+                })
                 .padding(.horizontal, 20)
                 
                 Spacer()

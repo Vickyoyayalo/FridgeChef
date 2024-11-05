@@ -65,17 +65,18 @@ struct AddGroceryForm: View {
                     .padding()
                 }
                 .scrollIndicators(.hidden)
-                }
-                .navigationTitle("Add Recipe")
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: { dismiss() }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.orange)
-                        }
-                    }
+            }
+            .navigationTitle("Add Recipe")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { dismiss()
+                    }, label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.orange)
+                    })
                 }
             }
+        }
         .confirmationDialog("Choose your photos from", isPresented: $showPhotoOptions, titleVisibility: .visible) {
             Button("Camera") { photoSource = .camera }
             Button("Photo Library") { photoSource = .photoLibrary }

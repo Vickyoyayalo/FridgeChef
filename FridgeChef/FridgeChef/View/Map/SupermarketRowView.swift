@@ -12,7 +12,7 @@ import Foundation
 struct SupermarketRowView: View {
     let supermarket: Supermarket
     let userLocation: CLLocationCoordinate2D?
-
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text(supermarket.name)
@@ -30,7 +30,7 @@ struct SupermarketRowView: View {
         .frame(maxWidth: .infinity)
         .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.9)))
     }
-
+    
     private func distanceToUser() -> Double? {
         guard let userLocation = userLocation else { return nil }
         let supermarketLocation = CLLocation(latitude: supermarket.coordinate.latitude, longitude: supermarket.coordinate.longitude)

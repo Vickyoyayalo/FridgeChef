@@ -27,7 +27,7 @@ struct ReviewView: View {
                 .opacity(0.6)
                 .background(.ultraThinMaterial)
                 .ignoresSafeArea()
-          
+            
             HStack {
                 Spacer()
                 
@@ -36,13 +36,12 @@ struct ReviewView: View {
                         withAnimation(.easeOut(duration: 0.3)) {
                             self.isDisplayed = false
                         }
-                    }) {
+                    }, label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 30.0))
                             .foregroundColor(.white)
                             .padding()
-                    }
-                    
+                    })
                     Spacer()
                 }
             }
@@ -76,6 +75,6 @@ struct ReviewView: View {
 }
 
 #Preview {
-ReviewView(isDisplayed: .constant(true), recommendRecipes: RecommendRecipe(name: "Cafe Deadend", type: "Coffee & Tea Shop", location: "G/F, 72 Po Hing Fong, Sheung Wan, Hong Kong", phone: "232-923423", description: "Searching for great breakfast eateries and coffee?  Come over and enjoy a great meal.", image: "cafedeadend", isFavorite: true))
+    ReviewView(isDisplayed: .constant(true), recommendRecipes: RecommendRecipe(name: "Cafe Deadend", type: "Coffee & Tea Shop", location: "G/F, 72 Po Hing Fong, Sheung Wan, Hong Kong", phone: "232-923423", description: "Searching for great breakfast eateries and coffee?  Come over and enjoy a great meal.", image: "cafedeadend", isFavorite: true))
 }
 

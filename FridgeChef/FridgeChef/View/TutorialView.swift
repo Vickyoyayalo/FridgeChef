@@ -31,12 +31,12 @@ struct TutorialView: View {
         "Plan your meals, add ingredients to your cart, and use our built-in supermarket navigator to get what you need, fast!"
     ]
     
-    let pageImages = [ "tutor1", "tutor2", "tutor3", "tutor4", "tutor5", "tutor6"]
+    let pageImages = ["tutor1", "tutor2", "tutor3", "tutor4", "tutor5", "tutor6"]
     
     @State private var currentPage = 0
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 LinearGradient(
                     gradient: Gradient(colors: [Color.yellow, Color.orange]),
@@ -69,7 +69,7 @@ struct TutorialView: View {
                                 hasSeenTutorial = true
                                 navigateToLogin = true
                             }
-                        }) {
+                        }, label: {
                             Text(currentPage == pageHeadings.count - 1 ? "GET STARTED" : "NEXT")
                                 .font(.custom("Menlo-BoldItalic", size: 20))
                                 .foregroundColor(.white)
@@ -77,27 +77,23 @@ struct TutorialView: View {
                                 .padding(.horizontal, 50)
                                 .background(Color.customColor(named: "NavigationBarTitle"))
                                 .cornerRadius(25)
-                        }
+                        })
                         
                         if currentPage < pageHeadings.count - 1 {
                             Button(action: {
                                 hasSeenTutorial = true
                                 navigateToLogin = true
-                            }) {
+                            }, label: {
                                 Text("Skip")
                                     .font(.custom("Menlo-BoldItalic", size: 16))
                                     .foregroundColor(Color(.darkGray))
-                            }
+                            })
                         }
                     }
                     .padding(.bottom)
-                    
-                    NavigationLink(
-                        destination: LoginView(viewModel: viewModel, foodItemStore: foodItemStore),
-                        isActive: $navigateToLogin
-                    ) {
-                        EmptyView()
-                    }
+                }
+                .navigationDestination(isPresented: $navigateToLogin) {
+                    LoginView(viewModel: viewModel, foodItemStore: foodItemStore)
                 }
             }
         }

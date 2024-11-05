@@ -43,7 +43,6 @@ struct ScannerView: UIViewControllerRepresentable {
             scannerView.didFinishScanning(.success(scannedPages))
         }
         
-        
         func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
             scannerView.didCancelScanning()
         }
@@ -52,5 +51,4 @@ struct ScannerView: UIViewControllerRepresentable {
             scannerView.didFinishScanning(.failure(error))
         }
     }
-    
 }

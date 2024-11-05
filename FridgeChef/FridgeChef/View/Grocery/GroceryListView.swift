@@ -154,13 +154,12 @@ struct GroceryListView: View {
     
     var addButton: some View {
         Button(action: {
-            // Present MLIngredientView without an editing item
             showingMLIngredientView = true
-        }) {
+        }, label: {
             Image(systemName: "plus")
                 .foregroundColor(Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                 .bold()
-        }
+        })
         .sheet(isPresented: $showingMLIngredientView) {
             MLIngredientView(
                 onSave: { newIngredient in
@@ -180,7 +179,7 @@ struct GroceryListView: View {
             }
             firestoreService.deleteFoodItem(forUser: currentUser.uid, foodItemId: item.id) { result in
                 switch result {
-                case .success():
+                case .success:
                     print("Food item successfully deleted from Firebase.")
                 case .failure(let error):
                     print("Failed to delete food item from Firebase: \(error.localizedDescription)")
@@ -250,7 +249,7 @@ struct GroceryListView: View {
             
             firestoreService.addFoodItem(forUser: currentUser.uid, foodItem: foodItem, image: ingredient.image) { result in
                 switch result {
-                case .success():
+                case .success:
                     print("Food item successfully added to Firebase.")
                 case .failure(let error):
                     print("Failed to add food item to Firebase: \(error.localizedDescription)")

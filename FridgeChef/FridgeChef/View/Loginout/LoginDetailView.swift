@@ -50,7 +50,7 @@ struct LoginDetailView: View {
                         
                         Button(action: {
                             loginWithEmailPassword()
-                        }) {
+                        }, label: {
                             Text("Sign In")
                                 .foregroundColor(.white)
                                 .fontWeight(.bold)
@@ -60,7 +60,8 @@ struct LoginDetailView: View {
                                     Color(UIColor(named: "NavigationBarTitle") ?? UIColor.orange))
                                 .cornerRadius(8)
                                 .shadow(radius: 5)
-                        }
+                        })
+                        
                         Button(action: {
                             navigateToForgotPassword = true
                         }, label: {
@@ -110,6 +111,7 @@ struct LoginDetailView: View {
                         }
                     }
                     .padding()
+                    
                     Image("Loginmonster")
                         .resizable()
                         .scaledToFill()
@@ -136,7 +138,7 @@ struct LoginDetailView: View {
     
     func loginWithEmailPassword() {
         isLoggedIn = true
-        Auth.auth().signIn(withEmail: loginViewModel.email, password: loginViewModel.password) { authResult, error in
+        Auth.auth().signIn(withEmail: loginViewModel.email, password: loginViewModel.password) { _, error in
             if let error = error {
                 showError(error.localizedDescription)
                 isLoggedIn = false
@@ -170,7 +172,7 @@ struct LoginDetailView: View {
             }
             
             let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: appleIDCredential.fullName)
-            Auth.auth().signIn(with: credential) { authResult, error in
+            Auth.auth().signIn(with: credential) { _, error in
                 if let error = error {
                     showError(error.localizedDescription)
                     return
@@ -189,7 +191,7 @@ struct LoginDetailView: View {
                     
                     FirestoreService().saveUser(userData, uid: user.uid) { result in
                         switch result {
-                        case .success():
+                        case .success:
                             print("User data successfully saved to Firestore.")
                         case .failure(let error):
                             print("Failed to save user data: \(error.localizedDescription)")

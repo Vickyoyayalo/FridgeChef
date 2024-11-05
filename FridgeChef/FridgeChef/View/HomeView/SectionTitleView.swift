@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SectionTitleView: View {
     let title: String
-
+    
     var body: some View {
         HStack {
             Text(title)
@@ -17,7 +17,7 @@ struct SectionTitleView: View {
                 .foregroundColor(Color(UIColor(named: "SecondaryColor") ?? UIColor.blue))
             
             Spacer()
-
+            
         }
     }
 }

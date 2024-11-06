@@ -225,7 +225,7 @@ class MLIngredientViewModel: ObservableObject {
     
     // MARK: - Image Recognition
     func recognizeFood(in image: UIImage) {
-        guard let model = try? VNCoreMLModel(for: Food().model) else {
+        guard let model = try? VNCoreMLModel(for: Food(configuration: MLModelConfiguration()).model) else {
             print("Failed to load model")
             return
         }

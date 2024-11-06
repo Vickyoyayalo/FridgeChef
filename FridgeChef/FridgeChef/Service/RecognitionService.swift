@@ -26,7 +26,7 @@ class RecognitionService: ObservableObject {
     private let alertService = AlertService()
     
     func recognizeFood(in image: UIImage, completion: @escaping (String) -> Void) {
-        guard let model = try? VNCoreMLModel(for: Food().model) else {
+        guard let model = try? VNCoreMLModel(for: Food(configuration: MLModelConfiguration()).model) else {
             print("Failed to load CoreML model.")
             completion("Unable to recognize food.")
             return

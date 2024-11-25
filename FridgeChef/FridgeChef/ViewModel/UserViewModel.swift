@@ -138,7 +138,7 @@ class UserViewModel: ObservableObject {
     
     private func downloadImage(from urlString: String?) {
         guard let urlString = urlString, let url = URL(string: urlString) else { return }
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, _, _ in
             if let data = data, let image = UIImage(data: data) {
                 DispatchQueue.main.async {
                     self.avatar = image

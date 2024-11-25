@@ -46,6 +46,8 @@ class ChatViewModel: ObservableObject {
     private var api: ChatGPTAPI?
     private var chatViewOpenedAt = Date()
     private var foodItemStore: FoodItemStore
+    private var isCheckingCache = false
+    private var isSendingMessage = false
     
     // MARK: - Initialization
     
@@ -70,9 +72,6 @@ class ChatViewModel: ObservableObject {
             2. Step two
             3. Step three
             4. ...
-            
-            🔗【Recipe Link】
-            (Please provide a valid URL related to the recipe the user asked for.)
             
             👩🏻‍🍳【Friendly Reminder】
             (Here you can provide a friendly reminder or answer the user's questions.)
@@ -169,31 +168,18 @@ class ChatViewModel: ObservableObject {
             print("No user is currently logged in.")
             return
         }
-        
+
         listener = firestoreService.listenForMessages(forUser: currentUser.uid, after: chatViewOpenedAt) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                case .success(let fetchedMessages):
-                    let newMessages = fetchedMessages.filter { fetchedMessage in
-                        fetchedMessage.timestamp > self.chatViewOpenedAt &&
-                        !self.messages.contains(where: { $0.id == fetchedMessage.id })
-                    }
-                    
-                    let parsedNewMessages = newMessages.map { message in
-                        var mutableMessage = message
-                        if message.role == .assistant, let content = message.content {
-                            mutableMessage.parsedRecipe = self.parseRecipe(from: content)
-                            print("Parsed recipe for message ID \(message.id ?? "unknown"): \(mutableMessage.parsedRecipe?.title ?? "No Title")")
-                        }
-                        return mutableMessage
-                    }
-                    
-                    self.messages.append(contentsOf: parsedNewMessages)
-                    print("Fetched and updated messages: \(self.messages.count) messages")
-                case .failure(let error):
-                    print("Error fetching messages: \(error.localizedDescription)")
+            guard let self = self else { return }
+            switch result {
+            case .success(let fetchedMessages):
+                let newMessages = fetchedMessages.filter { fetchedMessage in
+                    fetchedMessage.timestamp > self.chatViewOpenedAt &&
+                    !self.messages.contains(where: { $0.id == fetchedMessage.id })
                 }
+                self.messages.append(contentsOf: newMessages)
+            case .failure(let error):
+                print("Error fetching messages: \(error)")
             }
         }
     }
@@ -379,10 +365,14 @@ class ChatViewModel: ObservableObject {
     }
     
     private func checkCachedResponseAndRespond(message: String) {
+        guard !isCheckingCache else { return }
+        isCheckingCache = true
         let standardizedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
         
         firestoreService.getCachedResponse(message: standardizedMessage) { [weak self] result in
             guard let self = self else { return }
+            self.isCheckingCache = false
+            
             switch result {
             case .success(let cachedResponse):
                 if let cachedResponse = cachedResponse {
@@ -410,41 +400,21 @@ class ChatViewModel: ObservableObject {
     }
     
     private func sendMessageToAssistant(_ messageText: String) {
+        guard !isSendingMessage else { return }
+        isSendingMessage = true
         guard let api = api else {
             self.triggerAlert(title: "Missing API Key", message: "Please provide a valid API Key.")
+            self.isSendingMessage = false
             return
         }
-        
-        guard !messageText.isEmpty else {
-            self.isWaitingForResponse = false
-            return
-        }
-        
-        let messageToSend = messageText
         
         Task {
             do {
-                print("📤 Calling API and sending messages: \(messageToSend)")
-                let responseText = try await api.sendMessage(messageToSend)
-                print("📥 Taking API response: \(responseText)")
+                print("📤 Sending to API: \(messageText)")
+                let responseText = try await api.sendMessage(messageText)
+                print("📥 API Response: \(responseText)")
                 
                 let parsedRecipe = parseRecipe(from: responseText)
-                
-                guard Auth.auth().currentUser != nil else {
-                    print("🔒 No user log in.")
-                    self.isWaitingForResponse = false
-                    return
-                }
-                
-                firestoreService.saveCachedResponse(message: messageText, response: responseText) { result in
-                    switch result {
-                    case .success():
-                        print("✅ Saving Cache Response.")
-                    case .failure(let error):
-                        print("❌ Cannot saving Cache Response: \(error)")
-                    }
-                }
-                
                 let responseMessage = Message(
                     id: nil,
                     role: .assistant,
@@ -454,26 +424,17 @@ class ChatViewModel: ObservableObject {
                     parsedRecipe: parsedRecipe
                 )
                 
-                self.saveMessageToFirestore(responseMessage)
-                self.errorMessage = nil
-                self.isWaitingForResponse = false
-                
-                await MainActor.run {
-                    self.isWaitingForResponse = false
-                    self.saveMessageToFirestore(responseMessage)
-                }
-                
-            } catch {
-                await MainActor.run {
-                    self.errorMessage = "Sending message error: \(error.localizedDescription)"
-                    self.isWaitingForResponse = false
-                }
-                print("❌ Sending message error: \(error)")
                 DispatchQueue.main.async {
-                    self.errorMessage = "Sending message error: \(error.localizedDescription)"
-                    self.isWaitingForResponse = false
+                    self.messages.append(responseMessage)
                 }
+                
+                self.saveMessageToFirestore(responseMessage)
+                self.isWaitingForResponse = false
+            } catch {
+                print("❌ API Error: \(error)")
+                self.triggerAlert(title: "Error", message: "Failed to get a response.")
             }
+            self.isSendingMessage = false
         }
     }
     

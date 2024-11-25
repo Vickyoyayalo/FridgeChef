@@ -4,6 +4,7 @@
 //
 //  Created by Vickyhereiam on 2024/9/13.
 //
+
 import SwiftUI
 
 struct FoodItem: Identifiable, Codable, Equatable {
@@ -17,13 +18,11 @@ struct FoodItem: Identifiable, Codable, Equatable {
     var imageURL: String?
     
     var uiImage: UIImage? {
-        get {
-            guard let imageURL = imageURL else { return nil }
-            if let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
-                return UIImage(data: data)
-            }
-            return nil
+        guard let imageURL = imageURL else { return nil }
+        if let url = URL(string: imageURL), let data = try? Data(contentsOf: url) {
+            return UIImage(data: data)
         }
+        return nil
     }
     
     enum CodingKeys: String, CodingKey {
@@ -38,6 +37,15 @@ enum Status: String, Codable {
 }
 
 extension FoodItem {
+    
+    var remainingDays: Int {
+        guard let expirationDate = expirationDate else { return 0 }
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let startOfExpiration = calendar.startOfDay(for: expirationDate)
+        return calendar.dateComponents([.day], from: startOfToday, to: startOfExpiration).day ?? 0
+    }
+    
     var daysRemainingText: String {
         switch status {
         case .toBuy:
@@ -106,11 +114,14 @@ extension FoodItem {
 import SDWebImageSwiftUI
 
 struct FoodItemRow: View {
+    @State private var currentDate = Date()
     var item: FoodItem
     var moveToGrocery: ((FoodItem) -> Void)?
     var moveToFridge: ((FoodItem) -> Void)?
     var moveToFreezer: ((FoodItem) -> Void)?
     var onTap: ((FoodItem) -> Void)?
+    
+    private let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
     
     var body: some View {
         HStack {
@@ -184,6 +195,9 @@ struct FoodItemRow: View {
         .contentShape(Rectangle())
         .onTapGesture {
             onTap?(item)
+        }
+        .onReceive(timer) { currentDate in
+            self.currentDate = currentDate
         }
     }
 }

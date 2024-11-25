@@ -50,7 +50,7 @@ extension Ingredient {
         let today = Date()
         let calendar = Calendar.current
         
-        if let expirationDate = calendar.date(byAdding: .day, value: foodItem.daysRemaining, to: today) {
+        if let expirationDate = calendar.date(byAdding: .day, value: foodItem.remainingDays, to: today) {
             self.expirationDate = expirationDate
         } else {
             self.expirationDate = today

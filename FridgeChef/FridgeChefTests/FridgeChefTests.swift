@@ -122,3 +122,23 @@ class GroceryNotificationTests: XCTestCase {
     }
 }
 
+class FoodItemTests: XCTestCase {
+    func testRemainingDays() {
+        let calendar = Calendar.current
+        
+        let fiveDaysLater = calendar.date(byAdding: .day, value: 5, to: Date())
+        let foodItem = FoodItem(id: "1", name: "Milk", quantity: 1.0, unit: "L", status: .fridge, daysRemaining: 0, expirationDate: fiveDaysLater, imageURL: nil)
+        
+        XCTAssertEqual(foodItem.remainingDays, 5)
+       
+        let threeDaysAgo = calendar.date(byAdding: .day, value: -3, to: Date())
+        let expiredFoodItem = FoodItem(id: "2", name: "Cheese", quantity: 0.5, unit: "kg", status: .freezer, daysRemaining: 0, expirationDate: threeDaysAgo, imageURL: nil)
+        
+        XCTAssertEqual(expiredFoodItem.remainingDays, -3)
+        
+        let noExpirationFoodItem = FoodItem(id: "3", name: "Rice", quantity: 2.0, unit: "kg", status: .toBuy, daysRemaining: 0, expirationDate: nil, imageURL: nil)
+        
+        XCTAssertEqual(noExpirationFoodItem.remainingDays, 0)
+    }
+}
+

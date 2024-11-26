@@ -27,23 +27,23 @@ struct MonsterAnimationView: View {
         }
         .onAppear {
             moveRight = true
-            print("Animation started")
+            print("Animation1 started")
         }
         .onDisappear {
             moveRight = false
-            print("Animation stopped")
+            print("Animation1 stopped")
         }
         .onAppear {
             withAnimation(Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
                 moveRight = true // Start animation
             }
-            print("Animation started")
+            print("Animation2 started")
         }
         .onDisappear {
             withAnimation(nil) {
                 moveRight = false
             }
-            print("Animation stopped")
+            print("Animation2 stopped")
         }
     }
 }

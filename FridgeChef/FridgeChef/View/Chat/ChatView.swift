@@ -259,8 +259,7 @@ struct ChatView: View {
     
     // MARK: - Message View
     private func messageView(for message: Message) -> some View {
-        return HStack {
-            if let recipe = message.parsedRecipe {
+            return HStack {
                 if message.role == .user {
                     Spacer()
                     VStack(alignment: .trailing) {
@@ -282,116 +281,94 @@ struct ChatView: View {
                     }
                 } else {
                     VStack(alignment: .leading, spacing: 10) {
-                        if let title = recipe.title {
-                            Text("\(title) 🥙")
-                                .font(.custom("ArialRoundedMTBold", size: 20))
-                                .bold()
-                                .padding(.bottom, 5)
-                        }
-                        
-                        if !recipe.ingredients.isEmpty {
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text("🥬【Ingredients】")
-                                    .font(.custom("ArialRoundedMTBold", size: 18))
-                                ForEach(recipe.ingredients) { ingredient in
-                                    IngredientRow(
-                                        viewModel: viewModel,
-                                        ingredient: ingredient,
-                                        addAction: viewModel.addIngredientToShoppingList,
-                                        isInCart: foodItemStore.isIngredientInCart(ingredient.name)
-                                    )
-                                }
-                            }
-                            .padding()
-                            .background(Color.purple.opacity(0.1))
-                            .cornerRadius(10)
-                            
-                            Button(action: {
-                                if allIngredientsInCart(ingredients: recipe.ingredients) {
-                                    addRemainingIngredientsToCart(ingredients: recipe.ingredients)
-                                } else {
-                                    addAllIngredientsToCart(ingredients: recipe.ingredients)
-                                }
-                            }, label: {
-                                Text(allIngredientsInCart(ingredients: recipe.ingredients) ? "Add Remaining Ingredients to Cart" : "Add All Ingredients to Cart")
+                        if let recipe = message.parsedRecipe, hasContent(in: recipe) {
+                            // 显示解析的食谱内容
+                            if let title = recipe.title {
+                                Text("\(title) 🥙")
+                                    .font(.custom("ArialRoundedMTBold", size: 20))
                                     .bold()
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .background(Color.orange)
-                                    .cornerRadius(10)
-                            })
-                            .frame(maxWidth: .infinity)
-                            .opacity(viewModel.isButtonDisabled ? 0.3 : 0.8)
-                            .disabled(viewModel.isButtonDisabled)
-                        }
-                        
-                        if !recipe.steps.isEmpty {
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text("🍳【Cooking Steps】")
-                                    .font(.custom("ArialRoundedMTBold", size: 18))
-                                ForEach(Array(recipe.steps.enumerated()), id: \.offset) { index, step in
-                                    HStack(alignment: .top) {
-                                        Text("\(index + 1).")
-                                            .bold()
-                                        Text(step)
-                                            .padding(.vertical, 2)
+                                    .padding(.bottom, 5)
+                            }
+
+                            if !recipe.ingredients.isEmpty {
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text("🥬【Ingredients】")
+                                        .font(.custom("ArialRoundedMTBold", size: 18))
+                                    ForEach(recipe.ingredients) { ingredient in
+                                        IngredientRow(
+                                            viewModel: viewModel,
+                                            ingredient: ingredient,
+                                            addAction: viewModel.addIngredientToShoppingList,
+                                            isInCart: foodItemStore.isIngredientInCart(ingredient.name)
+                                        )
                                     }
                                 }
+                                .padding()
+                                .background(Color.purple.opacity(0.1))
+                                .cornerRadius(10)
+
+                                Button(action: {
+                                    if allIngredientsInCart(ingredients: recipe.ingredients) {
+                                        addRemainingIngredientsToCart(ingredients: recipe.ingredients)
+                                    } else {
+                                        addAllIngredientsToCart(ingredients: recipe.ingredients)
+                                    }
+                                }, label: {
+                                    Text(allIngredientsInCart(ingredients: recipe.ingredients) ? "Add Remaining Ingredients to Cart" : "Add All Ingredients to Cart")
+                                        .bold()
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .background(Color.orange)
+                                        .cornerRadius(10)
+                                })
+                                .frame(maxWidth: .infinity)
+                                .opacity(viewModel.isButtonDisabled ? 0.3 : 0.8)
+                                .disabled(viewModel.isButtonDisabled)
                             }
-                            .padding()
-                            .background(Color.orange.opacity(0.3))
-                            .cornerRadius(10)
-                        }
-                        
-                        if let link = recipe.link, let url = URL(string: link) {
-                            Link(destination: url) {
-                                HStack {
-                                    Text("🔗 View Full Recipe")
+
+                            if !recipe.steps.isEmpty {
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text("🍳【Cooking Steps】")
                                         .font(.custom("ArialRoundedMTBold", size: 18))
-                                        .foregroundColor(.blue)
+                                    ForEach(Array(recipe.steps.enumerated()), id: \.offset) { index, step in
+                                        HStack(alignment: .top) {
+                                            Text("\(index + 1).")
+                                                .bold()
+                                            Text(step)
+                                                .padding(.vertical, 2)
+                                        }
+                                    }
+                                }
+                                .padding()
+                                .background(Color.orange.opacity(0.3))
+                                .cornerRadius(10)
+                            }
+
+                            if let link = recipe.link, let url = URL(string: link) {
+                                Link(destination: url) {
+                                    HStack {
+                                        Text("🔗 View Full Recipe")
+                                            .font(.custom("ArialRoundedMTBold", size: 18))
+                                            .foregroundColor(.blue)
+                                    }
+                                    .padding()
+                                    .background(Color.blue.opacity(0.1))
+                                    .cornerRadius(10)
+                                }
+                            }
+
+                            if let tips = recipe.tips {
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text("👩🏻‍🍳【Friendly Reminder】")
+                                        .font(.custom("ArialRoundedMTBold", size: 18))
+                                    Text(tips)
                                 }
                                 .padding()
                                 .background(Color.blue.opacity(0.1))
                                 .cornerRadius(10)
                             }
-                        }
-                        
-                        if let tips = recipe.tips {
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text("👩🏻‍🍳【Friendly Reminder】")
-                                    .font(.custom("ArialRoundedMTBold", size: 18))
-                                Text(tips)
-                            }
-                            .padding()
-                            .background(Color.blue.opacity(0.1))
-                            .cornerRadius(10)
-                        }
-                    }
-                    Spacer()
-                }
-            } else {
-                if message.role == .user {
-                    Spacer()
-                    VStack(alignment: .trailing) {
-                        if let imageURL = message.imageURL, let url = URL(string: imageURL) {
-                            WebImage(url: url)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 150)
-                                .cornerRadius(10)
-                        }
-                        if let content = message.content {
-                            Text(content)
-                                .padding()
-                                .background(Color.customColor(named: "NavigationBarTitle"))
-                                .foregroundColor(.white)
-                                .bold()
-                                .cornerRadius(10)
-                        }
-                    }
-                } else {
-                    VStack(alignment: .leading) {
-                        if let content = message.content {
+                        } else if let content = message.content {
+                            
                             Text(content)
                                 .padding()
                                 .background(Color.white.opacity(0.8))
@@ -401,11 +378,18 @@ struct ChatView: View {
                     Spacer()
                 }
             }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
-    }
     
     // MARK: - Helper Functions
+    
+    private func hasContent(in recipe: ParsedRecipe) -> Bool {
+        return recipe.title != nil ||
+            !recipe.ingredients.isEmpty ||
+            !recipe.steps.isEmpty ||
+            recipe.link != nil ||
+            recipe.tips != nil
+    }
     
     private func addIngredientToCart(_ ingredient: ParsedIngredient) {
         viewModel.addIngredientToCart(ingredient, foodItemStore: foodItemStore)

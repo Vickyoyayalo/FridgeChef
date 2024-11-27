@@ -19,7 +19,7 @@ class MLIngredientViewModel: ObservableObject {
     enum PhotoSource: Int, Identifiable {
         case photoLibrary = 0
         case camera = 1
-
+        
         var id: Int { self.rawValue }
     }
     
@@ -49,36 +49,36 @@ class MLIngredientViewModel: ObservableObject {
     var onSave: ((Ingredient) -> Void)?
     var editingFoodItem: Ingredient?
     var ingredient: Ingredient?
-   
+    
     init(editingFoodItem: Ingredient? = nil, onSave: ((Ingredient) -> Void)? = nil) {
-            self.onSave = onSave
-            self.ingredient = editingFoodItem
-
-            if let editingFoodItem = editingFoodItem {
-                self.recognizedText = editingFoodItem.name
-                self.quantity = String(editingFoodItem.quantity)
-                self.expirationDate = editingFoodItem.expirationDate
-                self.storageMethod = editingFoodItem.storageMethod
-                
-                if let existingImage = editingFoodItem.image {
-                    self.image = existingImage
-                } else if let imageURLString = editingFoodItem.imageURL, let url = URL(string: imageURLString) {
-                    loadImageFromURL(url)
-                }
+        self.onSave = onSave
+        self.ingredient = editingFoodItem
+        
+        if let editingFoodItem = editingFoodItem {
+            self.recognizedText = editingFoodItem.name
+            self.quantity = String(editingFoodItem.quantity)
+            self.expirationDate = editingFoodItem.expirationDate
+            self.storageMethod = editingFoodItem.storageMethod
+            
+            if let existingImage = editingFoodItem.image {
+                self.image = existingImage
+            } else if let imageURLString = editingFoodItem.imageURL, let url = URL(string: imageURLString) {
+                loadImageFromURL(url)
             }
         }
+    }
     
     func loadImageFromURL(_ url: URL) {
-            SDWebImageDownloader.shared.downloadImage(with: url) { [weak self] (image, data, error, finished) in
-                if let image = image {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                } else {
-                    print("Failed to load image from URL: \(error?.localizedDescription ?? "Unknown error")")
+        SDWebImageDownloader.shared.downloadImage(with: url) { [weak self] (image, data, error, finished) in
+            if let image = image {
+                DispatchQueue.main.async {
+                    self?.image = image
                 }
+            } else {
+                print("Failed to load image from URL: \(error?.localizedDescription ?? "Unknown error")")
             }
         }
+    }
     // MARK: - Camera Permission
     func checkCameraPermission() {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
@@ -99,7 +99,7 @@ class MLIngredientViewModel: ObservableObject {
             break
         }
     }
-
+    
     func requestCameraPermission() {
         AVCaptureDevice.requestAccess(for: .video) { granted in
             DispatchQueue.main.async {
@@ -114,20 +114,36 @@ class MLIngredientViewModel: ObservableObject {
     
     // MARK: - PhotoLibrary Permission
     func checkPhotoLibraryPermission() {
-            let status = PHPhotoLibrary.authorizationStatus()
+        let status = PHPhotoLibrary.authorizationStatus()
+        switch status {
+        case .notDetermined:
+            
+            DispatchQueue.main.async {
+                self.showPhotoPermissionAlert = true
+            }
+        case .authorized, .limited:
+            
+            DispatchQueue.main.async {
+                self.showPhotoOptions = true
+            }
+        case .denied, .restricted:
+            
+            DispatchQueue.main.async {
+                self.photoPermissionDenied = true
+            }
+        @unknown default:
+            break
+        }
+    }
+    
+    func requestPhotoLibraryPermission() {
+        PHPhotoLibrary.requestAuthorization { status in
             switch status {
-            case .notDetermined:
-                
-                DispatchQueue.main.async {
-                    self.showPhotoPermissionAlert = true
-                }
             case .authorized, .limited:
-               
                 DispatchQueue.main.async {
                     self.showPhotoOptions = true
                 }
-            case .denied, .restricted:
-               
+            case .denied, .restricted, .notDetermined:
                 DispatchQueue.main.async {
                     self.photoPermissionDenied = true
                 }
@@ -135,24 +151,8 @@ class MLIngredientViewModel: ObservableObject {
                 break
             }
         }
-        
-        func requestPhotoLibraryPermission() {
-            PHPhotoLibrary.requestAuthorization { status in
-                switch status {
-                case .authorized, .limited:
-                    DispatchQueue.main.async {
-                        self.showPhotoOptions = true
-                    }
-                case .denied, .restricted, .notDetermined:
-                    DispatchQueue.main.async {
-                        self.photoPermissionDenied = true
-                    }
-                @unknown default:
-                    break
-                }
-            }
-        }
-
+    }
+    
     // MARK: - Speech Recognition
     func requestSpeechRecognitionAuthorization() {
         SFSpeechRecognizer.requestAuthorization { [weak self] status in
@@ -243,7 +243,7 @@ class MLIngredientViewModel: ObservableObject {
                 let translatedLabel = TranslationDictionary.foodNames[label] ?? "Unknown"
                 // Update UI with the translated label
                 self?.recognizedText = translatedLabel
-//                self?.recognizedText = label.isEmpty ? "Unknown" : label
+                //                self?.recognizedText = label.isEmpty ? "Unknown" : label
             }
         }
         
@@ -304,36 +304,36 @@ class MLIngredientViewModel: ObservableObject {
     
     // MARK: - Save Ingredient
     func saveIngredient() {
-            guard let quantityValue = Double(quantity) else {
-              
-                return
-            }
-
-            let ingredient = Ingredient(
-                id: self.ingredient?.id ?? UUID().uuidString,
-                name: recognizedText,
-                quantity: quantityValue,
-                amount: 1.0,
-                unit: "unit",
-                expirationDate: expirationDate,
-                storageMethod: storageMethod,
-                image: image,
-                imageURL: self.ingredient?.imageURL
-            )
-
-            onSave?(ingredient)
-   
+        guard let quantityValue = Double(quantity) else {
+            print("Saving ingredient with expirationDate: \(expirationDate)")
+            return
+        }
+        
+        let ingredient = Ingredient(
+            id: self.ingredient?.id ?? UUID().uuidString,
+            name: recognizedText,
+            quantity: quantityValue,
+            amount: 1.0,
+            unit: "unit",
+            expirationDate: expirationDate,
+            storageMethod: storageMethod,
+            image: image,
+            imageURL: self.ingredient?.imageURL
+        )
+        
+        onSave?(ingredient)
+        
         clearForm()
-
+        
         isSavedAlertPresented = true
     }
-
+    
     func calculateDaysRemaining(expirationDate: Date?) -> Int {
         guard let expirationDate = expirationDate else { return 0 }
         let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: expirationDate).day ?? 0
         return max(0, daysRemaining)
     }
-
+    
     // MARK: - Clear Form
     
     func clearForm() {

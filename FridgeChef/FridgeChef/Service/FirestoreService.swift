@@ -101,8 +101,7 @@ class FirestoreService {
             "name": foodItem.name,
             "quantity": foodItem.quantity,
             "unit": foodItem.unit,
-            "status": foodItem.status.rawValue,
-            "daysRemaining": foodItem.daysRemaining
+            "status": foodItem.status.rawValue
         ] as [String: Any]
         
         if let expirationDate = foodItem.expirationDate {
@@ -168,7 +167,6 @@ class FirestoreService {
                             quantity: quantity,
                             unit: unit,
                             status: status,
-                            daysRemaining: daysRemaining,
                             expirationDate: expirationDate,
                             imageURL: data["imageURL"] as? String
                         )

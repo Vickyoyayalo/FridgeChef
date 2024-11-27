@@ -23,7 +23,7 @@ struct Ingredient: Identifiable {
     var unit: String
     var expirationDate: Date
     var storageMethod: String
-    var image: UIImage?  // Store UIImage directly
+    var image: UIImage?
     var imageURL: String?
 }
 
@@ -46,16 +46,15 @@ extension Ingredient {
         self.name = foodItem.name
         self.quantity = foodItem.quantity
         self.amount = Double(foodItem.quantity)
-        self.unit = "unit"
+        self.unit = foodItem.unit
         let today = Date()
-        let calendar = Calendar.current
-        
-        if let expirationDate = calendar.date(byAdding: .day, value: foodItem.remainingDays, to: today) {
+
+        if let expirationDate = foodItem.expirationDate {
             self.expirationDate = expirationDate
         } else {
             self.expirationDate = today
         }
         self.storageMethod = foodItem.status.rawValue
-        
+        self.imageURL = foodItem.imageURL
     }
 }

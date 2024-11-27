@@ -13,7 +13,6 @@ struct FoodItem: Identifiable, Codable, Equatable {
     var quantity: Double
     var unit: String
     var status: Status
-    var daysRemaining: Int
     var expirationDate: Date?
     var imageURL: String?
     
@@ -26,7 +25,7 @@ struct FoodItem: Identifiable, Codable, Equatable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id, name, quantity, unit, status, daysRemaining, expirationDate, imageURL
+        case id, name, quantity, unit, status, expirationDate, imageURL
     }
 }
 
@@ -38,7 +37,7 @@ enum Status: String, Codable {
 
 extension FoodItem {
     
-    var remainingDays: Int {
+    var daysRemaining: Int {
         guard let expirationDate = expirationDate else { return 0 }
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: Date())
@@ -114,20 +113,21 @@ extension FoodItem {
 import SDWebImageSwiftUI
 
 struct FoodItemRow: View {
-    @State private var currentDate = Date()
     var item: FoodItem
     var moveToGrocery: ((FoodItem) -> Void)?
     var moveToFridge: ((FoodItem) -> Void)?
     var moveToFreezer: ((FoodItem) -> Void)?
     var onTap: ((FoodItem) -> Void)?
     
-    private let timer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
+    @State private var currentDate = Date()
+    
+    private let timer = Timer.publish(every: 86400, on: .main, in: .common).autoconnect()
     
     var body: some View {
         HStack {
             if let imageURLString = item.imageURL, let imageURL = URL(string: imageURLString) {
                 WebImage(url: imageURL)
-                    .onSuccess {_,_,_ in }
+                    .onSuccess { _, _, _ in }
                     .resizable()
                     .scaledToFill()
                     .frame(width: 50, height: 50)
@@ -139,7 +139,6 @@ struct FoodItemRow: View {
                             .frame(width: 50, height: 50)
                             .opacity(0.3)
                     )
-                
             } else {
                 Image("RecipeFood")
                     .resizable()
@@ -196,8 +195,8 @@ struct FoodItemRow: View {
         .onTapGesture {
             onTap?(item)
         }
-        .onReceive(timer) { currentDate in
-            self.currentDate = currentDate
+        .onReceive(timer) { input in
+            self.currentDate = input
         }
     }
 }

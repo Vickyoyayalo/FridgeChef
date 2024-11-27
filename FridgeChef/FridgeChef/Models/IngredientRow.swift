@@ -12,12 +12,12 @@ struct IngredientRow: View {
     @ObservedObject var viewModel: ChatViewModel
     
     var ingredient: ParsedIngredient
-    var addAction: (ParsedIngredient) -> Bool
+    var addAction: ((ParsedIngredient) -> Void)?
     var isInCart: Bool
     
     var body: some View {
         Button(action: {
-            _ = addAction(ingredient)
+            addAction?(ingredient)
         }, label: {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {

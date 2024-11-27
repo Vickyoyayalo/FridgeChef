@@ -111,7 +111,8 @@ struct FridgeChefWidgetEntryView: View {
                                 Image("runmonster")
                                     .resizable()
                                     .frame(width: 50, height: 50)
-                                Text("⚠️ Notice \n\(firstExpiring.name): \(dayText(for: firstExpiring.daysRemaining))")
+                                Text("⚠️ Notice \n\(firstExpiring.name)")
+//                               Text("⚠️ Notice \n\(firstExpiring.name):\(dayText(for: firstExpiring.daysRemaining))")
                                     .font(.custom("ArialRoundedMTBold", size: 14))
                                     .foregroundColor(.orange)
                             }
@@ -122,7 +123,8 @@ struct FridgeChefWidgetEntryView: View {
                                 Image("alertmonster")
                                     .resizable()
                                     .frame(width: 50, height: 50)
-                                Text("Expired‼️ \n\(firstExpired.name): \(dayText(for: firstExpired.daysRemaining))")
+                                Text("Expired‼️ \n\(firstExpired.name)")
+//                                Text("Expired‼️ \n\(firstExpired.name): \(dayText(for: firstExpired.daysRemaining))")
                                     .font(.custom("ArialRoundedMTBold", size: 14))
                                     .foregroundColor(.red)
                             }
@@ -161,7 +163,7 @@ struct FridgeChefWidgetEntryView: View {
                                         .foregroundColor(.red)
                                 }
                                 ForEach(entry.expiredItems.prefix(3), id: \.id) { item in
-                                    Text("\(item.name): \(dayText(for: item.daysRemaining))")
+                                    Text("\(item.name): \n\(dayText(for: item.daysRemaining))")
                                         .font(.custom("ArialRoundedMTBold", size: 14))
                                         .foregroundColor(.pink)
                                 }

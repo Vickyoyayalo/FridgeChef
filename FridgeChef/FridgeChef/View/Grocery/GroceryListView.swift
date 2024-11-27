@@ -204,7 +204,6 @@ struct GroceryListView: View {
             quantity: ingredient.quantity,
             unit: ingredient.unit,
             status: Status(rawValue: ingredient.storageMethod) ?? .fridge,
-            daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
             expirationDate: ingredient.expirationDate,
             imageURL: nil
         )
@@ -284,7 +283,6 @@ struct GroceryListView: View {
             foodItemStore.foodItems[index].status = Status(rawValue: storageMethod) ?? .fridge
             let newExpirationDate = Calendar.current.date(byAdding: .day, value: storageMethod == "Fridge" ? 5 : 14, to: Date()) ?? Date()
             foodItemStore.foodItems[index].expirationDate = newExpirationDate
-            foodItemStore.foodItems[index].daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 0
             
             guard let currentUser = Auth.auth().currentUser else {
                 print("No user is currently logged in.")
@@ -299,7 +297,7 @@ struct GroceryListView: View {
             
             firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: item.id, updatedFields: updatedFields) { result in
                 switch result {
-                case .success():
+                case .success:
                     print("Food item successfully updated in Firebase.")
                 case .failure(let error):
                     print("Failed to update food item in Firebase: \(error.localizedDescription)")
@@ -321,12 +319,11 @@ struct GroceryListView: View {
     }
     
     func convertToIngredient(item: FoodItem) -> Ingredient {
-        // Fetch the image asynchronously if needed, but for now, you can set image to nil
         return Ingredient(
             id: item.id,
             name: item.name,
             quantity: item.quantity,
-            amount: 1.0, // Adjust as appropriate
+            amount: 1.0,
             unit: item.unit,
             expirationDate: item.expirationDate ?? Date(),
             storageMethod: item.status.rawValue,
@@ -342,7 +339,6 @@ struct GroceryListView: View {
             quantity: ingredient.quantity,
             unit: ingredient.unit,
             status: Status(rawValue: ingredient.storageMethod) ?? .toBuy,
-            daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
             expirationDate: ingredient.expirationDate
         )
     }
@@ -390,7 +386,6 @@ struct GroceryListView_Previews: PreviewProvider {
             quantity: 2.00,
             unit: "瓶",
             status: .toBuy,
-            daysRemaining: 5,
             expirationDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()),
             imageURL: nil
         )

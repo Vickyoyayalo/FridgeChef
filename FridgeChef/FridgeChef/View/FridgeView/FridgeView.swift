@@ -23,7 +23,8 @@ struct FridgeView: View {
     @State private var showingProgressView = false
     @State private var progressMessage = ""
     @State private var showingMLIngredientView = false
-
+    @State private var listenerRegistration: ListenerRegistration?
+    
     let firestoreService = FirestoreService()
     
     var body: some View {
@@ -88,6 +89,10 @@ struct FridgeView: View {
                 listenToFoodItems()
                 checkPendingNotifications()
             }
+            .onDisappear {
+                listenerRegistration?.remove()
+                listenerRegistration = nil
+            }
         }
     }
     
@@ -97,13 +102,13 @@ struct FridgeView: View {
             return
         }
         
-        firestoreService.listenToFoodItems(forUser: currentUser.uid) { result in
+        listenerRegistration = firestoreService.listenToFoodItems(forUser: currentUser.uid) { result in
             switch result {
             case .success(let items):
                 DispatchQueue.main.async {
                     self.foodItemStore.foodItems = items
                     print("Real-time update: Fetched \(items.count) food items from Firebase.")
-                   
+                    
                     for item in items where
                     item.daysRemaining <= 3 {
                         self.scheduleExpirationNotification(for: item)
@@ -213,7 +218,6 @@ struct FridgeView: View {
             quantity: ingredient.quantity,
             unit: ingredient.unit,
             status: Status(rawValue: ingredient.storageMethod) ?? .fridge,
-            daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
             expirationDate: ingredient.expirationDate,
             imageURL: nil
         )
@@ -278,7 +282,6 @@ struct FridgeView: View {
             foodItemStore.foodItems[index].status = .toBuy
             let newExpirationDate = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
             let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 1
-            foodItemStore.foodItems[index].daysRemaining = daysRemaining
             foodItemStore.foodItems[index].expirationDate = newExpirationDate
             
             guard let currentUser = Auth.auth().currentUser else {
@@ -326,7 +329,6 @@ struct FridgeView: View {
             let newExpirationDate = Calendar.current.date(byAdding: .day, value: storageMethod == "Fridge" ? 5 : 14, to: Date()) ?? Date()
             foodItemStore.foodItems[index].expirationDate = newExpirationDate
             let daysRemaining = Calendar.current.dateComponents([.day], from: Date(), to: newExpirationDate).day ?? 0
-            foodItemStore.foodItems[index].daysRemaining = daysRemaining
             
             guard let currentUser = Auth.auth().currentUser else {
                 print("No user is currently logged in.")
@@ -460,7 +462,6 @@ struct FridgeView_Previews: PreviewProvider {
             quantity: 3,
             unit: "個",
             status: .fridge,
-            daysRemaining: 5,
             expirationDate: Date(),
             imageURL: nil
         )

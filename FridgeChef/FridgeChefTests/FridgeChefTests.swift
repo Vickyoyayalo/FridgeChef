@@ -14,7 +14,9 @@ class NotificationTests: XCTestCase {
     func testScheduleExpirationNotification() {
         // Arrange
         let mockNotificationCenter = MockNotificationCenter()
-        let item = FoodItem(id: "1", name: "Milk", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 2, expirationDate: Date(), imageURL: nil)
+       
+        let expirationDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())!
+        let item = FoodItem(id: "1", name: "Milk", quantity: 1, unit: "瓶", status: .fridge, expirationDate: expirationDate, imageURL: nil)
         
         // Act
         let fridgeView = FridgeView(foodItemStore: FoodItemStore())
@@ -36,7 +38,9 @@ class NotificationTests: XCTestCase {
     func testExpiredItemNotification() {
         // Arrange
         let mockNotificationCenter = MockNotificationCenter()
-        let expiredItem = FoodItem(id: "2", name: "Expired Cheese", quantity: 1, unit: "片", status: .fridge, daysRemaining: -1, expirationDate: Date())
+       
+        let expirationDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let expiredItem = FoodItem(id: "2", name: "Expired Cheese", quantity: 1, unit: "片", status: .fridge, expirationDate: expirationDate, imageURL: nil)
         
         // Act
         let fridgeView = FridgeView(foodItemStore: FoodItemStore())
@@ -57,8 +61,12 @@ class NotificationTests: XCTestCase {
     func testScheduleNotificationsForExpiringAndExpiredItems() {
         // Arrange
         let mockNotificationCenter = MockNotificationCenter()
-        let expiringItem = FoodItem(id: "1", name: "Yogurt", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 2, expirationDate: Date())
-        let expiredItem = FoodItem(id: "2", name: "Cheese", quantity: 1, unit: "片", status: .fridge, daysRemaining: -1, expirationDate: Date())
+      
+        let expiringExpirationDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())!
+        let expiringItem = FoodItem(id: "1", name: "Yogurt", quantity: 1, unit: "瓶", status: .fridge, expirationDate: expiringExpirationDate, imageURL: nil)
+        
+        let expiredExpirationDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let expiredItem = FoodItem(id: "2", name: "Cheese", quantity: 1, unit: "片", status: .fridge, expirationDate: expiredExpirationDate, imageURL: nil)
         
         // Act
         let fridgeView = FridgeView(foodItemStore: FoodItemStore())
@@ -74,7 +82,8 @@ class NotificationTests: XCTestCase {
     
     func testImmediateNotificationForExpiredItem() {
         let mockNotificationCenter = MockNotificationCenter()
-        let expiredItem = FoodItem(id: "1", name: "Expired Milk", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: -1, expirationDate: Date())
+        let expirationDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let expiredItem = FoodItem(id: "1", name: "Expired Milk", quantity: 1, unit: "瓶", status: .fridge, expirationDate: expirationDate, imageURL: nil)
         
         let fridgeView = FridgeView(foodItemStore: FoodItemStore())
         fridgeView.scheduleExpirationNotification(for: expiredItem, notificationCenter: mockNotificationCenter)
@@ -85,7 +94,8 @@ class NotificationTests: XCTestCase {
     
     func testScheduledNotificationForExpiringItem() {
         let mockNotificationCenter = MockNotificationCenter()
-        let expiringItem = FoodItem(id: "2", name: "Yogurt", quantity: 1, unit: "瓶", status: .fridge, daysRemaining: 2, expirationDate: Date())
+        let expirationDate = Calendar.current.date(byAdding: .day, value: 2, to: Date())!
+        let expiringItem = FoodItem(id: "2", name: "Yogurt", quantity: 1, unit: "瓶", status: .fridge, expirationDate: expirationDate, imageURL: nil)
         
         let fridgeView = FridgeView(foodItemStore: FoodItemStore())
         fridgeView.scheduleExpirationNotification(for: expiringItem, notificationCenter: mockNotificationCenter)
@@ -100,7 +110,7 @@ class GroceryNotificationTests: XCTestCase {
     func testScheduleToBuyNotification() {
         // Arrange
         let mockNotificationCenter = MockNotificationCenter()
-        let item = FoodItem(id: "1", name: "Apples", quantity: 5, unit: "個", status: .toBuy, daysRemaining: 3, expirationDate: Date(), imageURL: nil)
+        let item = FoodItem(id: "1", name: "Apples", quantity: 5, unit: "個", status: .toBuy, expirationDate: nil, imageURL: nil)
         
         // Act
         let groceryListView = GroceryListView(foodItemStore: FoodItemStore())
@@ -123,22 +133,21 @@ class GroceryNotificationTests: XCTestCase {
 }
 
 class FoodItemTests: XCTestCase {
-    func testRemainingDays() {
+    func testDaysRemaining() {
         let calendar = Calendar.current
         
-        let fiveDaysLater = calendar.date(byAdding: .day, value: 5, to: Date())
-        let foodItem = FoodItem(id: "1", name: "Milk", quantity: 1.0, unit: "L", status: .fridge, daysRemaining: 0, expirationDate: fiveDaysLater, imageURL: nil)
+        let fiveDaysLater = calendar.date(byAdding: .day, value: 5, to: Date())!
+        let foodItem = FoodItem(id: "1", name: "Milk", quantity: 1.0, unit: "L", status: .fridge, expirationDate: fiveDaysLater, imageURL: nil)
         
-        XCTAssertEqual(foodItem.remainingDays, 5)
+        XCTAssertEqual(foodItem.daysRemaining, 5)
        
-        let threeDaysAgo = calendar.date(byAdding: .day, value: -3, to: Date())
-        let expiredFoodItem = FoodItem(id: "2", name: "Cheese", quantity: 0.5, unit: "kg", status: .freezer, daysRemaining: 0, expirationDate: threeDaysAgo, imageURL: nil)
+        let threeDaysAgo = calendar.date(byAdding: .day, value: -3, to: Date())!
+        let expiredFoodItem = FoodItem(id: "2", name: "Cheese", quantity: 0.5, unit: "kg", status: .freezer, expirationDate: threeDaysAgo, imageURL: nil)
         
-        XCTAssertEqual(expiredFoodItem.remainingDays, -3)
+        XCTAssertEqual(expiredFoodItem.daysRemaining, -3)
         
-        let noExpirationFoodItem = FoodItem(id: "3", name: "Rice", quantity: 2.0, unit: "kg", status: .toBuy, daysRemaining: 0, expirationDate: nil, imageURL: nil)
+        let noExpirationFoodItem = FoodItem(id: "3", name: "Rice", quantity: 2.0, unit: "kg", status: .toBuy, expirationDate: nil, imageURL: nil)
         
-        XCTAssertEqual(noExpirationFoodItem.remainingDays, 0)
+        XCTAssertEqual(noExpirationFoodItem.daysRemaining, 0)
     }
 }
-

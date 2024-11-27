@@ -338,7 +338,6 @@ struct RecipeDetailView: View {
             quantity: ingredient.quantity,
             unit: ingredient.unit,
             status: .toBuy,
-            daysRemaining: Calendar.current.dateComponents([.day], from: Date(), to: ingredient.expirationDate).day ?? 0,
             expirationDate: ingredient.expirationDate,
             imageURL: nil
         )

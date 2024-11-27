@@ -106,10 +106,8 @@ struct ChatView: View {
                                         ForEach(viewModel.filteredMessages) { message in
                                             messageView(for: message)
                                                 .id(message.id)
-                                                .lineLimit(nil)
-                                                .fixedSize(horizontal: false, vertical: true)
                                         }
-                                        .frame(maxWidth: .infinity)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                     }
                                     .onChange(of: viewModel.messages.count) {
                                         if let lastMessage = viewModel.messages.last, let id = lastMessage.id {
@@ -259,136 +257,148 @@ struct ChatView: View {
     
     // MARK: - Message View
     private func messageView(for message: Message) -> some View {
-            return HStack {
-                if message.role == .user {
-                    Spacer()
-                    VStack(alignment: .trailing) {
-                        if let imageURL = message.imageURL, let url = URL(string: imageURL) {
-                            WebImage(url: url)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 150)
-                                .cornerRadius(10)
-                        }
-                        if let content = message.content {
-                            Text(content)
-                                .padding()
-                                .background(Color.customColor(named: "NavigationBarTitle"))
-                                .foregroundColor(.white)
-                                .bold()
-                                .cornerRadius(10)
-                        }
+        return HStack {
+            if message.role == .user {
+                Spacer()
+                VStack(alignment: .trailing) {
+                    if let imageURL = message.imageURL, let url = URL(string: imageURL) {
+                        WebImage(url: url)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 150)
+                            .cornerRadius(10)
                     }
-                } else {
-                    VStack(alignment: .leading, spacing: 10) {
-                        if let recipe = message.parsedRecipe, hasContent(in: recipe) {
-                            // 显示解析的食谱内容
-                            if let title = recipe.title {
-                                Text("\(title) 🥙")
-                                    .font(.custom("ArialRoundedMTBold", size: 20))
-                                    .bold()
-                                    .padding(.bottom, 5)
-                            }
-
-                            if !recipe.ingredients.isEmpty {
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text("🥬【Ingredients】")
-                                        .font(.custom("ArialRoundedMTBold", size: 18))
-                                    ForEach(recipe.ingredients) { ingredient in
-                                        IngredientRow(
-                                            viewModel: viewModel,
-                                            ingredient: ingredient,
-                                            addAction: viewModel.addIngredientToShoppingList,
-                                            isInCart: foodItemStore.isIngredientInCart(ingredient.name)
-                                        )
-                                    }
+                    if let content = message.content {
+                        Text(content)
+                            .padding()
+                            .background(Color.customColor(named: "NavigationBarTitle"))
+                            .foregroundColor(.white)
+                            .bold()
+                            .cornerRadius(10)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 10) {
+                    if let recipe = message.parsedRecipe, hasContent(in: recipe) {
+                        if let title = recipe.title {
+                            Text("\(title) 🥙")
+                                .font(.custom("ArialRoundedMTBold", size: 20))
+                                .bold()
+                                .padding(.bottom, 5)
+                        }
+                        
+                        if !recipe.ingredients.isEmpty {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("🥬【Ingredients】")
+                                    .font(.custom("ArialRoundedMTBold", size: 18))
+                                ForEach(recipe.ingredients) { ingredient in
+                                    IngredientRow(
+                                        viewModel: viewModel,
+                                        ingredient: ingredient,
+                                        addAction: { ingredient in
+                                            Task {
+                                                await viewModel.addIngredientToShoppingList(ingredient)
+                                            }
+                                        },
+                                        isInCart: foodItemStore.isIngredientInCart(ingredient.name)
+                                    )
                                 }
-                                .padding()
-                                .background(Color.purple.opacity(0.1))
-                                .cornerRadius(10)
-
-                                Button(action: {
+                            }
+                            .padding()
+                            .background(Color.purple.opacity(0.1))
+                            .cornerRadius(10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            Button(action: {
+                                Task {
                                     if allIngredientsInCart(ingredients: recipe.ingredients) {
-                                        addRemainingIngredientsToCart(ingredients: recipe.ingredients)
+                                        await addRemainingIngredientsToCart(ingredients: recipe.ingredients)
                                     } else {
-                                        addAllIngredientsToCart(ingredients: recipe.ingredients)
-                                    }
-                                }, label: {
-                                    Text(allIngredientsInCart(ingredients: recipe.ingredients) ? "Add Remaining Ingredients to Cart" : "Add All Ingredients to Cart")
-                                        .bold()
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color.orange)
-                                        .cornerRadius(10)
-                                })
-                                .frame(maxWidth: .infinity)
-                                .opacity(viewModel.isButtonDisabled ? 0.3 : 0.8)
-                                .disabled(viewModel.isButtonDisabled)
-                            }
-
-                            if !recipe.steps.isEmpty {
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text("🍳【Cooking Steps】")
-                                        .font(.custom("ArialRoundedMTBold", size: 18))
-                                    ForEach(Array(recipe.steps.enumerated()), id: \.offset) { index, step in
-                                        HStack(alignment: .top) {
-                                            Text("\(index + 1).")
-                                                .bold()
-                                            Text(step)
-                                                .padding(.vertical, 2)
-                                        }
+                                        await addAllIngredientsToCart(ingredients: recipe.ingredients)
                                     }
                                 }
-                                .padding()
-                                .background(Color.orange.opacity(0.3))
-                                .cornerRadius(10)
-                            }
-
-                            if let link = recipe.link, let url = URL(string: link) {
-                                Link(destination: url) {
-                                    HStack {
-                                        Text("🔗 View Full Recipe")
-                                            .font(.custom("ArialRoundedMTBold", size: 18))
-                                            .foregroundColor(.blue)
-                                    }
+                            }, label: {
+                                Text(allIngredientsInCart(ingredients: recipe.ingredients) ? "Add Remaining Ingredients to Cart" : "Add All Ingredients to Cart")
+                                    .bold()
+                                    .foregroundColor(.white)
                                     .padding()
-                                    .background(Color.blue.opacity(0.1))
+                                    .background(Color.orange)
                                     .cornerRadius(10)
+                            })
+                            .frame(maxWidth: .infinity)
+                            .opacity(viewModel.isButtonDisabled ? 0.3 : 0.8)
+                            .disabled(viewModel.isButtonDisabled)
+                        }
+                        
+                        if !recipe.steps.isEmpty {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("🍳【Cooking Steps】")
+                                    .font(.custom("ArialRoundedMTBold", size: 18))
+                                ForEach(Array(recipe.steps.enumerated()), id: \.offset) { index, step in
+                                    HStack(alignment: .top) {
+                                        Text("\(index + 1).")
+                                            .bold()
+                                        Text(step)
+                                            .padding(.vertical, 2)
+                                            .lineLimit(nil)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                    }
                                 }
                             }
-
-                            if let tips = recipe.tips {
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text("👩🏻‍🍳【Friendly Reminder】")
+                            .padding()
+                            .background(Color.orange.opacity(0.3))
+                            .cornerRadius(10)
+                        }
+                        
+                        if let link = recipe.link, let url = URL(string: link) {
+                            Link(destination: url) {
+                                HStack {
+                                    Text("🔗 View Full Recipe")
                                         .font(.custom("ArialRoundedMTBold", size: 18))
-                                    Text(tips)
+                                        .foregroundColor(.blue)
                                 }
                                 .padding()
                                 .background(Color.blue.opacity(0.1))
                                 .cornerRadius(10)
                             }
-                        } else if let content = message.content {
-                            
-                            Text(content)
-                                .padding()
-                                .background(Color.white.opacity(0.8))
-                                .cornerRadius(10)
                         }
+                        
+                        if let tips = recipe.tips {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text("👩🏻‍🍳【Friendly Reminder】")
+                                    .font(.custom("ArialRoundedMTBold", size: 18))
+                                Text(tips)
+                            }
+                            .padding()
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(10)
+                        }
+                    } else if let content = message.content {
+                        
+                        Text(content)
+                            .padding()
+                            .background(Color.white.opacity(0.8))
+                            .cornerRadius(10)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    Spacer()
                 }
+                Spacer()
             }
-            .padding(.horizontal)
         }
+        .padding(.horizontal)
+    }
     
     // MARK: - Helper Functions
     
     private func hasContent(in recipe: ParsedRecipe) -> Bool {
         return recipe.title != nil ||
-            !recipe.ingredients.isEmpty ||
-            !recipe.steps.isEmpty ||
-            recipe.link != nil ||
-            recipe.tips != nil
+        !recipe.ingredients.isEmpty ||
+        !recipe.steps.isEmpty ||
+        recipe.link != nil ||
+        recipe.tips != nil
     }
     
     private func addIngredientToCart(_ ingredient: ParsedIngredient) {
@@ -403,46 +413,52 @@ struct ChatView: View {
         return ingredients.allSatisfy { viewModel.isIngredientInCart($0) }
     }
     
-    private func addRemainingIngredientsToCart(ingredients: [ParsedIngredient]) {
+    private func addRemainingIngredientsToCart(ingredients: [ParsedIngredient]) async {
         var alreadyInCart = [String]()
         var addedToCart = [String]()
         
         for ingredient in ingredients {
-            if viewModel.addIngredientToShoppingList(ingredient) {
+            if await viewModel.addIngredientToShoppingList(ingredient) {
                 addedToCart.append(ingredient.name)
             } else {
                 alreadyInCart.append(ingredient.name)
             }
         }
         
-        if addedToCart.isEmpty {
-            viewModel.activeAlert = .regular(
-                title: "No New Ingredients Added",
-                message: "All ingredients are already in your cart."
-            )
-        } else {
-            var message = "Added: \(addedToCart.joined(separator: ", "))"
-            if !alreadyInCart.isEmpty {
-                message += "\nAlready in cart: \(alreadyInCart.joined(separator: ", "))"
+        await MainActor.run {
+            if addedToCart.isEmpty {
+                viewModel.activeAlert = .regular(
+                    title: "No New Ingredients Added",
+                    message: "All ingredients are already in your cart."
+                )
+            } else {
+                var message = "Added: \(addedToCart.joined(separator: ", "))"
+                if !alreadyInCart.isEmpty {
+                    message += "\nAlready in cart: \(alreadyInCart.joined(separator: ", "))"
+                }
+                viewModel.activeAlert = .regular(
+                    title: "Ingredients Added",
+                    message: message
+                )
             }
-            viewModel.activeAlert = .regular(
-                title: "Ingredients Added",
-                message: message
-            )
         }
     }
     
-    private func addAllIngredientsToCart(ingredients: [ParsedIngredient]) {
+    private func addAllIngredientsToCart(ingredients: [ParsedIngredient]) async {
         var addedToCart = [String]()
-        
-        for ingredient in ingredients where viewModel.addIngredientToShoppingList(ingredient) {
-            addedToCart.append(ingredient.name)
+
+        for ingredient in ingredients {
+            if await viewModel.addIngredientToShoppingList(ingredient) {
+                addedToCart.append(ingredient.name)
+            }
         }
-        
-        viewModel.activeAlert = .regular(
-            title: "Ingredients Added",
-            message: "Added: \(addedToCart.joined(separator: ", "))"
-        )
+
+        await MainActor.run {
+            viewModel.activeAlert = .regular(
+                title: "Ingredients Added",
+                message: "Added: \(addedToCart.joined(separator: ", "))"
+            )
+        }
     }
 }
 

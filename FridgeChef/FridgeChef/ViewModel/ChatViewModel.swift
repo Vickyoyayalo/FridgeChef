@@ -778,7 +778,6 @@ class ChatViewModel: ObservableObject {
         return "en"
     }
     
-    // 根據語言代碼獲取系統提示
     private func getSystemPrompt(for languageCode: String) -> String {
         switch languageCode {
         case "zh-Hant", "zh-Hans":

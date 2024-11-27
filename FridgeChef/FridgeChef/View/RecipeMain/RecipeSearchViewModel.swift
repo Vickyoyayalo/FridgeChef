@@ -133,7 +133,7 @@ class RecipeSearchViewModel: ObservableObject {
         }
         
         let favoritesRef = db.collection("users").document(userId).collection("favorites")
-        favoritesRef.document("\(recipeId)").getDocument { document, error in
+        favoritesRef.document("\(recipeId)").getDocument { document, _ in
             if let document = document, document.exists {
                 DispatchQueue.main.async {
                     self.selectedRecipe?.isFavorite = true
@@ -304,7 +304,7 @@ class RecipeSearchViewModel: ObservableObject {
                     self?.checkIfFavorite(recipeId: recipeId)
                     details.isFavorite = self?.recipes.first(where: { $0.id == recipeId })?.isFavorite ?? false
                     self?.selectedRecipe = details
-                case .failure(_):
+                case .failure:
                     self?.errorMessage = ErrorMessage(message: "Failed to fetch recipe details.")
                 }
             }

@@ -228,7 +228,7 @@ struct GroceryListView: View {
                     case .success(let url):
                         updatedFields["imageURL"] = url
                         
-                        firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
+                        firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { _ in
                             
                         }
                     case .failure(let error):
@@ -237,7 +237,7 @@ struct GroceryListView: View {
                 }
             } else {
                 
-                firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
+                firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { _ in
                     
                 }
             }

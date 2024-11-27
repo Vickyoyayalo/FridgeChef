@@ -241,14 +241,14 @@ struct FridgeView: View {
                     switch result {
                     case .success(let url):
                         updatedFields["imageURL"] = url
-                        firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
+                        firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { _ in
                         }
                     case .failure(let error):
                         print("Failed to upload image: \(error.localizedDescription)")
                     }
                 }
             } else {
-                firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { result in
+                firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: foodItem.id, updatedFields: updatedFields) { _ in
                 }
             }
             
@@ -297,7 +297,7 @@ struct FridgeView: View {
             
             firestoreService.updateFoodItem(forUser: currentUser.uid, foodItemId: item.id, updatedFields: updatedFields) { result in
                 switch result {
-                case .success():
+                case .success:
                     print("Food item successfully updated in Firebase.")
                 case .failure(let error):
                     print("Failed to update food item in Firebase: \(error.localizedDescription)")
@@ -392,7 +392,7 @@ struct FridgeListView: View {
     var body: some View {
         List {
             if !filteredFoodItems.filter({ $0.status == .fridge }).isEmpty {
-                Section(header:  HStack {
+                Section(header: HStack {
                     Image(uiImage: UIImage(named: "fridge") ?? UIImage(systemName: "refrigerator.fill")!)
                         .resizable()
                         .frame(width: 24, height: 24)

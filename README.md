@@ -1,4 +1,5 @@
-![LinkedIn Title banner (3)](https://github.com/user-attachments/assets/8683dfc3-ee7a-41c7-a1d0-70533f46f0fb)
+
+![LinkedIn Title banner (4)](https://github.com/user-attachments/assets/41161031-f0a5-45b2-ad70-93f1a9cf75c9)
 
 <p align="left">
     <img src="https://img.shields.io/badge/platform-iOS-lightgray">

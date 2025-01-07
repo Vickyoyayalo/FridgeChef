@@ -1,9 +1,8 @@
-
-![monsterr](https://github.com/user-attachments/assets/86512552-cb9a-4ea4-a64a-2a6b93ac4498)
+![LinkedIn Title banner (3)](https://github.com/user-attachments/assets/8683dfc3-ee7a-41c7-a1d0-70533f46f0fb)
 
 <p align="left">
     <img src="https://img.shields.io/badge/platform-iOS-lightgray">
-    <img src="https://img.shields.io/badge/release-v1.0.2-green">
+    <img src="https://img.shields.io/badge/release-v1.0.5-green">
 </p>
 
 # FridgeChef 🍽️ 

@@ -12,7 +12,8 @@
 FridgeChef is your smart kitchen companion that helps you manage your fridge's contents effortlessly. Say goodbye to expired ingredients and last-minute meal struggles. With FridgeChef, you'll always know what's left in your fridge, get instant alerts for expiring items, and discover delicious recipes that match the ingredients you have. Take control of your shopping list, plan meals efficiently, and cook like a pro with the help of FridgeChef's AI-powered suggestions!👩🏻‍🍳
 <br>
 
-![Download on the App Store](https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg)
+[![Download on the App Store](https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg)](https://apps.apple.com/us/app/fridgechef/id6695727520)
+
  
  ## Table of Contents
 * [Features](#Features)
